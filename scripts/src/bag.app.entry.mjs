@@ -20,6 +20,7 @@
   const CATALOG_ENTRIES_ENDPOINTS = ['/assets/data/catalog.entries.json', '/data/catalog.entries.json'];
   const BAG_DESCRIPTION_COPY = 'Review queued selections across entries, adjust scope, and export one merged download bundle.';
   const BAG_SIGNED_IN_PREFIX = 'Signed in as';
+  const LEGACY_BUNDLE_BUCKETS = ['A', 'B', 'C', 'D', 'E', 'X'];
 
   function toText(value) {
     return String(value ?? '');
@@ -1297,6 +1298,33 @@
     });
   }
 
+  function resolveBundleReadyPayload(payload) {
+    const status = toText(payload?.status).toLowerCase();
+    if (status === 'forbidden') {
+      const err = new Error('forbidden');
+      err.code = 'forbidden';
+      throw err;
+    }
+    if (status === 'not_found' || status === 'not-found') {
+      const err = new Error('not-found');
+      err.code = 'not-found';
+      throw err;
+    }
+    if (status === 'error' || status === 'failed') {
+      const err = new Error(toText(payload?.message).trim() || 'failed');
+      err.code = 'failed';
+      throw err;
+    }
+    const signedUrl = toText(payload?.signedUrl || payload?.url || payload?.downloadUrl).trim();
+    if (status === 'ready' && signedUrl) {
+      return {
+        signedUrl,
+        expiresAt: toText(payload?.expiresAt).trim(),
+      };
+    }
+    return null;
+  }
+
   async function pollBundleJob({ token, jobId, onTick }) {
     const safeJobId = encodeURIComponent(toText(jobId).trim());
     if (!safeJobId) throw new Error('missing job id');
@@ -1327,6 +1355,150 @@
     throw new Error('bundle timeout');
   }
 
+  function collectLegacyBundleTokens(lookup, nodes = []) {
+    const safeLookup = normalizeLookup(lookup);
+    if (!safeLookup) return [];
+    const list = [];
+    const seen = new Set();
+
+    const addToken = (bucket, mediaType) => {
+      const safeBucket = normalizeBucket(bucket);
+      const safeMediaType = normalizeMediaType(mediaType);
+      if (!safeBucket || !safeMediaType) return;
+      const token = `bundle:lookup:${safeLookup}:${safeBucket}:${safeMediaType}`;
+      const dedupeKey = token.toLowerCase();
+      if (seen.has(dedupeKey)) return;
+      seen.add(dedupeKey);
+      list.push(token);
+    };
+
+    const safeNodes = Array.isArray(nodes) ? nodes : [];
+    safeNodes.forEach((node) => {
+      const kind = toText(node?.kind).trim().toLowerCase();
+      const bucket = normalizeBucket(node?.bucket);
+      const mediaTypes = normalizeAvailableTypes(node?.mediaTypes, node?.mediaType);
+
+      if (kind === 'collection') {
+        LEGACY_BUNDLE_BUCKETS.forEach((bucketKey) => {
+          addToken(bucketKey, 'audio');
+          addToken(bucketKey, 'video');
+        });
+        return;
+      }
+      if (kind === 'bucket') {
+        addToken(bucket, 'audio');
+        addToken(bucket, 'video');
+        return;
+      }
+      if (kind === 'type') {
+        addToken(bucket, node?.mediaType);
+        return;
+      }
+      if (kind === 'file') {
+        if (!mediaTypes.length) {
+          addToken(bucket, 'audio');
+          addToken(bucket, 'video');
+          return;
+        }
+        mediaTypes.forEach((mediaType) => addToken(bucket, mediaType));
+      }
+    });
+
+    return list;
+  }
+
+  async function requestLookupBundle({ token, lookup, tokens, onTick }) {
+    const safeLookup = normalizeLookup(lookup);
+    if (!safeLookup) {
+      const err = new Error('missing lookup');
+      err.code = 'not-found';
+      throw err;
+    }
+    const payload = await requestJson(`/me/assets/${encodeURIComponent(safeLookup)}/bundle`, {
+      method: 'POST',
+      token,
+      body: {
+        tokens: Array.isArray(tokens) ? tokens : [],
+        source: 'entry-bag',
+      },
+    });
+
+    const delivery = toText(payload?.delivery).toLowerCase();
+    if (delivery === 'sync') {
+      const signedUrl = toText(payload?.signedUrl || payload?.url || payload?.downloadUrl).trim();
+      if (!signedUrl) {
+        const err = new Error('missing signed url');
+        err.code = 'failed';
+        throw err;
+      }
+      return {
+        signedUrl,
+        expiresAt: toText(payload?.expiresAt).trim(),
+      };
+    }
+    if (delivery === 'async') {
+      const jobId = toText(payload?.jobId).trim();
+      return pollBundleJob({
+        token,
+        jobId,
+        onTick,
+      });
+    }
+
+    const ready = resolveBundleReadyPayload(payload);
+    if (ready) return ready;
+
+    const directSignedUrl = toText(payload?.signedUrl || payload?.url || payload?.downloadUrl).trim();
+    if (directSignedUrl) {
+      return {
+        signedUrl: directSignedUrl,
+        expiresAt: toText(payload?.expiresAt).trim(),
+      };
+    }
+
+    const err = new Error('unsupported bundle response');
+    err.code = 'failed';
+    throw err;
+  }
+
+  async function requestLegacyBagBundles({ token, selections, onTick }) {
+    const safeSelections = Array.isArray(selections) ? selections : [];
+    const out = [];
+    for (let index = 0; index < safeSelections.length; index += 1) {
+      const row = safeSelections[index];
+      const lookup = normalizeLookup(row?.lookup);
+      const tokens = collectLegacyBundleTokens(lookup, row?.nodes);
+      if (!lookup || !tokens.length) continue;
+      if (typeof onTick === 'function') {
+        onTick({
+          stage: 'request',
+          lookup,
+          index,
+          total: safeSelections.length,
+        });
+      }
+      const result = await requestLookupBundle({
+        token,
+        lookup,
+        tokens,
+        onTick: () => {
+          if (typeof onTick !== 'function') return;
+          onTick({
+            stage: 'poll',
+            lookup,
+            index,
+            total: safeSelections.length,
+          });
+        },
+      });
+      out.push({
+        lookup,
+        ...result,
+      });
+    }
+    return out;
+  }
+
   function openSignedUrl(url) {
     const href = toText(url).trim();
     if (!href) return false;
@@ -1334,6 +1506,26 @@
     if (win) return true;
     window.location.assign(href);
     return true;
+  }
+
+  function openSignedUrls(urls = []) {
+    const list = Array.from(new Set((Array.isArray(urls) ? urls : []).map((value) => toText(value).trim()).filter(Boolean)));
+    if (!list.length) return { opened: 0, total: 0 };
+    if (list.length === 1) {
+      openSignedUrl(list[0]);
+      return { opened: 1, total: 1 };
+    }
+
+    let opened = 0;
+    list.forEach((href) => {
+      const win = window.open(href, '_blank', 'noopener');
+      if (win) opened += 1;
+    });
+    if (!opened) {
+      window.location.assign(list[0]);
+      return { opened: 1, total: list.length };
+    }
+    return { opened, total: list.length };
   }
 
   function readResumeAction() {
@@ -1946,37 +2138,72 @@
       render();
 
       try {
-        const payload = await requestBagBundle({
-          token: state.auth.token,
-          selections: collectSelectionsPayload(),
-        });
-        const delivery = toText(payload?.delivery).toLowerCase();
-
-        if (delivery === 'sync') {
-          const signedUrl = toText(payload?.signedUrl || payload?.url).trim();
-          if (!signedUrl) throw new Error('missing signed url');
-          openSignedUrl(signedUrl);
-          state.status = 'Bundle ready. Opening download…';
-        } else if (delivery === 'async') {
-          const result = await pollBundleJob({
+        const selections = collectSelectionsPayload();
+        try {
+          const payload = await requestBagBundle({
             token: state.auth.token,
-            jobId: payload?.jobId,
-            onTick: () => {
-              state.status = 'Preparing secure bundle…';
+            selections,
+          });
+          const delivery = toText(payload?.delivery).toLowerCase();
+
+          if (delivery === 'sync') {
+            const signedUrl = toText(payload?.signedUrl || payload?.url).trim();
+            if (!signedUrl) throw new Error('missing signed url');
+            openSignedUrl(signedUrl);
+            state.status = 'Bundle ready. Opening download…';
+          } else if (delivery === 'async') {
+            const result = await pollBundleJob({
+              token: state.auth.token,
+              jobId: payload?.jobId,
+              onTick: () => {
+                state.status = 'Preparing secure bundle…';
+                render();
+              },
+            });
+            openSignedUrl(result?.signedUrl || result?.url || result?.downloadUrl);
+            state.status = 'Bundle ready. Opening download…';
+          } else {
+            const fallbackSigned = toText(payload?.signedUrl || payload?.url || payload?.downloadUrl).trim();
+            if (!fallbackSigned) throw new Error('unsupported response');
+            openSignedUrl(fallbackSigned);
+            state.status = 'Bundle ready. Opening download…';
+          }
+        } catch (bagError) {
+          if (toText(bagError?.code) !== 'not-found') throw bagError;
+          const fallbackBundles = await requestLegacyBagBundles({
+            token: state.auth.token,
+            selections,
+            onTick: ({ index = 0, total = 0 } = {}) => {
+              const safeTotal = Number(total) > 1 ? Number(total) : 0;
+              const safeIndex = Number(index) + 1;
+              state.status = safeTotal
+                ? `Preparing secure bundles… (${safeIndex}/${safeTotal})`
+                : 'Preparing secure bundle…';
               render();
             },
           });
-          openSignedUrl(result?.signedUrl || result?.url || result?.downloadUrl);
-          state.status = 'Bundle ready. Opening download…';
-        } else {
-          const fallbackSigned = toText(payload?.signedUrl || payload?.url || payload?.downloadUrl).trim();
-          if (!fallbackSigned) throw new Error('unsupported response');
-          openSignedUrl(fallbackSigned);
-          state.status = 'Bundle ready. Opening download…';
+          const urls = fallbackBundles
+            .map((bundle) => toText(bundle?.signedUrl || bundle?.url || bundle?.downloadUrl).trim())
+            .filter(Boolean);
+          if (!urls.length) {
+            const err = new Error('not-found');
+            err.code = 'not-found';
+            throw err;
+          }
+          const openResult = openSignedUrls(urls);
+          if (openResult.total > 1) {
+            if (openResult.opened >= openResult.total) {
+              state.status = `Prepared ${openResult.total} bundles. Opening downloads…`;
+            } else {
+              state.status = `Prepared ${openResult.total} bundles. Opened ${openResult.opened}. Allow pop-ups to open the rest.`;
+            }
+          } else {
+            state.status = 'Bundle ready. Opening download…';
+          }
         }
       } catch (error) {
         if (toText(error?.code) === 'not-found') {
-          state.error = 'Bag bundle endpoint unavailable.';
+          state.error = 'No bundle route available for current selection.';
         } else if (toText(error?.code) === 'forbidden') {
           state.error = 'Access denied for current selection.';
         } else {
