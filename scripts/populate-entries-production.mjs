@@ -16,6 +16,7 @@ const DEFAULT_TEMPLATE_PATH = path.resolve(ROOT, 'entries', 'test-5', 'index.htm
 const DEFAULT_RUN_MANIFEST_PATH = path.resolve(ROOT, 'data', 'entry-population.run-manifest.json');
 const DEFAULT_SEED_DIR = path.resolve(ROOT, 'tmp', 'production-entry-seeds');
 const DEFAULT_PROTECTED_ASSETS_PATH = path.resolve(ROOT, 'data', 'protected.assets.json');
+const DEFAULT_ROUTE_ENTRY_DIR = path.resolve(ROOT, 'docs', 'entry');
 const DEFAULT_SCOPE = 's2-plus-matt';
 const DEFAULT_EXPECTED_TARGET_COUNT = 13;
 
@@ -359,6 +360,7 @@ function parseArgs(argv) {
     templatePath: DEFAULT_TEMPLATE_PATH,
     runManifestPath: DEFAULT_RUN_MANIFEST_PATH,
     seedDir: DEFAULT_SEED_DIR,
+    routeEntryDir: DEFAULT_ROUTE_ENTRY_DIR,
     scope: DEFAULT_SCOPE,
     expectedTargetCount: DEFAULT_EXPECTED_TARGET_COUNT,
     dryRun: false,
@@ -402,6 +404,15 @@ function parseArgs(argv) {
       out.seedDir = arg.slice('--seed-dir='.length);
       continue;
     }
+    if (arg === '--route-entry-dir' && next) {
+      out.routeEntryDir = next;
+      index += 1;
+      continue;
+    }
+    if (arg.startsWith('--route-entry-dir=')) {
+      out.routeEntryDir = arg.slice('--route-entry-dir='.length);
+      continue;
+    }
     if (arg === '--dry-run') {
       out.dryRun = true;
       continue;
@@ -436,6 +447,7 @@ function parseArgs(argv) {
   out.templatePath = path.resolve(ROOT, out.templatePath);
   out.runManifestPath = path.resolve(ROOT, out.runManifestPath);
   out.seedDir = path.resolve(ROOT, out.seedDir);
+  out.routeEntryDir = path.resolve(ROOT, out.routeEntryDir);
   return out;
 }
 
@@ -452,6 +464,24 @@ function runDex(args) {
     stdout: String(result.stdout || ''),
     stderr: String(result.stderr || ''),
     command: `node scripts/dex.mjs ${args.join(' ')}`,
+  };
+}
+
+async function publishEntryRouteHtml(slug, {
+  routeEntryDir = DEFAULT_ROUTE_ENTRY_DIR,
+} = {}) {
+  const normalizedSlug = toText(slug);
+  if (!normalizedSlug) {
+    throw new Error('Missing slug for route HTML publish.');
+  }
+  const sourcePath = path.resolve(ROOT, 'entries', normalizedSlug, 'index.html');
+  const routePath = path.resolve(routeEntryDir, normalizedSlug, 'index.html');
+  const html = await fs.readFile(sourcePath, 'utf8');
+  await fs.mkdir(path.dirname(routePath), { recursive: true });
+  await fs.writeFile(routePath, html, 'utf8');
+  return {
+    sourcePath,
+    routePath,
   };
 }
 
@@ -585,6 +615,7 @@ async function main() {
     },
     templatePath,
     formatKeys,
+    routeEntryDir: options.routeEntryDir,
     scope: options.scope,
     expectedTargetCount: options.expectedTargetCount,
     dryRun: !!options.dryRun,
@@ -609,6 +640,7 @@ async function main() {
       youtubeUrl: '',
       entryUrlFromSheet: '',
       seedPath: '',
+      routeHtmlPath: '',
       commands: [],
       error: '',
     };
@@ -720,6 +752,17 @@ async function main() {
             code: 0,
             ok: true,
           });
+
+          const routePublish = await publishEntryRouteHtml(context.slug, {
+            routeEntryDir: options.routeEntryDir,
+          });
+          rowReport.routeHtmlPath = routePublish.routePath;
+          rowReport.commands.push({
+            type: 'route-publish',
+            command: `publishEntryRouteHtml(${context.slug})`,
+            code: 0,
+            ok: true,
+          });
         }
       } else {
         rowReport.mode = 'init';
@@ -744,6 +787,17 @@ async function main() {
             throw new Error(`init failed for ${context.slug}: ${initResult.stderr || initResult.stdout}`);
           }
           existingEntries.add(context.slug);
+
+          const routePublish = await publishEntryRouteHtml(context.slug, {
+            routeEntryDir: options.routeEntryDir,
+          });
+          rowReport.routeHtmlPath = routePublish.routePath;
+          rowReport.commands.push({
+            type: 'route-publish',
+            command: `publishEntryRouteHtml(${context.slug})`,
+            code: 0,
+            ok: true,
+          });
         }
       }
 
