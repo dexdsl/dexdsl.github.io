@@ -1355,6 +1355,23 @@
     throw new Error('bundle timeout');
   }
 
+  function parseBundleHintCount(payload) {
+    const candidates = [
+      payload?.fileCount,
+      payload?.totalFiles,
+      payload?.filesCount,
+      payload?.resolvedFileCount,
+      payload?.bundleFileCount,
+      payload?.count,
+    ];
+    for (const raw of candidates) {
+      if (raw === null || raw === undefined || raw === '') continue;
+      const value = Number(raw);
+      if (Number.isFinite(value) && value >= 0) return Math.round(value);
+    }
+    return -1;
+  }
+
   function collectLegacyBundleTokens(lookup, nodes = []) {
     const safeLookup = normalizeLookup(lookup);
     if (!safeLookup) return [];
@@ -1404,6 +1421,39 @@
       }
     });
 
+    return list;
+  }
+
+  function collectLegacyBundleTokensFromFiles(lookup, rows = [], files = []) {
+    const safeLookup = normalizeLookup(lookup);
+    if (!safeLookup) return [];
+    const list = [];
+    const seen = new Set();
+
+    const addToken = (bucket, mediaType) => {
+      const safeBucket = normalizeBucket(bucket);
+      const safeMediaType = normalizeMediaType(mediaType);
+      if (!safeBucket || !safeMediaType) return;
+      const token = `bundle:lookup:${safeLookup}:${safeBucket}:${safeMediaType}`;
+      const dedupeKey = token.toLowerCase();
+      if (seen.has(dedupeKey)) return;
+      seen.add(dedupeKey);
+      list.push(token);
+    };
+
+    const safeRows = Array.isArray(rows) ? rows : [];
+    const safeFiles = Array.isArray(files) ? files : [];
+    const expandedFiles = expandSelectionsForLookup(safeRows, safeFiles);
+    expandedFiles.forEach((file) => {
+      const bucket = normalizeBucket(file?.bucket);
+      const availableTypes = normalizeAvailableTypes(file?.availableTypes, file?.type);
+      if (!availableTypes.length) {
+        addToken(bucket, 'audio');
+        addToken(bucket, 'video');
+        return;
+      }
+      availableTypes.forEach((mediaType) => addToken(bucket, mediaType));
+    });
     return list;
   }
 
@@ -1461,13 +1511,29 @@
     throw err;
   }
 
-  async function requestLegacyBagBundles({ token, selections, onTick }) {
+  async function requestLegacyBagBundles({ token, selections, filesByLookup = null, onTick }) {
     const safeSelections = Array.isArray(selections) ? selections : [];
     const out = [];
     for (let index = 0; index < safeSelections.length; index += 1) {
       const row = safeSelections[index];
       const lookup = normalizeLookup(row?.lookup);
-      const tokens = collectLegacyBundleTokens(lookup, row?.nodes);
+      const rows = Array.isArray(row?.nodes)
+        ? row.nodes.map((node) => ({
+          kind: toText(node?.kind).trim().toLowerCase(),
+          lookup: normalizeLookup(node?.lookup || lookup),
+          bucket: normalizeBucket(node?.bucket),
+          mediaType: normalizeMediaType(node?.mediaType),
+          mediaTypes: normalizeAvailableTypes(node?.mediaTypes, node?.mediaType),
+          fileId: toText(node?.fileId).trim(),
+        }))
+        : [];
+      const lookupFiles = filesByLookup instanceof Map
+        ? (filesByLookup.get(lookup) || [])
+        : [];
+      let tokens = collectLegacyBundleTokensFromFiles(lookup, rows, lookupFiles);
+      if (!tokens.length) {
+        tokens = collectLegacyBundleTokens(lookup, row?.nodes);
+      }
       if (!lookup || !tokens.length) continue;
       if (typeof onTick === 'function') {
         onTick({
@@ -2138,12 +2204,19 @@
       render();
 
       try {
+        await resolveLookupFiles();
         const selections = collectSelectionsPayload();
         try {
           const payload = await requestBagBundle({
             token: state.auth.token,
             selections,
           });
+          const hintedCount = parseBundleHintCount(payload);
+          if (hintedCount === 0 && selections.length) {
+            const err = new Error('empty bundle');
+            err.code = 'empty';
+            throw err;
+          }
           const delivery = toText(payload?.delivery).toLowerCase();
 
           if (delivery === 'sync') {
@@ -2169,10 +2242,16 @@
             state.status = 'Bundle ready. Opening download…';
           }
         } catch (bagError) {
-          if (toText(bagError?.code) !== 'not-found') throw bagError;
+          const bagCode = toText(bagError?.code).toLowerCase();
+          if (bagCode !== 'not-found' && bagCode !== 'empty') throw bagError;
+          if (bagCode === 'empty') {
+            state.status = 'Bundle resolved zero files. Retrying via lookup bundles…';
+            render();
+          }
           const fallbackBundles = await requestLegacyBagBundles({
             token: state.auth.token,
             selections,
+            filesByLookup: state.filesByLookup,
             onTick: ({ index = 0, total = 0 } = {}) => {
               const safeTotal = Number(total) > 1 ? Number(total) : 0;
               const safeIndex = Number(index) + 1;
