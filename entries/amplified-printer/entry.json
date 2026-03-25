@@ -1,0 +1,118 @@
+{
+  "slug": "amplified-printer",
+  "title": "AMPLIFIED PRINTER",
+  "canonical": {
+    "instrument": "AMPLIFIED PRINTER",
+    "artistName": "Cameron Church"
+  },
+  "lifecycle": {
+    "publishedAt": "2026-03-25T20:32:31.698Z",
+    "updatedAt": "2026-03-25T20:32:31.698Z"
+  },
+  "video": {
+    "mode": "url",
+    "dataUrl": "https://www.youtube.com/watch?v=3mpKFw_oD7s",
+    "dataUrlOriginal": "https://www.youtube.com/watch?v=3mpKFw_oD7s",
+    "dataHtml": ""
+  },
+  "descriptionText": "AMPLIFIED PRINTER.",
+  "series": "dex",
+  "selectedBuckets": [
+    "A",
+    "B",
+    "C"
+  ],
+  "creditsData": {
+    "artist": [
+      "Cameron Church"
+    ],
+    "artistAlt": null,
+    "instruments": [
+      "AMPLIFIED PRINTER"
+    ],
+    "video": {
+      "director": [],
+      "cinematography": [],
+      "editing": []
+    },
+    "audio": {
+      "recording": [],
+      "mix": [],
+      "master": []
+    },
+    "year": 2024,
+    "season": "S2",
+    "location": "Unknown"
+  },
+  "fileSpecs": {
+    "bitDepth": 24,
+    "sampleRate": 48000,
+    "channels": "stereo",
+    "staticSizes": {
+      "A": "",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "X": ""
+    }
+  },
+  "metadata": {
+    "sampleLength": "AUTO",
+    "tags": []
+  },
+  "sidebarPageConfig": {
+    "lookupNumber": "X.Prt. Ch AV2024 S2",
+    "buckets": [
+      "A",
+      "B",
+      "C"
+    ],
+    "specialEventImage": "/assets/series/dex.png",
+    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Cameron Church.",
+    "credits": {
+      "artist": [
+        "Cameron Church"
+      ],
+      "artistAlt": null,
+      "instruments": [
+        "AMPLIFIED PRINTER"
+      ],
+      "video": {
+        "director": [],
+        "cinematography": [],
+        "editing": []
+      },
+      "audio": {
+        "recording": [],
+        "mix": [],
+        "master": []
+      },
+      "year": 2024,
+      "season": "S2",
+      "location": "Unknown"
+    },
+    "fileSpecs": {
+      "bitDepth": 24,
+      "sampleRate": 48000,
+      "channels": "stereo",
+      "staticSizes": {
+        "A": "",
+        "B": "",
+        "C": "",
+        "D": "",
+        "E": "",
+        "X": ""
+      }
+    },
+    "metadata": {
+      "sampleLength": "AUTO",
+      "tags": []
+    },
+    "downloads": {
+      "recordingIndexPdfRef": "asset:amplified-printer-recording-index-pdf",
+      "recordingIndexBundleRef": "bundle:recording-index:X.Prt. Ch AV2024 S2:all",
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1YCpxRbU9Q7uxaBSWy4NRQUB-6GWCY9gTX1qv1ezWAsw/edit?gid=0#gid=0"
+    }
+  }
+}

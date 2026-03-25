@@ -1,0 +1,118 @@
+{
+  "slug": "prepared-oboe-sky-macklay",
+  "title": "PREPARED OBOE",
+  "canonical": {
+    "instrument": "PREPARED OBOE",
+    "artistName": "Sky Macklay"
+  },
+  "lifecycle": {
+    "publishedAt": "2026-03-25T20:32:34.745Z",
+    "updatedAt": "2026-03-25T20:32:34.745Z"
+  },
+  "video": {
+    "mode": "url",
+    "dataUrl": "https://www.youtube.com/watch?v=LPHD-ynh-MA",
+    "dataUrlOriginal": "https://www.youtube.com/watch?v=LPHD-ynh-MA",
+    "dataHtml": ""
+  },
+  "descriptionText": "PREPARED OBOE.",
+  "series": "dex",
+  "selectedBuckets": [
+    "A",
+    "B",
+    "C"
+  ],
+  "creditsData": {
+    "artist": [
+      "Sky Macklay"
+    ],
+    "artistAlt": null,
+    "instruments": [
+      "PREPARED OBOE"
+    ],
+    "video": {
+      "director": [],
+      "cinematography": [],
+      "editing": []
+    },
+    "audio": {
+      "recording": [],
+      "mix": [],
+      "master": []
+    },
+    "year": 2024,
+    "season": "S2",
+    "location": "Unknown"
+  },
+  "fileSpecs": {
+    "bitDepth": 24,
+    "sampleRate": 48000,
+    "channels": "stereo",
+    "staticSizes": {
+      "A": "",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "X": ""
+    }
+  },
+  "metadata": {
+    "sampleLength": "AUTO",
+    "tags": []
+  },
+  "sidebarPageConfig": {
+    "lookupNumber": "W.Ob. Ma AV2024 S2",
+    "buckets": [
+      "A",
+      "B",
+      "C"
+    ],
+    "specialEventImage": "/assets/series/dex.png",
+    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Sky Macklay.",
+    "credits": {
+      "artist": [
+        "Sky Macklay"
+      ],
+      "artistAlt": null,
+      "instruments": [
+        "PREPARED OBOE"
+      ],
+      "video": {
+        "director": [],
+        "cinematography": [],
+        "editing": []
+      },
+      "audio": {
+        "recording": [],
+        "mix": [],
+        "master": []
+      },
+      "year": 2024,
+      "season": "S2",
+      "location": "Unknown"
+    },
+    "fileSpecs": {
+      "bitDepth": 24,
+      "sampleRate": 48000,
+      "channels": "stereo",
+      "staticSizes": {
+        "A": "",
+        "B": "",
+        "C": "",
+        "D": "",
+        "E": "",
+        "X": ""
+      }
+    },
+    "metadata": {
+      "sampleLength": "AUTO",
+      "tags": []
+    },
+    "downloads": {
+      "recordingIndexPdfRef": "asset:prepared-oboe-sky-macklay-recording-index-pdf",
+      "recordingIndexBundleRef": "bundle:recording-index:W.Ob. Ma AV2024 S2:all",
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1aJZCdLPdSqY531OJN4kyjOlO9nsxMoIg40nU30_Lgeo/edit?gid=0#gid=0"
+    }
+  }
+}

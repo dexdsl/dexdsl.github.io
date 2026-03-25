@@ -1,0 +1,380 @@
+{
+  "generatedAt": "2026-03-25T20:32:21.610Z",
+  "root": "/Users/seb/dexdsl.github.io",
+  "masterSheet": {
+    "inputUrl": "https://docs.google.com/spreadsheets/d/1up2Jq4Yx5sLuUDHRKlkIg4MDDQH0SZ4lGX20CuriUb4/edit?gid=0#gid=0",
+    "normalizedUrl": "https://docs.google.com/spreadsheets/d/1up2Jq4Yx5sLuUDHRKlkIg4MDDQH0SZ4lGX20CuriUb4/edit?gid=0#gid=0",
+    "sheetId": "1up2Jq4Yx5sLuUDHRKlkIg4MDDQH0SZ4lGX20CuriUb4",
+    "gid": "0",
+    "csvUrl": "https://docs.google.com/spreadsheets/d/1up2Jq4Yx5sLuUDHRKlkIg4MDDQH0SZ4lGX20CuriUb4/export?format=csv&gid=0"
+  },
+  "templatePath": "/Users/seb/dexdsl.github.io/entries/test-5/index.html",
+  "formatKeys": {
+    "audio": [
+      "mp3",
+      "wav"
+    ],
+    "video": [
+      "1080p",
+      "4K"
+    ]
+  },
+  "scope": "s2-plus-matt",
+  "expectedTargetCount": 13,
+  "dryRun": false,
+  "rows": [
+    {
+      "startedAt": "2026-03-25T20:32:21.611Z",
+      "sourceLookup": "P.Sdr. Le AV2024 S2",
+      "sourceName": "Matt LeVeque",
+      "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/1T11YbuvXQPnfEY52qAW_kshFSut_V1K2NJUhKtXM_84/edit?gid=0#gid=0",
+      "status": "success",
+      "mode": "init",
+      "slug": "snare-drum-matt-leveque",
+      "resolvedLookup": "P.Sdr. Le AV2024 S2",
+      "youtubeUrl": "https://youtu.be/d-7wYJzGliw?si=agZLxoZPsJyTY0ga",
+      "entryUrlFromSheet": "https://dexdsl.org/entry/matt-leveque",
+      "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/snare-drum-matt-leveque.seed.json",
+      "commands": [
+        {
+          "type": "init",
+          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/snare-drum-matt-leveque.seed.json --catalog-link create-linked --catalog-status active",
+          "code": 0,
+          "ok": true
+        }
+      ],
+      "error": "",
+      "resolutionReason": "override",
+      "catalogEntryId": "",
+      "scopeReason": "season-s2",
+      "finishedAt": "2026-03-25T20:32:22.875Z"
+    },
+    {
+      "startedAt": "2026-03-25T20:32:22.875Z",
+      "sourceLookup": "P.Pto. Fe AV2024 S2",
+      "sourceName": "Tim Feeney",
+      "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/1jWq1mToYB0exyQTDshjBV2TVCDOLD6epceXWpqJ117Q/edit?gid=0#gid=0",
+      "status": "success",
+      "mode": "existing-update",
+      "slug": "tim-feeney",
+      "resolvedLookup": "P.Pto. Fe AV2024 S2",
+      "youtubeUrl": "https://youtu.be/DVqLc0_Ezhc",
+      "entryUrlFromSheet": "https://dexdsl.org/entry/tim-feeney",
+      "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/tim-feeney.seed.json",
+      "commands": [
+        {
+          "type": "entry-link",
+          "command": "node scripts/dex.mjs entry link --entry tim-feeney --lookup P.Pto. Fe AV2024 S2 --season S2 --performer Tim Feeney --instrument PREPARED FLOOR TOM --title PREPARED FLOOR TOM --status active",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "assets-upsert",
+          "command": "upsertProtectedAssetsLookupMapping(...)",
+          "code": 0,
+          "ok": true
+        }
+      ],
+      "error": "",
+      "resolutionReason": "catalog-match",
+      "catalogEntryId": "tim-feeney",
+      "scopeReason": "season-s2",
+      "finishedAt": "2026-03-25T20:32:23.840Z"
+    },
+    {
+      "startedAt": "2026-03-25T20:32:23.840Z",
+      "sourceLookup": "P.Mul. JaYo AV2024 S2",
+      "sourceName": "Paul Yorke, Sofi Jacquez",
+      "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/1RE91PASFDrycJ_Nm1KW7bRLDs44UT-Vik1xr15BUjLQ/edit?gid=0#gid=0",
+      "status": "success",
+      "mode": "init",
+      "slug": "as-though-im-slipping",
+      "resolvedLookup": "P.Ens. JaYo AV2024 S2",
+      "youtubeUrl": "https://www.youtube.com/watch?v=hXvUAoRNI_8",
+      "entryUrlFromSheet": "https://dexdsl.org/entry/as-though-im-slipping",
+      "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/as-though-im-slipping.seed.json",
+      "commands": [
+        {
+          "type": "init",
+          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/as-though-im-slipping.seed.json --catalog-link create-linked --catalog-status active",
+          "code": 0,
+          "ok": true
+        }
+      ],
+      "error": "",
+      "resolutionReason": "override",
+      "catalogEntryId": "as-though-im-slipping",
+      "scopeReason": "season-s2",
+      "finishedAt": "2026-03-25T20:32:24.880Z"
+    },
+    {
+      "startedAt": "2026-03-25T20:32:24.880Z",
+      "sourceLookup": "X.Mul. Jo AV2024 S2",
+      "sourceName": "Grant Johnson",
+      "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/17Ag_QW8e29wfi56Zt0j00rqLmkihoEUodyYkBiMUDkI/edit?gid=0#gid=0",
+      "status": "success",
+      "mode": "init",
+      "slug": "this-is-a-tangible-space",
+      "resolvedLookup": "X.Mul. Jo AV2024 S2",
+      "youtubeUrl": "https://www.youtube.com/watch?v=aV1mGnw3bOY",
+      "entryUrlFromSheet": "https://dexdsl.com/entry/this-is-a-tangible-space",
+      "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/this-is-a-tangible-space.seed.json",
+      "commands": [
+        {
+          "type": "init",
+          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/this-is-a-tangible-space.seed.json --catalog-link create-linked --catalog-status active",
+          "code": 0,
+          "ok": true
+        }
+      ],
+      "error": "",
+      "resolutionReason": "catalog-match",
+      "catalogEntryId": "this-is-a-tangible-space",
+      "scopeReason": "season-s2",
+      "finishedAt": "2026-03-25T20:32:25.867Z"
+    },
+    {
+      "startedAt": "2026-03-25T20:32:25.867Z",
+      "sourceLookup": "P.Mpc. Gi AV2024 S2",
+      "sourceName": "Ben Giroux",
+      "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/1x51zeI8yZa1mcFAmsw1A2RJrReL0fhE6NyojuRbVY08/edit?gid=0#gid=0",
+      "status": "success",
+      "mode": "init",
+      "slug": "multiperc",
+      "resolvedLookup": "P.Mpc. Gi AV2024 S2",
+      "youtubeUrl": "https://www.youtube.com/watch?v=1aOfUugieF8",
+      "entryUrlFromSheet": "http://dexdsl.com/entry/multiperc",
+      "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/multiperc.seed.json",
+      "commands": [
+        {
+          "type": "init",
+          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/multiperc.seed.json --catalog-link create-linked --catalog-status active",
+          "code": 0,
+          "ok": true
+        }
+      ],
+      "error": "",
+      "resolutionReason": "catalog-match",
+      "catalogEntryId": "multiperc",
+      "scopeReason": "season-s2",
+      "finishedAt": "2026-03-25T20:32:26.877Z"
+    },
+    {
+      "startedAt": "2026-03-25T20:32:26.877Z",
+      "sourceLookup": "S.Pdb. He AV2024 S2",
+      "sourceName": "Jakob Heinemann",
+      "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/1lNVQbKreVfbmi29jW1lNX7lVTq3zSmrWNpmeiVHc-6Q/edit?gid=0#gid=0",
+      "status": "success",
+      "mode": "init",
+      "slug": "jakob-heinemann",
+      "resolvedLookup": "S.Pdb. He AV2024 S2",
+      "youtubeUrl": "https://www.youtube.com/watch?v=8sia2JYhwvI",
+      "entryUrlFromSheet": "https://dexdsl.com/entry/jakob-heinemann",
+      "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/jakob-heinemann.seed.json",
+      "commands": [
+        {
+          "type": "init",
+          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/jakob-heinemann.seed.json --catalog-link create-linked --catalog-status active",
+          "code": 0,
+          "ok": true
+        }
+      ],
+      "error": "",
+      "resolutionReason": "catalog-match",
+      "catalogEntryId": "jakob-heinemann",
+      "scopeReason": "season-s2",
+      "finishedAt": "2026-03-25T20:32:29.664Z"
+    },
+    {
+      "startedAt": "2026-03-25T20:32:29.664Z",
+      "sourceLookup": "E.Mod. Zh AV2024 S2",
+      "sourceName": "Bojun Zhang",
+      "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/1F5owRM_T6ZxYpCPIfQmHcMUByZ0jCgrS6LghxdkWWCk/edit?gid=0#gid=0",
+      "status": "success",
+      "mode": "init",
+      "slug": "bojun-zhang",
+      "resolvedLookup": "E.Mod. Zh AV2024 S2",
+      "youtubeUrl": "https://youtu.be/qNuxhAKCekg?si=uPA7rWWDDDteKGdZ",
+      "entryUrlFromSheet": "https://dexdsl.com/entry/bojun-zhang",
+      "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/bojun-zhang.seed.json",
+      "commands": [
+        {
+          "type": "init",
+          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/bojun-zhang.seed.json --catalog-link create-linked --catalog-status active",
+          "code": 0,
+          "ok": true
+        }
+      ],
+      "error": "",
+      "resolutionReason": "catalog-match",
+      "catalogEntryId": "bojun-zhang",
+      "scopeReason": "season-s2",
+      "finishedAt": "2026-03-25T20:32:30.727Z"
+    },
+    {
+      "startedAt": "2026-03-25T20:32:30.727Z",
+      "sourceLookup": "X.Prt. Ch AV2024 S2",
+      "sourceName": "Cameron Church",
+      "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/1YCpxRbU9Q7uxaBSWy4NRQUB-6GWCY9gTX1qv1ezWAsw/edit?gid=0#gid=0",
+      "status": "success",
+      "mode": "init",
+      "slug": "amplified-printer",
+      "resolvedLookup": "X.Prt. Ch AV2024 S2",
+      "youtubeUrl": "https://www.youtube.com/watch?v=3mpKFw_oD7s",
+      "entryUrlFromSheet": "https://dexdsl.com/entry/amplified-printer",
+      "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/amplified-printer.seed.json",
+      "commands": [
+        {
+          "type": "init",
+          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/amplified-printer.seed.json --catalog-link create-linked --catalog-status active",
+          "code": 0,
+          "ok": true
+        }
+      ],
+      "error": "",
+      "resolutionReason": "catalog-match",
+      "catalogEntryId": "amplified-printer",
+      "scopeReason": "season-s2",
+      "finishedAt": "2026-03-25T20:32:31.727Z"
+    },
+    {
+      "startedAt": "2026-03-25T20:32:31.727Z",
+      "sourceLookup": "E.Gtr. Ch AV2024 S2",
+      "sourceName": "Andrew Chanover",
+      "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/10cMq02K7fiTmw-eWSnbmsXO6kTgkfs23ripJurJrmws/edit?gid=0#gid=0",
+      "status": "success",
+      "mode": "init",
+      "slug": "andrew-chanover",
+      "resolvedLookup": "E.Gtr. Ch AV2024 S2",
+      "youtubeUrl": "https://www.youtube.com/watch?v=oifj5JZYoWI",
+      "entryUrlFromSheet": "https://dexdsl.com/entry/andrew-chanover",
+      "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/andrew-chanover.seed.json",
+      "commands": [
+        {
+          "type": "init",
+          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/andrew-chanover.seed.json --catalog-link create-linked --catalog-status active",
+          "code": 0,
+          "ok": true
+        }
+      ],
+      "error": "",
+      "resolutionReason": "catalog-match",
+      "catalogEntryId": "andrew-chanover",
+      "scopeReason": "season-s2",
+      "finishedAt": "2026-03-25T20:32:32.696Z"
+    },
+    {
+      "startedAt": "2026-03-25T20:32:32.696Z",
+      "sourceLookup": "P.Dho. Sh A2024 S2",
+      "sourceName": "Anant Shah",
+      "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/1JsM29q-0o4toYbYsuAExfgXJyKMiAT29UzmTUBs4XqE/edit?gid=0#gid=0",
+      "status": "success",
+      "mode": "init",
+      "slug": "anant-shah",
+      "resolvedLookup": "P.Dho. Sh AV2024 S2",
+      "youtubeUrl": "https://www.youtube.com/watch?v=qtcnXm13Mh8",
+      "entryUrlFromSheet": "https://dexdsl.com/entry/andrew-chanover",
+      "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/anant-shah.seed.json",
+      "commands": [
+        {
+          "type": "init",
+          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/anant-shah.seed.json --catalog-link create-linked --catalog-status active",
+          "code": 0,
+          "ok": true
+        }
+      ],
+      "error": "",
+      "resolutionReason": "catalog-match",
+      "catalogEntryId": "anant-shah",
+      "scopeReason": "season-s2",
+      "finishedAt": "2026-03-25T20:32:33.669Z"
+    },
+    {
+      "startedAt": "2026-03-25T20:32:33.669Z",
+      "sourceLookup": "W.Ob. Ma AV2024 S2",
+      "sourceName": "Sky Macklay",
+      "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/1aJZCdLPdSqY531OJN4kyjOlO9nsxMoIg40nU30_Lgeo/edit?gid=0#gid=0",
+      "status": "success",
+      "mode": "init",
+      "slug": "prepared-oboe-sky-macklay",
+      "resolvedLookup": "W.Ob. Ma AV2024 S2",
+      "youtubeUrl": "https://www.youtube.com/watch?v=LPHD-ynh-MA",
+      "entryUrlFromSheet": "https://dexdsl.com/entry/prepared-oboe-sky-macklay",
+      "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/prepared-oboe-sky-macklay.seed.json",
+      "commands": [
+        {
+          "type": "init",
+          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/prepared-oboe-sky-macklay.seed.json --catalog-link create-linked --catalog-status active",
+          "code": 0,
+          "ok": true
+        }
+      ],
+      "error": "",
+      "resolutionReason": "catalog-match",
+      "catalogEntryId": "prepared-oboe-sky-macklay",
+      "scopeReason": "season-s2",
+      "finishedAt": "2026-03-25T20:32:34.775Z"
+    },
+    {
+      "startedAt": "2026-03-25T20:32:34.775Z",
+      "sourceLookup": "W.Bsn. CoTo AV2024 S2",
+      "sourceName": "Arlo Tomecek, Max Coleman",
+      "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/1TPhEoNoGlHYaANKdKlBvLDa4JHrpDkNwfm7EwwUwIxo/edit?gid=0#gid=0",
+      "status": "success",
+      "mode": "init",
+      "slug": "bassoon-and-electronics",
+      "resolvedLookup": "W.Bsn. CoTo AV2024 S2",
+      "youtubeUrl": "https://www.youtube.com/watch?v=6uW9VfE8DP0",
+      "entryUrlFromSheet": "https://dexdsl.com/entry/bassoon-and-electronics",
+      "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/bassoon-and-electronics.seed.json",
+      "commands": [
+        {
+          "type": "init",
+          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/bassoon-and-electronics.seed.json --catalog-link create-linked --catalog-status active",
+          "code": 0,
+          "ok": true
+        }
+      ],
+      "error": "",
+      "resolutionReason": "catalog-match",
+      "catalogEntryId": "bassoon-and-electronics",
+      "scopeReason": "season-s2",
+      "finishedAt": "2026-03-25T20:32:35.766Z"
+    },
+    {
+      "startedAt": "2026-03-25T20:32:35.766Z",
+      "sourceLookup": "V.GaV. Ye A2024 S2",
+      "sourceName": "Aidan Yeats",
+      "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/11itz1pMWxB-gDXswAjz3VwpiFfPt0bX0Z5HYj4kjKBk/edit?gid=0#gid=0",
+      "status": "success",
+      "mode": "init",
+      "slug": "aidan-yeats",
+      "resolvedLookup": "V.Sng. Ye AV2024 S2",
+      "youtubeUrl": "https://www.youtube.com/watch?v=CSFGiU1gg4g",
+      "entryUrlFromSheet": "https://dexdsl.com/entry/aidan-yeats",
+      "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/aidan-yeats.seed.json",
+      "commands": [
+        {
+          "type": "init",
+          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/aidan-yeats.seed.json --catalog-link create-linked --catalog-status active",
+          "code": 0,
+          "ok": true
+        }
+      ],
+      "error": "",
+      "resolutionReason": "override",
+      "catalogEntryId": "aidan-yeats",
+      "scopeReason": "season-s2",
+      "finishedAt": "2026-03-25T20:32:36.851Z"
+    }
+  ],
+  "summary": {
+    "total": 13,
+    "targeted": 13,
+    "skipped": 0,
+    "success": 13,
+    "failed": 0,
+    "expectedTargetCount": 13,
+    "targetCountMatchesExpectation": true
+  }
+}

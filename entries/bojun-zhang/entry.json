@@ -1,0 +1,118 @@
+{
+  "slug": "bojun-zhang",
+  "title": "MODULAR SYNTH",
+  "canonical": {
+    "instrument": "MODULAR SYNTH",
+    "artistName": "Bojun Zhang"
+  },
+  "lifecycle": {
+    "publishedAt": "2026-03-25T20:32:30.699Z",
+    "updatedAt": "2026-03-25T20:32:30.699Z"
+  },
+  "video": {
+    "mode": "url",
+    "dataUrl": "https://youtu.be/qNuxhAKCekg?si=uPA7rWWDDDteKGdZ",
+    "dataUrlOriginal": "https://youtu.be/qNuxhAKCekg?si=uPA7rWWDDDteKGdZ",
+    "dataHtml": ""
+  },
+  "descriptionText": "MODULAR SYNTH.",
+  "series": "dex",
+  "selectedBuckets": [
+    "A",
+    "B",
+    "C"
+  ],
+  "creditsData": {
+    "artist": [
+      "Bojun Zhang"
+    ],
+    "artistAlt": null,
+    "instruments": [
+      "MODULAR SYNTH"
+    ],
+    "video": {
+      "director": [],
+      "cinematography": [],
+      "editing": []
+    },
+    "audio": {
+      "recording": [],
+      "mix": [],
+      "master": []
+    },
+    "year": 2024,
+    "season": "S2",
+    "location": "Unknown"
+  },
+  "fileSpecs": {
+    "bitDepth": 24,
+    "sampleRate": 48000,
+    "channels": "stereo",
+    "staticSizes": {
+      "A": "",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "X": ""
+    }
+  },
+  "metadata": {
+    "sampleLength": "AUTO",
+    "tags": []
+  },
+  "sidebarPageConfig": {
+    "lookupNumber": "E.Mod. Zh AV2024 S2",
+    "buckets": [
+      "A",
+      "B",
+      "C"
+    ],
+    "specialEventImage": "/assets/series/dex.png",
+    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Bojun Zhang.",
+    "credits": {
+      "artist": [
+        "Bojun Zhang"
+      ],
+      "artistAlt": null,
+      "instruments": [
+        "MODULAR SYNTH"
+      ],
+      "video": {
+        "director": [],
+        "cinematography": [],
+        "editing": []
+      },
+      "audio": {
+        "recording": [],
+        "mix": [],
+        "master": []
+      },
+      "year": 2024,
+      "season": "S2",
+      "location": "Unknown"
+    },
+    "fileSpecs": {
+      "bitDepth": 24,
+      "sampleRate": 48000,
+      "channels": "stereo",
+      "staticSizes": {
+        "A": "",
+        "B": "",
+        "C": "",
+        "D": "",
+        "E": "",
+        "X": ""
+      }
+    },
+    "metadata": {
+      "sampleLength": "AUTO",
+      "tags": []
+    },
+    "downloads": {
+      "recordingIndexPdfRef": "asset:bojun-zhang-recording-index-pdf",
+      "recordingIndexBundleRef": "bundle:recording-index:E.Mod. Zh AV2024 S2:all",
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1F5owRM_T6ZxYpCPIfQmHcMUByZ0jCgrS6LghxdkWWCk/edit?gid=0#gid=0"
+    }
+  }
+}

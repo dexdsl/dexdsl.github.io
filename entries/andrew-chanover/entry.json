@@ -1,0 +1,118 @@
+{
+  "slug": "andrew-chanover",
+  "title": "ELECTRIC GUITAR",
+  "canonical": {
+    "instrument": "ELECTRIC GUITAR",
+    "artistName": "Andrew Chanover"
+  },
+  "lifecycle": {
+    "publishedAt": "2026-03-25T20:32:32.669Z",
+    "updatedAt": "2026-03-25T20:32:32.669Z"
+  },
+  "video": {
+    "mode": "url",
+    "dataUrl": "https://www.youtube.com/watch?v=oifj5JZYoWI",
+    "dataUrlOriginal": "https://www.youtube.com/watch?v=oifj5JZYoWI",
+    "dataHtml": ""
+  },
+  "descriptionText": "ELECTRIC GUITAR.",
+  "series": "dex",
+  "selectedBuckets": [
+    "A",
+    "B",
+    "C"
+  ],
+  "creditsData": {
+    "artist": [
+      "Andrew Chanover"
+    ],
+    "artistAlt": null,
+    "instruments": [
+      "ELECTRIC GUITAR"
+    ],
+    "video": {
+      "director": [],
+      "cinematography": [],
+      "editing": []
+    },
+    "audio": {
+      "recording": [],
+      "mix": [],
+      "master": []
+    },
+    "year": 2024,
+    "season": "S2",
+    "location": "Unknown"
+  },
+  "fileSpecs": {
+    "bitDepth": 24,
+    "sampleRate": 48000,
+    "channels": "stereo",
+    "staticSizes": {
+      "A": "",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "X": ""
+    }
+  },
+  "metadata": {
+    "sampleLength": "AUTO",
+    "tags": []
+  },
+  "sidebarPageConfig": {
+    "lookupNumber": "E.Gtr. Ch AV2024 S2",
+    "buckets": [
+      "A",
+      "B",
+      "C"
+    ],
+    "specialEventImage": "/assets/series/dex.png",
+    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Andrew Chanover.",
+    "credits": {
+      "artist": [
+        "Andrew Chanover"
+      ],
+      "artistAlt": null,
+      "instruments": [
+        "ELECTRIC GUITAR"
+      ],
+      "video": {
+        "director": [],
+        "cinematography": [],
+        "editing": []
+      },
+      "audio": {
+        "recording": [],
+        "mix": [],
+        "master": []
+      },
+      "year": 2024,
+      "season": "S2",
+      "location": "Unknown"
+    },
+    "fileSpecs": {
+      "bitDepth": 24,
+      "sampleRate": 48000,
+      "channels": "stereo",
+      "staticSizes": {
+        "A": "",
+        "B": "",
+        "C": "",
+        "D": "",
+        "E": "",
+        "X": ""
+      }
+    },
+    "metadata": {
+      "sampleLength": "AUTO",
+      "tags": []
+    },
+    "downloads": {
+      "recordingIndexPdfRef": "asset:andrew-chanover-recording-index-pdf",
+      "recordingIndexBundleRef": "bundle:recording-index:E.Gtr. Ch AV2024 S2:all",
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/10cMq02K7fiTmw-eWSnbmsXO6kTgkfs23ripJurJrmws/edit?gid=0#gid=0"
+    }
+  }
+}

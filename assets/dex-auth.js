@@ -61,6 +61,8 @@
     "/entry/voice-everyday-object-manipulation-levi-lu": true,
     "/entry/achievements": true
   };
+  var PROTECTED_ENTRY_PATTERN = /^\/entry\/[^/]+$/;
+  var PROTECTED_ENTRIES_PATTERN = /^\/entries\/[^/]+$/;
 
   var authClient = null;
   var isAuthenticated = false;
@@ -829,7 +831,10 @@
   }
 
   function isProtectedPath(pathname) {
-    return !!PROTECTED_PATHS[normalizePath(pathname)];
+    var normalized = normalizePath(pathname);
+    if (PROTECTED_PATHS[normalized]) return true;
+    if (normalized === '/entry' || normalized === '/entries') return false;
+    return PROTECTED_ENTRY_PATTERN.test(normalized) || PROTECTED_ENTRIES_PATTERN.test(normalized);
   }
 
   function isCallbackPath(pathname) {

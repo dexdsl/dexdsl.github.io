@@ -7,7 +7,7 @@ export const PROTECTED_ASSETS_DEFAULT_ALLOWED_BUCKETS = [...BUCKETS];
 export const PROTECTED_ASSETS_DEFAULT_STORAGE_BUCKET = 'dex-protected-assets';
 
 const LOOKUP_SUBMISSION_PATTERN = /^SUB\d{2,4}-[A-Z]\.[A-Za-z]{3}\s[A-Za-z]{2}\s(?:AV|A|V|O)\d{4}$/i;
-const LOOKUP_CATALOG_PATTERN = /^[A-Z]\.[A-Za-z]{3}\.\s[A-Za-z]{2}\s(?:AV|A|V|O)\d{4}(?:\sS\d+)?$/i;
+const LOOKUP_CATALOG_PATTERN = /^[A-Z]\.[A-Za-z]{2,4}\.\s[A-Za-z]{2,8}\s(?:AV|A|V|O)\d{4}(?:\sS\d+)?$/i;
 const BUCKET_NUMBER_PATTERN = /^([A-Z])\.([0-9]{1,6})$/;
 const DRIVE_FILE_ID_PATTERN = /^[A-Za-z0-9_-]{10,}$/;
 const SEASON_PATTERN = /^S\d+$/i;
@@ -23,6 +23,7 @@ const STATUS_VALUES = new Set([
   'needs_info',
   'approved',
   'accepted',
+  'active',
   'rejected',
   'in_library',
   'closed',
@@ -463,7 +464,6 @@ export function normalizeProtectedAssetsFile(rawValue) {
   const parsed = protectedAssetsSchema.parse(rawValue);
   const settings = normalizeSettings(parsed.settings || {});
   const lookupSet = new Set();
-  const globalBucketNumberSet = new Set();
   const globalR2KeySet = new Set();
 
   const lookups = parsed.lookups.map((entry) => normalizeLookup(entry, settings.allowedBuckets));
@@ -477,12 +477,6 @@ export function normalizeProtectedAssetsFile(rawValue) {
     lookupSet.add(lookupKey);
 
     for (const file of lookup.files) {
-      const bucketNumberKey = file.bucketNumber.toLowerCase();
-      if (globalBucketNumberSet.has(bucketNumberKey)) {
-        throw new Error(`Duplicate bucketNumber across lookups: ${file.bucketNumber}`);
-      }
-      globalBucketNumberSet.add(bucketNumberKey);
-
       const r2KeyKey = file.r2Key.toLowerCase();
       if (globalR2KeySet.has(r2KeyKey)) {
         throw new Error(`Duplicate r2Key across lookups: ${file.r2Key}`);

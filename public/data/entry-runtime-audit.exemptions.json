@@ -1,5 +1,6 @@
 {
   "skipSlugs": [
+    "bag",
     "test",
     "test-2",
     "test-3",
@@ -17,4 +18,3 @@
   ],
   "notes": "Temporary exemptions for legacy entry fixtures. Remove as entries migrate to strict lookup-only runtime."
 }
-

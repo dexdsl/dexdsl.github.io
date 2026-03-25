@@ -1,0 +1,118 @@
+{
+  "slug": "as-though-im-slipping",
+  "title": "AS THOUGH I’M SLIPPING - MIXED ENSEMBLE",
+  "canonical": {
+    "instrument": "AS THOUGH I’M SLIPPING",
+    "artistName": "Paul Yorke, Sofi Jacquez"
+  },
+  "lifecycle": {
+    "publishedAt": "2026-03-25T20:32:24.859Z",
+    "updatedAt": "2026-03-25T20:32:24.859Z"
+  },
+  "video": {
+    "mode": "url",
+    "dataUrl": "https://www.youtube.com/watch?v=hXvUAoRNI_8",
+    "dataUrlOriginal": "https://www.youtube.com/watch?v=hXvUAoRNI_8",
+    "dataHtml": ""
+  },
+  "descriptionText": "AS THOUGH I’M SLIPPING - MIXED ENSEMBLE.",
+  "series": "dex",
+  "selectedBuckets": [
+    "A",
+    "B",
+    "C"
+  ],
+  "creditsData": {
+    "artist": [
+      "Paul Yorke, Sofi Jacquez"
+    ],
+    "artistAlt": null,
+    "instruments": [
+      "AS THOUGH I’M SLIPPING"
+    ],
+    "video": {
+      "director": [],
+      "cinematography": [],
+      "editing": []
+    },
+    "audio": {
+      "recording": [],
+      "mix": [],
+      "master": []
+    },
+    "year": 2024,
+    "season": "S2",
+    "location": "Unknown"
+  },
+  "fileSpecs": {
+    "bitDepth": 24,
+    "sampleRate": 48000,
+    "channels": "stereo",
+    "staticSizes": {
+      "A": "",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "X": ""
+    }
+  },
+  "metadata": {
+    "sampleLength": "AUTO",
+    "tags": []
+  },
+  "sidebarPageConfig": {
+    "lookupNumber": "P.Ens. JaYo AV2024 S2",
+    "buckets": [
+      "A",
+      "B",
+      "C"
+    ],
+    "specialEventImage": "/assets/series/dex.png",
+    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Paul Yorke, Sofi Jacquez.",
+    "credits": {
+      "artist": [
+        "Paul Yorke, Sofi Jacquez"
+      ],
+      "artistAlt": null,
+      "instruments": [
+        "AS THOUGH I’M SLIPPING"
+      ],
+      "video": {
+        "director": [],
+        "cinematography": [],
+        "editing": []
+      },
+      "audio": {
+        "recording": [],
+        "mix": [],
+        "master": []
+      },
+      "year": 2024,
+      "season": "S2",
+      "location": "Unknown"
+    },
+    "fileSpecs": {
+      "bitDepth": 24,
+      "sampleRate": 48000,
+      "channels": "stereo",
+      "staticSizes": {
+        "A": "",
+        "B": "",
+        "C": "",
+        "D": "",
+        "E": "",
+        "X": ""
+      }
+    },
+    "metadata": {
+      "sampleLength": "AUTO",
+      "tags": []
+    },
+    "downloads": {
+      "recordingIndexPdfRef": "asset:as-though-im-slipping-recording-index-pdf",
+      "recordingIndexBundleRef": "bundle:recording-index:P.Ens. JaYo AV2024 S2:all",
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1RE91PASFDrycJ_Nm1KW7bRLDs44UT-Vik1xr15BUjLQ/edit?gid=0#gid=0"
+    }
+  }
+}

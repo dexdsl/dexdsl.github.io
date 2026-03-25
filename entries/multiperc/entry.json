@@ -1,0 +1,118 @@
+{
+  "slug": "multiperc",
+  "title": "MULTIPLE PERCUSSION",
+  "canonical": {
+    "instrument": "MULTIPLE PERCUS‏‏‎SION",
+    "artistName": "Ben Giroux"
+  },
+  "lifecycle": {
+    "publishedAt": "2026-03-25T20:32:26.849Z",
+    "updatedAt": "2026-03-25T20:32:26.849Z"
+  },
+  "video": {
+    "mode": "url",
+    "dataUrl": "https://www.youtube.com/watch?v=1aOfUugieF8",
+    "dataUrlOriginal": "https://www.youtube.com/watch?v=1aOfUugieF8",
+    "dataHtml": ""
+  },
+  "descriptionText": "MULTIPLE PERCUSSION.",
+  "series": "dex",
+  "selectedBuckets": [
+    "A",
+    "B",
+    "C"
+  ],
+  "creditsData": {
+    "artist": [
+      "Ben Giroux"
+    ],
+    "artistAlt": null,
+    "instruments": [
+      "MULTIPLE PERCUS‏‏‎SION"
+    ],
+    "video": {
+      "director": [],
+      "cinematography": [],
+      "editing": []
+    },
+    "audio": {
+      "recording": [],
+      "mix": [],
+      "master": []
+    },
+    "year": 2024,
+    "season": "S2",
+    "location": "Unknown"
+  },
+  "fileSpecs": {
+    "bitDepth": 24,
+    "sampleRate": 48000,
+    "channels": "stereo",
+    "staticSizes": {
+      "A": "",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "X": ""
+    }
+  },
+  "metadata": {
+    "sampleLength": "AUTO",
+    "tags": []
+  },
+  "sidebarPageConfig": {
+    "lookupNumber": "P.Mpc. Gi AV2024 S2",
+    "buckets": [
+      "A",
+      "B",
+      "C"
+    ],
+    "specialEventImage": "/assets/series/dex.png",
+    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Ben Giroux.",
+    "credits": {
+      "artist": [
+        "Ben Giroux"
+      ],
+      "artistAlt": null,
+      "instruments": [
+        "MULTIPLE PERCUS‏‏‎SION"
+      ],
+      "video": {
+        "director": [],
+        "cinematography": [],
+        "editing": []
+      },
+      "audio": {
+        "recording": [],
+        "mix": [],
+        "master": []
+      },
+      "year": 2024,
+      "season": "S2",
+      "location": "Unknown"
+    },
+    "fileSpecs": {
+      "bitDepth": 24,
+      "sampleRate": 48000,
+      "channels": "stereo",
+      "staticSizes": {
+        "A": "",
+        "B": "",
+        "C": "",
+        "D": "",
+        "E": "",
+        "X": ""
+      }
+    },
+    "metadata": {
+      "sampleLength": "AUTO",
+      "tags": []
+    },
+    "downloads": {
+      "recordingIndexPdfRef": "asset:multiperc-recording-index-pdf",
+      "recordingIndexBundleRef": "bundle:recording-index:P.Mpc. Gi AV2024 S2:all",
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1x51zeI8yZa1mcFAmsw1A2RJrReL0fhE6NyojuRbVY08/edit?gid=0#gid=0"
+    }
+  }
+}

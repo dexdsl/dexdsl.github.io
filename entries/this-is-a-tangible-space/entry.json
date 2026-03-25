@@ -1,0 +1,118 @@
+{
+  "slug": "this-is-a-tangible-space",
+  "title": "THIS IS A TANGIBLE SPACE - MULTIMEDIA",
+  "canonical": {
+    "instrument": "THIS IS A TANGIBLE SPACE for MULTIMEDIA",
+    "artistName": "Grant Johnson"
+  },
+  "lifecycle": {
+    "publishedAt": "2026-03-25T20:32:25.846Z",
+    "updatedAt": "2026-03-25T20:32:25.846Z"
+  },
+  "video": {
+    "mode": "url",
+    "dataUrl": "https://www.youtube.com/watch?v=aV1mGnw3bOY",
+    "dataUrlOriginal": "https://www.youtube.com/watch?v=aV1mGnw3bOY",
+    "dataHtml": ""
+  },
+  "descriptionText": "THIS IS A TANGIBLE SPACE - MULTIMEDIA.",
+  "series": "dex",
+  "selectedBuckets": [
+    "A",
+    "B",
+    "C"
+  ],
+  "creditsData": {
+    "artist": [
+      "Grant Johnson"
+    ],
+    "artistAlt": null,
+    "instruments": [
+      "THIS IS A TANGIBLE SPACE for MULTIMEDIA"
+    ],
+    "video": {
+      "director": [],
+      "cinematography": [],
+      "editing": []
+    },
+    "audio": {
+      "recording": [],
+      "mix": [],
+      "master": []
+    },
+    "year": 2024,
+    "season": "S2",
+    "location": "Unknown"
+  },
+  "fileSpecs": {
+    "bitDepth": 24,
+    "sampleRate": 48000,
+    "channels": "stereo",
+    "staticSizes": {
+      "A": "",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "X": ""
+    }
+  },
+  "metadata": {
+    "sampleLength": "AUTO",
+    "tags": []
+  },
+  "sidebarPageConfig": {
+    "lookupNumber": "X.Mul. Jo AV2024 S2",
+    "buckets": [
+      "A",
+      "B",
+      "C"
+    ],
+    "specialEventImage": "/assets/series/dex.png",
+    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Grant Johnson.",
+    "credits": {
+      "artist": [
+        "Grant Johnson"
+      ],
+      "artistAlt": null,
+      "instruments": [
+        "THIS IS A TANGIBLE SPACE for MULTIMEDIA"
+      ],
+      "video": {
+        "director": [],
+        "cinematography": [],
+        "editing": []
+      },
+      "audio": {
+        "recording": [],
+        "mix": [],
+        "master": []
+      },
+      "year": 2024,
+      "season": "S2",
+      "location": "Unknown"
+    },
+    "fileSpecs": {
+      "bitDepth": 24,
+      "sampleRate": 48000,
+      "channels": "stereo",
+      "staticSizes": {
+        "A": "",
+        "B": "",
+        "C": "",
+        "D": "",
+        "E": "",
+        "X": ""
+      }
+    },
+    "metadata": {
+      "sampleLength": "AUTO",
+      "tags": []
+    },
+    "downloads": {
+      "recordingIndexPdfRef": "asset:this-is-a-tangible-space-recording-index-pdf",
+      "recordingIndexBundleRef": "bundle:recording-index:X.Mul. Jo AV2024 S2:all",
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/17Ag_QW8e29wfi56Zt0j00rqLmkihoEUodyYkBiMUDkI/edit?gid=0#gid=0"
+    }
+  }
+}

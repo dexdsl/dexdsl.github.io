@@ -89,7 +89,7 @@ function keyLookup(row) {
 }
 
 function keyFile(row) {
-  return String(row.bucket_number || '');
+  return `${row.lookup_number || ''}|${row.bucket_number || ''}|${row.file_id || ''}`;
 }
 
 function keyEntitlement(row) {

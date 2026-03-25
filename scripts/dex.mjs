@@ -2,7 +2,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import prompts from 'prompts';
 import { fileURLToPath } from 'node:url';
 import {
@@ -165,6 +165,13 @@ async function collectInitData(opts, slugArg) {
       sidebarConfig: sidebar,
       creditsData: base.creditsData,
     });
+    const seedProtectedAssetsImport = (
+      base?.protectedAssetsImport
+      && typeof base.protectedAssetsImport === 'object'
+      && !Array.isArray(base.protectedAssetsImport)
+    )
+      ? JSON.parse(JSON.stringify(base.protectedAssetsImport))
+      : null;
     const manifestSeed = (base.manifest && typeof base.manifest === 'object' && !Array.isArray(base.manifest))
       ? JSON.parse(JSON.stringify(base.manifest))
       : buildEmptyManifestSkeleton(opts.formatKeys);
@@ -186,6 +193,7 @@ async function collectInitData(opts, slugArg) {
       creditsData: base.creditsData || seedCreditsData,
       fileSpecs: base.fileSpecs || sidebar.fileSpecs,
       metadata: base.metadata || sidebar.metadata,
+      ...(seedProtectedAssetsImport ? { protectedAssetsImport: seedProtectedAssetsImport } : {}),
       outDir,
     };
   }
