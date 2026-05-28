@@ -24,6 +24,9 @@ function ensureBagRouteHtml(routeHtml) {
       fail(`bag route missing marker: ${marker}`);
     }
   }
+  if (routeHtml.includes('dx-route-profile-protected')) {
+    fail('bag route HTML must not include page-wide protected route class');
+  }
 }
 
 function ensureBagRuntimeSource(runtimeSource) {
@@ -48,7 +51,8 @@ function ensureBagAppSource(appSource) {
     '/me/assets/bundle/',
     'dex:bag:resume:v1',
     'Signed in as',
-    'Redirecting to sign in…',
+    "auth.signIn(BAG_ROUTE_PATH)",
+    "ensureAuthForAction({ action: 'download' })",
     'dx-bag-layout',
     'dx-bag-receipt-toggle',
   ];
@@ -66,6 +70,11 @@ function ensureBagAppSource(appSource) {
       fail(`bag app source contains forbidden fallback marker: ${marker}`);
     }
   }
+  if (appSource.includes('PROFILE_PROTECTED_ROUTE_CLASS')
+    || appSource.includes("'dx-route-profile-protected'")
+    || appSource.includes('"dx-route-profile-protected"')) {
+    fail('bag app source must not self-apply dx-route-profile-protected');
+  }
 }
 
 function ensureSidebarUnifiedDownload(runtimeJs) {
@@ -73,10 +82,10 @@ function ensureSidebarUnifiedDownload(runtimeJs) {
     'attachUnifiedDownload',
     "class=\"btn-download dx-button-element--primary\"",
     '/me/assets/bag/bundle',
-    'Add to Bag',
-    'Download Now',
+    'addToBagButton',
+    "downloadNowButton.textContent = 'DOWNLOAD NOW'",
     "const BAG_ROUTE_PATH = '/entry/bag/'",
-    "randomizeTitleWithJoiners('Files'",
+    "randomizeTitleWithJoiners('Get Files'",
   ];
   for (const marker of required) {
     if (!runtimeJs.includes(marker)) {
@@ -96,11 +105,24 @@ function ensureSidebarUnifiedDownload(runtimeJs) {
 }
 
 function ensureProtectedAuthContract(authJs, headerSlotJs) {
-  if (!authJs.includes('"/entry/bag": true')) {
-    fail('dex-auth protected paths must include /entry/bag');
+  if (authJs.includes('"/entry/bag": true')) {
+    fail('dex-auth protected paths must not include /entry/bag');
   }
-  if (!headerSlotJs.includes("'/entry/bag'")) {
-    fail('header-slot route sets must include /entry/bag');
+  const protectedRoutesStart = headerSlotJs.indexOf('const PROFILE_PROTECTED_ROUTES = new Set(');
+  const protectedRoutesEnd = protectedRoutesStart >= 0 ? headerSlotJs.indexOf(']);', protectedRoutesStart) : -1;
+  const protectedBlock = protectedRoutesStart >= 0 && protectedRoutesEnd >= 0
+    ? headerSlotJs.slice(protectedRoutesStart, protectedRoutesEnd)
+    : '';
+  const meshRoutesStart = headerSlotJs.indexOf('const PROFILE_SHOW_MESH_ROUTES = new Set(');
+  const meshRoutesEnd = meshRoutesStart >= 0 ? headerSlotJs.indexOf(']);', meshRoutesStart) : -1;
+  const meshBlock = meshRoutesStart >= 0 && meshRoutesEnd >= 0
+    ? headerSlotJs.slice(meshRoutesStart, meshRoutesEnd)
+    : '';
+  if (protectedBlock.includes("'/entry/bag'")) {
+    fail('header-slot protected route set must not include /entry/bag');
+  }
+  if (!meshBlock.includes("'/entry/bag'")) {
+    fail('header-slot mesh route set must include /entry/bag');
   }
 }
 

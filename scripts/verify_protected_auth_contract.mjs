@@ -7,7 +7,6 @@ const AUTH_PATH = path.join(ROOT, 'public', 'assets', 'dex-auth.js');
 const HEADER_SLOT_PATH = path.join(ROOT, 'public', 'assets', 'js', 'header-slot.js');
 
 const PROFILE_PROTECTED_ROUTES = [
-  '/press',
   '/favorites',
   '/submit',
   '/messages',
@@ -20,6 +19,12 @@ const PROFILE_PROTECTED_ROUTES = [
   '/entry/pressroom',
   '/entry/settings',
   '/entry/achievements',
+];
+
+const PUBLIC_ENTRY_ROUTES = [
+  '/entry/bag',
+  '/entry/bojun-zhang',
+  '/entries/test-9',
 ];
 
 const PROFILE_MESH_ROUTES = [
@@ -60,6 +65,13 @@ function extractRoutesFromSet(text, marker) {
   return new Set(matches.map((value) => value.slice(1, -1)));
 }
 
+function extractFunctionBlock(text, functionName) {
+  const start = text.indexOf(`function ${functionName}`);
+  if (start < 0) return '';
+  const nextFunction = text.indexOf('\n  function ', start + 1);
+  return nextFunction >= 0 ? text.slice(start, nextFunction) : text.slice(start);
+}
+
 function main() {
   const authText = readText(AUTH_PATH);
   const headerSlotText = readText(HEADER_SLOT_PATH);
@@ -88,6 +100,25 @@ function main() {
     }
   }
 
+  for (const route of PUBLIC_ENTRY_ROUTES) {
+    if (authRoutes.has(route)) {
+      failures.push(`dex-auth route set should not page-guard public route ${route}`);
+    }
+    if (headerRoutes.has(route)) {
+      failures.push(`header-slot protected route set should not mark public route ${route}`);
+    }
+  }
+
+  if (authText.includes('PROTECTED_ENTRY_PATTERN') || authText.includes('PROTECTED_ENTRIES_PATTERN')) {
+    failures.push('dex-auth must not protect /entry/:slug or /entries/:slug by catch-all pattern');
+  }
+  const protectedPathFunction = extractFunctionBlock(headerSlotText, 'isProfileProtectedPath');
+  if (protectedPathFunction.includes("document.body.classList.contains('dex-entry-page')) return true")
+    || protectedPathFunction.includes('/^\\/entry\\/[^/]+$/.test(normalized)')
+    || protectedPathFunction.includes('/^\\/entries\\/[^/]+$/.test(normalized)')) {
+    failures.push('header-slot must not mark /entry/:slug or /entries/:slug as protected by catch-all');
+  }
+
   for (const route of PROFILE_MESH_ROUTES) {
     if (!headerMeshRoutes.has(route)) {
       failures.push(`header-slot mesh route set is missing ${route}`);
@@ -99,6 +130,12 @@ function main() {
   }
   if (!authText.includes('requireAuth: function (options)')) {
     failures.push('DEX_AUTH.requireAuth(options) export is missing in dex-auth runtime.');
+  }
+  if (!authText.includes('getAuth0ClientConstructorFn') || !authText.includes('createRedirectAuthClient')) {
+    failures.push('dex-auth sign-in must use the redirect-capable Auth0 client constructor path.');
+  }
+  if (!authText.includes('return createRedirectAuthClient()')) {
+    failures.push('dex-auth openAuthFlow must not wait behind silent session initialization before redirecting.');
   }
   if (!authText.includes('dispatchWindowEvent("dex-auth:state"')) {
     failures.push('dex-auth:state event dispatch marker is missing in dex-auth runtime.');

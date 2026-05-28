@@ -21,48 +21,19 @@
   var UNREAD_SYNC_COOLDOWN_MS = 60000;
   var UNREAD_FORCE_LIVE_MIN_INTERVAL_MS = 15000;
   var PROTECTED_PATHS = {
-    "/press": true,
     "/favorites": true,
     "/submit": true,
     "/messages": true,
     "/settings": true,
     "/achievements": true,
-    "/entry/2-organs-midori-ataka": true,
-    "/entry/aidan-yeats": true,
-    "/entry/amplified-knives-tyler-jordan": true,
-    "/entry/amplified-printer": true,
-    "/entry/amplified-tv-sam-pluta": true,
-    "/entry/anant-shah": true,
-    "/entry/andrew-chanover": true,
-    "/entry/as-though-im-slipping": true,
-    "/entry/bassoon-and-electronics": true,
-    "/entry/bojun-zhang": true,
-    "/entry/cello-emmanuel-losa": true,
-    "/entry/cybernetic-scat-paul-hermansen": true,
-    "/entry/electric-guitar-chris-mann": true,
-    "/entry/electric-guitar-pedals-ethan-bailey-gould": true,
     "/entry/favorites": true,
-    "/entry/hammered-dulcimer-cameron-church": true,
     "/entry/messages": true,
     "/entry/messages/submission": true,
-    "/entry/multiperc": true,
-    "/entry/no-input-mixer-jared-murphy": true,
-    "/entry/prepared-bass-viol-suarez-solis": true,
-    "/entry/prepared-harpsichord-suarez-solis": true,
-    "/entry/prepared-oboe-sky-macklay": true,
     "/entry/pressroom": true,
-    "/entry/sebastian-suarez-solis": true,
     "/entry/settings": true,
-    "/entry/bag": true,
-    "/entry/splinterings-jakob-heinemann": true,
     "/entry/submit": true,
-    "/entry/this-is-a-tangible-space": true,
-    "/entry/tim-feeney": true,
-    "/entry/voice-everyday-object-manipulation-levi-lu": true,
     "/entry/achievements": true
   };
-  var PROTECTED_ENTRY_PATTERN = /^\/entry\/[^/]+$/;
-  var PROTECTED_ENTRIES_PATTERN = /^\/entries\/[^/]+$/;
 
   var authClient = null;
   var isAuthenticated = false;
@@ -674,6 +645,11 @@
       if (window.auth0 && typeof window.auth0.createAuth0Client === "function") return window.auth0.createAuth0Client;
       return null;
     }
+
+    function getAuth0ClientConstructorFn() {
+      if (window.auth0 && typeof window.auth0.Auth0Client === "function") return window.auth0.Auth0Client;
+      return null;
+    }
     
     var FALLBACK_AUTH0 = {
       domain: "dexdsl.us.auth0.com",
@@ -766,6 +742,37 @@
       } catch (e) {}
       logError("Audience rejected by Auth0; retrying without audience.", err);
     }
+
+    function getAuthClientOptions(cfg) {
+      var authorizationParams = {
+        redirect_uri: cfg.redirectUri,
+        scope: "openid profile email"
+      };
+      if (cfg.audience) authorizationParams.audience = cfg.audience;
+      return {
+        domain: cfg.domain,
+        clientId: cfg.clientId,
+        authorizationParams: authorizationParams,
+        cacheLocation: "localstorage",
+        useRefreshTokens: !!cfg.useRefreshTokens
+      };
+    }
+
+    function createRedirectAuthClient() {
+      var cfg = getResolvedCfg();
+      if (!cfg) {
+        return Promise.reject(
+          new Error("Missing Auth0 config (host " + window.location.hostname + ")")
+        );
+      }
+      var Auth0Client = getAuth0ClientConstructorFn();
+      if (Auth0Client) {
+        authClient = new Auth0Client(getAuthClientOptions(cfg));
+        window.auth0Client = authClient;
+        return Promise.resolve(authClient);
+      }
+      return ensureAuthClient();
+    }
     
     function ensureAuthClient(opts) {
       var forceNewClient = !!(opts && opts.forceNewClient);
@@ -782,19 +789,7 @@
           return Promise.reject(new Error("Auth0 SPA SDK missing (createAuth0Client)"));
         }
 
-      var authorizationParams = {
-        redirect_uri: cfg.redirectUri,
-        scope: "openid profile email"
-      };
-      if (cfg.audience) authorizationParams.audience = cfg.audience;
-
-        return createAuth0Client({
-          domain: cfg.domain,
-          clientId: cfg.clientId,
-          authorizationParams: authorizationParams,
-          cacheLocation: "localstorage",
-          useRefreshTokens: !!cfg.useRefreshTokens
-        }).then(function (client) {
+        return createAuth0Client(getAuthClientOptions(cfg)).then(function (client) {
           authClient = client;
           window.auth0Client = authClient;
           return client;
@@ -832,9 +827,7 @@
 
   function isProtectedPath(pathname) {
     var normalized = normalizePath(pathname);
-    if (PROTECTED_PATHS[normalized]) return true;
-    if (normalized === '/entry' || normalized === '/entries') return false;
-    return PROTECTED_ENTRY_PATTERN.test(normalized) || PROTECTED_ENTRIES_PATTERN.test(normalized);
+    return !!PROTECTED_PATHS[normalized];
   }
 
   function isCallbackPath(pathname) {
@@ -1788,7 +1781,7 @@
 
   function openAuthFlow(returnTo, screenHint, allowAudienceRetry) {
     var canRetry = allowAudienceRetry !== false;
-    return ensureAuthClient()
+    return createRedirectAuthClient()
       .then(function (client) {
         var cfgNow = getResolvedCfg();
         if (!cfgNow) throw new Error("Missing Auth0 config at click-time");

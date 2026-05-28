@@ -1967,11 +1967,34 @@
     const auth = window.DEX_AUTH || window.dexAuth || null;
     if (!auth || typeof auth.getAccessToken !== 'function') return '';
     try {
-      const token = await auth.getAccessToken();
+      const token = await Promise.race([
+        auth.getAccessToken(),
+        new Promise((resolve) => {
+          window.setTimeout(() => resolve(''), 2500);
+        }),
+      ]);
       return String(token || '').trim();
     } catch {
       return '';
     }
+  };
+
+  const resolveDownloadAuthState = async () => {
+    const auth = window.DEX_AUTH || window.dexAuth || null;
+    if (!auth || typeof auth.resolve !== 'function') return null;
+    try {
+      return await auth.resolve(1500);
+    } catch {
+      return null;
+    }
+  };
+
+  const signInForDownloadAction = async () => {
+    const auth = window.DEX_AUTH || window.dexAuth || null;
+    if (!auth || typeof auth.signIn !== 'function') return false;
+    const returnTo = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    await auth.signIn(returnTo);
+    return true;
   };
 
   const requestAssetsJson = async ({ path, method, body }) => {
@@ -4209,17 +4232,25 @@
           downloadNowButton.disabled = true;
           setModalStatus('resolving', 'Resolving secure bundle…');
           try {
+            const authState = await resolveDownloadAuthState();
+            if (authState && !authState.authenticated) {
+              setModalStatus('resolving', 'Sign in required for download.');
+              try {
+                if (await signInForDownloadAction()) return;
+              } catch {
+                setModalStatus('forbidden', 'Unable to start sign-in flow.');
+                return;
+              }
+              setModalStatus('forbidden', 'Sign in required for download.');
+              return;
+            }
             const token = await getAccessToken();
             if (!token) {
-              const auth = window.DEX_AUTH || window.dexAuth || null;
-              if (auth && typeof auth.signIn === 'function') {
-                setModalStatus('resolving', 'Sign in required for download.');
-                const returnTo = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-                try {
-                  await auth.signIn(returnTo);
-                } catch {
-                  setModalStatus('forbidden', 'Unable to start sign-in flow.');
-                }
+              setModalStatus('resolving', 'Sign in required for download.');
+              try {
+                if (await signInForDownloadAction()) return;
+              } catch {
+                setModalStatus('forbidden', 'Unable to start sign-in flow.');
                 return;
               }
               setModalStatus('forbidden', 'Sign in required for download.');
@@ -4405,6 +4436,30 @@
         setDownloadState(row, 'resolving', 'Resolving secure download…');
         btn.disabled = true;
         try {
+          const authState = await resolveDownloadAuthState();
+          if (authState && !authState.authenticated) {
+            setDownloadState(row, 'resolving', 'Sign in required for download.');
+            try {
+              if (await signInForDownloadAction()) return;
+            } catch {
+              setDownloadState(row, 'forbidden', 'Unable to start sign-in flow.');
+              return;
+            }
+            setDownloadState(row, 'forbidden', 'Sign in required for download.');
+            return;
+          }
+          const token = await getAccessToken();
+          if (!token) {
+            setDownloadState(row, 'resolving', 'Sign in required for download.');
+            try {
+              if (await signInForDownloadAction()) return;
+            } catch {
+              setDownloadState(row, 'forbidden', 'Unable to start sign-in flow.');
+              return;
+            }
+            setDownloadState(row, 'forbidden', 'Sign in required for download.');
+            return;
+          }
           const tokens = [];
           if (parsedPdfToken?.normalized) tokens.push(parsedPdfToken.normalized);
           if (parsedBundleToken?.normalized && !tokens.includes(parsedBundleToken.normalized)) {

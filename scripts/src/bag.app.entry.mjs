@@ -6,7 +6,6 @@
   const ROOT_ID = 'dex-bag';
   const BAG_ROUTE_PATH = '/entry/bag/';
   const BAG_ROUTE_CLASS = 'dx-bag-page';
-  const PROFILE_PROTECTED_ROUTE_CLASS = 'dx-route-profile-protected';
   const PROFILE_SHOW_MESH_ROUTE_CLASS = 'dx-route-show-mesh';
   const DEFAULT_API_BASE = 'https://dex-api.spring-fog-8edd.workers.dev';
   const FETCH_TIMEOUT_MS = 9000;
@@ -1729,14 +1728,14 @@
 
   function ensureBagRouteClasses() {
     if (!(document.body instanceof HTMLElement)) return;
-    document.body.classList.add('dx-entry-page', BAG_ROUTE_CLASS, PROFILE_PROTECTED_ROUTE_CLASS, PROFILE_SHOW_MESH_ROUTE_CLASS);
+    document.body.classList.add('dx-entry-page', BAG_ROUTE_CLASS, PROFILE_SHOW_MESH_ROUTE_CLASS);
   }
 
   function installBagRouteClassGuard() {
     if (!(document.body instanceof HTMLElement)) return;
     if (window.__dxBagRouteClassGuardInstalled) return;
     window.__dxBagRouteClassGuardInstalled = true;
-    const required = ['dx-entry-page', BAG_ROUTE_CLASS, PROFILE_PROTECTED_ROUTE_CLASS, PROFILE_SHOW_MESH_ROUTE_CLASS];
+    const required = ['dx-entry-page', BAG_ROUTE_CLASS, PROFILE_SHOW_MESH_ROUTE_CLASS];
     const enforce = () => {
       document.body.classList.add(...required);
     };
@@ -2576,16 +2575,8 @@
     const boot = async () => {
       setFetchState('loading');
       state.auth = await resolveAuthSnapshot();
-      if (!state.auth.authenticated || !state.auth.token) {
-        if (state.localViewerMode) {
-          state.status = '';
-        } else {
-          const permitted = await ensureAuthForAction({ action: 'open-bag' });
-          if (!permitted) {
-            root.innerHTML = '<section class="dx-bag-shell"><p class="dx-bag-note">Redirecting to sign in…</p></section>';
-            return;
-          }
-        }
+      if (state.localViewerMode && (!state.auth.authenticated || !state.auth.token)) {
+        state.status = '';
       }
 
       refreshRows();

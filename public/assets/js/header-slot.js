@@ -35,7 +35,6 @@
   const IOS_VIEWPORT_OFFSET_TOP_VAR = '--dx-ios-viewport-offset-top';
   const IOS_HOME_INDICATOR_VAR = '--dx-ios-home-indicator';
   const PROFILE_PROTECTED_ROUTES = new Set([
-    '/press',
     '/favorites',
     '/submit',
     '/messages',
@@ -48,7 +47,6 @@
     '/entry/pressroom',
     '/entry/settings',
     '/entry/achievements',
-    '/entry/bag',
   ]);
   const PROFILE_STANDARD_CHROME_ROUTES = new Set([
     '/entry/messages/submission',
@@ -436,11 +434,7 @@
 
   function isProfileProtectedPath(pathname) {
     const normalized = normalizeProfileRoutePath(pathname);
-    if (PROFILE_PROTECTED_ROUTES.has(normalized)) return true;
-    if (document.body && document.body.classList && document.body.classList.contains('dex-entry-page')) return true;
-    if (/^\/entry\/[^/]+$/.test(normalized)) return true;
-    if (/^\/entries\/[^/]+$/.test(normalized)) return true;
-    return false;
+    return PROFILE_PROTECTED_ROUTES.has(normalized);
   }
 
   function isProfileStandardChromePath(pathname) {
