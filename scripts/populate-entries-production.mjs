@@ -19,6 +19,7 @@ const DEFAULT_PROTECTED_ASSETS_PATH = path.resolve(ROOT, 'data', 'protected.asse
 const DEFAULT_ROUTE_ENTRY_DIR = path.resolve(ROOT, 'docs', 'entry');
 const DEFAULT_SCOPE = 's2-plus-matt';
 const DEFAULT_EXPECTED_TARGET_COUNT = 13;
+const FILE_TREE_BUCKET_ORDER = ['A', 'B', 'C', 'D', 'E', 'X'];
 
 const LOOKUP_OVERRIDES = new Map([
   ['P.SDR. LE AV2024 S2', {
@@ -68,6 +69,113 @@ function parseYearAndSeason(lookup) {
   return {
     year: match ? Number(match[1]) : NaN,
     season: match && match[2] ? match[2].toUpperCase() : '',
+  };
+}
+
+function normalizeMediaType(value) {
+  const raw = toText(value).toLowerCase();
+  return raw === 'audio' || raw === 'video' ? raw : '';
+}
+
+function normalizeAvailableTypes(file = {}) {
+  const out = [];
+  const seen = new Set();
+  const add = (value) => {
+    const mediaType = normalizeMediaType(value);
+    if (!mediaType || seen.has(mediaType)) return;
+    seen.add(mediaType);
+    out.push(mediaType);
+  };
+  const available = Array.isArray(file?.availableTypes) ? file.availableTypes : [];
+  available.forEach(add);
+  add(file?.type);
+  return out;
+}
+
+function guessFileName(file = {}) {
+  const explicit = toText(file?.filename || file?.name || file?.path);
+  if (explicit) return explicit;
+  const r2Key = toText(file?.r2Key);
+  if (r2Key) return path.basename(r2Key);
+  const rawUrl = toText(file?.rawUrl);
+  if (rawUrl) {
+    try {
+      return path.basename(new URL(rawUrl).pathname || '');
+    } catch {}
+  }
+  return '';
+}
+
+function guessExtension(file = {}, filename = '') {
+  const explicit = toText(file?.extension || file?.ext || file?.fileExt);
+  if (explicit) return explicit.replace(/^\./, '');
+  const fromName = toText(filename);
+  const idx = fromName.lastIndexOf('.');
+  if (idx > 0 && idx < fromName.length - 1) {
+    return fromName.slice(idx + 1).toLowerCase();
+  }
+  const mime = toText(file?.mime).toLowerCase();
+  if (mime.includes('audio/')) return 'wav';
+  if (mime.includes('video/')) return 'mov';
+  return '';
+}
+
+function buildDownloadFileTreeFromImport(imported, lookupNumber) {
+  const lookup = toText(lookupNumber);
+  if (!lookup) return undefined;
+  const files = Array.isArray(imported?.files) ? imported.files : [];
+  const byBucketType = new Map();
+
+  const ensureList = (bucket, mediaType) => {
+    const key = `${bucket}|${mediaType}`;
+    if (!byBucketType.has(key)) byBucketType.set(key, []);
+    return byBucketType.get(key);
+  };
+
+  files.forEach((file) => {
+    const bucket = toText(file?.bucket).toUpperCase();
+    if (!bucket || !FILE_TREE_BUCKET_ORDER.includes(bucket)) return;
+    const fileId = toText(file?.fileId || file?.assetId || file?.id);
+    if (!fileId) return;
+    const availableTypes = normalizeAvailableTypes(file);
+    if (!availableTypes.length) return;
+    const label = toText(file?.label || file?.sourceLabel || fileId) || fileId;
+    const filename = guessFileName(file);
+    const extension = guessExtension(file, filename);
+    availableTypes.forEach((mediaType) => {
+      const list = ensureList(bucket, mediaType);
+      if (list.some((row) => toText(row?.fileId) === fileId)) return;
+      list.push({
+        fileId,
+        label,
+        filename,
+        extension,
+        variantKey: `default-${mediaType}`,
+      });
+    });
+  });
+
+  const buckets = FILE_TREE_BUCKET_ORDER
+    .map((bucket) => {
+      const types = ['audio', 'video']
+        .map((mediaType) => {
+          const filesForType = ensureList(bucket, mediaType);
+          if (!filesForType.length) return null;
+          return {
+            mediaType,
+            files: filesForType,
+          };
+        })
+        .filter(Boolean);
+      if (!types.length) return null;
+      return { bucket, types };
+    })
+    .filter(Boolean);
+
+  if (!buckets.length) return undefined;
+  return {
+    lookup,
+    buckets,
   };
 }
 
@@ -295,6 +403,7 @@ function buildSeedPayload({
   const sheetMeta = imported?.sheet && typeof imported.sheet === 'object'
     ? imported.sheet
     : {};
+  const downloadFileTree = buildDownloadFileTreeFromImport(imported, lookupNumber);
 
   const sidebarPageConfig = {
     lookupNumber,
@@ -316,6 +425,7 @@ function buildSeedPayload({
       recordingIndexPdfRef: toText(recordingIndex.recordingIndexPdfRef),
       recordingIndexBundleRef: toText(recordingIndex.recordingIndexBundleRef),
       recordingIndexSourceUrl: toText(recordingIndex.recordingIndexSourceUrl),
+      ...(downloadFileTree ? { fileTree: downloadFileTree } : {}),
     },
   };
 
@@ -482,6 +592,44 @@ async function publishEntryRouteHtml(slug, {
   return {
     sourcePath,
     routePath,
+  };
+}
+
+async function updateEntrySidebarDownloads(slug, downloadsPatch = {}) {
+  const normalizedSlug = toText(slug);
+  if (!normalizedSlug) {
+    throw new Error('Missing slug for sidebar downloads update.');
+  }
+  const entryPath = path.resolve(ROOT, 'entries', normalizedSlug, 'index.html');
+  const html = await fs.readFile(entryPath, 'utf8');
+  const pattern = /<script id="dex-sidebar-page-config" type="application\/json">\n([\s\S]*?)\n<\/script>/;
+  const match = html.match(pattern);
+  if (!match) {
+    throw new Error(`Missing dex-sidebar-page-config script in ${entryPath}`);
+  }
+  let sidebarConfig = {};
+  try {
+    sidebarConfig = JSON.parse(match[1]);
+  } catch (error) {
+    throw new Error(`Invalid dex-sidebar-page-config JSON in ${entryPath}: ${String(error?.message || error)}`);
+  }
+  const currentDownloads = sidebarConfig?.downloads && typeof sidebarConfig.downloads === 'object'
+    ? sidebarConfig.downloads
+    : {};
+  const nextDownloads = {
+    ...currentDownloads,
+    ...downloadsPatch,
+  };
+  const nextConfig = {
+    ...sidebarConfig,
+    downloads: nextDownloads,
+  };
+  const replacement = `<script id="dex-sidebar-page-config" type="application/json">\n${JSON.stringify(nextConfig, null, 2)}\n</script>`;
+  const updatedHtml = html.replace(pattern, replacement);
+  await fs.writeFile(entryPath, updatedHtml, 'utf8');
+  return {
+    entryPath,
+    changed: updatedHtml !== html,
   };
 }
 
@@ -749,6 +897,15 @@ async function main() {
           rowReport.commands.push({
             type: 'assets-upsert',
             command: 'upsertProtectedAssetsLookupMapping(...)',
+            code: 0,
+            ok: true,
+          });
+
+          const sidebarUpdate = await updateEntrySidebarDownloads(context.slug, seedPayload?.sidebarPageConfig?.downloads || {});
+          rowReport.entryPath = sidebarUpdate.entryPath;
+          rowReport.commands.push({
+            type: 'entry-sidebar-downloads-update',
+            command: `updateEntrySidebarDownloads(${context.slug})`,
             code: 0,
             ok: true,
           });

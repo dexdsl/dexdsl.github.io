@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-25T20:32:21.610Z",
+  "generatedAt": "2026-03-25T21:26:24.241Z",
   "root": "/Users/seb/dexdsl.github.io",
   "masterSheet": {
     "inputUrl": "https://docs.google.com/spreadsheets/d/1up2Jq4Yx5sLuUDHRKlkIg4MDDQH0SZ4lGX20CuriUb4/edit?gid=0#gid=0",
@@ -19,26 +19,46 @@
       "4K"
     ]
   },
+  "routeEntryDir": "/Users/seb/dexdsl.github.io/docs/entry",
   "scope": "s2-plus-matt",
   "expectedTargetCount": 13,
   "dryRun": false,
   "rows": [
     {
-      "startedAt": "2026-03-25T20:32:21.611Z",
+      "startedAt": "2026-03-25T21:26:24.241Z",
       "sourceLookup": "P.Sdr. Le AV2024 S2",
       "sourceName": "Matt LeVeque",
       "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/1T11YbuvXQPnfEY52qAW_kshFSut_V1K2NJUhKtXM_84/edit?gid=0#gid=0",
       "status": "success",
-      "mode": "init",
+      "mode": "existing-update",
       "slug": "snare-drum-matt-leveque",
       "resolvedLookup": "P.Sdr. Le AV2024 S2",
       "youtubeUrl": "https://youtu.be/d-7wYJzGliw?si=agZLxoZPsJyTY0ga",
       "entryUrlFromSheet": "https://dexdsl.org/entry/matt-leveque",
       "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/snare-drum-matt-leveque.seed.json",
+      "routeHtmlPath": "/Users/seb/dexdsl.github.io/docs/entry/snare-drum-matt-leveque/index.html",
       "commands": [
         {
-          "type": "init",
-          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/snare-drum-matt-leveque.seed.json --catalog-link create-linked --catalog-status active",
+          "type": "entry-link",
+          "command": "node scripts/dex.mjs entry link --entry snare-drum-matt-leveque --lookup P.Sdr. Le AV2024 S2 --season S2 --performer Matt LeVeque --instrument SNARE DRUM --title SNARE DRUM --status active",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "assets-upsert",
+          "command": "upsertProtectedAssetsLookupMapping(...)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "entry-sidebar-downloads-update",
+          "command": "updateEntrySidebarDownloads(snare-drum-matt-leveque)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "route-publish",
+          "command": "publishEntryRouteHtml(snare-drum-matt-leveque)",
           "code": 0,
           "ok": true
         }
@@ -47,10 +67,11 @@
       "resolutionReason": "override",
       "catalogEntryId": "",
       "scopeReason": "season-s2",
-      "finishedAt": "2026-03-25T20:32:22.875Z"
+      "entryPath": "/Users/seb/dexdsl.github.io/entries/snare-drum-matt-leveque/index.html",
+      "finishedAt": "2026-03-25T21:26:25.342Z"
     },
     {
-      "startedAt": "2026-03-25T20:32:22.875Z",
+      "startedAt": "2026-03-25T21:26:25.342Z",
       "sourceLookup": "P.Pto. Fe AV2024 S2",
       "sourceName": "Tim Feeney",
       "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/1jWq1mToYB0exyQTDshjBV2TVCDOLD6epceXWpqJ117Q/edit?gid=0#gid=0",
@@ -61,6 +82,7 @@
       "youtubeUrl": "https://youtu.be/DVqLc0_Ezhc",
       "entryUrlFromSheet": "https://dexdsl.org/entry/tim-feeney",
       "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/tim-feeney.seed.json",
+      "routeHtmlPath": "/Users/seb/dexdsl.github.io/docs/entry/tim-feeney/index.html",
       "commands": [
         {
           "type": "entry-link",
@@ -73,30 +95,62 @@
           "command": "upsertProtectedAssetsLookupMapping(...)",
           "code": 0,
           "ok": true
+        },
+        {
+          "type": "entry-sidebar-downloads-update",
+          "command": "updateEntrySidebarDownloads(tim-feeney)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "route-publish",
+          "command": "publishEntryRouteHtml(tim-feeney)",
+          "code": 0,
+          "ok": true
         }
       ],
       "error": "",
       "resolutionReason": "catalog-match",
       "catalogEntryId": "tim-feeney",
       "scopeReason": "season-s2",
-      "finishedAt": "2026-03-25T20:32:23.840Z"
+      "entryPath": "/Users/seb/dexdsl.github.io/entries/tim-feeney/index.html",
+      "finishedAt": "2026-03-25T21:26:26.491Z"
     },
     {
-      "startedAt": "2026-03-25T20:32:23.840Z",
+      "startedAt": "2026-03-25T21:26:26.491Z",
       "sourceLookup": "P.Mul. JaYo AV2024 S2",
       "sourceName": "Paul Yorke, Sofi Jacquez",
       "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/1RE91PASFDrycJ_Nm1KW7bRLDs44UT-Vik1xr15BUjLQ/edit?gid=0#gid=0",
       "status": "success",
-      "mode": "init",
+      "mode": "existing-update",
       "slug": "as-though-im-slipping",
       "resolvedLookup": "P.Ens. JaYo AV2024 S2",
       "youtubeUrl": "https://www.youtube.com/watch?v=hXvUAoRNI_8",
       "entryUrlFromSheet": "https://dexdsl.org/entry/as-though-im-slipping",
       "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/as-though-im-slipping.seed.json",
+      "routeHtmlPath": "/Users/seb/dexdsl.github.io/docs/entry/as-though-im-slipping/index.html",
       "commands": [
         {
-          "type": "init",
-          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/as-though-im-slipping.seed.json --catalog-link create-linked --catalog-status active",
+          "type": "entry-link",
+          "command": "node scripts/dex.mjs entry link --entry as-though-im-slipping --lookup P.Ens. JaYo AV2024 S2 --season S2 --performer Paul Yorke, Sofi Jacquez --instrument AS THOUGH I’M SLIPPING --title AS THOUGH I’M SLIPPING - MIXED ENSEMBLE --status active",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "assets-upsert",
+          "command": "upsertProtectedAssetsLookupMapping(...)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "entry-sidebar-downloads-update",
+          "command": "updateEntrySidebarDownloads(as-though-im-slipping)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "route-publish",
+          "command": "publishEntryRouteHtml(as-though-im-slipping)",
           "code": 0,
           "ok": true
         }
@@ -105,24 +159,44 @@
       "resolutionReason": "override",
       "catalogEntryId": "as-though-im-slipping",
       "scopeReason": "season-s2",
-      "finishedAt": "2026-03-25T20:32:24.880Z"
+      "entryPath": "/Users/seb/dexdsl.github.io/entries/as-though-im-slipping/index.html",
+      "finishedAt": "2026-03-25T21:26:27.553Z"
     },
     {
-      "startedAt": "2026-03-25T20:32:24.880Z",
+      "startedAt": "2026-03-25T21:26:27.553Z",
       "sourceLookup": "X.Mul. Jo AV2024 S2",
       "sourceName": "Grant Johnson",
       "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/17Ag_QW8e29wfi56Zt0j00rqLmkihoEUodyYkBiMUDkI/edit?gid=0#gid=0",
       "status": "success",
-      "mode": "init",
+      "mode": "existing-update",
       "slug": "this-is-a-tangible-space",
       "resolvedLookup": "X.Mul. Jo AV2024 S2",
       "youtubeUrl": "https://www.youtube.com/watch?v=aV1mGnw3bOY",
       "entryUrlFromSheet": "https://dexdsl.com/entry/this-is-a-tangible-space",
       "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/this-is-a-tangible-space.seed.json",
+      "routeHtmlPath": "/Users/seb/dexdsl.github.io/docs/entry/this-is-a-tangible-space/index.html",
       "commands": [
         {
-          "type": "init",
-          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/this-is-a-tangible-space.seed.json --catalog-link create-linked --catalog-status active",
+          "type": "entry-link",
+          "command": "node scripts/dex.mjs entry link --entry this-is-a-tangible-space --lookup X.Mul. Jo AV2024 S2 --season S2 --performer Grant Johnson --instrument THIS IS A TANGIBLE SPACE for MULTIMEDIA --title THIS IS A TANGIBLE SPACE - MULTIMEDIA --status active",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "assets-upsert",
+          "command": "upsertProtectedAssetsLookupMapping(...)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "entry-sidebar-downloads-update",
+          "command": "updateEntrySidebarDownloads(this-is-a-tangible-space)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "route-publish",
+          "command": "publishEntryRouteHtml(this-is-a-tangible-space)",
           "code": 0,
           "ok": true
         }
@@ -131,24 +205,44 @@
       "resolutionReason": "catalog-match",
       "catalogEntryId": "this-is-a-tangible-space",
       "scopeReason": "season-s2",
-      "finishedAt": "2026-03-25T20:32:25.867Z"
+      "entryPath": "/Users/seb/dexdsl.github.io/entries/this-is-a-tangible-space/index.html",
+      "finishedAt": "2026-03-25T21:26:28.523Z"
     },
     {
-      "startedAt": "2026-03-25T20:32:25.867Z",
+      "startedAt": "2026-03-25T21:26:28.523Z",
       "sourceLookup": "P.Mpc. Gi AV2024 S2",
       "sourceName": "Ben Giroux",
       "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/1x51zeI8yZa1mcFAmsw1A2RJrReL0fhE6NyojuRbVY08/edit?gid=0#gid=0",
       "status": "success",
-      "mode": "init",
+      "mode": "existing-update",
       "slug": "multiperc",
       "resolvedLookup": "P.Mpc. Gi AV2024 S2",
       "youtubeUrl": "https://www.youtube.com/watch?v=1aOfUugieF8",
       "entryUrlFromSheet": "http://dexdsl.com/entry/multiperc",
       "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/multiperc.seed.json",
+      "routeHtmlPath": "/Users/seb/dexdsl.github.io/docs/entry/multiperc/index.html",
       "commands": [
         {
-          "type": "init",
-          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/multiperc.seed.json --catalog-link create-linked --catalog-status active",
+          "type": "entry-link",
+          "command": "node scripts/dex.mjs entry link --entry multiperc --lookup P.Mpc. Gi AV2024 S2 --season S2 --performer Ben Giroux --instrument MULTIPLE PERCUS‏‏‎SION --title MULTIPLE PERCUSSION --status active",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "assets-upsert",
+          "command": "upsertProtectedAssetsLookupMapping(...)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "entry-sidebar-downloads-update",
+          "command": "updateEntrySidebarDownloads(multiperc)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "route-publish",
+          "command": "publishEntryRouteHtml(multiperc)",
           "code": 0,
           "ok": true
         }
@@ -157,24 +251,44 @@
       "resolutionReason": "catalog-match",
       "catalogEntryId": "multiperc",
       "scopeReason": "season-s2",
-      "finishedAt": "2026-03-25T20:32:26.877Z"
+      "entryPath": "/Users/seb/dexdsl.github.io/entries/multiperc/index.html",
+      "finishedAt": "2026-03-25T21:26:29.660Z"
     },
     {
-      "startedAt": "2026-03-25T20:32:26.877Z",
+      "startedAt": "2026-03-25T21:26:29.660Z",
       "sourceLookup": "S.Pdb. He AV2024 S2",
       "sourceName": "Jakob Heinemann",
       "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/1lNVQbKreVfbmi29jW1lNX7lVTq3zSmrWNpmeiVHc-6Q/edit?gid=0#gid=0",
       "status": "success",
-      "mode": "init",
+      "mode": "existing-update",
       "slug": "jakob-heinemann",
       "resolvedLookup": "S.Pdb. He AV2024 S2",
       "youtubeUrl": "https://www.youtube.com/watch?v=8sia2JYhwvI",
       "entryUrlFromSheet": "https://dexdsl.com/entry/jakob-heinemann",
       "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/jakob-heinemann.seed.json",
+      "routeHtmlPath": "/Users/seb/dexdsl.github.io/docs/entry/jakob-heinemann/index.html",
       "commands": [
         {
-          "type": "init",
-          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/jakob-heinemann.seed.json --catalog-link create-linked --catalog-status active",
+          "type": "entry-link",
+          "command": "node scripts/dex.mjs entry link --entry jakob-heinemann --lookup S.Pdb. He AV2024 S2 --season S2 --performer Jakob Heinemann --instrument SPLINTERINGS for DOUBLE BASS --title SPLINTERINGS for DOUBLE BASS --status active",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "assets-upsert",
+          "command": "upsertProtectedAssetsLookupMapping(...)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "entry-sidebar-downloads-update",
+          "command": "updateEntrySidebarDownloads(jakob-heinemann)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "route-publish",
+          "command": "publishEntryRouteHtml(jakob-heinemann)",
           "code": 0,
           "ok": true
         }
@@ -183,24 +297,44 @@
       "resolutionReason": "catalog-match",
       "catalogEntryId": "jakob-heinemann",
       "scopeReason": "season-s2",
-      "finishedAt": "2026-03-25T20:32:29.664Z"
+      "entryPath": "/Users/seb/dexdsl.github.io/entries/jakob-heinemann/index.html",
+      "finishedAt": "2026-03-25T21:26:30.740Z"
     },
     {
-      "startedAt": "2026-03-25T20:32:29.664Z",
+      "startedAt": "2026-03-25T21:26:30.740Z",
       "sourceLookup": "E.Mod. Zh AV2024 S2",
       "sourceName": "Bojun Zhang",
       "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/1F5owRM_T6ZxYpCPIfQmHcMUByZ0jCgrS6LghxdkWWCk/edit?gid=0#gid=0",
       "status": "success",
-      "mode": "init",
+      "mode": "existing-update",
       "slug": "bojun-zhang",
       "resolvedLookup": "E.Mod. Zh AV2024 S2",
       "youtubeUrl": "https://youtu.be/qNuxhAKCekg?si=uPA7rWWDDDteKGdZ",
       "entryUrlFromSheet": "https://dexdsl.com/entry/bojun-zhang",
       "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/bojun-zhang.seed.json",
+      "routeHtmlPath": "/Users/seb/dexdsl.github.io/docs/entry/bojun-zhang/index.html",
       "commands": [
         {
-          "type": "init",
-          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/bojun-zhang.seed.json --catalog-link create-linked --catalog-status active",
+          "type": "entry-link",
+          "command": "node scripts/dex.mjs entry link --entry bojun-zhang --lookup E.Mod. Zh AV2024 S2 --season S2 --performer Bojun Zhang --instrument MODULAR SYNTH --title MODULAR SYNTH --status active",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "assets-upsert",
+          "command": "upsertProtectedAssetsLookupMapping(...)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "entry-sidebar-downloads-update",
+          "command": "updateEntrySidebarDownloads(bojun-zhang)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "route-publish",
+          "command": "publishEntryRouteHtml(bojun-zhang)",
           "code": 0,
           "ok": true
         }
@@ -209,24 +343,44 @@
       "resolutionReason": "catalog-match",
       "catalogEntryId": "bojun-zhang",
       "scopeReason": "season-s2",
-      "finishedAt": "2026-03-25T20:32:30.727Z"
+      "entryPath": "/Users/seb/dexdsl.github.io/entries/bojun-zhang/index.html",
+      "finishedAt": "2026-03-25T21:26:31.769Z"
     },
     {
-      "startedAt": "2026-03-25T20:32:30.727Z",
+      "startedAt": "2026-03-25T21:26:31.769Z",
       "sourceLookup": "X.Prt. Ch AV2024 S2",
       "sourceName": "Cameron Church",
       "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/1YCpxRbU9Q7uxaBSWy4NRQUB-6GWCY9gTX1qv1ezWAsw/edit?gid=0#gid=0",
       "status": "success",
-      "mode": "init",
+      "mode": "existing-update",
       "slug": "amplified-printer",
       "resolvedLookup": "X.Prt. Ch AV2024 S2",
       "youtubeUrl": "https://www.youtube.com/watch?v=3mpKFw_oD7s",
       "entryUrlFromSheet": "https://dexdsl.com/entry/amplified-printer",
       "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/amplified-printer.seed.json",
+      "routeHtmlPath": "/Users/seb/dexdsl.github.io/docs/entry/amplified-printer/index.html",
       "commands": [
         {
-          "type": "init",
-          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/amplified-printer.seed.json --catalog-link create-linked --catalog-status active",
+          "type": "entry-link",
+          "command": "node scripts/dex.mjs entry link --entry amplified-printer --lookup X.Prt. Ch AV2024 S2 --season S2 --performer Cameron Church --instrument AMPLIFIED PRINTER --title AMPLIFIED PRINTER --status active",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "assets-upsert",
+          "command": "upsertProtectedAssetsLookupMapping(...)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "entry-sidebar-downloads-update",
+          "command": "updateEntrySidebarDownloads(amplified-printer)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "route-publish",
+          "command": "publishEntryRouteHtml(amplified-printer)",
           "code": 0,
           "ok": true
         }
@@ -235,24 +389,44 @@
       "resolutionReason": "catalog-match",
       "catalogEntryId": "amplified-printer",
       "scopeReason": "season-s2",
-      "finishedAt": "2026-03-25T20:32:31.727Z"
+      "entryPath": "/Users/seb/dexdsl.github.io/entries/amplified-printer/index.html",
+      "finishedAt": "2026-03-25T21:26:32.812Z"
     },
     {
-      "startedAt": "2026-03-25T20:32:31.727Z",
+      "startedAt": "2026-03-25T21:26:32.812Z",
       "sourceLookup": "E.Gtr. Ch AV2024 S2",
       "sourceName": "Andrew Chanover",
       "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/10cMq02K7fiTmw-eWSnbmsXO6kTgkfs23ripJurJrmws/edit?gid=0#gid=0",
       "status": "success",
-      "mode": "init",
+      "mode": "existing-update",
       "slug": "andrew-chanover",
       "resolvedLookup": "E.Gtr. Ch AV2024 S2",
       "youtubeUrl": "https://www.youtube.com/watch?v=oifj5JZYoWI",
       "entryUrlFromSheet": "https://dexdsl.com/entry/andrew-chanover",
       "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/andrew-chanover.seed.json",
+      "routeHtmlPath": "/Users/seb/dexdsl.github.io/docs/entry/andrew-chanover/index.html",
       "commands": [
         {
-          "type": "init",
-          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/andrew-chanover.seed.json --catalog-link create-linked --catalog-status active",
+          "type": "entry-link",
+          "command": "node scripts/dex.mjs entry link --entry andrew-chanover --lookup E.Gtr. Ch AV2024 S2 --season S2 --performer Andrew Chanover --instrument ELECTRIC GUITAR --title ELECTRIC GUITAR --status active",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "assets-upsert",
+          "command": "upsertProtectedAssetsLookupMapping(...)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "entry-sidebar-downloads-update",
+          "command": "updateEntrySidebarDownloads(andrew-chanover)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "route-publish",
+          "command": "publishEntryRouteHtml(andrew-chanover)",
           "code": 0,
           "ok": true
         }
@@ -261,24 +435,44 @@
       "resolutionReason": "catalog-match",
       "catalogEntryId": "andrew-chanover",
       "scopeReason": "season-s2",
-      "finishedAt": "2026-03-25T20:32:32.696Z"
+      "entryPath": "/Users/seb/dexdsl.github.io/entries/andrew-chanover/index.html",
+      "finishedAt": "2026-03-25T21:26:33.847Z"
     },
     {
-      "startedAt": "2026-03-25T20:32:32.696Z",
+      "startedAt": "2026-03-25T21:26:33.847Z",
       "sourceLookup": "P.Dho. Sh A2024 S2",
       "sourceName": "Anant Shah",
       "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/1JsM29q-0o4toYbYsuAExfgXJyKMiAT29UzmTUBs4XqE/edit?gid=0#gid=0",
       "status": "success",
-      "mode": "init",
+      "mode": "existing-update",
       "slug": "anant-shah",
       "resolvedLookup": "P.Dho. Sh AV2024 S2",
       "youtubeUrl": "https://www.youtube.com/watch?v=qtcnXm13Mh8",
       "entryUrlFromSheet": "https://dexdsl.com/entry/andrew-chanover",
       "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/anant-shah.seed.json",
+      "routeHtmlPath": "/Users/seb/dexdsl.github.io/docs/entry/anant-shah/index.html",
       "commands": [
         {
-          "type": "init",
-          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/anant-shah.seed.json --catalog-link create-linked --catalog-status active",
+          "type": "entry-link",
+          "command": "node scripts/dex.mjs entry link --entry anant-shah --lookup P.Dho. Sh AV2024 S2 --season S2 --performer Anant Shah --instrument ant shah --title DHOLAK AND ELECTRONICS --status active",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "assets-upsert",
+          "command": "upsertProtectedAssetsLookupMapping(...)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "entry-sidebar-downloads-update",
+          "command": "updateEntrySidebarDownloads(anant-shah)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "route-publish",
+          "command": "publishEntryRouteHtml(anant-shah)",
           "code": 0,
           "ok": true
         }
@@ -287,24 +481,44 @@
       "resolutionReason": "catalog-match",
       "catalogEntryId": "anant-shah",
       "scopeReason": "season-s2",
-      "finishedAt": "2026-03-25T20:32:33.669Z"
+      "entryPath": "/Users/seb/dexdsl.github.io/entries/anant-shah/index.html",
+      "finishedAt": "2026-03-25T21:26:34.897Z"
     },
     {
-      "startedAt": "2026-03-25T20:32:33.669Z",
+      "startedAt": "2026-03-25T21:26:34.897Z",
       "sourceLookup": "W.Ob. Ma AV2024 S2",
       "sourceName": "Sky Macklay",
       "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/1aJZCdLPdSqY531OJN4kyjOlO9nsxMoIg40nU30_Lgeo/edit?gid=0#gid=0",
       "status": "success",
-      "mode": "init",
+      "mode": "existing-update",
       "slug": "prepared-oboe-sky-macklay",
       "resolvedLookup": "W.Ob. Ma AV2024 S2",
       "youtubeUrl": "https://www.youtube.com/watch?v=LPHD-ynh-MA",
       "entryUrlFromSheet": "https://dexdsl.com/entry/prepared-oboe-sky-macklay",
       "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/prepared-oboe-sky-macklay.seed.json",
+      "routeHtmlPath": "/Users/seb/dexdsl.github.io/docs/entry/prepared-oboe-sky-macklay/index.html",
       "commands": [
         {
-          "type": "init",
-          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/prepared-oboe-sky-macklay.seed.json --catalog-link create-linked --catalog-status active",
+          "type": "entry-link",
+          "command": "node scripts/dex.mjs entry link --entry prepared-oboe-sky-macklay --lookup W.Ob. Ma AV2024 S2 --season S2 --performer Sky Macklay --instrument PREPARED OBOE --title PREPARED OBOE --status active",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "assets-upsert",
+          "command": "upsertProtectedAssetsLookupMapping(...)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "entry-sidebar-downloads-update",
+          "command": "updateEntrySidebarDownloads(prepared-oboe-sky-macklay)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "route-publish",
+          "command": "publishEntryRouteHtml(prepared-oboe-sky-macklay)",
           "code": 0,
           "ok": true
         }
@@ -313,24 +527,44 @@
       "resolutionReason": "catalog-match",
       "catalogEntryId": "prepared-oboe-sky-macklay",
       "scopeReason": "season-s2",
-      "finishedAt": "2026-03-25T20:32:34.775Z"
+      "entryPath": "/Users/seb/dexdsl.github.io/entries/prepared-oboe-sky-macklay/index.html",
+      "finishedAt": "2026-03-25T21:26:35.888Z"
     },
     {
-      "startedAt": "2026-03-25T20:32:34.775Z",
+      "startedAt": "2026-03-25T21:26:35.888Z",
       "sourceLookup": "W.Bsn. CoTo AV2024 S2",
       "sourceName": "Arlo Tomecek, Max Coleman",
       "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/1TPhEoNoGlHYaANKdKlBvLDa4JHrpDkNwfm7EwwUwIxo/edit?gid=0#gid=0",
       "status": "success",
-      "mode": "init",
+      "mode": "existing-update",
       "slug": "bassoon-and-electronics",
       "resolvedLookup": "W.Bsn. CoTo AV2024 S2",
       "youtubeUrl": "https://www.youtube.com/watch?v=6uW9VfE8DP0",
       "entryUrlFromSheet": "https://dexdsl.com/entry/bassoon-and-electronics",
       "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/bassoon-and-electronics.seed.json",
+      "routeHtmlPath": "/Users/seb/dexdsl.github.io/docs/entry/bassoon-and-electronics/index.html",
       "commands": [
         {
-          "type": "init",
-          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/bassoon-and-electronics.seed.json --catalog-link create-linked --catalog-status active",
+          "type": "entry-link",
+          "command": "node scripts/dex.mjs entry link --entry bassoon-and-electronics --lookup W.Bsn. CoTo AV2024 S2 --season S2 --performer Arlo Tomecek, Max Coleman --instrument BASSOON + ELECTRONICS WITH GENERATIVE VIDEO --title BASSOON + ELECTRONICS WITH GENERATIVE VIDEO --status active",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "assets-upsert",
+          "command": "upsertProtectedAssetsLookupMapping(...)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "entry-sidebar-downloads-update",
+          "command": "updateEntrySidebarDownloads(bassoon-and-electronics)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "route-publish",
+          "command": "publishEntryRouteHtml(bassoon-and-electronics)",
           "code": 0,
           "ok": true
         }
@@ -339,24 +573,44 @@
       "resolutionReason": "catalog-match",
       "catalogEntryId": "bassoon-and-electronics",
       "scopeReason": "season-s2",
-      "finishedAt": "2026-03-25T20:32:35.766Z"
+      "entryPath": "/Users/seb/dexdsl.github.io/entries/bassoon-and-electronics/index.html",
+      "finishedAt": "2026-03-25T21:26:36.842Z"
     },
     {
-      "startedAt": "2026-03-25T20:32:35.766Z",
+      "startedAt": "2026-03-25T21:26:36.842Z",
       "sourceLookup": "V.GaV. Ye A2024 S2",
       "sourceName": "Aidan Yeats",
       "sourceSheetUrl": "https://docs.google.com/spreadsheets/d/11itz1pMWxB-gDXswAjz3VwpiFfPt0bX0Z5HYj4kjKBk/edit?gid=0#gid=0",
       "status": "success",
-      "mode": "init",
+      "mode": "existing-update",
       "slug": "aidan-yeats",
       "resolvedLookup": "V.Sng. Ye AV2024 S2",
       "youtubeUrl": "https://www.youtube.com/watch?v=CSFGiU1gg4g",
       "entryUrlFromSheet": "https://dexdsl.com/entry/aidan-yeats",
       "seedPath": "/Users/seb/dexdsl.github.io/tmp/production-entry-seeds/aidan-yeats.seed.json",
+      "routeHtmlPath": "/Users/seb/dexdsl.github.io/docs/entry/aidan-yeats/index.html",
       "commands": [
         {
-          "type": "init",
-          "command": "node scripts/dex.mjs init --quick --template /Users/seb/dexdsl.github.io/entries/test-5/index.html --out ./entries --from /Users/seb/dexdsl.github.io/tmp/production-entry-seeds/aidan-yeats.seed.json --catalog-link create-linked --catalog-status active",
+          "type": "entry-link",
+          "command": "node scripts/dex.mjs entry link --entry aidan-yeats --lookup V.Sng. Ye AV2024 S2 --season S2 --performer Aidan Yeats --instrument GUITAR AND VOICE --title GUITAR AND VOICE --status active",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "assets-upsert",
+          "command": "upsertProtectedAssetsLookupMapping(...)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "entry-sidebar-downloads-update",
+          "command": "updateEntrySidebarDownloads(aidan-yeats)",
+          "code": 0,
+          "ok": true
+        },
+        {
+          "type": "route-publish",
+          "command": "publishEntryRouteHtml(aidan-yeats)",
           "code": 0,
           "ok": true
         }
@@ -365,7 +619,8 @@
       "resolutionReason": "override",
       "catalogEntryId": "aidan-yeats",
       "scopeReason": "season-s2",
-      "finishedAt": "2026-03-25T20:32:36.851Z"
+      "entryPath": "/Users/seb/dexdsl.github.io/entries/aidan-yeats/index.html",
+      "finishedAt": "2026-03-25T21:26:37.826Z"
     }
   ],
   "summary": {

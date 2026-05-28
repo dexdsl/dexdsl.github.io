@@ -1,0 +1,1570 @@
+{
+  "title": "ELECTRIC GUITAR",
+  "slug": "andrew-chanover",
+  "descriptionText": "ELECTRIC GUITAR.",
+  "video": {
+    "dataUrl": "https://www.youtube.com/watch?v=oifj5JZYoWI",
+    "dataUrlOriginal": "https://www.youtube.com/watch?v=oifj5JZYoWI"
+  },
+  "series": "dex",
+  "creditsData": {
+    "artist": [
+      "Andrew Chanover"
+    ],
+    "artistAlt": null,
+    "instruments": [
+      "ELECTRIC GUITAR"
+    ],
+    "video": {
+      "director": [],
+      "cinematography": [],
+      "editing": []
+    },
+    "audio": {
+      "recording": [],
+      "mix": [],
+      "master": []
+    },
+    "year": 2024,
+    "season": "S2",
+    "location": "Unknown"
+  },
+  "sidebarPageConfig": {
+    "lookupNumber": "E.Gtr. Ch AV2024 S2",
+    "buckets": [
+      "A",
+      "B",
+      "C"
+    ],
+    "specialEventImage": "/assets/series/dex.png",
+    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Andrew Chanover.",
+    "credits": {
+      "artist": [
+        "Andrew Chanover"
+      ],
+      "artistAlt": null,
+      "instruments": [
+        "ELECTRIC GUITAR"
+      ],
+      "video": {
+        "director": [],
+        "cinematography": [],
+        "editing": []
+      },
+      "audio": {
+        "recording": [],
+        "mix": [],
+        "master": []
+      },
+      "year": 2024,
+      "season": "S2",
+      "location": "Unknown"
+    },
+    "fileSpecs": {
+      "bitDepth": 24,
+      "sampleRate": 48000,
+      "channels": "stereo",
+      "staticSizes": {
+        "A": "",
+        "B": "",
+        "C": "",
+        "D": "",
+        "E": "",
+        "X": ""
+      }
+    },
+    "metadata": {
+      "sampleLength": "AUTO",
+      "tags": []
+    },
+    "downloads": {
+      "recordingIndexPdfRef": "asset:andrew-chanover-recording-index-pdf",
+      "recordingIndexBundleRef": "bundle:recording-index:E.Gtr. Ch AV2024 S2:all",
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/10cMq02K7fiTmw-eWSnbmsXO6kTgkfs23ripJurJrmws/edit?gid=0#gid=0",
+      "fileTree": {
+        "lookup": "E.Gtr. Ch AV2024 S2",
+        "buckets": [
+          {
+            "bucket": "A",
+            "types": [
+              {
+                "mediaType": "audio",
+                "files": [
+                  {
+                    "fileId": "andrew-chanover-a-001",
+                    "label": "A.1 (0:16 - 16:07)\n4K  |  1080p  |  ste",
+                    "filename": "001.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  }
+                ]
+              },
+              {
+                "mediaType": "video",
+                "files": [
+                  {
+                    "fileId": "andrew-chanover-a-001",
+                    "label": "A.1 (0:16 - 16:07)\n4K  |  1080p  |  ste",
+                    "filename": "001.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "bucket": "B",
+            "types": [
+              {
+                "mediaType": "audio",
+                "files": [
+                  {
+                    "fileId": "andrew-chanover-b-001",
+                    "label": "B.1 (0:16 - 5:26)\n4K  |  1080p  |  ste",
+                    "filename": "001.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-b-002",
+                    "label": "B.2 (5:26 - 7:16)\n4K  |  1080p  |  ste",
+                    "filename": "002.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-b-003",
+                    "label": "B.3 (7:16 - 10:42)\n4K  |  1080p  |  ste",
+                    "filename": "003.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-b-004",
+                    "label": "B.4 (10:42 - 12:54)\n4K  |  1080p  |  ste",
+                    "filename": "004.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-b-005",
+                    "label": "B.5 (12:54 - 16:07)\n4K  |  1080p  |  ste",
+                    "filename": "005.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  }
+                ]
+              },
+              {
+                "mediaType": "video",
+                "files": [
+                  {
+                    "fileId": "andrew-chanover-b-001",
+                    "label": "B.1 (0:16 - 5:26)\n4K  |  1080p  |  ste",
+                    "filename": "001.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-b-002",
+                    "label": "B.2 (5:26 - 7:16)\n4K  |  1080p  |  ste",
+                    "filename": "002.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-b-003",
+                    "label": "B.3 (7:16 - 10:42)\n4K  |  1080p  |  ste",
+                    "filename": "003.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-b-004",
+                    "label": "B.4 (10:42 - 12:54)\n4K  |  1080p  |  ste",
+                    "filename": "004.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-b-005",
+                    "label": "B.5 (12:54 - 16:07)\n4K  |  1080p  |  ste",
+                    "filename": "005.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "bucket": "C",
+            "types": [
+              {
+                "mediaType": "audio",
+                "files": [
+                  {
+                    "fileId": "andrew-chanover-c-001",
+                    "label": "C.1 (0:16 - 1:00)\n4K  |  1080p  |  ste",
+                    "filename": "001.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-002",
+                    "label": "C.2 (1:00 - 1:28)\n4K  |  1080p  |  ste",
+                    "filename": "002.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-003",
+                    "label": "C.3 (1:28 - 2:00)\n4K  |  1080p  |  ste",
+                    "filename": "003.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-004",
+                    "label": "C.4 (2:00 - 2:31)\n4K  |  1080p  |  ste",
+                    "filename": "004.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-005",
+                    "label": "C.5 (2:31 - 3:05)\n4K  |  1080p  |  ste",
+                    "filename": "005.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-006",
+                    "label": "C.6 (3:05 - 3:45)\n4K  |  1080p  |  ste",
+                    "filename": "006.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-007",
+                    "label": "C.7 (3:45 - 4:32)\n4K  |  1080p  |  ste",
+                    "filename": "007.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-008",
+                    "label": "C.8 (4:32 - 5:04)\n4K  |  1080p  |  ste",
+                    "filename": "008.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-009",
+                    "label": "C.9 (5:04 - 5:26)\n4K  |  1080p  |  ste",
+                    "filename": "009.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-010",
+                    "label": "C.10 (5:26 - 5:42)\n4K  |  1080p  |  ste",
+                    "filename": "010.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-011",
+                    "label": "C.11 (5:42 - 6:02)\n4K  |  1080p  |  ste",
+                    "filename": "011.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-012",
+                    "label": "C.12 (6:02 - 6:23)\n4K  |  1080p  |  ste",
+                    "filename": "012.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-013",
+                    "label": "C.13 (6:23 - 6:34)\n4K  |  1080p  |  ste",
+                    "filename": "013.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-014",
+                    "label": "C.14 (6:34 - 6:58)\n4K  |  1080p  |  ste",
+                    "filename": "014.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-015",
+                    "label": "C.15 (6:58 - 7:16)\n4K  |  1080p  |  ste",
+                    "filename": "015.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-016",
+                    "label": "C.16 (7:16 - 8:10)\n4K  |  1080p  |  ste",
+                    "filename": "016.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-017",
+                    "label": "C.17 (8:10 - 8:46)\n4K  |  1080p  |  ste",
+                    "filename": "017.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-018",
+                    "label": "C.18 (8:46 - 9:44)\n4K  |  1080p  |  ste",
+                    "filename": "018.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-019",
+                    "label": "C.19 (9:44 - 10:27)\n4K  |  1080p  |  ste",
+                    "filename": "019.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-020",
+                    "label": "C.20 (10:27 - 10:42)\n4K  |  1080p  |  ste",
+                    "filename": "020.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-021",
+                    "label": "C.21 (10:42 - 11:22)\n4K  |  1080p  |  ste",
+                    "filename": "021.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-022",
+                    "label": "C.22 (11:22 - 11:58)\n4K  |  1080p  |  ste",
+                    "filename": "022.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-023",
+                    "label": "C.23 (11:58 - 12:28)\n4K  |  1080p  |  ste",
+                    "filename": "023.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-024",
+                    "label": "C.24 (12:28 - 12:54)\n4K  |  1080p  |  ste",
+                    "filename": "024.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-025",
+                    "label": "C.25 (12:54 - 13:12)\n4K  |  1080p  |  ste",
+                    "filename": "025.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-026",
+                    "label": "C.26 (13:12 - 13:35)\n4K  |  1080p  |  ste",
+                    "filename": "026.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-027",
+                    "label": "C.27 (13:35 - 14:05)\n4K  |  1080p  |  ste",
+                    "filename": "027.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-028",
+                    "label": "C.28 (14:05 - 14:35)\n4K  |  1080p  |  ste",
+                    "filename": "028.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-029",
+                    "label": "C.29 (14:35 - 14:59)\n4K  |  1080p  |  ste",
+                    "filename": "029.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-030",
+                    "label": "C.30 (14:59 - 15:25)\n4K  |  1080p  |  ste",
+                    "filename": "030.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-031",
+                    "label": "C.31 (15:25 - 16:07)\n4K  |  1080p  |  ste",
+                    "filename": "031.mov",
+                    "extension": "mov",
+                    "variantKey": "default-audio"
+                  }
+                ]
+              },
+              {
+                "mediaType": "video",
+                "files": [
+                  {
+                    "fileId": "andrew-chanover-c-001",
+                    "label": "C.1 (0:16 - 1:00)\n4K  |  1080p  |  ste",
+                    "filename": "001.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-002",
+                    "label": "C.2 (1:00 - 1:28)\n4K  |  1080p  |  ste",
+                    "filename": "002.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-003",
+                    "label": "C.3 (1:28 - 2:00)\n4K  |  1080p  |  ste",
+                    "filename": "003.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-004",
+                    "label": "C.4 (2:00 - 2:31)\n4K  |  1080p  |  ste",
+                    "filename": "004.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-005",
+                    "label": "C.5 (2:31 - 3:05)\n4K  |  1080p  |  ste",
+                    "filename": "005.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-006",
+                    "label": "C.6 (3:05 - 3:45)\n4K  |  1080p  |  ste",
+                    "filename": "006.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-007",
+                    "label": "C.7 (3:45 - 4:32)\n4K  |  1080p  |  ste",
+                    "filename": "007.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-008",
+                    "label": "C.8 (4:32 - 5:04)\n4K  |  1080p  |  ste",
+                    "filename": "008.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-009",
+                    "label": "C.9 (5:04 - 5:26)\n4K  |  1080p  |  ste",
+                    "filename": "009.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-010",
+                    "label": "C.10 (5:26 - 5:42)\n4K  |  1080p  |  ste",
+                    "filename": "010.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-011",
+                    "label": "C.11 (5:42 - 6:02)\n4K  |  1080p  |  ste",
+                    "filename": "011.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-012",
+                    "label": "C.12 (6:02 - 6:23)\n4K  |  1080p  |  ste",
+                    "filename": "012.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-013",
+                    "label": "C.13 (6:23 - 6:34)\n4K  |  1080p  |  ste",
+                    "filename": "013.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-014",
+                    "label": "C.14 (6:34 - 6:58)\n4K  |  1080p  |  ste",
+                    "filename": "014.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-015",
+                    "label": "C.15 (6:58 - 7:16)\n4K  |  1080p  |  ste",
+                    "filename": "015.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-016",
+                    "label": "C.16 (7:16 - 8:10)\n4K  |  1080p  |  ste",
+                    "filename": "016.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-017",
+                    "label": "C.17 (8:10 - 8:46)\n4K  |  1080p  |  ste",
+                    "filename": "017.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-018",
+                    "label": "C.18 (8:46 - 9:44)\n4K  |  1080p  |  ste",
+                    "filename": "018.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-019",
+                    "label": "C.19 (9:44 - 10:27)\n4K  |  1080p  |  ste",
+                    "filename": "019.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-020",
+                    "label": "C.20 (10:27 - 10:42)\n4K  |  1080p  |  ste",
+                    "filename": "020.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-021",
+                    "label": "C.21 (10:42 - 11:22)\n4K  |  1080p  |  ste",
+                    "filename": "021.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-022",
+                    "label": "C.22 (11:22 - 11:58)\n4K  |  1080p  |  ste",
+                    "filename": "022.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-023",
+                    "label": "C.23 (11:58 - 12:28)\n4K  |  1080p  |  ste",
+                    "filename": "023.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-024",
+                    "label": "C.24 (12:28 - 12:54)\n4K  |  1080p  |  ste",
+                    "filename": "024.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-025",
+                    "label": "C.25 (12:54 - 13:12)\n4K  |  1080p  |  ste",
+                    "filename": "025.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-026",
+                    "label": "C.26 (13:12 - 13:35)\n4K  |  1080p  |  ste",
+                    "filename": "026.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-027",
+                    "label": "C.27 (13:35 - 14:05)\n4K  |  1080p  |  ste",
+                    "filename": "027.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-028",
+                    "label": "C.28 (14:05 - 14:35)\n4K  |  1080p  |  ste",
+                    "filename": "028.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-029",
+                    "label": "C.29 (14:35 - 14:59)\n4K  |  1080p  |  ste",
+                    "filename": "029.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-030",
+                    "label": "C.30 (14:59 - 15:25)\n4K  |  1080p  |  ste",
+                    "filename": "030.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "andrew-chanover-c-031",
+                    "label": "C.31 (15:25 - 16:07)\n4K  |  1080p  |  ste",
+                    "filename": "031.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "manifest": {
+    "audio": {
+      "A": {
+        "mp3": "bundle:lookup:E.Gtr. Ch AV2024 S2:A:audio",
+        "wav": "bundle:lookup:E.Gtr. Ch AV2024 S2:A:audio"
+      },
+      "B": {
+        "mp3": "bundle:lookup:E.Gtr. Ch AV2024 S2:B:audio",
+        "wav": "bundle:lookup:E.Gtr. Ch AV2024 S2:B:audio"
+      },
+      "C": {
+        "mp3": "bundle:lookup:E.Gtr. Ch AV2024 S2:C:audio",
+        "wav": "bundle:lookup:E.Gtr. Ch AV2024 S2:C:audio"
+      },
+      "D": {
+        "mp3": "",
+        "wav": ""
+      },
+      "E": {
+        "mp3": "",
+        "wav": ""
+      },
+      "X": {
+        "mp3": "",
+        "wav": ""
+      }
+    },
+    "video": {
+      "A": {
+        "1080p": "bundle:lookup:E.Gtr. Ch AV2024 S2:A:video",
+        "4K": "bundle:lookup:E.Gtr. Ch AV2024 S2:A:video"
+      },
+      "B": {
+        "1080p": "bundle:lookup:E.Gtr. Ch AV2024 S2:B:video",
+        "4K": "bundle:lookup:E.Gtr. Ch AV2024 S2:B:video"
+      },
+      "C": {
+        "1080p": "bundle:lookup:E.Gtr. Ch AV2024 S2:C:video",
+        "4K": "bundle:lookup:E.Gtr. Ch AV2024 S2:C:video"
+      },
+      "D": {
+        "1080p": "",
+        "4K": ""
+      },
+      "E": {
+        "1080p": "",
+        "4K": ""
+      },
+      "X": {
+        "1080p": "",
+        "4K": ""
+      }
+    }
+  },
+  "protectedAssetsImport": {
+    "lookupNumber": "E.Gtr. Ch AV2024 S2",
+    "title": "ELECTRIC GUITAR",
+    "status": "active",
+    "season": "S2",
+    "files": [
+      {
+        "bucketNumber": "A.1",
+        "bucket": "A",
+        "segmentNumber": 1,
+        "label": "A.1 (0:16 - 16:07)\n4K  |  1080p  |  ste",
+        "sourceLabel": "A.1 (0:16 - 16:07)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1mVUHxj8GELgODGWxI3Wmd7l0LeMkw8Zs/view?usp=drive_link",
+        "driveFileId": "1mVUHxj8GELgODGWxI3Wmd7l0LeMkw8Zs",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-a-001",
+        "r2Key": "andrew-chanover/a/001.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 1,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "B.1",
+        "bucket": "B",
+        "segmentNumber": 1,
+        "label": "B.1 (0:16 - 5:26)\n4K  |  1080p  |  ste",
+        "sourceLabel": "B.1 (0:16 - 5:26)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1md04SWm1ORB7IeR0TC8ccVsNTTNvfvPM/view?usp=drive_link",
+        "driveFileId": "1md04SWm1ORB7IeR0TC8ccVsNTTNvfvPM",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-b-001",
+        "r2Key": "andrew-chanover/b/001.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 2,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "B.2",
+        "bucket": "B",
+        "segmentNumber": 2,
+        "label": "B.2 (5:26 - 7:16)\n4K  |  1080p  |  ste",
+        "sourceLabel": "B.2 (5:26 - 7:16)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1mfaYKAoc3rHIf1daUY9YOC12of80QnTN/view?usp=drive_link",
+        "driveFileId": "1mfaYKAoc3rHIf1daUY9YOC12of80QnTN",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-b-002",
+        "r2Key": "andrew-chanover/b/002.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 3,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "B.3",
+        "bucket": "B",
+        "segmentNumber": 3,
+        "label": "B.3 (7:16 - 10:42)\n4K  |  1080p  |  ste",
+        "sourceLabel": "B.3 (7:16 - 10:42)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1mlO2y1pXfsuRAhydZ5dmSysNFlwfiOFO/view?usp=drive_link",
+        "driveFileId": "1mlO2y1pXfsuRAhydZ5dmSysNFlwfiOFO",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-b-003",
+        "r2Key": "andrew-chanover/b/003.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 4,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "B.4",
+        "bucket": "B",
+        "segmentNumber": 4,
+        "label": "B.4 (10:42 - 12:54)\n4K  |  1080p  |  ste",
+        "sourceLabel": "B.4 (10:42 - 12:54)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1mnF_Tfv2WKs7fIPIq-Uo0fj4RRRhEc92/view?usp=drive_link",
+        "driveFileId": "1mnF_Tfv2WKs7fIPIq-Uo0fj4RRRhEc92",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-b-004",
+        "r2Key": "andrew-chanover/b/004.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 5,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "B.5",
+        "bucket": "B",
+        "segmentNumber": 5,
+        "label": "B.5 (12:54 - 16:07)\n4K  |  1080p  |  ste",
+        "sourceLabel": "B.5 (12:54 - 16:07)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1msQkfYmK8EbrYk-dYPjVZDes0Dm_i3fz/view?usp=drive_link",
+        "driveFileId": "1msQkfYmK8EbrYk-dYPjVZDes0Dm_i3fz",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-b-005",
+        "r2Key": "andrew-chanover/b/005.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 6,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.1",
+        "bucket": "C",
+        "segmentNumber": 1,
+        "label": "C.1 (0:16 - 1:00)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.1 (0:16 - 1:00)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1pi9-SDQbuwiaWXFf-IQaUHRNIvG15BRW/view?usp=drive_link",
+        "driveFileId": "1pi9-SDQbuwiaWXFf-IQaUHRNIvG15BRW",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-001",
+        "r2Key": "andrew-chanover/c/001.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 7,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.2",
+        "bucket": "C",
+        "segmentNumber": 2,
+        "label": "C.2 (1:00 - 1:28)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.2 (1:00 - 1:28)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1pjlGPe-UMwGjR8ESo79Sf8Auim7YrSs8/view?usp=drive_link",
+        "driveFileId": "1pjlGPe-UMwGjR8ESo79Sf8Auim7YrSs8",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-002",
+        "r2Key": "andrew-chanover/c/002.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 8,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.3",
+        "bucket": "C",
+        "segmentNumber": 3,
+        "label": "C.3 (1:28 - 2:00)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.3 (1:28 - 2:00)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1pk2tNSFU8ox2Z1WNT8ezXeHdd6OXHTd_/view?usp=drive_link",
+        "driveFileId": "1pk2tNSFU8ox2Z1WNT8ezXeHdd6OXHTd_",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-003",
+        "r2Key": "andrew-chanover/c/003.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 9,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.4",
+        "bucket": "C",
+        "segmentNumber": 4,
+        "label": "C.4 (2:00 - 2:31)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.4 (2:00 - 2:31)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1pn2XsNBb5dtWQfRTofpEakV1xjHeAlz4/view?usp=drive_link",
+        "driveFileId": "1pn2XsNBb5dtWQfRTofpEakV1xjHeAlz4",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-004",
+        "r2Key": "andrew-chanover/c/004.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 10,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.5",
+        "bucket": "C",
+        "segmentNumber": 5,
+        "label": "C.5 (2:31 - 3:05)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.5 (2:31 - 3:05)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1po7qppFp5jyxzjT0tiRw_sggDYyaXrYl/view?usp=drive_link",
+        "driveFileId": "1po7qppFp5jyxzjT0tiRw_sggDYyaXrYl",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-005",
+        "r2Key": "andrew-chanover/c/005.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 11,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.6",
+        "bucket": "C",
+        "segmentNumber": 6,
+        "label": "C.6 (3:05 - 3:45)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.6 (3:05 - 3:45)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1q9gTqSzEr84zRxTEJYCjqldqztvMAo9I/view?usp=drive_link",
+        "driveFileId": "1q9gTqSzEr84zRxTEJYCjqldqztvMAo9I",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-006",
+        "r2Key": "andrew-chanover/c/006.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 12,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.7",
+        "bucket": "C",
+        "segmentNumber": 7,
+        "label": "C.7 (3:45 - 4:32)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.7 (3:45 - 4:32)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1qD75gumUp0VleR3aoU4zReSmr25SVCUB/view?usp=drive_link",
+        "driveFileId": "1qD75gumUp0VleR3aoU4zReSmr25SVCUB",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-007",
+        "r2Key": "andrew-chanover/c/007.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 13,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.8",
+        "bucket": "C",
+        "segmentNumber": 8,
+        "label": "C.8 (4:32 - 5:04)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.8 (4:32 - 5:04)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1qI2SuT1PZ_9slKhMgvZ3-wVVnNliRbBi/view?usp=drive_link",
+        "driveFileId": "1qI2SuT1PZ_9slKhMgvZ3-wVVnNliRbBi",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-008",
+        "r2Key": "andrew-chanover/c/008.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 14,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.9",
+        "bucket": "C",
+        "segmentNumber": 9,
+        "label": "C.9 (5:04 - 5:26)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.9 (5:04 - 5:26)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1qRdDO0EysNmBbU1f-IenrSslafCg88Xb/view?usp=drive_link",
+        "driveFileId": "1qRdDO0EysNmBbU1f-IenrSslafCg88Xb",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-009",
+        "r2Key": "andrew-chanover/c/009.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 15,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.10",
+        "bucket": "C",
+        "segmentNumber": 10,
+        "label": "C.10 (5:26 - 5:42)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.10 (5:26 - 5:42)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1qWR84Spf_BTLNLH-bAuKZgVqNrjgHlr9/view?usp=drive_link",
+        "driveFileId": "1qWR84Spf_BTLNLH-bAuKZgVqNrjgHlr9",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-010",
+        "r2Key": "andrew-chanover/c/010.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 16,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.11",
+        "bucket": "C",
+        "segmentNumber": 11,
+        "label": "C.11 (5:42 - 6:02)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.11 (5:42 - 6:02)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1qhdbe8mr4uungLrSeC8ea1vNhzz8hUy9/view?usp=drive_link",
+        "driveFileId": "1qhdbe8mr4uungLrSeC8ea1vNhzz8hUy9",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-011",
+        "r2Key": "andrew-chanover/c/011.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 17,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.12",
+        "bucket": "C",
+        "segmentNumber": 12,
+        "label": "C.12 (6:02 - 6:23)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.12 (6:02 - 6:23)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1qnzNJZH1VOdOjofwtSeqa1Y_oWT1N3ey/view?usp=drive_link",
+        "driveFileId": "1qnzNJZH1VOdOjofwtSeqa1Y_oWT1N3ey",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-012",
+        "r2Key": "andrew-chanover/c/012.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 18,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.13",
+        "bucket": "C",
+        "segmentNumber": 13,
+        "label": "C.13 (6:23 - 6:34)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.13 (6:23 - 6:34)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1r57Dl5owt21E0OLfAGApnK8CwvN8rSU6/view?usp=drive_link",
+        "driveFileId": "1r57Dl5owt21E0OLfAGApnK8CwvN8rSU6",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-013",
+        "r2Key": "andrew-chanover/c/013.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 19,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.14",
+        "bucket": "C",
+        "segmentNumber": 14,
+        "label": "C.14 (6:34 - 6:58)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.14 (6:34 - 6:58)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1r5V-Bky7beAwd4TdOPSS4xpyDiCzaP6N/view?usp=drive_link",
+        "driveFileId": "1r5V-Bky7beAwd4TdOPSS4xpyDiCzaP6N",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-014",
+        "r2Key": "andrew-chanover/c/014.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 20,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.15",
+        "bucket": "C",
+        "segmentNumber": 15,
+        "label": "C.15 (6:58 - 7:16)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.15 (6:58 - 7:16)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1r65ta9wO4gdlqEMyCz9DgqVegOAoOq2i/view?usp=drive_link",
+        "driveFileId": "1r65ta9wO4gdlqEMyCz9DgqVegOAoOq2i",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-015",
+        "r2Key": "andrew-chanover/c/015.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 21,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.16",
+        "bucket": "C",
+        "segmentNumber": 16,
+        "label": "C.16 (7:16 - 8:10)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.16 (7:16 - 8:10)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1rCJIQXaKISfhmJtIAjrG0Ml2SsEoLHxw/view?usp=drive_link",
+        "driveFileId": "1rCJIQXaKISfhmJtIAjrG0Ml2SsEoLHxw",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-016",
+        "r2Key": "andrew-chanover/c/016.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 22,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.17",
+        "bucket": "C",
+        "segmentNumber": 17,
+        "label": "C.17 (8:10 - 8:46)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.17 (8:10 - 8:46)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1rJKHXTPw2zW-cRRySlPc5cMH_xLCBe8O/view?usp=drive_link",
+        "driveFileId": "1rJKHXTPw2zW-cRRySlPc5cMH_xLCBe8O",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-017",
+        "r2Key": "andrew-chanover/c/017.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 23,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.18",
+        "bucket": "C",
+        "segmentNumber": 18,
+        "label": "C.18 (8:46 - 9:44)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.18 (8:46 - 9:44)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1rTn9qRAQ0Qmjc6Z4S053bIUdjfINMos9/view?usp=drive_link",
+        "driveFileId": "1rTn9qRAQ0Qmjc6Z4S053bIUdjfINMos9",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-018",
+        "r2Key": "andrew-chanover/c/018.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 24,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.19",
+        "bucket": "C",
+        "segmentNumber": 19,
+        "label": "C.19 (9:44 - 10:27)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.19 (9:44 - 10:27)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1rTxMH4j2LEasFKqu9j9tYRgi7FQjFA19/view?usp=drive_link",
+        "driveFileId": "1rTxMH4j2LEasFKqu9j9tYRgi7FQjFA19",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-019",
+        "r2Key": "andrew-chanover/c/019.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 25,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.20",
+        "bucket": "C",
+        "segmentNumber": 20,
+        "label": "C.20 (10:27 - 10:42)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.20 (10:27 - 10:42)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1rX6fp5PW2aCR1ECBQb_w4XySjJumEOZe/view?usp=drive_link",
+        "driveFileId": "1rX6fp5PW2aCR1ECBQb_w4XySjJumEOZe",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-020",
+        "r2Key": "andrew-chanover/c/020.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 26,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.21",
+        "bucket": "C",
+        "segmentNumber": 21,
+        "label": "C.21 (10:42 - 11:22)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.21 (10:42 - 11:22)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1r_U0Hpj3_EG1H1CaQEHZEZVdsB1lZSyu/view?usp=drive_link",
+        "driveFileId": "1r_U0Hpj3_EG1H1CaQEHZEZVdsB1lZSyu",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-021",
+        "r2Key": "andrew-chanover/c/021.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 27,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.22",
+        "bucket": "C",
+        "segmentNumber": 22,
+        "label": "C.22 (11:22 - 11:58)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.22 (11:22 - 11:58)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1rcrXqsHUR31WbpQwcj0MM_cMPzh3e_4a/view?usp=drive_link",
+        "driveFileId": "1rcrXqsHUR31WbpQwcj0MM_cMPzh3e_4a",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-022",
+        "r2Key": "andrew-chanover/c/022.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 28,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.23",
+        "bucket": "C",
+        "segmentNumber": 23,
+        "label": "C.23 (11:58 - 12:28)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.23 (11:58 - 12:28)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1rdG5gX0oxwpNCZO0G_l1s_BaJTZU_PfL/view?usp=drive_link",
+        "driveFileId": "1rdG5gX0oxwpNCZO0G_l1s_BaJTZU_PfL",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-023",
+        "r2Key": "andrew-chanover/c/023.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 29,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.24",
+        "bucket": "C",
+        "segmentNumber": 24,
+        "label": "C.24 (12:28 - 12:54)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.24 (12:28 - 12:54)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1rfrYaUYS7I0VfuHVGxpX9WZXklK8Ax8s/view?usp=drive_link",
+        "driveFileId": "1rfrYaUYS7I0VfuHVGxpX9WZXklK8Ax8s",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-024",
+        "r2Key": "andrew-chanover/c/024.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 30,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.25",
+        "bucket": "C",
+        "segmentNumber": 25,
+        "label": "C.25 (12:54 - 13:12)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.25 (12:54 - 13:12)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1roQqYGWaqNZvkm1Ad-b41QPLSEXd7TQM/view?usp=drive_link",
+        "driveFileId": "1roQqYGWaqNZvkm1Ad-b41QPLSEXd7TQM",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-025",
+        "r2Key": "andrew-chanover/c/025.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 31,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.26",
+        "bucket": "C",
+        "segmentNumber": 26,
+        "label": "C.26 (13:12 - 13:35)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.26 (13:12 - 13:35)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1rywyevsmI-53l1bOiySHXVZCqUzesoCU/view?usp=drive_link",
+        "driveFileId": "1rywyevsmI-53l1bOiySHXVZCqUzesoCU",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-026",
+        "r2Key": "andrew-chanover/c/026.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 32,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.27",
+        "bucket": "C",
+        "segmentNumber": 27,
+        "label": "C.27 (13:35 - 14:05)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.27 (13:35 - 14:05)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1s56q5pR3Ns1eGjp4FDtKUOsgk3uao6CX/view?usp=drive_link",
+        "driveFileId": "1s56q5pR3Ns1eGjp4FDtKUOsgk3uao6CX",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-027",
+        "r2Key": "andrew-chanover/c/027.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 33,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.28",
+        "bucket": "C",
+        "segmentNumber": 28,
+        "label": "C.28 (14:05 - 14:35)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.28 (14:05 - 14:35)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1s7etNaXby8JjgNFsvF8fLgrkg3EV--UU/view?usp=drive_link",
+        "driveFileId": "1s7etNaXby8JjgNFsvF8fLgrkg3EV--UU",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-028",
+        "r2Key": "andrew-chanover/c/028.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 34,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.29",
+        "bucket": "C",
+        "segmentNumber": 29,
+        "label": "C.29 (14:35 - 14:59)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.29 (14:35 - 14:59)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1s8LhraBlgd7w01JbbkYG-8PkgM5n5HIH/view?usp=drive_link",
+        "driveFileId": "1s8LhraBlgd7w01JbbkYG-8PkgM5n5HIH",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-029",
+        "r2Key": "andrew-chanover/c/029.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 35,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.30",
+        "bucket": "C",
+        "segmentNumber": 30,
+        "label": "C.30 (14:59 - 15:25)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.30 (14:59 - 15:25)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1sAnzTzABqAC0YEt9VvJB4ITch4soJxXa/view?usp=drive_link",
+        "driveFileId": "1sAnzTzABqAC0YEt9VvJB4ITch4soJxXa",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-030",
+        "r2Key": "andrew-chanover/c/030.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 36,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "C.31",
+        "bucket": "C",
+        "segmentNumber": 31,
+        "label": "C.31 (15:25 - 16:07)\n4K  |  1080p  |  ste",
+        "sourceLabel": "C.31 (15:25 - 16:07)\n4K  |  1080p  |  ste",
+        "rawUrl": "https://drive.google.com/file/d/1sO6dXqNt6J6MoIzG4w5GoF2cGlf3D-_x/view?usp=drive_link",
+        "driveFileId": "1sO6dXqNt6J6MoIzG4w5GoF2cGlf3D-_x",
+        "type": "video",
+        "typeReason": "label-token",
+        "availableTypes": [
+          "video",
+          "audio"
+        ],
+        "fileId": "andrew-chanover-c-031",
+        "r2Key": "andrew-chanover/c/031.mov",
+        "sizeBytes": 0,
+        "mime": "video/*",
+        "position": 37,
+        "enabled": true,
+        "role": "media"
+      },
+      {
+        "bucketNumber": "X.1",
+        "bucket": "X",
+        "segmentNumber": 1,
+        "label": "Recording Index PDF",
+        "sourceLabel": "Recording Index PDF",
+        "rawUrl": "https://docs.google.com/spreadsheets/d/10cMq02K7fiTmw-eWSnbmsXO6kTgkfs23ripJurJrmws/export?format=pdf&gid=0",
+        "driveFileId": "",
+        "type": "pdf",
+        "availableTypes": [
+          "pdf"
+        ],
+        "fileId": "andrew-chanover-recording-index-pdf",
+        "r2Key": "andrew-chanover/recording-index/recording-index.pdf",
+        "sizeBytes": 0,
+        "mime": "application/pdf",
+        "position": 38,
+        "enabled": true,
+        "role": "recording_index_pdf"
+      }
+    ],
+    "entitlements": [
+      {
+        "type": "role",
+        "value": "authenticated"
+      }
+    ],
+    "recordingIndex": {
+      "sheetUrl": "https://docs.google.com/spreadsheets/d/10cMq02K7fiTmw-eWSnbmsXO6kTgkfs23ripJurJrmws/edit?gid=0#gid=0",
+      "sheetId": "10cMq02K7fiTmw-eWSnbmsXO6kTgkfs23ripJurJrmws",
+      "gid": "0",
+      "pdfAssetId": "andrew-chanover-recording-index-pdf",
+      "bundleAllToken": "bundle:recording-index:E.Gtr. Ch AV2024 S2:all",
+      "rootFolderUrl": "https://drive.google.com/drive/folders/1iZL2E7DHAY9MEh412kTYOZkmAupBuz5d?usp=drive_link",
+      "bucketFolderUrls": {
+        "A": "https://drive.google.com/drive/folders/1iqo31Bh9Ik4RoZoj3VvJjDjB0C16V_lM?usp=drive_link",
+        "B": "https://drive.google.com/drive/folders/1ip4qtjl0cCgBy-DHVUAokf8sUlFG-jMD?usp=drive_link",
+        "C": "https://drive.google.com/drive/folders/1im2SZKczL0-62_aF6IA0hQgWhSfA2Bcv?usp=drive_link"
+      }
+    },
+    "filePath": "/Users/seb/dexdsl.github.io/data/protected.assets.json"
+  }
+}

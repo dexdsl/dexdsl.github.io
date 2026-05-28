@@ -1089,6 +1089,8 @@
 
     const canonicalHref = toAbsoluteUrl(doc.querySelector('link[rel="canonical"]')?.getAttribute('href'), sourceHref || window.location.origin);
     const bucketFileStats = normalizeBucketFileStats(cfg?.bucketFileStats);
+    const manifest = parseJsonScriptById(doc, 'dex-manifest') || {};
+    const manifestBundleTokens = normalizeManifestBundleTokens(manifest);
 
     return {
       lookup,
@@ -1096,7 +1098,51 @@
       thumbnailSrc,
       canonicalHref,
       bucketFileStats,
+      manifestBundleTokens,
     };
+  }
+
+  function normalizeManifestBundleTokens(manifest = {}) {
+    const all = [];
+    const seen = new Set();
+    const byBucketType = new Map();
+
+    const ensureBucketType = (bucket, mediaType) => {
+      const safeBucket = normalizeBucket(bucket);
+      const safeMediaType = normalizeMediaType(mediaType);
+      if (!safeBucket || !safeMediaType) return [];
+      const key = `${safeBucket}|${safeMediaType}`;
+      if (!byBucketType.has(key)) byBucketType.set(key, []);
+      return byBucketType.get(key);
+    };
+
+    const appendToken = (rawToken, bucket, mediaType) => {
+      const token = toText(rawToken).trim();
+      if (!token || !/^bundle:/i.test(token)) return;
+      const dedupeKey = token.toLowerCase();
+      if (!seen.has(dedupeKey)) {
+        seen.add(dedupeKey);
+        all.push(token);
+      }
+      const list = ensureBucketType(bucket, mediaType);
+      if (!list.length || list[list.length - 1] !== token) {
+        if (!list.some((existing) => existing.toLowerCase() === dedupeKey)) list.push(token);
+      }
+    };
+
+    const consumeFamily = (family, mediaType) => {
+      if (!family || typeof family !== 'object') return;
+      Object.entries(family).forEach(([bucketKey, formatMap]) => {
+        const safeBucket = normalizeBucket(bucketKey);
+        if (!safeBucket || !formatMap || typeof formatMap !== 'object') return;
+        Object.values(formatMap).forEach((tokenValue) => appendToken(tokenValue, safeBucket, mediaType));
+      });
+    };
+
+    consumeFamily(manifest?.audio, 'audio');
+    consumeFamily(manifest?.video, 'video');
+
+    return { all, byBucketType };
   }
 
   async function requestEntryHtml(entryHref) {
@@ -1457,6 +1503,65 @@
     return list;
   }
 
+  function collectLegacyBundleTokensFromManifest(rows = [], manifestBundleTokens = null) {
+    if (!manifestBundleTokens || typeof manifestBundleTokens !== 'object') return [];
+    const byBucketType = manifestBundleTokens.byBucketType instanceof Map
+      ? manifestBundleTokens.byBucketType
+      : new Map();
+    const all = Array.isArray(manifestBundleTokens.all) ? manifestBundleTokens.all : [];
+    const list = [];
+    const seen = new Set();
+
+    const appendToken = (tokenValue) => {
+      const token = toText(tokenValue).trim();
+      if (!token) return;
+      const dedupeKey = token.toLowerCase();
+      if (seen.has(dedupeKey)) return;
+      seen.add(dedupeKey);
+      list.push(token);
+    };
+    const appendBucketType = (bucket, mediaType) => {
+      const safeBucket = normalizeBucket(bucket);
+      const safeMediaType = normalizeMediaType(mediaType);
+      if (!safeBucket || !safeMediaType) return;
+      const key = `${safeBucket}|${safeMediaType}`;
+      const tokens = byBucketType.get(key);
+      if (!Array.isArray(tokens)) return;
+      tokens.forEach(appendToken);
+    };
+
+    const safeRows = Array.isArray(rows) ? rows : [];
+    safeRows.forEach((row) => {
+      const kind = toText(row?.kind).trim().toLowerCase();
+      const bucket = normalizeBucket(row?.bucket);
+      const mediaType = normalizeMediaType(row?.mediaType);
+      const mediaTypes = normalizeAvailableTypes(row?.mediaTypes, mediaType);
+      if (kind === 'collection') {
+        all.forEach(appendToken);
+        return;
+      }
+      if (kind === 'bucket') {
+        appendBucketType(bucket, 'audio');
+        appendBucketType(bucket, 'video');
+        return;
+      }
+      if (kind === 'type') {
+        appendBucketType(bucket, mediaType);
+        return;
+      }
+      if (kind === 'file') {
+        if (!mediaTypes.length) {
+          appendBucketType(bucket, 'audio');
+          appendBucketType(bucket, 'video');
+          return;
+        }
+        mediaTypes.forEach((type) => appendBucketType(bucket, type));
+      }
+    });
+
+    return list;
+  }
+
   async function requestLookupBundle({ token, lookup, tokens, onTick }) {
     const safeLookup = normalizeLookup(lookup);
     if (!safeLookup) {
@@ -1511,7 +1616,7 @@
     throw err;
   }
 
-  async function requestLegacyBagBundles({ token, selections, filesByLookup = null, onTick }) {
+  async function requestLegacyBagBundles({ token, selections, filesByLookup = null, entryMetaByLookup = null, onTick }) {
     const safeSelections = Array.isArray(selections) ? selections : [];
     const out = [];
     for (let index = 0; index < safeSelections.length; index += 1) {
@@ -1530,7 +1635,13 @@
       const lookupFiles = filesByLookup instanceof Map
         ? (filesByLookup.get(lookup) || [])
         : [];
+      const entryMeta = entryMetaByLookup instanceof Map
+        ? (entryMetaByLookup.get(lookup) || null)
+        : null;
       let tokens = collectLegacyBundleTokensFromFiles(lookup, rows, lookupFiles);
+      if (!tokens.length) {
+        tokens = collectLegacyBundleTokensFromManifest(rows, entryMeta?.manifestBundleTokens || null);
+      }
       if (!tokens.length) {
         tokens = collectLegacyBundleTokens(lookup, row?.nodes);
       }
@@ -2205,6 +2316,7 @@
 
       try {
         await resolveLookupFiles();
+        await resolveLookupEntryMeta();
         const selections = collectSelectionsPayload();
         try {
           const payload = await requestBagBundle({
@@ -2252,6 +2364,7 @@
             token: state.auth.token,
             selections,
             filesByLookup: state.filesByLookup,
+            entryMetaByLookup: state.entryMetaByLookup,
             onTick: ({ index = 0, total = 0 } = {}) => {
               const safeTotal = Number(total) > 1 ? Number(total) : 0;
               const safeIndex = Number(index) + 1;
