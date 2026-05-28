@@ -92,6 +92,13 @@ function ensureRuntimeMarkers(runtimeJs) {
   }
 }
 
+function ensurePublicEntryChromeContract(runtimeJs) {
+  if (/classList\.add\([^)]*['"]dx-route-profile-protected['"]/s.test(runtimeJs)
+    || /classList\.add\([^)]*['"]dx-route-show-mesh['"]/s.test(runtimeJs)) {
+    fail('entry sidebar runtime must not self-apply profile protected or profile mesh route classes');
+  }
+}
+
 function ensureCollectionHeadingLigatureContract(dexCss) {
   const headingRule = /body\.dx-entry-page\s+\.dex-collections\s*>\s*h3\[data-dx-entry-heading(?:="1")?\][\s\S]*?\{([\s\S]*?)\}/i.exec(dexCss);
   if (!headingRule) {
@@ -159,6 +166,7 @@ async function main() {
   ensureOrderedSections(templateHtml);
   ensureRecordingIndexSecondary(templateHtml);
   ensureRuntimeMarkers(runtimeJs);
+  ensurePublicEntryChromeContract(runtimeJs);
   ensureCollectionHeadingLigatureContract(dexCss);
   ensureTooltipCssContract(dexCss);
   ensureCompilerMarkers(entryHtmlSource);

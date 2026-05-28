@@ -28,12 +28,19 @@ const PUBLIC_ENTRY_ROUTES = [
 ];
 
 const PROFILE_MESH_ROUTES = [
+  '/favorites',
+  '/settings',
+  '/achievements',
   '/submit',
   '/messages',
+  '/entry/favorites',
   '/entry/submit',
   '/entry/messages',
   '/entry/messages/submission',
   '/entry/pressroom',
+  '/entry/settings',
+  '/entry/achievements',
+  '/entry/bag',
 ];
 
 function readText(filePath) {
@@ -117,6 +124,18 @@ function main() {
     || protectedPathFunction.includes('/^\\/entry\\/[^/]+$/.test(normalized)')
     || protectedPathFunction.includes('/^\\/entries\\/[^/]+$/.test(normalized)')) {
     failures.push('header-slot must not mark /entry/:slug or /entries/:slug as protected by catch-all');
+  }
+  const showMeshFunction = extractFunctionBlock(headerSlotText, 'isProfileShowMeshPath');
+  if (showMeshFunction.includes("document.body.classList.contains('dex-entry-page')) return true")
+    || showMeshFunction.includes('/^\\/entry\\/[^/]+$/.test(normalized)')
+    || showMeshFunction.includes('/^\\/entries\\/[^/]+$/.test(normalized)')) {
+    failures.push('header-slot must not apply profile mesh chrome to /entry/:slug or /entries/:slug by catch-all');
+  }
+  const forceBootstrapFunction = extractFunctionBlock(headerSlotText, 'shouldForcePersistentChromeBootstrap');
+  if (forceBootstrapFunction.includes("document.body.classList.contains('dex-entry-page')) return true")
+    || forceBootstrapFunction.includes('/^\\/entry\\/[^/]+$/.test(normalized)')
+    || forceBootstrapFunction.includes('/^\\/entries\\/[^/]+$/.test(normalized)')) {
+    failures.push('header-slot must not force profile chrome bootstrap on /entry/:slug or /entries/:slug by catch-all');
   }
 
   for (const route of PROFILE_MESH_ROUTES) {

@@ -130,11 +130,9 @@
   }
 
   function shouldForcePersistentChromeBootstrap(pathname = window.location.pathname) {
-    if (document.body && document.body.classList && document.body.classList.contains('dex-entry-page')) return true;
-    const normalized = normalizeProfileRoutePath(pathname);
-    if (/^\/entry\/[^/]+$/.test(normalized)) return true;
-    if (/^\/entries\/[^/]+$/.test(normalized)) return true;
-    return false;
+    return isProfileProtectedPath(pathname)
+      || isProfileStandardChromePath(pathname)
+      || isProfileShowMeshPath(pathname);
   }
 
   function removeLegacyEntryChrome(headerElement = null) {
@@ -445,9 +443,6 @@
   function isProfileShowMeshPath(pathname) {
     const normalized = normalizeProfileRoutePath(pathname);
     if (PROFILE_SHOW_MESH_ROUTES.has(normalized)) return true;
-    if (document.body && document.body.classList && document.body.classList.contains('dex-entry-page')) return true;
-    if (/^\/entry\/[^/]+$/.test(normalized)) return true;
-    if (/^\/entries\/[^/]+$/.test(normalized)) return true;
     return false;
   }
 

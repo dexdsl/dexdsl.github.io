@@ -458,8 +458,8 @@
 
   const ensureProfileChromeRuntime = (origin) => {
     if (!(document.body instanceof HTMLElement)) return;
-    document.body.classList.add('dx-entry-page', 'dx-route-profile-protected', 'dx-route-show-mesh');
-    document.body.classList.remove('dx-route-standard-chrome');
+    document.body.classList.add('dx-entry-page');
+    document.body.classList.remove('dx-route-profile-protected', 'dx-route-standard-chrome', 'dx-route-show-mesh');
     document.body.classList.remove('announcement-bar-reserved-space');
     const scriptPath = '/assets/js/header-slot.js';
     const existing = Array.from(document.querySelectorAll('script[src]')).find((script) => {
@@ -571,7 +571,7 @@
         min-height: 0 !important;
       }
 
-      html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-route-profile-protected.dx-entry-page #footer-sections {
+      html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page #footer-sections {
         position: relative !important;
         width: 100vw !important;
         max-width: 100vw !important;
@@ -587,24 +587,24 @@
         z-index: calc(var(--dx-layer-foreground) + 2) !important;
       }
 
-      html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-route-profile-protected.dx-entry-page #footer-sections .dex-footer-section {
+      html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page #footer-sections .dex-footer-section {
         width: var(--dx-header-frame-width-vw) !important;
         max-width: var(--dx-header-frame-width-vw) !important;
         margin-left: auto !important;
         margin-right: auto !important;
       }
 
-      body.dx-route-profile-protected.dx-entry-page #footer-sections .page-section,
-      body.dx-route-profile-protected.dx-entry-page #footer-sections .content-wrapper,
-      body.dx-route-profile-protected.dx-entry-page #footer-sections .content,
-      body.dx-route-profile-protected.dx-entry-page #footer-sections .fluid-engine,
-      body.dx-route-profile-protected.dx-entry-page #footer-sections .fe-block,
-      body.dx-route-profile-protected.dx-entry-page #footer-sections .sqs-block,
-      body.dx-route-profile-protected.dx-entry-page #footer-sections .sqs-block-content,
-      body.dx-route-profile-protected.dx-entry-page #footer-sections .sqs-code-container,
-      body.dx-route-profile-protected.dx-entry-page #footer-sections .dx-block,
-      body.dx-route-profile-protected.dx-entry-page #footer-sections .dx-block-content,
-      body.dx-route-profile-protected.dx-entry-page #footer-sections .dx-code-container {
+      body.dx-entry-page #footer-sections .page-section,
+      body.dx-entry-page #footer-sections .content-wrapper,
+      body.dx-entry-page #footer-sections .content,
+      body.dx-entry-page #footer-sections .fluid-engine,
+      body.dx-entry-page #footer-sections .fe-block,
+      body.dx-entry-page #footer-sections .sqs-block,
+      body.dx-entry-page #footer-sections .sqs-block-content,
+      body.dx-entry-page #footer-sections .sqs-code-container,
+      body.dx-entry-page #footer-sections .dx-block,
+      body.dx-entry-page #footer-sections .dx-block-content,
+      body.dx-entry-page #footer-sections .dx-code-container {
         margin: 0 !important;
         padding: 0 !important;
         width: 100% !important;
@@ -614,16 +614,16 @@
         overflow: visible !important;
       }
 
-      body.dx-route-profile-protected.dx-entry-page #footer-sections .fe-block {
+      body.dx-entry-page #footer-sections .fe-block {
         grid-column: 1 / -1 !important;
       }
 
-      body.dx-route-profile-protected.dx-entry-page #footer-sections .sqs-block {
+      body.dx-entry-page #footer-sections .sqs-block {
         justify-self: stretch !important;
         place-self: auto stretch !important;
       }
 
-      body.dx-route-profile-protected.dx-entry-page #footer-sections .dex-footer {
+      body.dx-entry-page #footer-sections .dex-footer {
         position: relative !important;
         left: auto !important;
         right: auto !important;
@@ -636,7 +636,7 @@
         pointer-events: auto !important;
       }
 
-      body.dx-route-profile-protected.dx-entry-page .dex-footer.dx-profile-footer-portaled {
+      body.dx-entry-page .dex-footer.dx-profile-footer-portaled {
         display: none !important;
       }
 
