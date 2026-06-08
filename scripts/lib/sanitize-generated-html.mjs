@@ -1116,6 +1116,7 @@ body.dx-entry-page .dex-overview .overview-lookup {
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   text-align: center !important;
+  font-family: var(--font-heading, "Stretch Pro", system-ui, sans-serif) !important;
   font-size: var(--dx-entry-overview-lookup-size, clamp(1.02rem, 1.72vw, 1.58rem)) !important;
   font-weight: 800 !important;
   letter-spacing: 0.03em !important;
@@ -1446,19 +1447,32 @@ function ensureHead($) {
   return head;
 }
 
+const ENTRY_BODY_CLASS_ALLOWLIST = new Set([
+  'dx-entry-page',
+  'dex-entry-page',
+  'dx-bag-page',
+  'dx-route-show-mesh',
+  'dx-slot-enabled',
+]);
+
 function ensureEntryBodyClasses($) {
   const hasEntryStructure = $('.dex-entry-layout').length > 0 || $('.dex-sidebar').length > 0;
   if (!hasEntryStructure) return;
   const body = $('body').first();
   if (!body.length) return;
-  const classSet = new Set(
-    String(body.attr('class') || '')
-      .split(/\s+/)
-      .map((value) => value.trim())
-      .filter(Boolean),
-  );
+  // Drop the legacy Squarespace body class soup (tweak-*, form-*, header-*, etc.).
+  // It triggers Squarespace component CSS that overrides the modern dex layout
+  // (cf. multiperc, which renders correctly because it only carries the dex markers).
+  const existing = String(body.attr('class') || '')
+    .split(/\s+/)
+    .map((value) => value.trim())
+    .filter(Boolean);
+  const kept = existing.filter((cls) => ENTRY_BODY_CLASS_ALLOWLIST.has(cls));
+  const classSet = new Set(kept);
+  classSet.add('dex-entry-page');
   classSet.add('dx-entry-page');
   body.attr('class', Array.from(classSet).join(' '));
+  body.removeAttr('id');
 }
 
 function findEntryFetchRoot($) {
