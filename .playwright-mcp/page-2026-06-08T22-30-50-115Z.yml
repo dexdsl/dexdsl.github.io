@@ -1,0 +1,243 @@
+- generic [active]:
+  - banner:
+    - generic [ref=e1]:
+      - link "Skip to Content" [ref=e2] [cursor=pointer]:
+        - /url: index.html#page
+      - generic [ref=e4]:
+        - generic [ref=e6]:
+          - link "YouTube" [ref=e7] [cursor=pointer]:
+            - /url: https://www.youtube.com/channel/UCo5B4ztNwaErXhQlGyNhMDQ
+            - img [ref=e8]
+          - link "Instagram" [ref=e10] [cursor=pointer]:
+            - /url: http://instagram.com/dexdsl
+            - img [ref=e11]
+          - link "TikTok" [ref=e13] [cursor=pointer]:
+            - /url: https://www.tiktok.com/@dexdsl
+            - img [ref=e14]
+          - link "Twitter" [ref=e16] [cursor=pointer]:
+            - /url: https://twitter.com/dexdsl
+            - img [ref=e17]
+        - generic [ref=e19]:
+          - link "dex digital sample library" [ref=e22] [cursor=pointer]:
+            - /url: /
+            - img "dex digital sample library" [ref=e23]
+          - navigation [ref=e24]:
+            - link "CATALOG" [ref=e26] [cursor=pointer]:
+              - /url: /catalog/
+            - link "IN DEX" [ref=e28] [cursor=pointer]:
+              - /url: /call/
+            - link "DEX NOTES" [ref=e30] [cursor=pointer]:
+              - /url: /dexnotes/
+            - link "ABOUT" [ref=e32] [cursor=pointer]:
+              - /url: /about/
+        - generic [ref=e33]:
+          - link "DONATE" [ref=e35] [cursor=pointer]:
+            - /url: /donate/
+          - button "SIGN IN" [ref=e37] [cursor=pointer]
+  - generic [ref=e39]:
+    - main [ref=e41]:
+      - article [ref=e42]:
+        - generic [ref=e46]:
+          - generic [ref=e47]:
+            - generic [ref=e49]:
+              - link "catalog" [ref=e50] [cursor=pointer]:
+                - /url: /catalog
+              - img [ref=e52] [cursor=pointer]
+              - generic [ref=e54]: prepared floor tom, tim feeney
+            - heading "prepared flo‌or tom, tim fe‌eney" [level=1] [ref=e55]
+            - generic [ref=e56]:
+              - generic [ref=e57]:
+                - generic [ref=e58]: published
+                - time [ref=e59]: feb 28, 2026
+              - generic [ref=e60]:
+                - text: ·
+                - generic [ref=e61]: updated
+                - time [ref=e62]: feb 28, 2026
+              - generic [ref=e63]:
+                - text: ·
+                - generic [ref=e64]: location
+                - generic [ref=e65]: LA Artcore
+              - generic [ref=e66]:
+                - text: ·
+                - generic [ref=e67]: "🏷 Tags: ambient, live, studio, experimental"
+              - generic [ref=e68]:
+                - text: ·
+                - generic [ref=e69]: 🎚 24-bit 🔊 48000 Hz 🎧 stereo
+          - generic [ref=e70]:
+            - generic [ref=e71]:
+              - iframe [ref=e75]:
+                - generic [active] [ref=f8e1]:
+                  - generic "YouTube Video Player" [ref=f8e3]
+                  - generic [ref=f8e5]:
+                    - generic:
+                      - generic:
+                        - button "Play video" [ref=f8e10] [cursor=pointer]:
+                          - generic [ref=f8e13]:
+                            - img
+                        - button "Hide player controls" [ref=f8e14] [cursor=pointer]
+                        - generic [ref=f8e16]:
+                          - generic [ref=f8e21]:
+                            - generic [ref=f8e22]:
+                              - link "Tim Feeney – Prepared Floor Tom | dexFest 2024" [ref=f8e23] [cursor=pointer]:
+                                - /url: https://www.youtube.com/watch?v=DVqLc0_Ezhc
+                              - link "Dex Digital Sample Library" [ref=f8e24] [cursor=pointer]:
+                                - /url: /channel/UCo5B4ztNwaErXhQlGyNhMDQ
+                                - generic [ref=f8e25]: Dex Digital Sample Library
+                            - generic [ref=f8e26]:
+                              - button "thumbnail-image" [ref=f8e27] [cursor=pointer]:
+                                - img "thumbnail-image" [ref=f8e28]
+                              - generic [ref=f8e30]:
+                                - generic: Dex Digital Sample Library
+                                - generic: 47 subscribers
+                          - generic [ref=f8e31]:
+                            - button "Copy link" [ref=f8e34] [cursor=pointer]:
+                              - generic [ref=f8e38]:
+                                - img
+                            - link "Watch on YouTube" [ref=f8e45] [cursor=pointer]:
+                              - /url: https://www.youtube.com/watch?v=DVqLc0_Ezhc
+                              - generic [ref=f8e48]:
+                                - text: Watch on
+                                - img [ref=f8e50]:
+                                  - generic [ref=f8e52]:
+                                    - img
+              - paragraph [ref=e78]:
+                - generic "description" [ref=e79]:
+                  - generic [ref=e80]: description
+                  - generic [ref=e81]: dexcription
+                - text: Improviser, composer, and interpreter Tim Feeney seeks to explore and examine the possibilities inherent in unstable sound and duration. Tim began working in this thread in 2002, within Boston’s community of improvisers interested in austere combinations of sounds and silences, and has since performed and recorded with musicians throughout the United States and abroad. He frequently collaborates with artists including the trio Meridian, with percussionists Sarah Hennies and Greg Stuart, pianist Annie Lewandowski, cellist and electronic musician Vic Rawlings, vocalist Ken Ueno, saxophonist Andrew Raffo Dewar, banjo and electronic musician Holland Hopson, trumpeter Nate Wooley, sound artists Jed Speare and Ernst Karel, video artist Jane Cassidy, and many others. Visit Tim Feeney’s website at timfeeney.com
+            - complementary [ref=e82]:
+              - generic [ref=e83]:
+                - generic [ref=e84]:
+                  - generic [ref=e85]: "#P.Pto. Fe AV2024 S2"
+                  - paragraph [ref=e86]: "Lookup #"
+                - generic [ref=e87]:
+                  - img "Series" [ref=e88]
+                  - paragraph [ref=e89]: Series
+              - generic [ref=e90]:
+                - heading "COL‌LECTION" [level=3] [ref=e91]
+                - generic [ref=e92]:
+                  - paragraph [ref=e93]: Available Buckets
+                  - generic [ref=e94]:
+                    - 'generic "A BUCKET • Status: available • File types: Audio, Video • Video quality: None • Audio WAV: n/a • Total files: 0" [ref=e95]':
+                      - generic: A
+                    - 'generic "B BUCKET • Status: available • File types: Audio, Video • Video quality: None • Audio WAV: n/a • Total files: 0" [ref=e96]':
+                      - generic: B
+                    - 'generic "C BUCKET • Status: available • File types: Audio, Video • Video quality: None • Audio WAV: n/a • Total files: 0" [ref=e97]':
+                      - generic: C
+                    - 'generic "D BUCKET • Status: unavailable • File types: None • Video quality: None • Audio WAV: n/a • Total files: 0" [ref=e98]':
+                      - generic: D
+                    - 'generic "E BUCKET • Status: unavailable • File types: None • Video quality: None • Audio WAV: n/a • Total files: 0" [ref=e99]':
+                      - generic: E
+                    - 'generic "X BUCKET • Status: unavailable • File types: None • Video quality: None • Audio WAV: n/a • Total files: 0" [ref=e100]':
+                      - generic: X
+                - generic [ref=e101]:
+                  - paragraph [ref=e102]: Favorite This Collection
+                  - button "Favorite entry" [ref=e103] [cursor=pointer]:
+                    - generic:
+                      - img
+                    - generic [ref=e104]: P.Pto. Fe AV2024 S2
+                    - generic [ref=e105]: Favorite entry
+                - generic [ref=e106]:
+                  - paragraph [ref=e107]: Favorite Buckets
+                  - generic [ref=e108]:
+                    - button "Favorite A" [ref=e109] [cursor=pointer]:
+                      - generic:
+                        - img
+                      - generic [ref=e110]: A
+                      - generic [ref=e111]: Favorite A
+                    - button "Favorite B" [ref=e112] [cursor=pointer]:
+                      - generic:
+                        - img
+                      - generic [ref=e113]: B
+                      - generic [ref=e114]: Favorite B
+                    - button "Favorite C" [ref=e115] [cursor=pointer]:
+                      - generic:
+                        - img
+                      - generic [ref=e116]: C
+                      - generic [ref=e117]: Favorite C
+              - generic [ref=e118]:
+                - heading "LICENSE" [level=3] [ref=e119]
+                - link "Creative Commons Attribution 4.0" [ref=e120] [cursor=pointer]:
+                  - /url: https://creativecommons.org/licenses/by/4.0/
+                  - img "Creative Commons Attribution 4.0" [ref=e121]
+                - paragraph [ref=e122]:
+                  - text: This work contains samples licensed under CC-BY 4.0 by Dex Digital Sample Library and
+                  - button "Tim Feeney" [ref=e123] [cursor=pointer]: Tim Feeney
+                - generic [ref=e124]:
+                  - button "COPY" [ref=e125] [cursor=pointer]:
+                    - generic [ref=e126]: COPY
+                  - button "USAGE NOTES" [ref=e127] [cursor=pointer]
+              - generic [ref=e128]:
+                - heading "CREDITS" [level=3] [ref=e129]
+                - generic [ref=e130]:
+                  - generic [ref=e131]:
+                    - generic [ref=e132]: Artist
+                    - button "Tim Feeney" [ref=e134] [cursor=pointer]: Tim Feeney
+                  - generic [ref=e135]:
+                    - generic [ref=e136]: Instrument
+                    - generic [ref=e137]: Prepared Floor Tom
+                  - generic [ref=e138]:
+                    - generic [ref=e139]: Video
+                    - generic [ref=e140]:
+                      - generic [ref=e141]: Dir
+                      - generic [ref=e142]: Gabrielle Milman
+                    - generic [ref=e143]:
+                      - generic [ref=e144]: Cin
+                      - generic [ref=e145]:
+                        - text: Gabrielle Milman,
+                        - button "Sebastian Suarez-Solis" [ref=e146] [cursor=pointer]: Sebastian Suarez-Solis
+                    - generic [ref=e147]:
+                      - generic [ref=e148]: Edit
+                      - button "Sebastian Suarez-Solis" [ref=e150] [cursor=pointer]: Sebastian Suarez-Solis
+                  - generic [ref=e151]:
+                    - generic [ref=e152]: Audio
+                    - generic [ref=e153]:
+                      - generic [ref=e154]: Rec
+                      - button "Cameron Church" [ref=e156] [cursor=pointer]: Cameron Church
+                    - generic [ref=e157]:
+                      - generic [ref=e158]: Mix
+                      - button "Sebastian Suarez-Solis" [ref=e160] [cursor=pointer]: Sebastian Suarez-Solis
+                    - generic [ref=e161]:
+                      - generic [ref=e162]: Master
+                      - button "Sebastian Suarez-Solis" [ref=e164] [cursor=pointer]: Sebastian Suarez-Solis
+                - generic [ref=e165]:
+                  - generic [ref=e166]: S2 2026
+                  - generic [ref=e167]: LA Artcore
+              - generic [ref=e168]:
+                - heading "DOWNLOAD" [level=3] [ref=e169]
+                - tabpanel [ref=e171]:
+                  - button "Get Files" [ref=e172] [cursor=pointer]:
+                    - generic [ref=e173]: GET FILES
+                  - button "Recording Index" [ref=e175] [cursor=pointer]:
+                    - generic [ref=e176]: RECORDING INDEX
+    - contentinfo [ref=e177]:
+      - generic [ref=e188]:
+        - img "Dex Footer Logo (black)" [ref=e191]
+        - generic [ref=e192]:
+          - text: © 2023–2026 DEX CO-OP CORP (EIN 92-3509152)
+          - text: dba Dex Digital Sample Library. All rights reserved.
+        - link "View Dex Digital Sample Library's Candid (GuideStar) profile" [ref=e194] [cursor=pointer]:
+          - /url: https://app.candid.org/profile/15083758/dex-digital-sample-library-92-3509152
+          - img "Candid (GuideStar) Transparency Seal" [ref=e195]
+        - generic [ref=e196]:
+          - generic [ref=e197]:
+            - link "YouTube" [ref=e198] [cursor=pointer]:
+              - /url: https://www.youtube.com/dexdsl
+              - img [ref=e199]
+            - link "Instagram" [ref=e201] [cursor=pointer]:
+              - /url: https://instagram.com/dexdsl
+              - img [ref=e202]
+            - link "TikTok" [ref=e204] [cursor=pointer]:
+              - /url: https://www.tiktok.com/@dexdsl
+              - img [ref=e205]
+            - link "Twitter" [ref=e207] [cursor=pointer]:
+              - /url: https://twitter.com/dexdsl
+              - img [ref=e208]
+          - navigation [ref=e210]:
+            - link "Privacy" [ref=e211] [cursor=pointer]:
+              - /url: /privacy
+            - link "Contact" [ref=e212] [cursor=pointer]:
+              - /url: /contact
+            - link "Copyright" [ref=e213] [cursor=pointer]:
+              - /url: /copyright
+  - img

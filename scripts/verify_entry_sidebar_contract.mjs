@@ -86,6 +86,13 @@ function ensureRuntimeMarkers(runtimeJs) {
     'data-dx-entry-fetch-target',
     'TOOLTIP_FETCH_SHELL_MARKER',
     'setTooltipFetchState(layer, FETCH_STATE_LOADING)',
+    'activateFavoritesApi(getFavoritesApi())',
+    'favoritesHydrationPromise',
+    "record.key !== 'layout'",
+    'entryTargetAlreadyReady',
+    'DOWNLOAD_TREE_STYLE_ID',
+    'dx-file-tree-summary',
+    'dx-file-tree-wrap',
   ];
   for (const marker of required) {
     if (!runtimeJs.includes(marker)) {

@@ -73,6 +73,7 @@ function verifyGlassParityContract(failures) {
   const requiredSlotMarkers = [
     'bootstrapPersistentChromeIfMissing',
     'getHeaderElement(document) || await bootstrapPersistentChromeIfMissing()',
+    'hasCompletePersistentChrome(document)',
   ];
   for (const marker of requiredSlotMarkers) {
     if (!slotRuntime.includes(marker)) {

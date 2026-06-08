@@ -129,6 +129,17 @@
     return wrapper.closest('header') || wrapper;
   }
 
+  function hasCompletePersistentChrome(root = document) {
+    if (!root || !root.querySelector) return false;
+    const header = getHeaderElement(root);
+    if (!(header instanceof HTMLElement)) return false;
+    const hasGradient = !!root.getElementById?.('scroll-gradient-bg');
+    const hasMesh = !!root.getElementById?.('gooey-mesh-wrapper');
+    const hasSprite = !!root.querySelector('svg[data-usage="social-icons-svg"]');
+    const hasFooter = !!getProfileFooterSourceElement(root);
+    return hasGradient && hasMesh && hasSprite && hasFooter;
+  }
+
   function shouldForcePersistentChromeBootstrap(pathname = window.location.pathname) {
     if (document.body && document.body.classList && document.body.classList.contains('dx-entry-page')) return true;
     return isProfileProtectedPath(pathname)
@@ -3531,7 +3542,8 @@
     ensureViewportFitCover();
     installIosSafariViewportSync();
 
-    const shouldForceBootstrap = shouldForcePersistentChromeBootstrap(window.location.pathname);
+    const shouldForceBootstrap = shouldForcePersistentChromeBootstrap(window.location.pathname)
+      && !hasCompletePersistentChrome(document);
     // Contract marker: getHeaderElement(document) || await bootstrapPersistentChromeIfMissing()
     const headerElement = await bootstrapPersistentChromeIfMissing({ force: shouldForceBootstrap }) || getHeaderElement(document);
     if (!headerElement) return;

@@ -29,6 +29,7 @@
   const COLLECTION_HEADING_CANONICAL = 'COL\u200CLECTION';
   const BUCKET_TOOLTIP_CACHE_PREFIX = 'dx:entry:bucket-tooltips:v1:';
   const ENTRY_RUNTIME_STYLE_ID = 'dx-entry-runtime-layout-overrides';
+  const DOWNLOAD_TREE_STYLE_ID = 'dx-entry-download-tree-style';
   const DX_MIN_SHEEN_MS = 120;
   const DX_ENTRY_TARGET_TIMEOUT_MS = 15000;
   const FETCH_STATE_LOADING = 'loading';
@@ -664,6 +665,228 @@
     document.head.appendChild(style);
   };
 
+  const ensureDownloadTreeStyles = () => {
+    if (!(document.head instanceof HTMLElement)) return;
+    if (document.getElementById(DOWNLOAD_TREE_STYLE_ID)) return;
+    const style = document.createElement('style');
+    style.id = DOWNLOAD_TREE_STYLE_ID;
+    style.textContent = `
+      .dex-download-modal--tree {
+        --dx-tree-rim: rgba(23, 28, 38, 0.14);
+        --dx-tree-rim-strong: rgba(23, 28, 38, 0.24);
+        --dx-tree-ink: rgba(18, 21, 28, 0.95);
+        --dx-tree-muted: rgba(18, 21, 28, 0.58);
+        --dx-tree-hot: #ff3b24;
+        --dx-tree-hot-2: #ff9816;
+      }
+
+      .dex-download-modal--tree .dex-download-modal-inner {
+        grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+      }
+
+      .dx-file-tree-summary {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+        min-height: 24px;
+        color: var(--dx-tree-muted);
+        font: 700 0.68rem/1.2 var(--font-body, "Courier Prime", monospace);
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+      }
+
+      .dx-file-tree-count-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 24px;
+        padding: 3px 9px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 59, 36, 0.42);
+        background: linear-gradient(130deg, rgba(255, 59, 36, 0.94), rgba(255, 152, 22, 0.94));
+        color: #fff;
+        box-shadow: 0 8px 20px rgba(255, 59, 36, 0.18);
+      }
+
+      .dx-file-tree-tools {
+        position: sticky;
+        top: 0;
+        z-index: 4;
+        padding-bottom: 8px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.99), rgba(255,255,255,0.88));
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+      }
+
+      .dx-file-tree-wrap {
+        align-content: start;
+        border: 1px solid var(--dx-tree-rim);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.56);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.72);
+        padding: 8px;
+        scrollbar-gutter: stable;
+      }
+
+      .dx-file-tree-node {
+        display: grid;
+        gap: 4px;
+      }
+
+      .dx-file-tree-row {
+        display: grid;
+        grid-template-columns: 24px 24px minmax(0, 1fr);
+        gap: 8px;
+        align-items: center;
+        min-height: 36px;
+        padding: 4px 7px;
+        border: 1px solid transparent;
+        border-radius: 7px;
+        color: var(--dx-tree-ink);
+        cursor: pointer;
+        position: relative;
+        transition: background 140ms ease, border-color 140ms ease, transform 140ms ease;
+      }
+
+      .dx-file-tree-row:hover,
+      .dx-file-tree-row:focus-visible {
+        background: rgba(255, 255, 255, 0.76);
+        border-color: var(--dx-tree-rim);
+        outline: 0;
+      }
+
+      .dx-file-tree-row.is-selected {
+        background: rgba(255, 72, 32, 0.095);
+        border-color: rgba(255, 72, 32, 0.32);
+      }
+
+      .dx-file-tree-row.is-partial {
+        background: rgba(255, 152, 22, 0.09);
+        border-color: rgba(255, 152, 22, 0.24);
+      }
+
+      .dx-file-tree-toggle {
+        display: grid;
+        place-items: center;
+        width: 24px;
+        height: 24px;
+        padding: 0;
+        border: 1px solid var(--dx-tree-rim);
+        border-radius: 6px;
+        background: rgba(255,255,255,0.72);
+        color: var(--dx-tree-ink);
+        font: 900 0.72rem/1 var(--font-body, "Courier Prime", monospace);
+        cursor: pointer;
+      }
+
+      .dx-file-tree-toggle[aria-hidden="true"] {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .dx-file-tree-checkbox {
+        width: 18px;
+        height: 18px;
+        margin: 0;
+        accent-color: var(--dx-tree-hot);
+        cursor: pointer;
+      }
+
+      .dx-file-tree-copy {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px;
+        align-items: center;
+        min-width: 0;
+      }
+
+      .dx-file-tree-label {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font: 800 0.79rem/1.08 var(--font-heading, "Typefesse", sans-serif);
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+      }
+
+      .dx-file-tree-node--file .dx-file-tree-label {
+        font: 700 0.75rem/1.2 var(--font-body, "Courier Prime", monospace);
+        text-transform: none;
+      }
+
+      .dx-file-tree-meta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 180px;
+        min-height: 20px;
+        padding: 2px 7px;
+        border-radius: 999px;
+        border: 1px solid var(--dx-tree-rim);
+        background: rgba(255,255,255,0.64);
+        color: var(--dx-tree-muted);
+        font: 700 0.62rem/1 var(--font-body, "Courier Prime", monospace);
+        letter-spacing: 0.015em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .dx-file-tree-node--audio > .dx-file-tree-row .dx-file-tree-meta {
+        border-color: rgba(26, 117, 255, 0.25);
+        color: rgba(9, 78, 170, 0.78);
+      }
+
+      .dx-file-tree-node--video > .dx-file-tree-row .dx-file-tree-meta {
+        border-color: rgba(255, 72, 32, 0.28);
+        color: rgba(177, 52, 18, 0.82);
+      }
+
+      .dx-file-tree-children {
+        display: grid;
+        gap: 4px;
+        margin-left: 12px;
+        padding-left: 12px;
+        border-left: 1px solid rgba(18, 20, 26, 0.14);
+      }
+
+      .dx-file-tree-actions {
+        position: sticky;
+        bottom: 0;
+        z-index: 5;
+        padding-top: 8px;
+        background: linear-gradient(0deg, rgba(255,255,255,0.99), rgba(255,255,255,0.84));
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+      }
+
+      @media (max-width: 680px) {
+        .dex-download-modal--tree .dex-download-modal-inner {
+          width: calc(100vw - 18px) !important;
+          max-height: calc(100vh - 18px) !important;
+        }
+
+        .dx-file-tree-tools {
+          grid-template-columns: minmax(0, 1fr) !important;
+        }
+
+        .dx-file-tree-copy {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 3px;
+        }
+
+        .dx-file-tree-meta {
+          justify-self: start;
+          max-width: 100%;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  };
+
   const parseCssPx = (value) => {
     const num = Number.parseFloat(String(value || '').trim().replace(/px$/i, ''));
     return Number.isFinite(num) ? num : 0;
@@ -778,12 +1001,28 @@
     return targets.byKey.get(String(key || '').trim()) || null;
   };
 
+  const entryTargetAlreadyReady = (record) => {
+    if (!record || !(record.target instanceof HTMLElement)) return false;
+    if (record.key === 'header') return isHeaderReady(record.target);
+    if (record.key === 'description') return isDescriptionReady(record.target);
+    if (record.key === 'media') return mediaTargetLooksReady(record.target);
+    return false;
+  };
+
   const startTargetLoading = (record, targets = null) => {
     if (!record || !(record.target instanceof HTMLElement)) return;
+    if (entryTargetAlreadyReady(record)) {
+      record.state = FETCH_STATE_READY;
+      record.startTs = nowTs();
+      setFetchState(record.target, FETCH_STATE_READY);
+      return;
+    }
     record.state = FETCH_STATE_LOADING;
     record.startTs = nowTs();
     setFetchState(record.target, FETCH_STATE_LOADING);
-    ensureFetchShell(record.target, record.variant, ENTRY_FETCH_SHELL_MARKER);
+    if (record.key !== 'layout') {
+      ensureFetchShell(record.target, record.variant, ENTRY_FETCH_SHELL_MARKER);
+    }
     if (record.timeoutId) {
       window.clearTimeout(record.timeoutId);
       record.timeoutId = 0;
@@ -2182,6 +2421,19 @@
     return favoritesRuntimePromise;
   };
 
+  const activateFavoritesApi = (favoritesApi, root = document) => {
+    const api = favoritesApi || getFavoritesApi();
+    if (!api) return null;
+    if (typeof api.migrateLegacy === 'function') {
+      try {
+        api.migrateLegacy();
+      } catch {}
+    }
+    bindFavoritesSignals(api);
+    refreshFavoriteButtons(api, root);
+    return api;
+  };
+
   const getBagApi = () => {
     const api = window.__dxBag;
     if (!api || typeof api.list !== 'function' || typeof api.upsertSelection !== 'function' || typeof api.removeSelection !== 'function') {
@@ -3325,6 +3577,7 @@
       btn.addEventListener('click', async () => {
         const lookup = String(context?.lookup || '').trim();
         if (!lookup) return;
+        ensureDownloadTreeStyles();
         const fallbackTree = buildFallbackDownloadTree(cfg, lookup);
         const embeddedTree = normalizeEmbeddedDownloadTree(cfg, lookup);
         let downloadTree = embeddedTree || fallbackTree;
@@ -3333,7 +3586,7 @@
         let filterQuery = '';
 
         const modal = document.createElement('div');
-        modal.className = 'dex-download-modal';
+        modal.className = 'dex-download-modal dex-download-modal--tree';
         modal.style.setProperty('position', 'fixed', 'important');
         modal.style.setProperty('inset', '0', 'important');
         modal.style.setProperty('z-index', '2147483000', 'important');
@@ -3433,7 +3686,12 @@
           statusBanner.textContent = text;
         };
 
+        const selectionSummary = document.createElement('div');
+        selectionSummary.className = 'dx-file-tree-summary';
+        selectionSummary.setAttribute('aria-live', 'polite');
+
         const treeTools = document.createElement('div');
+        treeTools.className = 'dx-file-tree-tools';
         treeTools.style.display = 'grid';
         treeTools.style.gridTemplateColumns = 'minmax(0,1fr) auto';
         treeTools.style.gap = '0.45rem';
@@ -3496,6 +3754,9 @@
         treeTools.appendChild(quickControls);
 
         const treeWrap = document.createElement('div');
+        treeWrap.className = 'dx-file-tree-wrap';
+        treeWrap.setAttribute('role', 'tree');
+        treeWrap.setAttribute('aria-label', 'Download file tree');
         treeWrap.style.display = 'grid';
         treeWrap.style.gap = '0.46rem';
         treeWrap.style.maxHeight = 'min(52vh, 520px)';
@@ -3504,6 +3765,7 @@
         treeWrap.style.paddingBottom = '0.08rem';
 
         const controls = document.createElement('div');
+        controls.className = 'dx-file-tree-actions';
         controls.style.display = 'flex';
         controls.style.flexWrap = 'wrap';
         controls.style.gap = '0.42rem';
@@ -3889,9 +4151,16 @@
 
         const updateActionState = () => {
           const selectedCount = selectedLeafKeys.size;
+          const totalCount = treeState.allLeafKeys.length;
           addToBagButton.disabled = selectedCount === 0;
           downloadNowButton.disabled = selectedCount === 0;
           addToBagButton.textContent = selectedCount > 0 ? `${addToBagBaseLabel} (${selectedCount})` : addToBagBaseLabel;
+          if (selectionSummary instanceof HTMLElement) {
+            const countText = selectedCount > 0
+              ? `${selectedCount} of ${totalCount} selected`
+              : `${totalCount} available file${totalCount === 1 ? '' : 's'}`;
+            selectionSummary.innerHTML = `<span class="dx-file-tree-count-pill">${escapeHtml(countText)}</span><span>Public manifest loaded locally. Sign-in is only required when downloading.</span>`;
+          }
         };
 
         const extractBucketOrdinal = (bucket, fileRow = {}) => {
@@ -3973,22 +4242,36 @@
           return `${lookup} ${ordinal}.${extension}`;
         };
 
+        const fileCountLabel = (count) => {
+          const safeCount = Number(count);
+          const total = Number.isFinite(safeCount) && safeCount > 0 ? Math.round(safeCount) : 0;
+          return `${total} file${total === 1 ? '' : 's'}`;
+        };
+
+        const mediaTypeLabel = (mediaType) => {
+          const safeType = String(mediaType || '').trim().toLowerCase();
+          if (safeType === 'audio') return 'Audio';
+          if (safeType === 'video') return 'Video';
+          return safeType || 'Files';
+        };
+
         const buildTreeModel = () => {
           const rootNode = {
             id: `collection|${lookup}`,
             kind: 'collection',
             label: `entry/${lookup}`,
-            meta: 'collection',
+            meta: fileCountLabel(treeState.allLeafKeys.length),
             leafKeys: treeState.allLeafKeys.slice(),
             children: [],
           };
           treeState.tree.buckets.forEach((bucketRow) => {
+            const bucketLeafKeys = (treeState.leafKeysByBucket.get(bucketRow.bucket) || []).slice();
             const bucketNode = {
               id: `bucket|${lookup}|${bucketRow.bucket}`,
               kind: 'bucket',
-              label: `${bucketRow.bucket} bucket`,
-              meta: 'bucket',
-              leafKeys: (treeState.leafKeysByBucket.get(bucketRow.bucket) || []).slice(),
+              label: `Bucket ${bucketRow.bucket}`,
+              meta: fileCountLabel(bucketLeafKeys.length),
+              leafKeys: bucketLeafKeys,
               children: [],
             };
             bucketRow.types.forEach((typeRow) => {
@@ -3999,9 +4282,9 @@
                   : 0);
               const typeNode = {
                 id: `type|${lookup}|${bucketRow.bucket}|${typeRow.mediaType}`,
-                kind: 'type',
-                label: typeRow.mediaType,
-                meta: `${typeFilesCount || 0} files`,
+                kind: String(typeRow.mediaType || '').trim().toLowerCase() || 'type',
+                label: mediaTypeLabel(typeRow.mediaType),
+                meta: fileCountLabel(typeFilesCount || 0),
                 leafKeys: (treeState.leafKeysByType.get(`${bucketRow.bucket}|${typeRow.mediaType}`) || []).slice(),
                 children: [],
               };
@@ -4015,7 +4298,7 @@
                     id: `variant|${lookup}|${bucketRow.bucket}|${typeRow.mediaType}|${variantKey}`,
                     kind: 'variant',
                     label: variantLabel,
-                    meta: `${(treeState.leafKeysByVariant.get(variantMapKey) || []).length} files`,
+                    meta: fileCountLabel((treeState.leafKeysByVariant.get(variantMapKey) || []).length),
                     leafKeys: (treeState.leafKeysByVariant.get(variantMapKey) || []).slice(),
                     children: [],
                   };
@@ -4088,19 +4371,27 @@
               selectedCountByNode.set(nodeId, (selectedCountByNode.get(nodeId) || 0) + 1);
             });
           });
-          checkboxBindings.forEach(({ checkbox, nodeId }) => {
+          checkboxBindings.forEach(({ checkbox, nodeId, row }) => {
             const total = Number(treeState.nodeLeafCounts.get(nodeId) || 0);
             const selected = Number(selectedCountByNode.get(nodeId) || 0);
             checkbox.checked = total > 0 && selected >= total;
             checkbox.indeterminate = selected > 0 && selected < total;
+            if (row instanceof HTMLElement) {
+              row.classList.toggle('is-selected', total > 0 && selected >= total);
+              row.classList.toggle('is-partial', selected > 0 && selected < total);
+            }
           });
           updateActionState();
         };
         const refreshExpandedStates = () => {
-          expandBindings.forEach(({ nodeId, toggle, childrenWrap }) => {
+          expandBindings.forEach(({ nodeId, toggle, childrenWrap, row }) => {
             const isExpanded = expandedNodeKeys.has(nodeId);
             if (toggle instanceof HTMLElement) {
               toggle.textContent = isExpanded ? '−' : '+';
+              toggle.setAttribute('aria-expanded', String(isExpanded));
+            }
+            if (row instanceof HTMLElement) {
+              row.setAttribute('aria-expanded', String(isExpanded));
             }
             if (childrenWrap instanceof HTMLElement) {
               childrenWrap.style.display = isExpanded ? 'grid' : 'none';
@@ -4114,40 +4405,33 @@
           const isExpanded = hasChildren && expandedNodeKeys.has(node.id);
 
           const shell = document.createElement('div');
+          shell.className = `dx-file-tree-node dx-file-tree-node--${String(node.kind || 'node').toLowerCase()}`;
           shell.style.display = 'grid';
-          shell.style.gap = '0.22rem';
+          shell.style.gap = '0.25rem';
 
           const row = document.createElement('div');
+          row.className = 'dx-file-tree-row';
+          row.setAttribute('role', 'treeitem');
+          row.setAttribute('tabindex', '0');
+          row.setAttribute('data-dx-tree-depth', String(depth));
+          row.setAttribute('data-dx-tree-kind', String(node.kind || 'node'));
+          if (hasChildren) row.setAttribute('aria-expanded', String(isExpanded));
           row.style.display = 'grid';
-          row.style.gridTemplateColumns = '16px auto minmax(0,1fr)';
-          row.style.gap = '0.45rem';
+          row.style.gridTemplateColumns = '24px 24px minmax(0,1fr)';
+          row.style.gap = '0.5rem';
           row.style.alignItems = 'center';
-          row.style.padding = '0.18rem 0.14rem';
-          row.style.borderRadius = '8px';
           row.style.position = 'relative';
-          if (depth > 0) {
-            const elbow = document.createElement('span');
-            elbow.setAttribute('aria-hidden', 'true');
-            elbow.style.position = 'absolute';
-            elbow.style.left = '-0.68rem';
-            elbow.style.top = '50%';
-            elbow.style.width = '0.68rem';
-            elbow.style.transform = 'translateY(-50%)';
-            elbow.style.borderTop = '1px solid rgba(18, 20, 26, 0.16)';
-            row.appendChild(elbow);
-          }
 
           const toggle = document.createElement('button');
           toggle.type = 'button';
-          toggle.style.width = '16px';
-          toggle.style.height = '16px';
+          toggle.className = 'dx-file-tree-toggle';
+          toggle.setAttribute('aria-label', `${isExpanded ? 'Collapse' : 'Expand'} ${node.label}`);
+          toggle.setAttribute('aria-expanded', String(isExpanded));
+          toggle.style.width = '24px';
+          toggle.style.height = '24px';
           toggle.style.display = 'grid';
           toggle.style.placeItems = 'center';
           toggle.style.padding = '0';
-          toggle.style.border = '0';
-          toggle.style.background = 'transparent';
-          toggle.style.color = 'rgba(18,20,26,0.86)';
-          toggle.style.fontSize = '0.74rem';
           toggle.style.cursor = hasChildren ? 'pointer' : 'default';
           toggle.style.lineHeight = '1';
           toggle.textContent = hasChildren ? (isExpanded ? '−' : '+') : '';
@@ -4158,6 +4442,7 @@
 
           const checkbox = document.createElement('input');
           checkbox.type = 'checkbox';
+          checkbox.className = 'dx-file-tree-checkbox';
           const state = getSelectionState(node.leafKeys);
           checkbox.checked = state.checked;
           checkbox.indeterminate = state.indeterminate;
@@ -4165,15 +4450,20 @@
             setLeafSet(node.leafKeys, Boolean(checkbox.checked));
             refreshCheckboxStates();
           });
-          checkboxBindings.push({ checkbox, nodeId: node.id });
+          checkbox.addEventListener('click', (event) => {
+            event.stopPropagation();
+          });
+          checkboxBindings.push({ checkbox, nodeId: node.id, row });
 
           const copy = document.createElement('div');
+          copy.className = 'dx-file-tree-copy';
           copy.style.display = 'grid';
           copy.style.gridTemplateColumns = 'minmax(0,1fr) auto';
           copy.style.alignItems = 'center';
-          copy.style.gap = '0.5rem';
+          copy.style.gap = '0.62rem';
 
           const label = document.createElement('span');
+          label.className = 'dx-file-tree-label';
           label.textContent = node.label;
           label.style.fontFamily = node.kind === 'file' ? 'var(--font-body)' : '"Typefesse", sans-serif';
           label.style.fontSize = node.kind === 'file' ? '0.72rem' : '0.76rem';
@@ -4181,6 +4471,7 @@
           label.style.textTransform = node.kind === 'file' ? 'none' : 'uppercase';
 
           const meta = document.createElement('span');
+          meta.className = 'dx-file-tree-meta';
           meta.textContent = node.meta || '';
           meta.style.fontSize = '0.67rem';
           meta.style.opacity = '0.72';
@@ -4196,12 +4487,10 @@
 
           if (hasChildren) {
             childrenWrap = document.createElement('div');
+            childrenWrap.className = 'dx-file-tree-children';
+            childrenWrap.setAttribute('role', 'group');
             childrenWrap.style.display = isExpanded ? 'grid' : 'none';
-            childrenWrap.style.gap = '0.22rem';
-            childrenWrap.style.marginLeft = '0.62rem';
-            childrenWrap.style.paddingLeft = '0.72rem';
-            childrenWrap.style.borderLeft = '1px solid rgba(18, 20, 26, 0.16)';
-            expandBindings.push({ nodeId: node.id, toggle, childrenWrap });
+            expandBindings.push({ nodeId: node.id, toggle, childrenWrap, row });
             shell.appendChild(childrenWrap);
             if (isExpanded) {
               node.children.forEach((child) => renderTreeNode(child, childrenWrap, depth + 1));
@@ -4220,6 +4509,28 @@
               });
             }
           }
+          row.addEventListener('click', (event) => {
+            if (event.target instanceof HTMLElement && event.target.closest('button, input, a')) return;
+            checkbox.checked = !checkbox.checked;
+            checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+          });
+          row.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              checkbox.checked = !checkbox.checked;
+              checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+              return;
+            }
+            if (event.key === 'ArrowRight' && hasChildren && !expandedNodeKeys.has(node.id)) {
+              event.preventDefault();
+              toggle.click();
+              return;
+            }
+            if (event.key === 'ArrowLeft' && hasChildren && expandedNodeKeys.has(node.id)) {
+              event.preventDefault();
+              toggle.click();
+            }
+          });
           parent.appendChild(shell);
         };
 
@@ -4402,6 +4713,7 @@
 
         inner.appendChild(titleRow);
         inner.appendChild(statusBanner);
+        inner.appendChild(selectionSummary);
         inner.appendChild(treeTools);
         inner.appendChild(treeWrap);
         inner.appendChild(controls);
@@ -4871,13 +5183,10 @@
       const origin = getSidebarAssetOrigin();
       ensureProfileChromeRuntime(origin);
       ensureEntryRuntimeLayoutOverrides();
-      const favoritesApi = await ensureFavoritesApi(origin);
-      if (favoritesApi && typeof favoritesApi.migrateLegacy === 'function') {
-        try {
-          favoritesApi.migrateLegacy();
-        } catch {}
-        bindFavoritesSignals(favoritesApi);
-      }
+      let favoritesApi = activateFavoritesApi(getFavoritesApi());
+      const favoritesHydrationPromise = favoritesApi
+        ? Promise.resolve(favoritesApi)
+        : ensureFavoritesApi(origin).then((api) => activateFavoritesApi(api));
 
       const SERIES_PATHS = {
         dex: '/assets/series/dex.png',
@@ -4945,10 +5254,12 @@
 
         bindEntryTooltips(collectionsEl);
 
-        if (favoritesApi) {
+        const bindCollectionFavorites = (api) => {
+          const activeApi = activateFavoritesApi(api, collectionsEl);
+          if (!activeApi) return;
           const entryFavButton = collectionsEl.querySelector('.dx-fav-entry-toggle');
           if (entryFavButton) {
-            bindFavoriteToggle(entryFavButton, favoritesApi, buildEntryFavoriteRecord(lookup, entryHref), {
+            bindFavoriteToggle(entryFavButton, activeApi, buildEntryFavoriteRecord(lookup, entryHref), {
               active: 'Favorited entry',
               inactive: 'Favorite entry',
             });
@@ -4957,16 +5268,25 @@
           collectionsEl.querySelectorAll('.dx-fav-bucket-toggle').forEach((bucketButton) => {
             const bucket = String(bucketButton.getAttribute('data-bucket') || '').trim().toUpperCase();
             if (!bucket) return;
-            bindFavoriteToggle(bucketButton, favoritesApi, buildBucketFavoriteRecord(lookup, entryHref, bucket), {
+            bindFavoriteToggle(bucketButton, activeApi, buildBucketFavoriteRecord(lookup, entryHref, bucket), {
               active: `Favorited ${bucket}`,
               inactive: `Favorite ${bucket}`,
             });
           });
+          favoritesApi = activeApi;
+        };
+
+        if (favoritesApi) {
+          bindCollectionFavorites(favoritesApi);
         } else {
           const entryFavButton = collectionsEl.querySelector('.dx-fav-entry-toggle');
           if (entryFavButton) ensureFavoriteButtonContent(entryFavButton);
           collectionsEl.querySelectorAll('.dx-fav-bucket-toggle').forEach((bucketButton) => {
             ensureFavoriteButtonContent(bucketButton);
+          });
+          void favoritesHydrationPromise.then((api) => {
+            if (!api) return;
+            bindCollectionFavorites(api);
           });
         }
         await markTargetReady(fetchTargets, 'collections');
@@ -5079,6 +5399,9 @@
       bindEntryRailLayout();
       bindBreadcrumbSpinFallback();
       refreshFavoriteButtons(favoritesApi, document);
+      void favoritesHydrationPromise.then((api) => {
+        if (api) refreshFavoriteButtons(api, document);
+      });
 
       document.documentElement.dataset.dexSidebarRendered = '1';
       await maybeMarkEntryLayoutReady(fetchTargets);

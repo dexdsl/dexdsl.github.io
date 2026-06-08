@@ -9,7 +9,7 @@
   window.__dxPollsAppLoaded = true;
 
   const STYLE_ID = 'dx-polls-app-style-v2';
-  const MIN_SHEEN_MS = 120;
+  const DX_MIN_SHEEN_MS = 120;
   const PAGE_SIZE_OPEN = 16;
   const PAGE_SIZE_CLOSED = 10;
   const PAGE_SIZE_PUBLISHED = 12;
@@ -833,8 +833,8 @@
 
   async function waitMinSheen(startAt) {
     const elapsed = performance.now() - startAt;
-    if (elapsed >= MIN_SHEEN_MS) return;
-    await new Promise((resolve) => window.setTimeout(resolve, MIN_SHEEN_MS - elapsed));
+    if (elapsed >= DX_MIN_SHEEN_MS) return;
+    await new Promise((resolve) => window.setTimeout(resolve, DX_MIN_SHEEN_MS - elapsed));
   }
 
   async function boot() {
