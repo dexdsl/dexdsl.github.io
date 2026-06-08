@@ -125,6 +125,40 @@ const DEX_ENTRY_BG_MARKUP = `
   </svg>
 </div>
 `;
+const DEX_FOOTER_MARKUP = `
+<footer class="dex-footer" data-surface="light" data-managed="1">
+  <div class="footer-grid">
+    <div class="footer-logo-column">
+      <div class="footer-logo">
+        <img class="logo--dark" src="https://static1.squarespace.com/static/63956a55e99f9772a8cd1742/t/68b0b7dd85ff8d50b39feaf0/1756411869678/dex_web_wordmark_white_transparent_72dpi.png" alt="Dex Footer Logo (white)" loading="lazy" decoding="async">
+        <img class="logo--light" src="https://static1.squarespace.com/static/63956a55e99f9772a8cd1742/t/68b3ad9db971dd68b77c9cc8/1756605853287/dex_web_wordmark_black_transparent_72dpi.png" alt="Dex Footer Logo (black)" loading="lazy" decoding="async">
+      </div>
+    </div>
+    <div class="footer-attribution">
+      © 2023–2026 DEX CO-OP CORP (EIN 92-3509152)<br>
+      dba Dex Digital Sample Library. All rights reserved.
+    </div>
+    <div class="footer-seal-column">
+      <a class="candid-seal" href="https://app.candid.org/profile/15083758/dex-digital-sample-library-92-3509152" target="_blank" rel="noopener noreferrer" aria-label="View Dex Digital Sample Library's Candid (GuideStar) profile">
+        <img src="https://widgets.guidestar.org/prod/v1/pdp/transparency-seal/15083758/svg" alt="Candid (GuideStar) Transparency Seal">
+      </a>
+    </div>
+    <div class="footer-links-column">
+      <div class="footer-social">
+        <a href="https://www.youtube.com/dexdsl" aria-label="YouTube" class="youtube"><svg aria-hidden="true" viewBox="0 0 64 64"><use xlink:href="#youtube-unauth-icon"></use></svg></a>
+        <a href="https://instagram.com/dexdsl" aria-label="Instagram" class="instagram"><svg aria-hidden="true" viewBox="0 0 64 64"><use xlink:href="#instagram-unauth-icon"></use></svg></a>
+        <a href="https://www.tiktok.com/@dexdsl" aria-label="TikTok" class="tiktok"><svg aria-hidden="true" viewBox="0 0 64 64"><use xlink:href="#tiktok-unauth-icon"></use></svg></a>
+        <a href="https://twitter.com/dexdsl" aria-label="Twitter" class="twitter"><svg aria-hidden="true" viewBox="0 0 64 64"><use xlink:href="#twitter-unauth-icon"></use></svg></a>
+      </div>
+      <nav class="footer-nav">
+        <a href="/privacy">Privacy</a>
+        <a href="/contact">Contact</a>
+        <a href="/copyright">Copyright</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+`;
 const DEX_ENTRY_BG_SCRIPT = `
 ;(function(){
   if (window.__dexEntryGooeyBgInit) return;
@@ -600,6 +634,14 @@ function ensureEntryBackgroundPresence($) {
     body.append(`\n${DEX_ENTRY_BG_MARKUP}\n`);
   }
   body.append(`\n<script id="${DEX_ENTRY_BG_SCRIPT_ID}" data-managed="1">\n${DEX_ENTRY_BG_SCRIPT}\n</script>\n`);
+}
+
+function ensureDexFooterPresence($) {
+  const body = $('body').first();
+  if (!body.length || !body.hasClass('dex-entry-page')) return;
+
+  $('footer.dex-footer').remove();
+  body.append(DEX_FOOTER_MARKUP.trim());
 }
 
 function normalizeEntryFooterSurface($) {
@@ -1472,6 +1514,50 @@ function dedupeScriptsByPath($, pathMatch, canonicalUrl, options = {}) {
   return scripts.length;
 }
 
+const MODERN_CSS_CHAIN = [
+  '/css/tokens.css',
+  '/css/base.css',
+  '/css/bridge.squarespace.css',
+  '/css/components/dx-layout.css',
+  '/css/components/dx-surface.css',
+  '/css/components/dx-controls.css',
+  '/css/components/dx-nav.css',
+  '/css/fonts.css',
+];
+
+function ensureModernCssChain($, head) {
+  const body = $('body').first();
+  if (!body.length || !body.hasClass('dex-entry-page')) return;
+
+  const dexCssLink = $('link[href]').filter((_, el) => String($(el).attr('href') || '').trim() === DEX_CSS_HREF).first();
+  const anchor = dexCssLink.length ? dexCssLink : head.children().last();
+
+  for (const href of MODERN_CSS_CHAIN) {
+    const existing = $('link[href]').filter((_, el) => {
+      const value = String($(el).attr('href') || '').trim();
+      return value === href || value === `${DEX_ORIGIN}${href}`;
+    });
+    if (existing.length) {
+      existing.slice(1).remove();
+      const node = existing.first();
+      node.attr('rel', 'stylesheet');
+      node.attr('href', href);
+      // Re-anchor existing link into the chain order, immediately before dex.css.
+      if (dexCssLink.length && node.get(0) !== dexCssLink.get(0)) {
+        node.remove();
+        dexCssLink.before(node);
+      }
+      continue;
+    }
+    const link = $(`<link rel="stylesheet" href="${href}">`);
+    if (anchor && anchor.length) {
+      anchor.before(link);
+    } else {
+      head.append(link);
+    }
+  }
+}
+
 function ensureDexCssAfterSiteCss($, head) {
   const dexCssByPath = $('link[href]').filter((_, el) => canonicalPathKey($(el).attr('href')) === '/assets/css/dex.css');
   dexCssByPath.each((index, element) => {
@@ -1778,9 +1864,11 @@ export function sanitizeGeneratedHtml(html) {
   const head = ensureHead($);
   ensureDexLayoutPatchStyle($, head);
   ensureDexCssAfterSiteCss($, head);
+  ensureModernCssChain($, head);
   ensureDexContractScripts($, head);
   ensureRequiredRuntimeScripts($, head);
   ensureEntryBackgroundPresence($);
+  ensureDexFooterPresence($);
   normalizeEntryFooterSurface($);
 
   let output = $.html();
