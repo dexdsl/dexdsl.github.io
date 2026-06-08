@@ -1151,6 +1151,7 @@
 
   function decorateHeadingElement(heading, options = {}) {
     if (!(heading instanceof HTMLElement)) return false;
+    if (isEntryPageBody()) return false;
     const textNodes = extractHeadingTextNodes(heading);
     if (!textNodes.length) return false;
 
@@ -1199,6 +1200,7 @@
   }
 
   function applyHeadingTypographyEffects(root = document) {
+    if (isEntryPageBody()) return 0;
     const scope = root instanceof Document ? (root.body || root.documentElement) : root;
     if (!(scope instanceof Element || scope instanceof DocumentFragment)) return 0;
     if (typeof scope.querySelectorAll !== 'function') return 0;
@@ -1214,9 +1216,14 @@
     return changedCount;
   }
 
+  function isEntryPageBody() {
+    return !!(document.body && document.body.classList && document.body.classList.contains('dx-entry-page'));
+  }
+
   function renderHeadingText(value, options = {}) {
     const source = options.uppercase === false ? String(value || '') : String(value || '').toUpperCase();
     const canonical = stripZwnjCharacters(source);
+    if (isEntryPageBody()) return canonical;
     const separated = insertCanonicalDoubleLetterSeparators(canonical);
     const randomFn = createHeadingRandom(options.seedKey || canonical);
     const [rendered] = normalizeRenderedDuplicateSeparators(applyProbabilisticHeadingDuplicates([separated], randomFn));
