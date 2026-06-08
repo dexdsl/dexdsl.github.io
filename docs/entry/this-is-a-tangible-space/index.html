@@ -506,8 +506,35 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 <style id="dex-layout-patch" data-managed="1">
 #dex-layout-patch[data-managed="1"] { display: block; }
+body.dx-entry-page .fe-block,
+body.dx-entry-page .fe-block.dex-entry-host,
+body.dx-entry-page .dx-block,
+body.dx-entry-page .dx-block-content,
+body.dx-entry-page .dx-code-container,
+body.dx-entry-page .sqs-code-container {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
 .dex-entry-host .dx-code-container,
 .dex-entry-host .sqs-code-container {
   --dex-entry-outer-gap: clamp(12px, 1.6vw, 20px);
@@ -1218,6 +1245,16 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
 
   <body class="dx-entry-page dex-entry-page" tabindex="-1">
     
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2175,6 +2212,8 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
   }
 }
 </script><script id="dex-sidebar-page-config-bridge">window.dexSidebarPageConfig = JSON.parse(document.getElementById('dex-sidebar-page-config').textContent || '{}');</script>
+
+
 
 
 
@@ -3265,6 +3304,10 @@ body.dx-entry-page .dex-footer .candid-seal {
   margin-right: 0 !important;
 }
 </style>
+
+
+
+
 
 
 
