@@ -762,6 +762,14 @@ function normalizeDexSectionSpacing($) {
 function ensureDexLayoutPatchStyle($, head) {
   const css = `
 #${DEX_LAYOUT_PATCH_STYLE_ID}[data-managed="1"] { display: block; }
+body.dx-entry-page .dex-entry-host .sqs-block-content,
+body.dx-entry-page .dex-entry-host .dx-block-content {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
 .dex-entry-host .dx-code-container,
 .dex-entry-host .sqs-code-container {
   --dex-entry-outer-gap: clamp(12px, 1.6vw, 20px);

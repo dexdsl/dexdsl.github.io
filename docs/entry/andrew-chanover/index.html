@@ -506,8 +506,22 @@
 
 
 
+
+
+
+
+
+
 <style id="dex-layout-patch" data-managed="1">
 #dex-layout-patch[data-managed="1"] { display: block; }
+body.dx-entry-page .dex-entry-host .sqs-block-content,
+body.dx-entry-page .dex-entry-host .dx-block-content {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
 .dex-entry-host .dx-code-container,
 .dex-entry-host .sqs-code-container {
   --dex-entry-outer-gap: clamp(12px, 1.6vw, 20px);
@@ -1218,6 +1232,11 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
 
   <body class="dx-entry-page dex-entry-page" tabindex="-1">
     
+
+
+
+
+
 
 
 
@@ -2245,6 +2264,7 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
   }
 }
 </script><script id="dex-sidebar-page-config-bridge">window.dexSidebarPageConfig = JSON.parse(document.getElementById('dex-sidebar-page-config').textContent || '{}');</script>
+
 
 
 
@@ -3335,6 +3355,8 @@ body.dx-entry-page .dex-footer .candid-seal {
   margin-right: 0 !important;
 }
 </style>
+
+
 
 
 
