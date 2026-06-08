@@ -6,11 +6,17 @@ import { formatSanitizationIssues, sanitizeGeneratedHtml, verifySanitizedHtml } 
 const ENTRIES_DIR = path.resolve('entries');
 const dryRun = process.argv.includes('--dry-run');
 
+// Entries whose shells diverge from the standard entry-template — sanitizing them
+// rewrites them in destructive ways (e.g. strips required <script> tags from the bag
+// minimal shell). Keep them out of the backfill.
+const SKIP_SLUGS = new Set(['bag', 'smoke-title', 'test', 'test-2', 'test-3', 'test-4', 'test-5', 'test-5a', 'test-6', 'test-7', 'test-8', 'test-9', 'test-10', 'test-11']);
+
 async function walkEntryHtml(dir, out = []) {
   const dirents = await fs.readdir(dir, { withFileTypes: true }).catch(() => []);
   for (const dirent of dirents) {
     const fullPath = path.join(dir, dirent.name);
     if (dirent.isDirectory()) {
+      if (dir === ENTRIES_DIR && SKIP_SLUGS.has(dirent.name)) continue;
       await walkEntryHtml(fullPath, out);
       continue;
     }

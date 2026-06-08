@@ -462,6 +462,33 @@ function resolveAnnouncementBarConfig($, classFamily = 'dx') {
   };
 }
 
+function stripLegacyEntryChrome($, classFamily = 'dx') {
+  const body = $('body').first();
+  if (!body.length || !body.hasClass('dex-entry-page')) return;
+
+  body.removeClass('announcement-bar-reserved-space');
+
+  const classes = announcementClassMap(classFamily);
+  $(`.${classes.dropzone}`).remove();
+  $('.sqs-announcement-bar-dropzone, .dx-announcement-bar-dropzone').remove();
+  $('.header-announcement-bar-wrapper').remove();
+  $('.sqs-announcement-bar-custom-location, .dx-announcement-bar-custom-location').remove();
+  $('.sqs-announcement-bar, .dx-announcement-bar, .announcement-bar').remove();
+
+  $('header#header, header.Header, header[data-test="header"]').remove();
+  $('footer#footer, footer.Footer, .dex-footer-section').remove();
+
+  $('.dex-sidebar #downloads .btn-audio, .dex-sidebar #downloads .btn-video').remove();
+  $('.dex-sidebar #downloads > p').remove();
+  $('.dex-sidebar .legacy-cart, .dex-sidebar .icon-cart-quantity').remove();
+}
+
+function optOutEntryTitleFromHeadingRandomizer($) {
+  const body = $('body').first();
+  if (!body.length || !body.hasClass('dex-entry-page')) return;
+  $('.dex-entry-page-title, h1[data-dex-entry-page-title]').attr('data-dx-heading-randomize', 'false');
+}
+
 function ensureAnnouncementBarPresence($, announcementConfig, classFamily = 'dx') {
   const body = $('body').first();
   if (!body.length || !body.hasClass('dex-entry-page')) return;
@@ -1399,7 +1426,7 @@ function findEntryFetchRoot($) {
       return { node, selector };
     }
   }
-  return { node: null, selector: ENTRY_FETCH_ROOT_SELECTORS[0] };
+  return { node: $(''), selector: ENTRY_FETCH_ROOT_SELECTORS[0] };
 }
 
 function ensureEntryFetchRootContract($) {
@@ -1683,8 +1710,8 @@ export function sanitizeGeneratedHtml(html) {
   ensureEntryFetchTargetMarkers($);
   normalizeDexSectionSpacing($);
   const classFamily = resolveLegacyClassFamily($);
-  const announcementConfig = resolveAnnouncementBarConfig($, classFamily);
-  ensureAnnouncementBarPresence($, announcementConfig, classFamily);
+  stripLegacyEntryChrome($, classFamily);
+  optOutEntryTitleFromHeadingRandomizer($);
 
   $('script').each((_, element) => {
     const node = $(element);

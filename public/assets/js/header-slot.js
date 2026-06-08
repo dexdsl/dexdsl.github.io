@@ -89,7 +89,7 @@
   ]);
   const STRETCH_PRO_CANONICAL_SEPARATOR = '\u200C';
   const STRETCH_PRO_DUPLICATED_SEPARATOR = '\u200D';
-  const HEADING_TYPOGRAPHY_SELECTOR = 'h1, h2, [data-dx-heading-randomize="true"]';
+  const HEADING_TYPOGRAPHY_SELECTOR = 'h1:not([data-dx-heading-randomize="false"]), h2:not([data-dx-heading-randomize="false"]), [data-dx-heading-randomize="true"]';
   const HEADING_TEXT_IGNORE_SELECTOR = 'script, style, noscript, textarea, code, pre, svg, title, desc';
   const HEADING_DUPLICATE_EXCLUDE_WORDS_ATTR = 'data-dx-heading-duplicate-exclude-words';
   const HEADING_DUPLICATE_EXCLUDE_LETTERS_ATTR = 'data-dx-heading-duplicate-exclude-letters';
@@ -130,6 +130,7 @@
   }
 
   function shouldForcePersistentChromeBootstrap(pathname = window.location.pathname) {
+    if (document.body && document.body.classList && document.body.classList.contains('dx-entry-page')) return true;
     return isProfileProtectedPath(pathname)
       || isProfileStandardChromePath(pathname)
       || isProfileShowMeshPath(pathname);
@@ -443,6 +444,7 @@
   function isProfileShowMeshPath(pathname) {
     const normalized = normalizeProfileRoutePath(pathname);
     if (PROFILE_SHOW_MESH_ROUTES.has(normalized)) return true;
+    if (document.body && document.body.classList && document.body.classList.contains('dx-entry-page')) return true;
     return false;
   }
 
