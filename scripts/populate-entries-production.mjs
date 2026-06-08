@@ -4,6 +4,7 @@ import path from 'node:path';
 import process from 'node:process';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { load as loadHtml } from 'cheerio';
 import { prepareTemplate, buildEmptyManifestSkeleton } from './lib/init-core.mjs';
 import { parseRecordingIndexSheetUrl, importRecordingIndexFromSheet } from './lib/recording-index-import.mjs';
 import { upsertProtectedAssetsLookupMapping } from './lib/protected-assets-publisher.mjs';
@@ -15,11 +16,15 @@ const DEFAULT_MASTER_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1up2Jq4
 const DEFAULT_TEMPLATE_PATH = path.resolve(ROOT, 'entries', 'test-5', 'index.html');
 const DEFAULT_RUN_MANIFEST_PATH = path.resolve(ROOT, 'data', 'entry-population.run-manifest.json');
 const DEFAULT_SEED_DIR = path.resolve(ROOT, 'tmp', 'production-entry-seeds');
+const DEFAULT_REGENERATE_OUT_DIR = path.resolve(ROOT, 'tmp', 'production-entry-regenerated');
+const DEFAULT_DEXNOTES_SOURCE_PATH = path.resolve(ROOT, 'data', 'dexnotes.entries.json');
 const DEFAULT_PROTECTED_ASSETS_PATH = path.resolve(ROOT, 'data', 'protected.assets.json');
 const DEFAULT_ROUTE_ENTRY_DIR = path.resolve(ROOT, 'docs', 'entry');
 const DEFAULT_SCOPE = 's2-plus-matt';
 const DEFAULT_EXPECTED_TARGET_COUNT = 13;
 const FILE_TREE_BUCKET_ORDER = ['A', 'B', 'C', 'D', 'E', 'X'];
+const LAUNCH_NOTE_SLUG = '01';
+const LAUNCH_NOTE_VIDEO_URL = 'https://youtu.be/n8hrxOz6-Tg';
 
 const LOOKUP_OVERRIDES = new Map([
   ['P.SDR. LE AV2024 S2', {
@@ -50,6 +55,26 @@ const LOOKUP_OVERRIDES = new Map([
 
 function toText(value) {
   return String(value ?? '').trim();
+}
+
+function uniqueTextList(values = []) {
+  const out = [];
+  const seen = new Set();
+  for (const value of values) {
+    const text = toText(value).replace(/\s+/g, ' ');
+    const key = text.toLowerCase();
+    if (!text || seen.has(key)) continue;
+    seen.add(key);
+    out.push(text);
+  }
+  return out;
+}
+
+function parseCommaList(value) {
+  return String(value || '')
+    .split(',')
+    .map((item) => toText(item))
+    .filter(Boolean);
 }
 
 function stripZeroWidth(value) {
@@ -288,6 +313,156 @@ function extractEntryUrlFromSheetHtml(html) {
   return entry || '';
 }
 
+function normalizeEntryHref(value) {
+  const raw = toText(value);
+  if (!raw) return '';
+  try {
+    const parsed = new URL(raw, 'https://dexdsl.org');
+    return parsed.pathname.replace(/\/+$/g, '');
+  } catch {}
+  const match = raw.match(/\/entry\/[^/?#]+/i);
+  return match ? match[0].replace(/\/+$/g, '') : '';
+}
+
+function slugFromEntryHref(value) {
+  const normalized = normalizeEntryHref(value);
+  const match = normalized.match(/\/entry\/([^/?#]+)/i);
+  return match ? toText(match[1]) : '';
+}
+
+function collectEntrySlugsFromHtml(html = '') {
+  const $ = loadHtml(String(html || ''));
+  const slugs = [];
+  $('a[href]').each((_, element) => {
+    const slug = slugFromEntryHref($(element).attr('href'));
+    if (slug) slugs.push(slug);
+  });
+  return uniqueTextList(slugs);
+}
+
+function collectVideoUrlsFromDexnotesHtml(html = '') {
+  const $ = loadHtml(String(html || ''));
+  const urls = [];
+  $('[data-block-json]').each((_, element) => {
+    const raw = $(element).attr('data-block-json');
+    if (!raw) return;
+    try {
+      const parsed = JSON.parse(raw);
+      if (parsed?.url && /youtu\.be|youtube\.com|vimeo\.com/i.test(parsed.url)) {
+        urls.push(parsed.url);
+      }
+    } catch {}
+  });
+  $('iframe[src]').each((_, element) => {
+    const src = toText($(element).attr('src'));
+    if (src && /youtu\.be|youtube\.com|vimeo\.com/i.test(src)) urls.push(src);
+  });
+  return uniqueTextList(urls);
+}
+
+function collectTextNodesFromDexnotesHtml(html = '') {
+  const $ = loadHtml(String(html || ''));
+  const values = [];
+  $('p, li, h1, h2, h3, figcaption').each((_, element) => {
+    const text = $(element).text().replace(/\s+/g, ' ').trim();
+    if (text) values.push(text);
+  });
+  return uniqueTextList(values);
+}
+
+function normalizeTextKey(value) {
+  return stripZeroWidth(value).replace(/[“”]/g, '"').replace(/[‘’]/g, "'").replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
+function shouldDropDexnotesDescriptionText(text, catalogEntry) {
+  const normalized = normalizeTextKey(text);
+  if (!normalized) return true;
+  const catalogTitle = normalizeTextKey(catalogEntry?.title_raw);
+  const instrument = normalizeTextKey(firstCatalogInstrument(catalogEntry));
+  const performer = normalizeTextKey(decodeCatalogPerformer(catalogEntry?.performer_raw));
+  if (normalized === 'to catalog | to dex notes') return true;
+  if (normalized === 'enter library') return true;
+  if (/^(his|her|their)\s+output$/i.test(normalized)) return true;
+  if (/^for dex digital sample library\b/i.test(normalized)) return true;
+  if (catalogTitle && normalized === catalogTitle) return true;
+  if (instrument && normalized === instrument) return true;
+  if (performer && normalized === performer) return true;
+  return false;
+}
+
+function resolveDexnotesDescription(source = {}, catalogEntry = {}) {
+  const note = source.note || {};
+  const bodyHtml = toText(note.body_html || note.body_raw);
+  const title = toText(catalogEntry?.title_raw || source.title || '');
+  const performer = decodeCatalogPerformer(catalogEntry?.performer_raw);
+  if (!bodyHtml) {
+    return title ? `${title}.` : '';
+  }
+
+  if (source.kind === 'launch-note') {
+    const launchTexts = collectTextNodesFromDexnotesHtml(bodyHtml);
+    const launchLine = launchTexts.find((text) => /first season 1 drop|first season one drop|officially launched/i.test(text))
+      || launchTexts.find((text) => /launched our library/i.test(text))
+      || '';
+    const titlePart = title ? `${title}.` : '';
+    const performerPart = performer ? ` ${performer} is part of dex digital sample library's first Season 1 drop.` : '';
+    const sourcePart = launchLine ? ` ${launchLine}` : '';
+    return `${titlePart}${performerPart}${sourcePart}`.replace(/\s+/g, ' ').trim();
+  }
+
+  const values = [];
+  const texts = collectTextNodesFromDexnotesHtml(bodyHtml);
+  for (const text of texts) {
+    if (/^(his|her|their)\s+output$/i.test(text)) break;
+    if (shouldDropDexnotesDescriptionText(text, catalogEntry)) continue;
+    values.push(text);
+  }
+  return values.length ? values.join(' ') : (toText(note.excerpt_raw) || `${title}.`);
+}
+
+function resolveDexnotesVideoUrl(source = {}, catalogEntry = {}) {
+  const urls = collectVideoUrlsFromDexnotesHtml(source.note?.body_html || source.note?.body_raw || '');
+  const slug = toText(catalogEntry?.id);
+  if (/prepared-harpsichord-suarez-solis/i.test(slug) && urls[1]) return urls[1];
+  if (/prepared-bass-viol-suarez-solis/i.test(slug) && urls[0]) return urls[0];
+  if (urls[0]) return urls[0];
+  return LAUNCH_NOTE_VIDEO_URL;
+}
+
+function readDexnotesRows(source) {
+  if (Array.isArray(source)) return source;
+  if (Array.isArray(source?.entries)) return source.entries;
+  if (Array.isArray(source?.items)) return source.items;
+  return [];
+}
+
+async function readDexnotesSource(filePath) {
+  const resolvedPath = path.resolve(ROOT, filePath || DEFAULT_DEXNOTES_SOURCE_PATH);
+  const data = JSON.parse(await fs.readFile(resolvedPath, 'utf8'));
+  const rows = readDexnotesRows(data);
+  if (!rows.length) {
+    throw new Error(`Dexnotes source has no entries: ${resolvedPath}`);
+  }
+  return { filePath: resolvedPath, rows };
+}
+
+function buildDexnotesSourceIndex(rows = []) {
+  const byEntrySlug = new Map();
+  const launchNote = rows.find((row) => toText(row?.slug) === LAUNCH_NOTE_SLUG) || null;
+  for (const row of rows) {
+    const bodyHtml = toText(row?.body_html || row?.body_raw);
+    if (!bodyHtml || toText(row?.slug) === LAUNCH_NOTE_SLUG) continue;
+    const linkedSlugs = collectEntrySlugsFromHtml(bodyHtml);
+    for (const slug of linkedSlugs) {
+      byEntrySlug.set(slug, {
+        kind: 'artist-note',
+        note: row,
+      });
+    }
+  }
+  return { byEntrySlug, launchNote };
+}
+
 async function fetchText(url, {
   timeoutMs = 20000,
   retries = 2,
@@ -391,6 +566,8 @@ function buildSeedPayload({
   youtubeUrl,
   imported,
   formatKeys,
+  descriptionText,
+  lifecycle,
 }) {
   const creditsData = buildCreditsData({ performer, instrument, year, season });
   const buckets = Array.isArray(imported?.counts?.buckets) && imported.counts.buckets.length
@@ -404,6 +581,15 @@ function buildSeedPayload({
     ? imported.sheet
     : {};
   const downloadFileTree = buildDownloadFileTreeFromImport(imported, lookupNumber);
+
+  const downloads = {};
+  const recordingIndexPdfRef = toText(recordingIndex.recordingIndexPdfRef);
+  const recordingIndexBundleRef = toText(recordingIndex.recordingIndexBundleRef);
+  const recordingIndexSourceUrl = toText(recordingIndex.recordingIndexSourceUrl);
+  if (recordingIndexPdfRef) downloads.recordingIndexPdfRef = recordingIndexPdfRef;
+  if (recordingIndexBundleRef) downloads.recordingIndexBundleRef = recordingIndexBundleRef;
+  if (recordingIndexSourceUrl) downloads.recordingIndexSourceUrl = recordingIndexSourceUrl;
+  if (downloadFileTree) downloads.fileTree = downloadFileTree;
 
   const sidebarPageConfig = {
     lookupNumber,
@@ -421,18 +607,15 @@ function buildSeedPayload({
       sampleLength: 'AUTO',
       tags: [],
     },
-    downloads: {
-      recordingIndexPdfRef: toText(recordingIndex.recordingIndexPdfRef),
-      recordingIndexBundleRef: toText(recordingIndex.recordingIndexBundleRef),
-      recordingIndexSourceUrl: toText(recordingIndex.recordingIndexSourceUrl),
-      ...(downloadFileTree ? { fileTree: downloadFileTree } : {}),
-    },
+    ...(Object.keys(downloads).length ? { downloads } : {}),
   };
 
-  return {
+  const files = Array.isArray(imported?.files) ? imported.files : [];
+  const payload = {
     title,
     slug,
-    descriptionText: `${title}.`,
+    descriptionText: toText(descriptionText) || `${title}.`,
+    ...(lifecycle ? { lifecycle } : {}),
     video: {
       dataUrl: youtubeUrl,
       dataUrlOriginal: youtubeUrl,
@@ -441,12 +624,15 @@ function buildSeedPayload({
     creditsData,
     sidebarPageConfig,
     manifest,
-    protectedAssetsImport: {
+  };
+
+  if (files.length) {
+    payload.protectedAssetsImport = {
       lookupNumber,
       title,
       status: 'active',
       season: toText(season) || 'S2',
-      files: Array.isArray(imported?.files) ? imported.files : [],
+      files,
       entitlements: [{ type: 'role', value: 'authenticated' }],
       recordingIndex: {
         sheetUrl: toText(recordingIndex.sheetUrl),
@@ -460,8 +646,10 @@ function buildSeedPayload({
           : {},
       },
       filePath: DEFAULT_PROTECTED_ASSETS_PATH,
-    },
-  };
+    };
+  }
+
+  return payload;
 }
 
 function parseArgs(argv) {
@@ -470,10 +658,14 @@ function parseArgs(argv) {
     templatePath: DEFAULT_TEMPLATE_PATH,
     runManifestPath: DEFAULT_RUN_MANIFEST_PATH,
     seedDir: DEFAULT_SEED_DIR,
+    regenerateOutDir: DEFAULT_REGENERATE_OUT_DIR,
+    dexnotesSourcePath: DEFAULT_DEXNOTES_SOURCE_PATH,
     routeEntryDir: DEFAULT_ROUTE_ENTRY_DIR,
     scope: DEFAULT_SCOPE,
     expectedTargetCount: DEFAULT_EXPECTED_TARGET_COUNT,
     dryRun: false,
+    regenerateExisting: false,
+    onlySlugs: new Set(),
   };
   for (let index = 2; index < argv.length; index += 1) {
     const arg = String(argv[index] || '');
@@ -514,6 +706,24 @@ function parseArgs(argv) {
       out.seedDir = arg.slice('--seed-dir='.length);
       continue;
     }
+    if (arg === '--regenerate-out-dir' && next) {
+      out.regenerateOutDir = next;
+      index += 1;
+      continue;
+    }
+    if (arg.startsWith('--regenerate-out-dir=')) {
+      out.regenerateOutDir = arg.slice('--regenerate-out-dir='.length);
+      continue;
+    }
+    if (arg === '--dexnotes-source' && next) {
+      out.dexnotesSourcePath = next;
+      index += 1;
+      continue;
+    }
+    if (arg.startsWith('--dexnotes-source=')) {
+      out.dexnotesSourcePath = arg.slice('--dexnotes-source='.length);
+      continue;
+    }
     if (arg === '--route-entry-dir' && next) {
       out.routeEntryDir = next;
       index += 1;
@@ -525,6 +735,23 @@ function parseArgs(argv) {
     }
     if (arg === '--dry-run') {
       out.dryRun = true;
+      continue;
+    }
+    if (arg === '--regenerate-existing') {
+      out.regenerateExisting = true;
+      continue;
+    }
+    if ((arg === '--only-slugs' || arg === '--only') && next) {
+      parseCommaList(next).forEach((slug) => out.onlySlugs.add(slug));
+      index += 1;
+      continue;
+    }
+    if (arg.startsWith('--only-slugs=')) {
+      parseCommaList(arg.slice('--only-slugs='.length)).forEach((slug) => out.onlySlugs.add(slug));
+      continue;
+    }
+    if (arg.startsWith('--only=')) {
+      parseCommaList(arg.slice('--only='.length)).forEach((slug) => out.onlySlugs.add(slug));
       continue;
     }
     if (arg === '--scope' && next) {
@@ -547,7 +774,7 @@ function parseArgs(argv) {
     }
     throw new Error(`Unknown argument: ${arg}`);
   }
-  if (!['s2-plus-matt', 'all'].includes(out.scope)) {
+  if (!['s2-plus-matt', 'all', 's1'].includes(out.scope)) {
     throw new Error(`Unsupported scope: ${out.scope}`);
   }
   if (!Number.isFinite(out.expectedTargetCount)) {
@@ -557,6 +784,8 @@ function parseArgs(argv) {
   out.templatePath = path.resolve(ROOT, out.templatePath);
   out.runManifestPath = path.resolve(ROOT, out.runManifestPath);
   out.seedDir = path.resolve(ROOT, out.seedDir);
+  out.regenerateOutDir = path.resolve(ROOT, out.regenerateOutDir);
+  out.dexnotesSourcePath = path.resolve(ROOT, out.dexnotesSourcePath);
   out.routeEntryDir = path.resolve(ROOT, out.routeEntryDir);
   return out;
 }
@@ -593,6 +822,53 @@ async function publishEntryRouteHtml(slug, {
     sourcePath,
     routePath,
   };
+}
+
+async function copyGeneratedEntry(slug, fromRoot, toRoot = path.resolve(ROOT, 'entries')) {
+  const normalizedSlug = toText(slug);
+  const sourceDir = path.resolve(fromRoot, normalizedSlug);
+  const targetDir = path.resolve(toRoot, normalizedSlug);
+  if (!(await exists(path.resolve(sourceDir, 'index.html')))) {
+    throw new Error(`Generated entry HTML not found: ${path.resolve(sourceDir, 'index.html')}`);
+  }
+  await fs.mkdir(targetDir, { recursive: true });
+  await fs.cp(sourceDir, targetDir, {
+    recursive: true,
+    force: true,
+  });
+  return {
+    sourceDir,
+    targetDir,
+  };
+}
+
+async function runInitForSeed({
+  seedPath,
+  templatePath,
+  outputDir,
+  rowReport,
+  commandType = 'init',
+}) {
+  const initArgs = [
+    'init',
+    '--quick',
+    '--template', templatePath,
+    '--out', outputDir,
+    '--from', seedPath,
+    '--catalog-link', 'create-linked',
+    '--catalog-status', 'active',
+  ];
+  const initResult = runDex(initArgs);
+  rowReport.commands.push({
+    type: commandType,
+    command: initResult.command,
+    code: initResult.code,
+    ok: initResult.ok,
+  });
+  if (!initResult.ok) {
+    throw new Error(`init failed for ${rowReport.slug}: ${initResult.stderr || initResult.stdout}`);
+  }
+  return initResult;
 }
 
 async function updateEntrySidebarDownloads(slug, downloadsPatch = {}) {
@@ -704,6 +980,32 @@ function resolveCatalogContext(masterRow, catalogIndex) {
   };
 }
 
+function resolveCatalogEntryContext(catalogEntry) {
+  const slug = toText(catalogEntry?.id);
+  const lookupNumber = stripZeroWidth(catalogEntry?.lookup_raw);
+  if (!slug) throw new Error('Catalog entry is missing id.');
+  if (!lookupNumber) throw new Error(`Catalog entry ${slug} is missing lookup_raw.`);
+  const performer = decodeCatalogPerformer(catalogEntry?.performer_raw);
+  const instrument = stripZeroWidth(firstCatalogInstrument(catalogEntry) || catalogEntry?.title_raw || slug);
+  const title = stripZeroWidth(catalogEntry?.title_raw || instrument || slug);
+  const lookupMeta = parseYearAndSeason(lookupNumber);
+  const season = toText(catalogEntry?.season || lookupMeta.season || 'S1').toUpperCase();
+  const year = Number.isFinite(Number(lookupMeta.year)) ? Number(lookupMeta.year) : NaN;
+  return {
+    sourceLookup: lookupNumber,
+    normalizedSourceLookup: normalizeLookup(lookupNumber),
+    slug,
+    lookupNumber,
+    performer,
+    instrument,
+    title,
+    season,
+    year,
+    catalogEntryId: slug,
+    resolutionReason: 'catalog-s1',
+  };
+}
+
 function shouldProcessContext(masterRow, context, scope) {
   if (scope === 'all') {
     return { include: true, reason: 'scope-all' };
@@ -719,6 +1021,13 @@ function shouldProcessContext(masterRow, context, scope) {
   return { include: false, reason: 'out-of-scope' };
 }
 
+function shouldProcessSlug(slug, onlySlugs = new Set()) {
+  if (!onlySlugs || onlySlugs.size === 0) return { include: true, reason: 'all-slugs' };
+  return onlySlugs.has(toText(slug))
+    ? { include: true, reason: 'only-slugs-match' }
+    : { include: false, reason: 'only-slugs-filtered' };
+}
+
 async function exists(filePath) {
   try {
     await fs.access(filePath);
@@ -728,22 +1037,134 @@ async function exists(filePath) {
   }
 }
 
+async function readExistingEntryData(slug) {
+  const entryJsonPath = path.resolve(ROOT, 'entries', toText(slug), 'entry.json');
+  try {
+    return JSON.parse(await fs.readFile(entryJsonPath, 'utf8'));
+  } catch {}
+  return null;
+}
+
+function mergeExistingEntrySeed(nextSeed, existingEntry) {
+  if (!existingEntry || typeof existingEntry !== 'object') return nextSeed;
+  const existingSidebar = existingEntry.sidebarPageConfig && typeof existingEntry.sidebarPageConfig === 'object'
+    ? existingEntry.sidebarPageConfig
+    : {};
+  const nextSidebar = nextSeed.sidebarPageConfig && typeof nextSeed.sidebarPageConfig === 'object'
+    ? nextSeed.sidebarPageConfig
+    : {};
+  const mergedSidebar = {
+    ...nextSidebar,
+    ...existingSidebar,
+    lookupNumber: nextSidebar.lookupNumber || existingSidebar.lookupNumber,
+    buckets: Array.isArray(nextSidebar.buckets) && nextSidebar.buckets.length
+      ? nextSidebar.buckets
+      : existingSidebar.buckets,
+  };
+  if (nextSidebar.downloads && typeof nextSidebar.downloads === 'object') {
+    mergedSidebar.downloads = nextSidebar.downloads;
+  } else if (existingSidebar.downloads && typeof existingSidebar.downloads === 'object') {
+    mergedSidebar.downloads = existingSidebar.downloads;
+  }
+
+  return {
+    ...nextSeed,
+    descriptionText: typeof existingEntry.descriptionText === 'string' && existingEntry.descriptionText.trim()
+      ? existingEntry.descriptionText
+      : nextSeed.descriptionText,
+    video: existingEntry.video && typeof existingEntry.video === 'object' && toText(existingEntry.video.dataUrl || existingEntry.video.dataUrlOriginal)
+      ? existingEntry.video
+      : nextSeed.video,
+    series: toText(existingEntry.series) || nextSeed.series,
+    selectedBuckets: Array.isArray(existingEntry.selectedBuckets) && existingEntry.selectedBuckets.length
+      ? existingEntry.selectedBuckets
+      : nextSeed.selectedBuckets,
+    creditsData: existingEntry.creditsData && typeof existingEntry.creditsData === 'object'
+      ? existingEntry.creditsData
+      : nextSeed.creditsData,
+    fileSpecs: existingEntry.fileSpecs && typeof existingEntry.fileSpecs === 'object'
+      ? existingEntry.fileSpecs
+      : nextSeed.fileSpecs,
+    metadata: existingEntry.metadata && typeof existingEntry.metadata === 'object'
+      ? existingEntry.metadata
+      : nextSeed.metadata,
+    lifecycle: existingEntry.lifecycle && typeof existingEntry.lifecycle === 'object'
+      ? existingEntry.lifecycle
+      : nextSeed.lifecycle,
+    sidebarPageConfig: mergedSidebar,
+  };
+}
+
+function buildEmptyImport() {
+  return {
+    files: [],
+    segments: [],
+    counts: {
+      buckets: ['A'],
+    },
+    recordingIndex: {},
+    sheet: {},
+  };
+}
+
+function buildSeasonOneRows(catalogEntriesSource, dexnotesIndex) {
+  const rows = Array.isArray(catalogEntriesSource?.entries) ? catalogEntriesSource.entries : [];
+  const launchNote = dexnotesIndex.launchNote;
+  return rows
+    .filter((entry) => toText(entry?.season).toUpperCase() === 'S1')
+    .map((catalogEntry) => {
+      const slug = toText(catalogEntry?.id);
+      const source = dexnotesIndex.byEntrySlug.get(slug) || (launchNote ? {
+        kind: 'launch-note',
+        note: launchNote,
+      } : null);
+      if (!source) {
+        throw new Error(`No dexnotes source found for S1 entry ${slug}`);
+      }
+      return {
+        sourceType: 'season-one-dexnotes',
+        catalogEntry,
+        dexnotesSource: source,
+        lookupNumber: stripZeroWidth(catalogEntry?.lookup_raw),
+        name: decodeCatalogPerformer(catalogEntry?.performer_raw),
+        sheetUrl: '',
+      };
+    });
+}
+
 async function main() {
   process.chdir(ROOT);
   const options = parseArgs(process.argv);
-  const { templatePath, templateHtml, formatKeys } = await prepareTemplate({ templateArg: options.templatePath });
-
-  const masterSheet = parseRecordingIndexSheetUrl(options.masterSheetUrl);
-  const masterCsvUrl = `https://docs.google.com/spreadsheets/d/${masterSheet.sheetId}/export?format=csv&gid=${encodeURIComponent(masterSheet.gid)}`;
-  const masterCsvText = await fetchText(masterCsvUrl, { timeoutMs: 20000, retries: 3 });
-  const masterRows = parseMasterSheetRows(masterCsvText);
-  if (!masterRows.length) throw new Error('Master recording-index sheet has no rows.');
+  const { templatePath, formatKeys } = await prepareTemplate({ templateArg: options.templatePath });
 
   const catalogEntriesSource = JSON.parse(await fs.readFile(path.resolve(ROOT, 'data', 'catalog.entries.json'), 'utf8'));
   const catalogIndex = readCatalogEntries(catalogEntriesSource);
+  let masterSheet = null;
+  let masterCsvUrl = '';
+  let dexnotesSource = null;
+  let sourceRows = [];
+
+  if (options.scope === 's1') {
+    dexnotesSource = await readDexnotesSource(options.dexnotesSourcePath);
+    const dexnotesIndex = buildDexnotesSourceIndex(dexnotesSource.rows);
+    sourceRows = buildSeasonOneRows(catalogEntriesSource, dexnotesIndex);
+    if (!sourceRows.length) throw new Error('No S1 catalog rows found.');
+  } else {
+    masterSheet = parseRecordingIndexSheetUrl(options.masterSheetUrl);
+    masterCsvUrl = `https://docs.google.com/spreadsheets/d/${masterSheet.sheetId}/export?format=csv&gid=${encodeURIComponent(masterSheet.gid)}`;
+    const masterCsvText = await fetchText(masterCsvUrl, { timeoutMs: 20000, retries: 3 });
+    sourceRows = parseMasterSheetRows(masterCsvText).map((row) => ({
+      ...row,
+      sourceType: 'recording-index',
+    }));
+    if (!sourceRows.length) throw new Error('Master recording-index sheet has no rows.');
+  }
 
   await fs.mkdir(options.seedDir, { recursive: true });
   await fs.mkdir(path.dirname(options.runManifestPath), { recursive: true });
+  if (options.regenerateExisting) {
+    await fs.mkdir(options.regenerateOutDir, { recursive: true });
+  }
 
   const existingEntries = new Set(
     (await fs.readdir(path.resolve(ROOT, 'entries'), { withFileTypes: true }))
@@ -754,19 +1175,25 @@ async function main() {
   const runManifest = {
     generatedAt: new Date().toISOString(),
     root: ROOT,
-    masterSheet: {
+    masterSheet: masterSheet ? {
       inputUrl: options.masterSheetUrl,
       normalizedUrl: masterSheet.sheetUrl,
       sheetId: masterSheet.sheetId,
       gid: masterSheet.gid,
       csvUrl: masterCsvUrl,
-    },
+    } : null,
+    dexnotesSource: dexnotesSource ? {
+      filePath: dexnotesSource.filePath,
+      rows: dexnotesSource.rows.length,
+    } : null,
     templatePath,
     formatKeys,
     routeEntryDir: options.routeEntryDir,
     scope: options.scope,
     expectedTargetCount: options.expectedTargetCount,
     dryRun: !!options.dryRun,
+    regenerateExisting: !!options.regenerateExisting,
+    onlySlugs: Array.from(options.onlySlugs),
     rows: [],
   };
 
@@ -774,10 +1201,12 @@ async function main() {
   let failureCount = 0;
   let skippedCount = 0;
   let targetedCount = 0;
-  for (const masterRow of masterRows) {
+  for (const masterRow of sourceRows) {
     const rowStartedAt = new Date().toISOString();
+    const isSeasonOneSource = masterRow.sourceType === 'season-one-dexnotes';
     const rowReport = {
       startedAt: rowStartedAt,
+      sourceType: masterRow.sourceType || 'recording-index',
       sourceLookup: stripZeroWidth(masterRow.lookupNumber),
       sourceName: stripZeroWidth(masterRow.name),
       sourceSheetUrl: toText(masterRow.sheetUrl),
@@ -794,13 +1223,17 @@ async function main() {
     };
 
     try {
-      const context = resolveCatalogContext(masterRow, catalogIndex);
+      const context = isSeasonOneSource
+        ? resolveCatalogEntryContext(masterRow.catalogEntry)
+        : resolveCatalogContext(masterRow, catalogIndex);
       rowReport.slug = context.slug;
       rowReport.resolvedLookup = context.lookupNumber;
       rowReport.resolutionReason = context.resolutionReason;
       rowReport.catalogEntryId = context.catalogEntryId;
 
-      const scopeDecision = shouldProcessContext(masterRow, context, options.scope);
+      const scopeDecision = isSeasonOneSource
+        ? { include: true, reason: 'season-s1' }
+        : shouldProcessContext(masterRow, context, options.scope);
       rowReport.scopeReason = scopeDecision.reason;
       if (!scopeDecision.include) {
         rowReport.status = 'skipped';
@@ -808,28 +1241,54 @@ async function main() {
         skippedCount += 1;
         continue;
       }
+      const slugDecision = shouldProcessSlug(context.slug, options.onlySlugs);
+      rowReport.slugReason = slugDecision.reason;
+      if (!slugDecision.include) {
+        rowReport.status = 'skipped';
+        rowReport.mode = 'slug-filtered';
+        skippedCount += 1;
+        continue;
+      }
       targetedCount += 1;
 
-      const sheetUrl = parseRecordingIndexSheetUrl(masterRow.sheetUrl).sheetUrl;
-      rowReport.sourceSheetUrl = sheetUrl;
+      let youtubeUrl = '';
+      let imported = null;
+      let descriptionText = '';
+      if (isSeasonOneSource) {
+        const dexnotesSourceForRow = masterRow.dexnotesSource || {};
+        youtubeUrl = resolveDexnotesVideoUrl(dexnotesSourceForRow, masterRow.catalogEntry);
+        descriptionText = resolveDexnotesDescription(dexnotesSourceForRow, masterRow.catalogEntry);
+        imported = buildEmptyImport();
+        rowReport.youtubeUrl = youtubeUrl;
+        rowReport.entryUrlFromSheet = `https://dexdsl.org${normalizeEntryHref(masterRow.catalogEntry?.entry_href)}`;
+        rowReport.dexnotesSourceSlug = toText(dexnotesSourceForRow.note?.slug);
+        rowReport.dexnotesSourceTitle = toText(dexnotesSourceForRow.note?.title_raw);
+        rowReport.dexnotesSourceKind = toText(dexnotesSourceForRow.kind);
+      } else {
+        const sheetUrl = parseRecordingIndexSheetUrl(masterRow.sheetUrl).sheetUrl;
+        rowReport.sourceSheetUrl = sheetUrl;
 
-      const sheetHtml = await fetchText(sheetUrl, { timeoutMs: 20000, retries: 2 });
-      const youtubeUrl = extractYouTubeUrlFromSheetHtml(sheetHtml);
-      if (!youtubeUrl) {
-        throw new Error(`No YouTube URL found in sheet ${sheetUrl}`);
+        const sheetHtml = await fetchText(sheetUrl, { timeoutMs: 20000, retries: 2 });
+        youtubeUrl = extractYouTubeUrlFromSheetHtml(sheetHtml);
+        if (!youtubeUrl) {
+          throw new Error(`No YouTube URL found in sheet ${sheetUrl}`);
+        }
+        rowReport.youtubeUrl = youtubeUrl;
+        rowReport.entryUrlFromSheet = extractEntryUrlFromSheetHtml(sheetHtml);
+
+        imported = await importRecordingIndexFromSheet({
+          sheetUrl,
+          lookupNumber: context.lookupNumber,
+          entrySlug: context.slug,
+          timeoutMs: 20000,
+          retries: 2,
+        });
       }
-      rowReport.youtubeUrl = youtubeUrl;
-      rowReport.entryUrlFromSheet = extractEntryUrlFromSheetHtml(sheetHtml);
 
-      const imported = await importRecordingIndexFromSheet({
-        sheetUrl,
-        lookupNumber: context.lookupNumber,
-        entrySlug: context.slug,
-        timeoutMs: 20000,
-        retries: 2,
-      });
-
-      const seedPayload = buildSeedPayload({
+      const entryExists = existingEntries.has(context.slug)
+        && await exists(path.resolve(ROOT, 'entries', context.slug, 'index.html'));
+      const existingEntryData = entryExists ? await readExistingEntryData(context.slug) : null;
+      const seedPayload = mergeExistingEntrySeed(buildSeedPayload({
         slug: context.slug,
         title: context.title,
         performer: context.performer,
@@ -840,75 +1299,95 @@ async function main() {
         youtubeUrl,
         imported,
         formatKeys,
-      });
+        descriptionText,
+        lifecycle: existingEntryData?.lifecycle || null,
+      }), existingEntryData);
 
       const seedPath = path.resolve(options.seedDir, `${context.slug}.seed.json`);
       rowReport.seedPath = seedPath;
       await fs.writeFile(seedPath, `${JSON.stringify(seedPayload, null, 2)}\n`, 'utf8');
 
-      const entryExists = existingEntries.has(context.slug)
-        && await exists(path.resolve(ROOT, 'entries', context.slug, 'index.html'));
-
       if (entryExists) {
-        rowReport.mode = 'existing-update';
+        rowReport.mode = options.regenerateExisting ? 'existing-regenerate' : 'existing-update';
         if (!options.dryRun) {
-          const linkArgs = [
-            'entry',
-            'link',
-            '--entry', context.slug,
-            '--lookup', context.lookupNumber,
-            '--season', context.season,
-            '--performer', context.performer,
-            '--instrument', context.instrument,
-            '--title', context.title,
-            '--status', 'active',
-          ];
-          const linkResult = runDex(linkArgs);
-          rowReport.commands.push({
-            type: 'entry-link',
-            command: linkResult.command,
-            code: linkResult.code,
-            ok: linkResult.ok,
-          });
-          if (!linkResult.ok) {
-            throw new Error(`entry link failed for ${context.slug}: ${linkResult.stderr || linkResult.stdout}`);
+          if (options.regenerateExisting) {
+            await fs.rm(path.resolve(options.regenerateOutDir, context.slug), { recursive: true, force: true });
+            await runInitForSeed({
+              seedPath,
+              templatePath,
+              outputDir: options.regenerateOutDir,
+              rowReport,
+              commandType: 'init-regenerate',
+            });
+            const copied = await copyGeneratedEntry(context.slug, options.regenerateOutDir);
+            rowReport.entryPath = path.resolve(copied.targetDir, 'index.html');
+            rowReport.commands.push({
+              type: 'entry-copy-regenerated',
+              command: `copyGeneratedEntry(${context.slug})`,
+              code: 0,
+              ok: true,
+            });
+          } else {
+            const linkArgs = [
+              'entry',
+              'link',
+              '--entry', context.slug,
+              '--lookup', context.lookupNumber,
+              '--season', context.season,
+              '--performer', context.performer,
+              '--instrument', context.instrument,
+              '--title', context.title,
+              '--status', 'active',
+            ];
+            const linkResult = runDex(linkArgs);
+            rowReport.commands.push({
+              type: 'entry-link',
+              command: linkResult.command,
+              code: linkResult.code,
+              ok: linkResult.ok,
+            });
+            if (!linkResult.ok) {
+              throw new Error(`entry link failed for ${context.slug}: ${linkResult.stderr || linkResult.stdout}`);
+            }
+
+            if (Array.isArray(imported.files) && imported.files.length) {
+              await upsertProtectedAssetsLookupMapping({
+                lookupNumber: context.lookupNumber,
+                title: context.title,
+                status: 'active',
+                season: context.season,
+                files: imported.files,
+                entitlements: [{ type: 'role', value: 'authenticated' }],
+                recordingIndex: {
+                  sheetUrl: toText(imported?.recordingIndex?.sheetUrl),
+                  sheetId: toText(imported?.recordingIndex?.sheetId),
+                  gid: toText(imported?.recordingIndex?.gid),
+                  pdfAssetId: toText(imported?.recordingIndex?.pdfAssetId),
+                  bundleAllToken: toText(imported?.recordingIndex?.bundleAllToken),
+                  rootFolderUrl: toText(imported?.sheet?.rootFolderUrl),
+                  bucketFolderUrls: imported?.sheet?.bucketFolderUrls && typeof imported.sheet.bucketFolderUrls === 'object'
+                    ? imported.sheet.bucketFolderUrls
+                    : {},
+                },
+                filePath: DEFAULT_PROTECTED_ASSETS_PATH,
+              });
+              rowReport.commands.push({
+                type: 'assets-upsert',
+                command: 'upsertProtectedAssetsLookupMapping(...)',
+                code: 0,
+                ok: true,
+              });
+            }
+
+            const sidebarUpdate = await updateEntrySidebarDownloads(context.slug, seedPayload?.sidebarPageConfig?.downloads || {});
+            rowReport.entryPath = sidebarUpdate.entryPath;
+            rowReport.commands.push({
+              type: 'entry-sidebar-downloads-update',
+              command: `updateEntrySidebarDownloads(${context.slug})`,
+              code: 0,
+              ok: true,
+            });
           }
-
-          await upsertProtectedAssetsLookupMapping({
-            lookupNumber: context.lookupNumber,
-            title: context.title,
-            status: 'active',
-            season: context.season,
-            files: Array.isArray(imported.files) ? imported.files : [],
-            entitlements: [{ type: 'role', value: 'authenticated' }],
-            recordingIndex: {
-              sheetUrl: toText(imported?.recordingIndex?.sheetUrl),
-              sheetId: toText(imported?.recordingIndex?.sheetId),
-              gid: toText(imported?.recordingIndex?.gid),
-              pdfAssetId: toText(imported?.recordingIndex?.pdfAssetId),
-              bundleAllToken: toText(imported?.recordingIndex?.bundleAllToken),
-              rootFolderUrl: toText(imported?.sheet?.rootFolderUrl),
-              bucketFolderUrls: imported?.sheet?.bucketFolderUrls && typeof imported.sheet.bucketFolderUrls === 'object'
-                ? imported.sheet.bucketFolderUrls
-                : {},
-            },
-            filePath: DEFAULT_PROTECTED_ASSETS_PATH,
-          });
-          rowReport.commands.push({
-            type: 'assets-upsert',
-            command: 'upsertProtectedAssetsLookupMapping(...)',
-            code: 0,
-            ok: true,
-          });
-
-          const sidebarUpdate = await updateEntrySidebarDownloads(context.slug, seedPayload?.sidebarPageConfig?.downloads || {});
-          rowReport.entryPath = sidebarUpdate.entryPath;
-          rowReport.commands.push({
-            type: 'entry-sidebar-downloads-update',
-            command: `updateEntrySidebarDownloads(${context.slug})`,
-            code: 0,
-            ok: true,
-          });
 
           const routePublish = await publishEntryRouteHtml(context.slug, {
             routeEntryDir: options.routeEntryDir,
@@ -924,25 +1403,13 @@ async function main() {
       } else {
         rowReport.mode = 'init';
         if (!options.dryRun) {
-          const initArgs = [
-            'init',
-            '--quick',
-            '--template', templatePath,
-            '--out', './entries',
-            '--from', seedPath,
-            '--catalog-link', 'create-linked',
-            '--catalog-status', 'active',
-          ];
-          const initResult = runDex(initArgs);
-          rowReport.commands.push({
-            type: 'init',
-            command: initResult.command,
-            code: initResult.code,
-            ok: initResult.ok,
+          await runInitForSeed({
+            seedPath,
+            templatePath,
+            outputDir: './entries',
+            rowReport,
+            commandType: 'init',
           });
-          if (!initResult.ok) {
-            throw new Error(`init failed for ${context.slug}: ${initResult.stderr || initResult.stdout}`);
-          }
           existingEntries.add(context.slug);
 
           const routePublish = await publishEntryRouteHtml(context.slug, {

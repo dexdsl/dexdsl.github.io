@@ -51,6 +51,8 @@ function ensureRuntimeMarkers(runtimeJs) {
     'Download selected',
     'data-person-linkable="true"',
     'bindEntryTooltips',
+    'AUDIO_DISPLAY_EXTENSIONS',
+    'filenameWithDisplayExtension',
     'COLLECTION',
     'COLLECTION_HEADING_CANONICAL',
     'randomizeTitle(COLLECTION_HEADING_CANONICAL',
@@ -149,6 +151,41 @@ function ensureCompilerMarkers(entryHtmlSource) {
   }
 }
 
+async function ensureGeneratedEntryRouteContract() {
+  const catalog = JSON.parse(await read('data/catalog.entries.json'));
+  const s1Slugs = (Array.isArray(catalog?.entries) ? catalog.entries : [])
+    .filter((entry) => String(entry?.season || '').toUpperCase() === 'S1')
+    .map((entry) => String(entry?.id || '').trim())
+    .filter(Boolean);
+  const requiredSlugs = Array.from(new Set([...s1Slugs, 'tim-feeney']));
+  if (!s1Slugs.length) fail('catalog.entries.json must include S1 entries for generated route contract');
+
+  for (const slug of requiredSlugs) {
+    const routePath = `docs/entry/${slug}/index.html`;
+    const html = await read(routePath);
+    if (/Dex — Protected \(Dev Stub\)|Protected Area \(Dev\)/.test(html)) {
+      fail(`${routePath} must not be a protected dev stub`);
+    }
+    if (html.includes('https://dexdsl.org/test')) {
+      fail(`${routePath} must not use stale test-page canonical metadata`);
+    }
+    if (/ajax\.googleapis\.com\/ajax\/libs\/jquery|sparkplugin\.com/i.test(html)) {
+      fail(`${routePath} must not carry stale legacy Squarespace script chrome`);
+    }
+    const requiredMarkers = [
+      'class="dex-entry-layout"',
+      'id="dex-sidebar-page-config"',
+      '/assets/js/header-slot.js',
+      '/assets/dex-sidebar.js',
+    ];
+    for (const marker of requiredMarkers) {
+      if (!html.includes(marker)) {
+        fail(`${routePath} missing generated entry chrome marker: ${marker}`);
+      }
+    }
+  }
+}
+
 async function main() {
   const [templateHtml, runtimeJs, entryHtmlSource, dexCss] = await Promise.all([
     read('entry-template/index.html'),
@@ -170,6 +207,7 @@ async function main() {
   ensureCollectionHeadingLigatureContract(dexCss);
   ensureTooltipCssContract(dexCss);
   ensureCompilerMarkers(entryHtmlSource);
+  await ensureGeneratedEntryRouteContract();
   console.log('verify:entry-sidebar-contract passed');
 }
 

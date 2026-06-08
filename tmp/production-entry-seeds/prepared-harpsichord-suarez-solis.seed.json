@@ -1,0 +1,159 @@
+{
+  "title": "PREPARED HARPSICHORD",
+  "slug": "prepared-harpsichord-suarez-solis",
+  "descriptionText": "“That’s why, to me, performance is everything.” A tinkerer at heart, Sebastian performs on just about anything it can get its hands on, like prepared viola da gamba or prepared zarb. To them, the word instrument has gotten too formalized. “We as artists should only require from ourselves that we create. I am not merely what I am – nor what I believe in or play, or write, etc. I am what I do. That’s why, to me, performance is everything. In an atomized world, our particularities are performances.”",
+  "lifecycle": {
+    "publishedAt": "2026-06-08T21:40:09.161Z",
+    "updatedAt": "2026-06-08T21:40:09.161Z"
+  },
+  "video": {
+    "mode": "url",
+    "dataUrl": "https://youtu.be/98hTFU6fBgQ",
+    "dataUrlOriginal": "https://youtu.be/98hTFU6fBgQ",
+    "dataHtml": ""
+  },
+  "series": "dex",
+  "creditsData": {
+    "artist": [
+      "sebastian suarez-solis"
+    ],
+    "artistAlt": null,
+    "instruments": [
+      "PREPARED HARPSICHORD"
+    ],
+    "video": {
+      "director": [],
+      "cinematography": [],
+      "editing": []
+    },
+    "audio": {
+      "recording": [],
+      "mix": [],
+      "master": []
+    },
+    "year": 2023,
+    "season": "S1",
+    "location": "Unknown"
+  },
+  "sidebarPageConfig": {
+    "lookupNumber": "K.Hps. Su AV2023 S1",
+    "buckets": [
+      "A"
+    ],
+    "specialEventImage": "/assets/series/dex.png",
+    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and sebastian suarez-solis.",
+    "credits": {
+      "artist": [
+        "sebastian suarez-solis"
+      ],
+      "artistAlt": null,
+      "instruments": [
+        "PREPARED HARPSICHORD"
+      ],
+      "video": {
+        "director": [],
+        "cinematography": [],
+        "editing": []
+      },
+      "audio": {
+        "recording": [],
+        "mix": [],
+        "master": []
+      },
+      "year": 2023,
+      "season": "S1",
+      "location": "Unknown"
+    },
+    "fileSpecs": {
+      "bitDepth": 24,
+      "sampleRate": 48000,
+      "channels": "stereo",
+      "staticSizes": {
+        "A": "",
+        "B": "",
+        "C": "",
+        "D": "",
+        "E": "",
+        "X": ""
+      }
+    },
+    "metadata": {
+      "sampleLength": "AUTO",
+      "tags": []
+    }
+  },
+  "manifest": {
+    "audio": {
+      "A": {
+        "mp3": "",
+        "wav": ""
+      },
+      "B": {
+        "mp3": "",
+        "wav": ""
+      },
+      "C": {
+        "mp3": "",
+        "wav": ""
+      },
+      "D": {
+        "mp3": "",
+        "wav": ""
+      },
+      "E": {
+        "mp3": "",
+        "wav": ""
+      },
+      "X": {
+        "mp3": "",
+        "wav": ""
+      }
+    },
+    "video": {
+      "A": {
+        "1080p": "",
+        "4K": ""
+      },
+      "B": {
+        "1080p": "",
+        "4K": ""
+      },
+      "C": {
+        "1080p": "",
+        "4K": ""
+      },
+      "D": {
+        "1080p": "",
+        "4K": ""
+      },
+      "E": {
+        "1080p": "",
+        "4K": ""
+      },
+      "X": {
+        "1080p": "",
+        "4K": ""
+      }
+    }
+  },
+  "selectedBuckets": [
+    "A"
+  ],
+  "fileSpecs": {
+    "bitDepth": 24,
+    "sampleRate": 48000,
+    "channels": "stereo",
+    "staticSizes": {
+      "A": "",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "X": ""
+    }
+  },
+  "metadata": {
+    "sampleLength": "AUTO",
+    "tags": []
+  }
+}

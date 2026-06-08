@@ -71,7 +71,14 @@ export async function writeEntryFromData({ templateHtml, templatePath, data, opt
     sidebarConfig: data.sidebar,
     creditsData: data.creditsData,
   });
-  const lifecycle = resolveLifecycleForInit();
+  const lifecycle = data.lifecycle && typeof data.lifecycle === 'object'
+    && typeof data.lifecycle.publishedAt === 'string'
+    && typeof data.lifecycle.updatedAt === 'string'
+    ? {
+      publishedAt: data.lifecycle.publishedAt,
+      updatedAt: data.lifecycle.updatedAt,
+    }
+    : resolveLifecycleForInit();
 
   try {
     sidebarConfigSchema.parse(data.sidebar);

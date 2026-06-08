@@ -1,0 +1,159 @@
+{
+  "title": "CELLO",
+  "slug": "cello-emmanuel-losa",
+  "descriptionText": "CELLO. em‎‏‏‎manuel losa is part of dex digital sample library's first Season 1 drop. we officially launched this repository with our first season 1 drop on June 1st, 2023, with a portal available to download audio and video files for each recording. what started out as a recording project at the Peabody Conservatory is now an open-access collection of new-music sounds, licensed for use under Creative Commons.",
+  "lifecycle": {
+    "publishedAt": "2026-06-08T21:40:05.605Z",
+    "updatedAt": "2026-06-08T21:40:05.605Z"
+  },
+  "video": {
+    "mode": "url",
+    "dataUrl": "https://youtu.be/n8hrxOz6-Tg",
+    "dataUrlOriginal": "https://youtu.be/n8hrxOz6-Tg",
+    "dataHtml": ""
+  },
+  "series": "dex",
+  "creditsData": {
+    "artist": [
+      "em‎‏‏‎manuel losa"
+    ],
+    "artistAlt": null,
+    "instruments": [
+      "CELLO"
+    ],
+    "video": {
+      "director": [],
+      "cinematography": [],
+      "editing": []
+    },
+    "audio": {
+      "recording": [],
+      "mix": [],
+      "master": []
+    },
+    "year": 2023,
+    "season": "S1",
+    "location": "Unknown"
+  },
+  "sidebarPageConfig": {
+    "lookupNumber": "S.Vlc. Lo AV2023 S1",
+    "buckets": [
+      "A"
+    ],
+    "specialEventImage": "/assets/series/dex.png",
+    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and em‎‏‏‎manuel losa.",
+    "credits": {
+      "artist": [
+        "em‎‏‏‎manuel losa"
+      ],
+      "artistAlt": null,
+      "instruments": [
+        "CELLO"
+      ],
+      "video": {
+        "director": [],
+        "cinematography": [],
+        "editing": []
+      },
+      "audio": {
+        "recording": [],
+        "mix": [],
+        "master": []
+      },
+      "year": 2023,
+      "season": "S1",
+      "location": "Unknown"
+    },
+    "fileSpecs": {
+      "bitDepth": 24,
+      "sampleRate": 48000,
+      "channels": "stereo",
+      "staticSizes": {
+        "A": "",
+        "B": "",
+        "C": "",
+        "D": "",
+        "E": "",
+        "X": ""
+      }
+    },
+    "metadata": {
+      "sampleLength": "AUTO",
+      "tags": []
+    }
+  },
+  "manifest": {
+    "audio": {
+      "A": {
+        "mp3": "",
+        "wav": ""
+      },
+      "B": {
+        "mp3": "",
+        "wav": ""
+      },
+      "C": {
+        "mp3": "",
+        "wav": ""
+      },
+      "D": {
+        "mp3": "",
+        "wav": ""
+      },
+      "E": {
+        "mp3": "",
+        "wav": ""
+      },
+      "X": {
+        "mp3": "",
+        "wav": ""
+      }
+    },
+    "video": {
+      "A": {
+        "1080p": "",
+        "4K": ""
+      },
+      "B": {
+        "1080p": "",
+        "4K": ""
+      },
+      "C": {
+        "1080p": "",
+        "4K": ""
+      },
+      "D": {
+        "1080p": "",
+        "4K": ""
+      },
+      "E": {
+        "1080p": "",
+        "4K": ""
+      },
+      "X": {
+        "1080p": "",
+        "4K": ""
+      }
+    }
+  },
+  "selectedBuckets": [
+    "A"
+  ],
+  "fileSpecs": {
+    "bitDepth": 24,
+    "sampleRate": 48000,
+    "channels": "stereo",
+    "staticSizes": {
+      "A": "",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "X": ""
+    }
+  },
+  "metadata": {
+    "sampleLength": "AUTO",
+    "tags": []
+  }
+}

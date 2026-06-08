@@ -1,0 +1,109 @@
+{
+  "slug": "no-input-mixer-jared-murphy",
+  "title": "NO INPUT MIXER SET",
+  "canonical": {
+    "instrument": "NO IMPUT MIXING BOARD",
+    "artistName": "jared murphy"
+  },
+  "lifecycle": {
+    "publishedAt": "2026-06-08T21:40:07.034Z",
+    "updatedAt": "2026-06-08T21:40:07.034Z"
+  },
+  "video": {
+    "mode": "url",
+    "dataUrl": "https://youtu.be/n8hrxOz6-Tg",
+    "dataUrlOriginal": "https://youtu.be/n8hrxOz6-Tg",
+    "dataHtml": ""
+  },
+  "descriptionText": "NO INPUT MIXER SET. jared murphy is part of dex digital sample library's first Season 1 drop. we officially launched this repository with our first season 1 drop on June 1st, 2023, with a portal available to download audio and video files for each recording. what started out as a recording project at the Peabody Conservatory is now an open-access collection of new-music sounds, licensed for use under Creative Commons.",
+  "series": "dex",
+  "selectedBuckets": [
+    "A"
+  ],
+  "creditsData": {
+    "artist": [
+      "jared murphy"
+    ],
+    "artistAlt": null,
+    "instruments": [
+      "NO IMPUT MIXING BOARD"
+    ],
+    "video": {
+      "director": [],
+      "cinematography": [],
+      "editing": []
+    },
+    "audio": {
+      "recording": [],
+      "mix": [],
+      "master": []
+    },
+    "year": 2023,
+    "season": "S1",
+    "location": "Unknown"
+  },
+  "fileSpecs": {
+    "bitDepth": 24,
+    "sampleRate": 48000,
+    "channels": "stereo",
+    "staticSizes": {
+      "A": "",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "X": ""
+    }
+  },
+  "metadata": {
+    "sampleLength": "AUTO",
+    "tags": []
+  },
+  "sidebarPageConfig": {
+    "lookupNumber": "E.Noi. Mu AV2023 S1",
+    "buckets": [
+      "A"
+    ],
+    "specialEventImage": "/assets/series/dex.png",
+    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and jared murphy.",
+    "credits": {
+      "artist": [
+        "jared murphy"
+      ],
+      "artistAlt": null,
+      "instruments": [
+        "NO IMPUT MIXING BOARD"
+      ],
+      "video": {
+        "director": [],
+        "cinematography": [],
+        "editing": []
+      },
+      "audio": {
+        "recording": [],
+        "mix": [],
+        "master": []
+      },
+      "year": 2023,
+      "season": "S1",
+      "location": "Unknown"
+    },
+    "fileSpecs": {
+      "bitDepth": 24,
+      "sampleRate": 48000,
+      "channels": "stereo",
+      "staticSizes": {
+        "A": "",
+        "B": "",
+        "C": "",
+        "D": "",
+        "E": "",
+        "X": ""
+      }
+    },
+    "metadata": {
+      "sampleLength": "AUTO",
+      "tags": []
+    }
+  }
+}

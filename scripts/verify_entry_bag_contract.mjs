@@ -55,6 +55,9 @@ function ensureBagAppSource(appSource) {
     "ensureAuthForAction({ action: 'download' })",
     'dx-bag-layout',
     'dx-bag-receipt-toggle',
+    'estimateBytesFromLookupFiles',
+    'estimateBytesFromSelectionRows',
+    'countFilesFromSelectionRows',
   ];
   for (const marker of required) {
     if (!appSource.includes(marker)) {
@@ -64,6 +67,7 @@ function ensureBagAppSource(appSource) {
   const forbidden = [
     'Public fallback mode. Sign in to resolve protected files and download.',
     'Local preview mode: bag is viewable without auth; secure downloads stay protected.',
+    '~${fileCount} files',
   ];
   for (const marker of forbidden) {
     if (appSource.includes(marker)) {

@@ -1023,11 +1023,16 @@ export async function auditEntryRuntime({
     row.downloadTree = buildInventoryDownloadTree(row);
     const isActiveLinked = row.state === 'linked'
       && toText(row.catalog?.status || '').toLowerCase() === 'active';
+    const lookupNumber = toText(row.catalog?.lookupNumber);
+    const lookupFiles = lookupNumber
+      ? (row.assets?.lookupFiles?.[lookupNumber] || [])
+      : (row.assets?.files || []);
+    const requiresRecordingIndexTokens = isActiveLinked && Array.isArray(lookupFiles) && lookupFiles.length > 0;
 
     const recordingIndex = reportRecordingIndex;
     const pdfTokenRaw = toText(recordingIndex.pdfTokenRaw);
     const bundleTokenRaw = toText(recordingIndex.bundleTokenRaw);
-    if (isActiveLinked) {
+    if (requiresRecordingIndexTokens) {
       if (!pdfTokenRaw) {
         report.issues.push('recording index pdf token is required for active linked entries');
       } else if (!recordingIndex.pdfValid) {
@@ -1042,10 +1047,6 @@ export async function auditEntryRuntime({
       }
     }
 
-    const lookupNumber = toText(row.catalog?.lookupNumber);
-    const lookupFiles = lookupNumber
-      ? (row.assets?.lookupFiles?.[lookupNumber] || [])
-      : (row.assets?.files || []);
     if (pdfTokenRaw && recordingIndex.pdfValid) {
       let resolvedFile = null;
       if (recordingIndex.pdfKind === 'asset') {

@@ -3906,26 +3906,66 @@
           return `${String(bucket || '').toUpperCase()}.1`;
         };
 
+        const AUDIO_DISPLAY_EXTENSIONS = new Set(['wav', 'wave', 'mp3', 'aif', 'aiff', 'flac', 'm4a']);
+        const VIDEO_DISPLAY_EXTENSIONS = new Set(['mov', 'mp4', 'm4v', 'mxf', 'mkv', 'webm']);
+
+        const normalizeDisplayExtension = (value) => String(value || '')
+          .trim()
+          .toLowerCase()
+          .replace(/^\./, '');
+
+        const extractExtension = (value) => {
+          const match = String(value || '').trim().match(/\.([a-z0-9]{2,6})(?:$|\s)/i);
+          return match?.[1] ? normalizeDisplayExtension(match[1]) : '';
+        };
+
+        const extensionSetForMediaType = (mediaType) => (
+          mediaType === 'video'
+            ? VIDEO_DISPLAY_EXTENSIONS
+            : (mediaType === 'audio' ? AUDIO_DISPLAY_EXTENSIONS : null)
+        );
+
+        const canonicalDisplayExtension = (extension) => (
+          normalizeDisplayExtension(extension) === 'wave' ? 'wav' : normalizeDisplayExtension(extension)
+        );
+
         const fileExtensionForMediaType = (mediaType, fileRow = {}) => {
-          const normalized = String(fileRow?.extension || fileRow?.ext || fileRow?.format || '')
-            .trim()
-            .toLowerCase()
-            .replace(/^\./, '');
-          if (normalized) return normalized;
-          const fileId = String(fileRow?.fileId || '').trim();
-          const idMatch = fileId.match(/\.([a-z0-9]{2,6})$/i);
-          if (idMatch?.[1]) return String(idMatch[1]).toLowerCase();
-          const label = String(fileRow?.label || '').trim();
-          const labelMatch = label.match(/\.([a-z0-9]{2,6})(?:\s|$)/i);
-          if (labelMatch?.[1]) return String(labelMatch[1]).toLowerCase();
-          return mediaType === 'video' ? 'mov' : 'wav';
+          const safeMediaType = String(mediaType || '').trim().toLowerCase();
+          const candidates = [
+            fileRow?.displayExtension,
+            fileRow?.downloadExtension,
+            fileRow?.extension,
+            fileRow?.ext,
+            fileRow?.format,
+            extractExtension(fileRow?.filename || fileRow?.name || ''),
+            extractExtension(fileRow?.fileId || ''),
+            extractExtension(fileRow?.label || ''),
+          ].map(canonicalDisplayExtension).filter(Boolean);
+          const allowedExtensions = extensionSetForMediaType(safeMediaType);
+          if (allowedExtensions) {
+            return candidates.find((extension) => allowedExtensions.has(extension))
+              || (safeMediaType === 'video' ? 'mov' : 'wav');
+          }
+          return candidates[0] || 'file';
+        };
+
+        const filenameWithDisplayExtension = (filename, extension) => {
+          const safeName = String(filename || '').trim();
+          const safeExtension = canonicalDisplayExtension(extension);
+          if (!safeName) return '';
+          if (!safeExtension) return safeName;
+          const extensionMatch = safeName.match(/^(.*)\.([a-z0-9]{2,6})$/i);
+          if (!extensionMatch) return `${safeName}.${safeExtension}`;
+          const currentExtension = canonicalDisplayExtension(extensionMatch[2]);
+          if (currentExtension === safeExtension) return safeName;
+          return `${extensionMatch[1]}.${safeExtension}`;
         };
 
         const buildDisplayFilename = (bucket, mediaType, variantKey = '', fileRow = {}) => {
           const explicitName = String(fileRow?.filename || '').trim();
-          if (explicitName) return explicitName;
-          const ordinal = extractBucketOrdinal(bucket, fileRow);
           const extension = fileExtensionForMediaType(mediaType, fileRow);
+          if (explicitName) return filenameWithDisplayExtension(explicitName, extension);
+          const ordinal = extractBucketOrdinal(bucket, fileRow);
           const variant = String(variantKey || fileRow?.variantKey || '').trim();
           if (variant && !/^default-/i.test(variant)) {
             return `${lookup} ${ordinal}.${String(variant).toLowerCase()}.${extension}`;

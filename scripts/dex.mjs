@@ -181,6 +181,7 @@ async function collectInitData(opts, slugArg) {
       slug: computedSlug,
       title,
       canonical,
+      lifecycle: base.lifecycle,
       video: { mode: 'url', dataUrl: videoUrl, dataUrlOriginal: videoUrl, dataHtml: '' },
       descriptionText: descriptionTextFromSeed(base),
       sidebar,

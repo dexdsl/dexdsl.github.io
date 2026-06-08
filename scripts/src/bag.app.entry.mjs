@@ -1055,6 +1055,19 @@
     return total;
   }
 
+  function countFilesFromSelectionRows(rows = []) {
+    const safeRows = Array.isArray(rows) ? rows : [];
+    return safeRows.reduce((sum, row) => {
+      const kind = toText(row?.kind).trim().toLowerCase();
+      if (kind === 'type') return sum + 1;
+      if (kind === 'file') {
+        const mediaTypes = normalizeAvailableTypes(row?.mediaTypes, row?.mediaType);
+        return sum + Math.max(1, mediaTypes.length || 0);
+      }
+      return sum;
+    }, 0);
+  }
+
   function sanitizeEntryTitle(rawTitle, lookup) {
     const raw = toText(rawTitle).trim();
     if (!raw) return '';
@@ -1199,6 +1212,39 @@
     video: 300 * 1024 * 1024,
   });
 
+  function estimateBytesForMediaTypes(mediaTypes = []) {
+    const normalizedTypes = normalizeAvailableTypes(mediaTypes, '');
+    if (!normalizedTypes.length) return 0;
+    return normalizedTypes.reduce((sum, mediaType) => (
+      sum + (mediaType === 'video'
+        ? ESTIMATED_BYTES_PER_MEDIA.video
+        : ESTIMATED_BYTES_PER_MEDIA.audio)
+    ), 0);
+  }
+
+  function estimateBytesFromLookupFiles(files = []) {
+    const safeFiles = Array.isArray(files) ? files : [];
+    return safeFiles.reduce((sum, file) => {
+      const mediaTypes = normalizeAvailableTypes(file?.availableTypes, file?.type);
+      return sum + estimateBytesForMediaTypes(mediaTypes);
+    }, 0);
+  }
+
+  function estimateBytesFromSelectionRows(rows = []) {
+    const safeRows = Array.isArray(rows) ? rows : [];
+    return safeRows.reduce((sum, row) => {
+      const kind = toText(row?.kind).trim().toLowerCase();
+      if (kind === 'type') {
+        return sum + estimateBytesForMediaTypes([row?.mediaType]);
+      }
+      if (kind === 'file') {
+        const mediaTypes = normalizeAvailableTypes(row?.mediaTypes, row?.mediaType);
+        return sum + estimateBytesForMediaTypes(mediaTypes.length ? mediaTypes : ['audio']);
+      }
+      return sum;
+    }, 0);
+  }
+
   function estimateBucketBytes(statsByBucket, bucket, mediaType = '') {
     if (!statsByBucket || typeof statsByBucket !== 'object') return 0;
     const safeBucket = normalizeBucket(bucket);
@@ -1245,26 +1291,18 @@
       if (kind === 'file') {
         const mediaTypes = normalizeAvailableTypes(row?.mediaTypes, row?.mediaType);
         if (!mediaTypes.length) {
-          total += ESTIMATED_BYTES_PER_MEDIA.audio;
+          total += estimateBytesForMediaTypes(['audio']);
           return;
         }
-        mediaTypes.forEach((mediaType) => {
-          total += mediaType === 'video'
-            ? ESTIMATED_BYTES_PER_MEDIA.video
-            : ESTIMATED_BYTES_PER_MEDIA.audio;
-        });
+        total += estimateBytesForMediaTypes(mediaTypes);
       }
     });
 
     return total;
   }
 
-  function formatEstimatedSize(bytes, fallbackFileCount = 0) {
-    const formatted = formatBytes(bytes);
-    if (formatted !== '\u2014') return formatted;
-    const fileCount = toCountInt(fallbackFileCount);
-    if (fileCount <= 0) return '\u2014';
-    return `~${fileCount} files`;
+  function formatEstimatedSize(bytes) {
+    return formatBytes(bytes);
   }
 
   function expandSelectionsForLookup(rows, files) {
@@ -1950,11 +1988,17 @@
       const expandedFiles = expandSelectionsForLookup(rows, files);
       const estimatedBytesFromFiles = expandedFiles.reduce((sum, file) => sum + parseFiniteSizeBytes(file?.sizeBytes), 0);
       const estimatedBytesFromStats = estimateBytesFromBucketStats(rows, entryMeta?.bucketFileStats || null);
-      const estimatedBytes = estimatedBytesFromFiles > 0 ? estimatedBytesFromFiles : estimatedBytesFromStats;
+      const estimatedBytesFromFileTypes = estimateBytesFromLookupFiles(expandedFiles);
+      const estimatedBytesFromRows = estimateBytesFromSelectionRows(rows);
+      const estimatedBytes = estimatedBytesFromFiles
+        || estimatedBytesFromStats
+        || estimatedBytesFromFileTypes
+        || estimatedBytesFromRows;
       const receiptLines = buildReceiptLines(lookup, rows, files, entryMeta?.bucketFileStats || null);
       const latestRow = getLatestRow(rows);
       const bucketStatsCount = countFilesFromBucketStats(rows, entryMeta?.bucketFileStats || null);
-      const resolvedCount = Math.max(expandedFiles.length, bucketStatsCount);
+      const selectedRowsCount = countFilesFromSelectionRows(rows);
+      const resolvedCount = Math.max(expandedFiles.length, bucketStatsCount, selectedRowsCount);
       const entryHref = normalizePath(
         latestRow?.entryHref
         || entryMeta?.canonicalHref
