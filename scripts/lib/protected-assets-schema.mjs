@@ -375,7 +375,6 @@ function normalizeLookup(entry, allowedBuckets) {
   }
 
   const fileIdSet = new Set();
-  const bucketNumberSet = new Set();
   const r2KeySet = new Set();
   for (const file of files) {
     const fileIdKey = file.fileId.toLowerCase();
@@ -384,11 +383,9 @@ function normalizeLookup(entry, allowedBuckets) {
     }
     fileIdSet.add(fileIdKey);
 
-    const bucketNumberKey = file.bucketNumber.toLowerCase();
-    if (bucketNumberSet.has(bucketNumberKey)) {
-      throw new Error(`Lookup ${lookupNumber}: duplicate bucketNumber ${file.bucketNumber}`);
-    }
-    bucketNumberSet.add(bucketNumberKey);
+    // bucketNumber is intentionally NOT unique: a single recording-index segment
+    // (e.g. A.1) yields multiple files — separate Drive renditions for 4K / 1080p
+    // video and stereo audio. Uniqueness is enforced on fileId and r2Key instead.
 
     const r2Key = file.r2Key.toLowerCase();
     if (r2KeySet.has(r2Key)) {

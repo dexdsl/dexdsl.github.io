@@ -1,0 +1,3 @@
+
+# Local service-account keys (never commit)
+.secrets/

@@ -1,10 +1,18 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { getAccessToken, hasServiceAccount } from './google-sa-token.mjs';
 
 const GOOGLE_SHEETS_HOSTS = new Set([
   'docs.google.com',
   'spreadsheets.google.com',
 ]);
+
+// Recording-index cells carry MULTIPLE text-run hyperlinks (e.g. "4K | 1080p | ste"
+// where each token links to a separate Drive file). xlsx/ods/gviz exports collapse a
+// cell to one link, dropping the audio rendition — so audio downloads resolved to the
+// video .mov. The Sheets API v4 (textFormatRuns) is the only source that exposes every
+// run link, so when a service account is available we parse the grid through the API.
+const SHEETS_API_RANGE = 'A1:Z400';
 
 const LOOKUP_BUCKET_NUMBER_PATTERN = /(?:^|[^A-Za-z0-9])([A-Z])\s*[.\-]\s*0*([0-9]{1,6})(?:[^0-9]|$)/i;
 const DRIVE_FILE_ID_PATTERN = /^[A-Za-z0-9_-]{10,}$/;
@@ -449,6 +457,188 @@ function parseWorksheetSegments(XLSX, worksheet) {
   };
 }
 
+// ---- Sheets API v4 path: captures every per-cell text-run hyperlink ----
+
+function formatSlug(value) {
+  return toText(value)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 16);
+}
+
+// Classify a single run token (the linked text inside a cell, e.g. "4K", "1080p",
+// "ste", "wav") into a media type + a stable format slug + a file extension.
+function classifyRunToken(segmentText, rawUrl) {
+  const text = toText(segmentText).toLowerCase();
+  const urlExt = inferFileExtension(rawUrl);
+  if (urlExt && AUDIO_EXTENSIONS.has(urlExt)) return { type: 'audio', format: urlExt, ext: urlExt };
+  if (urlExt && VIDEO_EXTENSIONS.has(urlExt)) return { type: 'video', format: formatSlug(text) || urlExt, ext: urlExt };
+
+  if (/\b(4k|2160p?)\b/.test(text)) return { type: 'video', format: '4k', ext: 'mov' };
+  if (/\b1080p?\b/.test(text)) return { type: 'video', format: '1080p', ext: 'mov' };
+  if (/\b720p?\b/.test(text)) return { type: 'video', format: '720p', ext: 'mov' };
+  if (/\b480p?\b/.test(text)) return { type: 'video', format: '480p', ext: 'mov' };
+  if (/\b(prores|h\.?26[45]|hevc|mp4|mov|video)\b/.test(text)) return { type: 'video', format: formatSlug(text) || 'video', ext: 'mov' };
+
+  if (/\b(ste|stereo)\b/.test(text)) return { type: 'audio', format: 'stereo', ext: 'wav' };
+  if (/\bmono\b/.test(text)) return { type: 'audio', format: 'mono', ext: 'wav' };
+  if (/\b(5\.1|surround|atmos|binaural)\b/.test(text)) return { type: 'audio', format: formatSlug(text) || 'surround', ext: 'wav' };
+  if (/\b(wav|aiff?|flac)\b/.test(text)) return { type: 'audio', format: formatSlug(text) || 'wav', ext: 'wav' };
+  if (/\b(mp3|m4a)\b/.test(text)) return { type: 'audio', format: formatSlug(text) || 'mp3', ext: 'mp3' };
+  if (/\b(audio|mix|master)\b/.test(text)) return { type: 'audio', format: 'audio', ext: 'wav' };
+
+  const inferred = inferType({ extension: urlExt, label: segmentText, rowText: segmentText });
+  return {
+    type: inferred.type,
+    format: formatSlug(text) || inferred.type || 'file',
+    ext: urlExt || (inferred.type === 'audio' ? 'wav' : inferred.type === 'video' ? 'mov' : 'bin'),
+  };
+}
+
+// Extract every run-link from a Sheets API cell value (formattedValue + textFormatRuns).
+function cellRunLinks(cell) {
+  const text = toText(cell?.formattedValue);
+  const runs = Array.isArray(cell?.textFormatRuns) ? cell.textFormatRuns : [];
+  const links = [];
+  if (runs.length && text) {
+    for (let i = 0; i < runs.length; i += 1) {
+      const start = Number(runs[i]?.startIndex || 0);
+      const end = i + 1 < runs.length ? Number(runs[i + 1]?.startIndex || 0) : text.length;
+      const uri = toText(runs[i]?.format?.link?.uri);
+      if (!uri) continue;
+      links.push({ segment: text.slice(start, end).trim(), uri });
+    }
+  }
+  if (!links.length) {
+    const cellUri = toText(cell?.hyperlink);
+    if (cellUri) links.push({ segment: text, uri: cellUri });
+  }
+  return links;
+}
+
+function isDriveFolderUrl(url) {
+  return /drive\.google\.com\/drive\/(?:u\/\d+\/)?folders\//i.test(toText(url));
+}
+
+async function fetchSheetGridViaApi(sheetId, { keyPath } = {}) {
+  const token = await getAccessToken({ keyPath });
+  const fields = encodeURIComponent(
+    'sheets(properties(title),data(startRow,startColumn,rowData(values(formattedValue,hyperlink,textFormatRuns))))',
+  );
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(sheetId)}`
+    + `?ranges=${encodeURIComponent(SHEETS_API_RANGE)}&includeGridData=true&fields=${fields}`;
+  const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+  if (!res.ok) {
+    throw new Error(`Sheets API ${res.status}: ${await res.text()}`);
+  }
+  const json = await res.json();
+  const data = json?.sheets?.[0]?.data?.[0];
+  if (!data) throw new Error('Sheets API returned no grid data.');
+  return data;
+}
+
+function parseApiGridSegments(grid) {
+  const startRow = Number(grid?.startRow || 0);
+  const startCol = Number(grid?.startColumn || 0);
+  const rowData = Array.isArray(grid?.rowData) ? grid.rowData : [];
+  const cellAt = (r, c) => {
+    const row = rowData[r - startRow];
+    if (!row || !Array.isArray(row.values)) return null;
+    return row.values[c - startCol] || null;
+  };
+  const firstLink = (cell) => {
+    const links = cellRunLinks(cell);
+    return links.length ? links[0].uri : '';
+  };
+
+  const BUCKET_COLUMNS = [
+    { bucket: 'A', column: 0 },
+    { bucket: 'B', column: 1 },
+    { bucket: 'C', column: 2 },
+    { bucket: 'D', column: 3 },
+    { bucket: 'E', column: 4 },
+    { bucket: 'X', column: 5 },
+  ];
+
+  const rootFolderUrl = firstLink(cellAt(0, 0));
+  const bucketFolderUrls = {};
+  const activeColumns = [];
+  for (const mapping of BUCKET_COLUMNS) {
+    const folderUrl = firstLink(cellAt(1, mapping.column));
+    if (!isDriveFolderUrl(folderUrl)) continue;
+    bucketFolderUrls[mapping.bucket] = folderUrl;
+    activeColumns.push(mapping);
+  }
+
+  const segments = [];
+  const bucketCounters = new Map();
+  const seenFileKeys = new Set();
+  const lastRowIndex = startRow + rowData.length - 1;
+  const dataStartRow = 3; // row 4 (0-indexed)
+  for (let r = Math.max(dataStartRow, startRow); r <= lastRowIndex; r += 1) {
+    for (const mapping of activeColumns) {
+      const cell = cellAt(r, mapping.column);
+      if (!cell) continue;
+      const label = toText(cell.formattedValue);
+      const runLinks = cellRunLinks(cell).filter((link) => !isDriveFolderUrl(link.uri));
+      if (!label || !runLinks.length) continue;
+
+      const parsedBucket = extractBucketNumber(label);
+      let segmentNumber;
+      let bucketNumber;
+      if (parsedBucket && parsedBucket.bucket === mapping.bucket) {
+        segmentNumber = parsedBucket.number;
+        bucketNumber = parsedBucket.bucketNumber;
+      } else {
+        segmentNumber = (bucketCounters.get(mapping.bucket) || 0) + 1;
+        bucketNumber = `${mapping.bucket}.${segmentNumber}`;
+      }
+      bucketCounters.set(
+        mapping.bucket,
+        Math.max(bucketCounters.get(mapping.bucket) || 0, segmentNumber),
+      );
+
+      for (const link of runLinks) {
+        const driveFileId = extractDriveFileId(link.uri);
+        if (!driveFileId) continue;
+        const classified = classifyRunToken(link.segment || label, link.uri);
+        const fileKey = `${bucketNumber.toLowerCase()}|${classified.type}|${classified.format}`;
+        if (seenFileKeys.has(fileKey)) continue;
+        seenFileKeys.add(fileKey);
+        segments.push({
+          bucketNumber,
+          bucket: mapping.bucket,
+          segmentNumber,
+          rowNumber: r + 1,
+          label,
+          rawUrl: link.uri,
+          driveFileId,
+          extension: classified.ext,
+          type: classified.type,
+          typeReason: 'run-link',
+          format: classified.format,
+          availableTypes: classified.type ? [classified.type] : [],
+          mime: inferMimeFromExtension(classified.ext, classified.type),
+        });
+      }
+    }
+  }
+
+  segments.sort((a, b) => {
+    const left = BUCKET_ORDER.get(a.bucket) ?? 999;
+    const right = BUCKET_ORDER.get(b.bucket) ?? 999;
+    if (left !== right) return left - right;
+    if (a.segmentNumber !== b.segmentNumber) return a.segmentNumber - b.segmentNumber;
+    return toText(a.format).localeCompare(toText(b.format));
+  });
+
+  return {
+    segments,
+    folderLinks: { rootFolderUrl, bucketFolderUrls },
+  };
+}
+
 function normalizeSegmentsForLookup(segments, {
   entrySlug,
 } = {}) {
@@ -456,10 +646,17 @@ function normalizeSegmentsForLookup(segments, {
   return segments.map((segment, index) => {
     const ext = toText(segment.extension).toLowerCase() || (segment.type === 'audio' ? 'wav' : segment.type === 'video' ? 'mov' : 'bin');
     const label = segment.label || `${segment.bucketNumber} segment`;
+    // A single recording-index cell yields several files (4K/1080p video + stereo
+    // audio), so the format slug keeps fileId/r2Key unique per rendition. Legacy
+    // (xlsx, cell-level) segments have no format and keep the original id shape.
+    const fmt = formatSlug(segment.format);
+    const base = `${slug}-${segment.bucket.toLowerCase()}-${padNumber(segment.segmentNumber)}`;
+    const r2Base = `${slug}/${segment.bucket.toLowerCase()}/${padNumber(segment.segmentNumber)}`;
     return {
       bucketNumber: segment.bucketNumber,
       bucket: segment.bucket,
       segmentNumber: segment.segmentNumber,
+      format: segment.format || '',
       label,
       sourceLabel: label,
       rawUrl: segment.rawUrl,
@@ -467,8 +664,8 @@ function normalizeSegmentsForLookup(segments, {
       type: segment.type,
       typeReason: segment.typeReason || '',
       availableTypes: Array.isArray(segment.availableTypes) ? segment.availableTypes.slice() : [],
-      fileId: `${slug}-${segment.bucket.toLowerCase()}-${padNumber(segment.segmentNumber)}`,
-      r2Key: `${slug}/${segment.bucket.toLowerCase()}/${padNumber(segment.segmentNumber)}.${ext}`,
+      fileId: fmt ? `${base}-${fmt}` : base,
+      r2Key: fmt ? `${r2Base}-${fmt}.${ext}` : `${r2Base}.${ext}`,
       sizeBytes: 0,
       mime: segment.mime || inferMimeFromExtension(ext, segment.type),
       position: index + 1,
@@ -522,41 +719,63 @@ export async function importRecordingIndexFromSheet({
   const normalizedSlug = slugifyToken(entrySlug || normalizedLookup);
   const sheet = normalizeSheetUrl(sheetUrl);
 
-  let workbookBuffer = null;
   let sourceMode = 'live';
   let sourceLabel = sheet.xlsxExportUrl;
   let fetchError = null;
-  try {
-    workbookBuffer = await fetchWithTimeout(sheet.xlsxExportUrl, {
-      timeoutMs,
-      retries,
-    });
-  } catch (error) {
-    fetchError = error;
-    const fallbackPath = toText(fallbackXlsxPath);
-    if (!fallbackPath) {
-      throw new Error(`Recording index fetch failed and no fallback XLSX provided (${error?.message || String(error)})`);
+  let parsed = null;
+
+  // Preferred path: Sheets API v4 captures every per-cell text-run hyperlink, so the
+  // audio (e.g. "ste") and video (e.g. "4K"/"1080p") renditions all become files.
+  if (hasServiceAccount()) {
+    try {
+      const grid = await fetchSheetGridViaApi(sheet.sheetId);
+      const apiParsed = parseApiGridSegments(grid);
+      if (Array.isArray(apiParsed.segments) && apiParsed.segments.length) {
+        parsed = apiParsed;
+        sourceMode = 'sheets-api';
+        sourceLabel = `sheets-api:${sheet.sheetId}`;
+      }
+    } catch (error) {
+      fetchError = error;
     }
-    const absolute = path.resolve(fallbackPath);
-    workbookBuffer = await fs.readFile(absolute);
-    sourceMode = 'fallback';
-    sourceLabel = absolute;
   }
 
-  const XLSX = await loadXlsxModule();
-  const workbook = XLSX.read(workbookBuffer, {
-    type: 'buffer',
-    cellFormula: false,
-    cellHTML: false,
-    cellStyles: false,
-    sheetStubs: true,
-  });
-  const firstSheetName = workbook.SheetNames?.[0];
-  if (!firstSheetName) {
-    throw new Error('Recording index workbook has no sheets.');
+  // Fallback path: xlsx export only exposes the cell-level link (video-only; no audio).
+  if (!parsed) {
+    let workbookBuffer = null;
+    try {
+      workbookBuffer = await fetchWithTimeout(sheet.xlsxExportUrl, {
+        timeoutMs,
+        retries,
+      });
+    } catch (error) {
+      fetchError = error;
+      const fallbackPath = toText(fallbackXlsxPath);
+      if (!fallbackPath) {
+        throw new Error(`Recording index fetch failed and no fallback XLSX provided (${error?.message || String(error)})`);
+      }
+      const absolute = path.resolve(fallbackPath);
+      workbookBuffer = await fs.readFile(absolute);
+      sourceMode = 'fallback';
+      sourceLabel = absolute;
+    }
+
+    const XLSX = await loadXlsxModule();
+    const workbook = XLSX.read(workbookBuffer, {
+      type: 'buffer',
+      cellFormula: false,
+      cellHTML: false,
+      cellStyles: false,
+      sheetStubs: true,
+    });
+    const firstSheetName = workbook.SheetNames?.[0];
+    if (!firstSheetName) {
+      throw new Error('Recording index workbook has no sheets.');
+    }
+    const worksheet = workbook.Sheets[firstSheetName];
+    parsed = parseWorksheetSegments(XLSX, worksheet);
   }
-  const worksheet = workbook.Sheets[firstSheetName];
-  const parsed = parseWorksheetSegments(XLSX, worksheet);
+
   const parsedSegments = Array.isArray(parsed.segments) ? parsed.segments : [];
   const folderLinks = parsed.folderLinks && typeof parsed.folderLinks === 'object'
     ? parsed.folderLinks

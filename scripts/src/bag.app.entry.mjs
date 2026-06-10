@@ -1713,13 +1713,27 @@
     return out;
   }
 
+  // Trigger a download/open WITHOUT ever navigating the current tab — navigating
+  // away would discard the bag. Bundles are served by the worker as a streamed
+  // attachment, so an anchor click downloads in place; if a popup is blocked we
+  // still never replace the current document.
   function openSignedUrl(url) {
     const href = toText(url).trim();
     if (!href) return false;
     const win = window.open(href, '_blank', 'noopener');
     if (win) return true;
-    window.location.assign(href);
-    return true;
+    try {
+      const anchor = document.createElement('a');
+      anchor.href = href;
+      anchor.target = '_blank';
+      anchor.rel = 'noopener';
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   function openSignedUrls(urls = []) {
@@ -1732,14 +1746,9 @@
 
     let opened = 0;
     list.forEach((href) => {
-      const win = window.open(href, '_blank', 'noopener');
-      if (win) opened += 1;
+      if (openSignedUrl(href)) opened += 1;
     });
-    if (!opened) {
-      window.location.assign(list[0]);
-      return { opened: 1, total: list.length };
-    }
-    return { opened, total: list.length };
+    return { opened: opened || 1, total: list.length };
   }
 
   function readResumeAction() {
