@@ -70,6 +70,10 @@
   const PRESERVED_IDS = new Set(['gooey-mesh-wrapper', 'scroll-gradient-bg', SLOT_SCROLL_ID, SLOT_FOREGROUND_ID]);
   const PRESERVED_TAGS = new Set(['SCRIPT', 'STYLE', 'LINK', 'META']);
   const SKIPPED_ROUTE_SCRIPTS = new Set(['/assets/js/header-slot.js', '/assets/js/dx-scroll-dot.js']);
+  // Route scripts that live outside /assets/js/ but must still re-run on soft
+  // navigation. Entry pages hydrate via /assets/dex-sidebar.js (rail, collection,
+  // subtitle/title formatting); without this a soft-navigated entry renders raw.
+  const EXTRA_ROUTE_SCRIPTS = new Set(['/assets/dex-sidebar.js']);
   const HOME_STACK_BLOCK_IDS = [
     'block-448bd8f915f4abba552b',
     'block-ee939fa7ed636a261fd7',
@@ -2875,12 +2879,38 @@
     }
   }
 
+  function syncRouteInlineStyles(sourceDocument) {
+    // syncRouteStyles only carries over <link> stylesheets. Entry pages bake
+    // their critical CSS inline in <head> (e.g. #dex-layout-patch: title/subtitle
+    // formatting, the 65/35 grid, collection rail, loading skeleton). Re-inject
+    // the incoming route's inline head styles so a soft-navigated page is styled.
+    document.querySelectorAll('style[data-dx-route-style="true"]').forEach((node) => node.remove());
+
+    const sourceStyles = sourceDocument.head
+      ? Array.from(sourceDocument.head.querySelectorAll('style'))
+      : [];
+
+    for (const style of sourceStyles) {
+      const clone = document.createElement('style');
+      clone.textContent = style.textContent || '';
+      const id = style.getAttribute('id');
+      // Preserve the id only when no persistent (untagged) copy already holds it,
+      // so id-based selectors resolve without creating duplicate ids.
+      if (id && !document.getElementById(id)) clone.id = id;
+      const media = style.getAttribute('media');
+      if (media) clone.setAttribute('media', media);
+      clone.setAttribute('data-dx-route-style', 'true');
+      document.head.appendChild(clone);
+    }
+  }
+
   function isRouteScriptCandidate(url) {
     if (!url || !isHttpUrl(url) || !isSameOriginUrl(url)) return false;
     const pathname = url.pathname;
-    if (!pathname.startsWith('/assets/js/')) return false;
     if (!pathname.endsWith('.js')) return false;
     if (SKIPPED_ROUTE_SCRIPTS.has(pathname)) return false;
+    if (EXTRA_ROUTE_SCRIPTS.has(pathname)) return true;
+    if (!pathname.startsWith('/assets/js/')) return false;
     return true;
   }
 
@@ -3321,7 +3351,12 @@
     const { scrollRoot, foregroundRoot } = ensureSlotRoots(container, headerElement);
 
     syncRouteStyles(sourceDocument, targetUrl.href);
+    syncRouteInlineStyles(sourceDocument);
     syncDocumentFromRoute(sourceDocument, targetUrl);
+
+    // dex-sidebar.js boot guards on this flag; clear it so the entry hydrator
+    // re-runs against the freshly swapped DOM on every soft navigation.
+    delete document.documentElement.dataset.dexSidebarRendered;
 
     const { fragment: nextFragment, inlineScripts } = buildForegroundFragment(sourceDocument);
     clearChildren(foregroundRoot);
