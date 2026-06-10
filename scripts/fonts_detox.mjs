@@ -122,6 +122,22 @@ function collectEntrypoints() {
     files.add('entry-template/index.html');
   }
 
+  // Generated entry pages are not listed in sanitize.config.json, yet they ship
+  // the same fonthost wf-loading block that blanks all text for ~3s on a cold
+  // load (no remover; relies on the 3s keyframe). Sweep every entry index.html
+  // so the detox covers them and can't regress on the next bake.
+  for (const entryRoot of ['entries', 'docs/entry', 'docs/entries', 'public/entry', 'public/entries']) {
+    const absoluteRoot = path.join(repoRoot, entryRoot);
+    if (!fs.existsSync(absoluteRoot) || !fs.statSync(absoluteRoot).isDirectory()) continue;
+    for (const dirent of fs.readdirSync(absoluteRoot, { withFileTypes: true })) {
+      if (!dirent.isDirectory()) continue;
+      const indexRelative = path.join(entryRoot, dirent.name, 'index.html');
+      if (fs.existsSync(path.join(repoRoot, indexRelative))) {
+        files.add(indexRelative);
+      }
+    }
+  }
+
   return Array.from(files).sort();
 }
 
