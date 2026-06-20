@@ -1887,19 +1887,68 @@
     }
   }
 
-  function openDownloadList(downloads = []) {
+  const DOWNLOAD_STAGGER_MS = 320;
+
+  // Fire each per-file download, staggered, reporting progress as each starts and
+  // resolving once the last one has been triggered.
+  function openDownloadList(downloads = [], onProgress = null) {
     const list = (Array.isArray(downloads) ? downloads : [])
       .map((item) => ({ name: toText(item?.name).trim(), href: toText(item?.signedUrl || item?.url || item?.downloadUrl).trim() }))
       .filter((item) => item.href);
-    if (!list.length) return { opened: 0, total: 0 };
-    list.forEach((item, index) => {
-      if (index === 0) {
+    if (!list.length) return Promise.resolve({ opened: 0, total: 0 });
+    const total = list.length;
+    return new Promise((resolve) => {
+      let started = 0;
+      const fire = (item) => {
         triggerAnchorDownload(item.href, item.name);
-        return;
-      }
-      window.setTimeout(() => triggerAnchorDownload(item.href, item.name), index * 350);
+        started += 1;
+        if (typeof onProgress === 'function') {
+          try { onProgress(started, total); } catch {}
+        }
+        if (started >= total) resolve({ opened: total, total });
+      };
+      list.forEach((item, index) => {
+        if (index === 0) fire(item);
+        else window.setTimeout(() => fire(item), index * DOWNLOAD_STAGGER_MS);
+      });
     });
-    return { opened: list.length, total: list.length };
+  }
+
+  function ensureBagToastHost() {
+    let host = document.getElementById('dx-bag-toast-host');
+    if (!(host instanceof HTMLElement)) {
+      host = document.createElement('div');
+      host.id = 'dx-bag-toast-host';
+      document.body.appendChild(host);
+    }
+    return host;
+  }
+
+  // Glassy completion toast in the dex accent. Click to dismiss; auto-dismisses on a
+  // depleting accent timer line.
+  function showBagToast({ title = 'Done', detail = '', duration = 5200 } = {}) {
+    const host = ensureBagToastHost();
+    const toast = document.createElement('div');
+    toast.className = 'dx-toast';
+    toast.setAttribute('role', 'status');
+    const icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+    toast.innerHTML = `
+      <span class="dx-toast-title">${icon}<span>${htmlEscape(title)}</span></span>
+      ${detail ? `<span class="dx-toast-detail">${htmlEscape(detail)}</span>` : ''}
+      <span class="dx-toast-timer" style="animation-duration:${Math.max(1200, Number(duration) || 5200)}ms"></span>
+    `;
+    host.appendChild(toast);
+    let dismissed = false;
+    const dismiss = () => {
+      if (dismissed) return;
+      dismissed = true;
+      window.clearTimeout(timer);
+      toast.classList.add('is-leaving');
+      window.setTimeout(() => toast.remove(), 380);
+    };
+    toast.addEventListener('click', dismiss);
+    const timer = window.setTimeout(dismiss, Math.max(1200, Number(duration) || 5200));
+    return dismiss;
   }
 
   function readResumeAction() {
@@ -2048,7 +2097,15 @@
       backCrumb: resolveBackCrumb(),
       summaryDisplay: null,
       summaryTweenToken: 0,
+      progress: null,
     };
+    const PROGRESS_PHASE_LABELS = Object.freeze({
+      resolving: 'RESOLVING',
+      requesting: 'REQUESTING',
+      sending: 'SENDING',
+      done: 'COMPLETE',
+      preparing: 'PREPARING',
+    });
     const BAG_MOTION = Object.freeze({
       visualDurationMs: 320,
       collapseDurationMs: 420,
@@ -2063,6 +2120,66 @@
       root.setAttribute('data-dx-fetch-state', value);
       if (value === 'loading') root.setAttribute('aria-busy', 'true');
       else root.removeAttribute('aria-busy');
+    };
+
+    const renderProgressMarkup = (progress) => {
+      const safe = progress && typeof progress === 'object' ? progress : {};
+      const phase = toText(safe.phase || 'preparing').trim() || 'preparing';
+      const indeterminate = Boolean(safe.indeterminate);
+      const ratio = Math.max(0, Math.min(1, Number(safe.ratio) || 0));
+      const phaseLabel = PROGRESS_PHASE_LABELS[phase] || 'PREPARING';
+      const detail = htmlEscape(toText(safe.detail || ''));
+      const width = phase === 'done' ? 100 : Math.round(ratio * 100);
+      return `
+        <div class="dx-bag-progress" data-bag-progress data-phase="${htmlEscape(phase)}" data-indeterminate="${indeterminate ? 'true' : 'false'}" role="status" aria-live="polite">
+          <div class="dx-bag-progress-meta">
+            <span class="dx-bag-progress-phase" data-bag-progress-phase>${htmlEscape(phaseLabel)}</span>
+            <span class="dx-bag-progress-detail" data-bag-progress-detail>${detail}</span>
+          </div>
+          <div class="dx-bag-progress-track"><span class="dx-bag-progress-fill" data-bag-progress-fill style="width:${width}%"></span></div>
+        </div>
+      `;
+    };
+
+    // Update the inflight progress UI in place — never re-renders the whole bag (which
+    // would re-fetch every card thumbnail and restart animations on each tick).
+    const setProgress = (next = {}) => {
+      const merged = { ...(state.progress || {}), ...next };
+      state.progress = merged;
+      const wrap = root.querySelector('[data-bag-progress]');
+      if (!(wrap instanceof HTMLElement)) {
+        render();
+        return;
+      }
+      const phase = toText(merged.phase || 'preparing').trim() || 'preparing';
+      wrap.setAttribute('data-phase', phase);
+      wrap.setAttribute('data-indeterminate', merged.indeterminate ? 'true' : 'false');
+      const phaseEl = wrap.querySelector('[data-bag-progress-phase]');
+      const detailEl = wrap.querySelector('[data-bag-progress-detail]');
+      const fillEl = wrap.querySelector('[data-bag-progress-fill]');
+      if (phaseEl) phaseEl.textContent = PROGRESS_PHASE_LABELS[phase] || 'PREPARING';
+      if (detailEl) detailEl.textContent = toText(merged.detail || '');
+      if (fillEl instanceof HTMLElement && !merged.indeterminate && Number.isFinite(Number(merged.ratio))) {
+        fillEl.style.width = `${Math.max(0, Math.min(1, Number(merged.ratio))) * 100}%`;
+      }
+    };
+
+    const clearBagAfterDownload = () => {
+      suppressBagUpdates = true;
+      try {
+        bagApi.clear();
+      } finally {
+        suppressBagUpdates = false;
+      }
+      state.filesByLookup.clear();
+      state.entryMetaByLookup.clear();
+      state.expandedReceipts.clear();
+      state.progress = null;
+      state.busy = '';
+      state.error = '';
+      state.status = '';
+      refreshRows();
+      render();
     };
 
     const groupedRows = () => {
@@ -2386,13 +2503,14 @@
                 </div>
               </div>
               <div class="dx-bag-actions">
-                <button type="button" class="dx-button-element dx-button-size--sm dx-button-element--secondary" data-bag-clear ${state.rows.length ? '' : 'disabled'}>CLEAR</button>
-                <button type="button" class="dx-button-element dx-button-size--sm dx-button-element--primary" data-bag-download ${state.rows.length ? '' : 'disabled'}>${htmlEscape(state.busy ? 'PREPARING…' : 'DOWNLOAD BAG')}</button>
+                <button type="button" class="dx-button-element dx-button-size--sm dx-button-element--secondary" data-bag-clear ${state.rows.length && !state.busy ? '' : 'disabled'}>CLEAR</button>
+                <button type="button" class="dx-button-element dx-button-size--sm dx-button-element--primary${state.busy ? ' is-busy' : ''}" data-bag-download ${state.rows.length ? '' : 'disabled'}>${htmlEscape(state.busy ? 'PREPARING…' : 'DOWNLOAD BAG')}</button>
               </div>
+              ${state.busy === 'download' ? renderProgressMarkup(state.progress) : ''}
             </aside>
           </div>
 
-          ${statusText ? `<p class="dx-bag-status">${statusText}</p>` : ''}
+          ${!state.busy && statusText ? `<p class="dx-bag-status" data-tone="${state.error ? 'error' : 'info'}">${statusText}</p>` : ''}
         </section>
       `;
 
@@ -2515,15 +2633,16 @@
 
       state.busy = 'download';
       state.error = '';
-      state.status = 'Resolving selected files…';
+      state.status = '';
+      state.progress = { phase: 'resolving', indeterminate: true, detail: 'reading selection' };
+      let startedCount = 0;
       render();
 
       try {
         await resolveLookupFiles();
         await resolveLookupEntryMeta();
         const selections = collectSelectionsPayload();
-        state.status = 'Requesting secure bundle…';
-        render();
+        setProgress({ phase: 'requesting', indeterminate: true, detail: 'minting secure links' });
         try {
           const payload = await requestBagBundle({
             token: state.auth.token,
@@ -2540,42 +2659,47 @@
           if (delivery === 'multi') {
             const downloads = parseBundleDownloads(payload);
             if (!downloads.length) throw createCodedError('empty', 'no downloads');
-            const result = openDownloadList(downloads);
-            state.status = result.total > 1
-              ? `Starting ${result.total} downloads…`
-              : 'Download starting…';
+            setProgress({ phase: 'sending', indeterminate: false, ratio: 0, detail: `0 / ${downloads.length}` });
+            const result = await openDownloadList(downloads, (done, total) => {
+              setProgress({ phase: 'sending', indeterminate: false, ratio: total ? done / total : 1, detail: `${done} / ${total}` });
+            });
+            startedCount = result.total;
           } else if (delivery === 'sync') {
             const signedUrl = getBundleSignedUrl(payload);
             if (!signedUrl) throw new Error('missing signed url');
+            setProgress({ phase: 'sending', indeterminate: false, ratio: 1, detail: '1 / 1' });
             openSignedUrl(signedUrl);
-            state.status = 'Bundle ready. Opening download…';
+            startedCount = 1;
           } else if (delivery === 'async') {
             const result = await pollBundleJob({
               token: state.auth.token,
               jobId: getBundleJobId(payload),
-              onTick: ({ attempt = 0, payload: pollPayload = null, elapsedMs = 0 } = {}) => {
-                state.status = formatBundlePollStatus(pollPayload, Number(attempt) || 0, elapsedMs);
-                render();
+              onTick: ({ payload: pollPayload = null } = {}) => {
+                const hint = parseBundleHintCount(pollPayload);
+                setProgress({ phase: 'requesting', indeterminate: true, detail: hint > 0 ? `staging ${hint} file${hint === 1 ? '' : 's'}` : 'staging bundle' });
               },
             });
+            setProgress({ phase: 'sending', indeterminate: false, ratio: 1, detail: '1 / 1' });
             openSignedUrl(getBundleSignedUrl(result));
-            state.status = 'Bundle ready. Opening download…';
+            startedCount = 1;
           } else {
             const ready = resolveBundleReadyPayload(payload);
             if (ready) {
+              setProgress({ phase: 'sending', indeterminate: false, ratio: 1, detail: '1 / 1' });
               openSignedUrl(ready.signedUrl);
-              state.status = 'Bundle ready. Opening download…';
+              startedCount = 1;
             } else if (getBundleJobId(payload)) {
               const result = await pollBundleJob({
                 token: state.auth.token,
                 jobId: getBundleJobId(payload),
-                onTick: ({ attempt = 0, payload: pollPayload = null, elapsedMs = 0 } = {}) => {
-                  state.status = formatBundlePollStatus(pollPayload, Number(attempt) || 0, elapsedMs);
-                  render();
+                onTick: ({ payload: pollPayload = null } = {}) => {
+                  const hint = parseBundleHintCount(pollPayload);
+                  setProgress({ phase: 'requesting', indeterminate: true, detail: hint > 0 ? `staging ${hint} file${hint === 1 ? '' : 's'}` : 'staging bundle' });
                 },
               });
+              setProgress({ phase: 'sending', indeterminate: false, ratio: 1, detail: '1 / 1' });
               openSignedUrl(getBundleSignedUrl(result));
-              state.status = 'Bundle ready. Opening download…';
+              startedCount = 1;
             } else {
               throw createCodedError('failed', 'unsupported response');
             }
@@ -2583,29 +2707,22 @@
         } catch (bagError) {
           const bagCode = toText(bagError?.code).toLowerCase();
           if (!shouldFallbackToLookupBundles(bagError)) throw bagError;
-          if (bagCode === 'empty') {
-            state.status = 'Bundle resolved zero files. Retrying via lookup bundles…';
-            render();
-          } else if (bagCode === 'timeout' || bagCode === 'stalled') {
-            state.status = 'Merged bundle is still preparing. Retrying via lookup bundles…';
-            render();
-          }
+          setProgress({ phase: 'requesting', indeterminate: true, detail: 'retrying via lookup links' });
           const fallbackBundles = await requestLegacyBagBundles({
             token: state.auth.token,
             selections,
             filesByLookup: state.filesByLookup,
             entryMetaByLookup: state.entryMetaByLookup,
-            onTick: ({ stage = '', index = 0, total = 0, elapsedMs = 0, payload: pollPayload = null } = {}) => {
+            onTick: ({ stage = '', index = 0, total = 0, payload: pollPayload = null } = {}) => {
               const safeTotal = Number(total) > 1 ? Number(total) : 0;
               const safeIndex = Number(index) + 1;
-              const verb = stage === 'poll' ? 'Preparing' : 'Requesting';
-              const elapsedLabel = stage === 'poll' ? ` ${formatElapsedMs(elapsedMs)}` : '';
               const count = parseBundleHintCount(pollPayload);
-              const countLabel = count > 0 ? `, ${count} ${count === 1 ? 'file' : 'files'}` : '';
-              state.status = safeTotal
-                ? `${verb} secure bundles${countLabel}… (${safeIndex}/${safeTotal}${elapsedLabel})`
-                : `${verb} secure bundle${countLabel}…${elapsedLabel ? ` (${elapsedLabel.trim()})` : ''}`;
-              render();
+              const countLabel = count > 0 ? `${count} file${count === 1 ? '' : 's'}` : (stage === 'poll' ? 'staging' : 'requesting');
+              setProgress({
+                phase: 'requesting',
+                indeterminate: true,
+                detail: safeTotal ? `${countLabel} (${safeIndex}/${safeTotal})` : countLabel,
+              });
             },
           });
           const downloads = [];
@@ -2623,10 +2740,11 @@
             err.code = 'not-found';
             throw err;
           }
-          const openResult = openDownloadList(downloads);
-          state.status = openResult.total > 1
-            ? `Starting ${openResult.total} downloads…`
-            : 'Download starting…';
+          setProgress({ phase: 'sending', indeterminate: false, ratio: 0, detail: `0 / ${downloads.length}` });
+          const openResult = await openDownloadList(downloads, (done, total) => {
+            setProgress({ phase: 'sending', indeterminate: false, ratio: total ? done / total : 1, detail: `${done} / ${total}` });
+          });
+          startedCount = openResult.total;
         }
       } catch (error) {
         if (toText(error?.code) === 'not-found') {
@@ -2640,6 +2758,18 @@
         }
       } finally {
         state.busy = '';
+      }
+
+      if (startedCount > 0 && !state.error) {
+        // Show the bundle "complete", confirm with a toast, then clear the bag.
+        setProgress({ phase: 'done', indeterminate: false, ratio: 1, detail: `${startedCount} file${startedCount === 1 ? '' : 's'}` });
+        showBagToast({
+          title: startedCount > 1 ? 'Sent to downloads' : 'Download started',
+          detail: `${startedCount} file${startedCount === 1 ? '' : 's'} → bag cleared`,
+        });
+        window.setTimeout(() => clearBagAfterDownload(), 900);
+      } else {
+        state.progress = null;
         render();
       }
     };

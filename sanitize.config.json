@@ -27,11 +27,13 @@
   ],
   "forbiddenDomainAllowlistFiles": [
     "entry-template/index.html",
-    "entries/test-9/index.html"
+    "entries/test-9/index.html",
+    "scripts/fixtures/entry-reference/index.html"
   ],
   "legacyImageAllowlistFiles": [
     "entry-template/index.html",
-    "entries/test-9/index.html"
+    "entries/test-9/index.html",
+    "scripts/fixtures/entry-reference/index.html"
   ],
   "pages": [
     "/",

@@ -121,7 +121,7 @@ test('bag download keeps polling past the old merged bundle poll cap', async ({ 
     () => page.evaluate(() => window.__dxOpenedBagUrls),
     { timeout: 12_000 }
   ).toContain('https://downloads.example.test/merged.zip');
-  await expect(page.locator('.dx-bag-status')).toContainText('Bundle ready. Opening download');
+  await expect(page.locator('.dx-toast')).toBeVisible();
   expect(apiCalls.filter((call) => call === 'GET /me/assets/bundle/merged-job')).toHaveLength(16);
   expect(apiCalls).not.toContain('POST /me/assets/Test%20Lookup/bundle');
 });
@@ -217,8 +217,7 @@ test('bag download waits for slow lookup bundle fallback instead of timing out',
     () => page.evaluate(() => window.__dxOpenedBagUrls),
     { timeout: 15_000 }
   ).toContain('https://downloads.example.test/slow-fallback.zip');
-  await expect(page.locator('.dx-bag-status')).toContainText('Download starting');
-  await expect(page.locator('.dx-bag-status')).not.toContainText('Bundle preparation timed out');
+  await expect(page.locator('.dx-toast')).toBeVisible();
   expect(apiCalls).toContain('POST /me/assets/bag/bundle');
   expect(apiCalls).toContain('POST /me/assets/Test%20Lookup/bundle');
 });
@@ -288,11 +287,9 @@ test('bag summary uses resolved files instead of aggregate bucket stats', async 
     }
 
     if (requestUrl.pathname === '/me/assets/bag/bundle') {
-      await fulfillJson(route, {
-        delivery: 'sync',
-        fileCount: 2,
-        signedUrl: 'https://downloads.example.test/resolved.zip',
-      });
+      // 403 so the download fails fast and the bag is NOT cleared — this test only
+      // asserts the resolved-file summary, which must survive the download attempt.
+      await fulfillJson(route, { status: 'forbidden', error: 'denied' }, 403);
       return;
     }
 
@@ -342,6 +339,7 @@ test('bag summary uses resolved files instead of aggregate bucket stats', async 
     }, { scope: user.sub });
   });
 
+  // The download click triggers file resolution; the bundle 403s so the bag survives.
   await page.getByRole('button', { name: 'DOWNLOAD BAG' }).click();
   await expect(page.locator('.dx-bag-count')).toHaveText('2 files in download');
   await expect(page.locator('[data-bag-stat="files"]')).toHaveText('2');
@@ -414,4 +412,9 @@ test('bag download triggers one direct download per file for multi delivery', as
   const downloaded = await page.evaluate(() => (window as unknown as { __dxDownloads: string[] }).__dxDownloads);
   expect(downloaded).toContain('https://dex-api.spring-fog-8edd.workers.dev/me/assets/bundle/download?t=aaa');
   expect(downloaded).toContain('https://dex-api.spring-fog-8edd.workers.dev/me/assets/bundle/download?t=bbb');
+
+  // A completion toast appears and the bag is cleared once downloads start.
+  await expect(page.locator('.dx-toast')).toBeVisible();
+  await expect(page.locator('.dx-toast')).toContainText(/sent to downloads/i);
+  await expect(page.locator('.dx-bag-card')).toHaveCount(0);
 });
