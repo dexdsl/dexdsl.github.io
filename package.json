@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "python3 -m http.server 8080 --directory docs",
     "rewrite:anchors": "node scripts/rewrite-internal-anchors.mjs",
     "check:anchors": "node scripts/rewrite-internal-anchors.mjs --check",
     "build:breadcrumb-motion": "node scripts/build-breadcrumb-motion.mjs",

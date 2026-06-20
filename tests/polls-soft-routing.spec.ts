@@ -130,7 +130,7 @@ test('polls soft routing keeps URL and rendered route synchronized', async ({ pa
   await page.waitForLoadState('load');
   await expectPollsReady();
   await expect(page).toHaveURL(/\/polls\/?$/);
-  await expect(pollsRoot.getByRole('heading', { level: 1, name: 'Dex Polls' })).toBeVisible();
+  await expect(pollsRoot.getByRole('heading', { level: 1, name: 'Polls' })).toBeVisible();
 
   await pollsRoot
     .locator('article.dx-poll-card', { hasText: openPoll.question })
@@ -138,12 +138,12 @@ test('polls soft routing keeps URL and rendered route synchronized', async ({ pa
     .click();
   await expect(page).toHaveURL(new RegExp(`/polls/${openPoll.id}/?$`));
   await expectPollsReady();
-  await expect(pollsRoot.getByRole('heading', { level: 1, name: openPoll.question })).toBeVisible();
+  await expect(pollsRoot.getByRole('heading', { level: 2, name: openPoll.question })).toBeVisible();
 
-  await pollsRoot.getByRole('link', { name: 'Back to polls' }).click();
+  await pollsRoot.getByRole('link', { name: '← Back' }).click();
   await expect(page).toHaveURL(/\/polls\/?$/);
   await expectPollsReady();
-  await expect(pollsRoot.getByRole('heading', { level: 1, name: 'Dex Polls' })).toBeVisible();
+  await expect(pollsRoot.getByRole('heading', { level: 1, name: 'Polls' })).toBeVisible();
 
   await pollsRoot
     .locator('article.dx-poll-card', { hasText: closedPoll.question })
@@ -151,12 +151,12 @@ test('polls soft routing keeps URL and rendered route synchronized', async ({ pa
     .click();
   await expect(page).toHaveURL(new RegExp(`/polls/${closedPoll.id}/?$`));
   await expectPollsReady();
-  await expect(pollsRoot.getByRole('heading', { level: 1, name: closedPoll.question })).toBeVisible();
+  await expect(pollsRoot.getByRole('heading', { level: 2, name: closedPoll.question })).toBeVisible();
 
   await page.goBack();
   await expect(page).toHaveURL(/\/polls\/?$/);
   await expectPollsReady();
-  await expect(pollsRoot.getByRole('heading', { level: 1, name: 'Dex Polls' })).toBeVisible();
+  await expect(pollsRoot.getByRole('heading', { level: 1, name: 'Polls' })).toBeVisible();
 });
 
 test('polls list renders before slow auth snapshot resolves', async ({ page }) => {
@@ -244,7 +244,7 @@ test('polls list renders before slow auth snapshot resolves', async ({ page }) =
   await page.goto('/polls/', { waitUntil: 'domcontentloaded' });
   const pollsRoot = page.locator('[data-dx-polls-app]');
   await expect.poll(async () => pollsRoot.getAttribute('data-dx-fetch-state')).toBe('ready');
-  await expect(pollsRoot.getByRole('heading', { level: 1, name: 'Dex Polls' })).toBeVisible();
+  await expect(pollsRoot.getByRole('heading', { level: 1, name: 'Polls' })).toBeVisible();
   const elapsed = Date.now() - start;
   expect(elapsed).toBeLessThan(2800);
   const slowResolved = await page.evaluate(() => (window as any).__dxSlowAuthResolved && (window as any).__dxSlowAuthResolved());

@@ -371,79 +371,118 @@
     style.id = STYLE_ID;
     style.textContent = `
       .dx-polls-shell{
-        --dx-polls-gap: clamp(14px,1.8vw,22px);
+        --dx-polls-gap: clamp(14px,1.6vw,20px);
+        --dx-polls-line: rgba(0,0,0,.12);
+        --dx-polls-line-strong: rgba(0,0,0,.22);
+        --dx-polls-ink:#1a1a1a;
+        --dx-polls-muted:#6b6b6b;
+        --dx-polls-faint:#9a9a9a;
+        --dx-polls-accent:#ff2d13;
         width:var(--dx-header-frame-width);
         max-width:var(--dx-header-frame-width);
         margin:0 auto;
-        display:grid;
+        height:100%;
+        min-height:0;
+        display:flex;
+        flex-direction:column;
+        font-family:var(--font-body);
+        color:var(--dx-polls-ink);
+        overflow:hidden;
+      }
+      /* Fixed header — pinned above the scrolling body */
+      .dx-polls-head{
+        flex:0 0 auto;
+        display:flex;
+        align-items:flex-end;
+        justify-content:space-between;
         gap:var(--dx-polls-gap);
-        padding:var(--dx-polls-gap) 0;
+        flex-wrap:wrap;
+        padding-bottom:var(--dx-polls-gap);
+        border-bottom:1px solid var(--dx-polls-line-strong);
       }
-      .dx-polls-panel{
-        padding:clamp(16px,1.8vw,22px);
-        border-radius:var(--dx-header-glass-radius,var(--dx-radius-md,10px));
-        background:var(--dx-header-glass-bg);
-        border:1px solid var(--dx-header-glass-rim);
-        box-shadow:var(--dx-header-glass-shadow);
-      }
-      @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))){
-        .dx-polls-panel{-webkit-backdrop-filter:var(--dx-header-glass-backdrop);backdrop-filter:var(--dx-header-glass-backdrop)}
-      }
-      .dx-polls-title{margin:0;font-family:var(--font-heading);font-size:clamp(1.55rem,3.2vw,2.3rem);letter-spacing:.02em;text-transform:uppercase}
-      .dx-polls-subtitle{margin:10px 0 0 0;font-family:var(--font-body);font-size:clamp(.92rem,1.2vw,1rem);color:var(--dx-color-text-muted,#5e6270)}
-      .dx-polls-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+      .dx-polls-title{margin:0;font-family:var(--font-heading);text-transform:uppercase;font-size:clamp(1.6rem,4vw,2.5rem);letter-spacing:.01em;line-height:1}
+      .dx-polls-subtitle{margin:8px 0 0 0;font-family:var(--font-body);font-size:.82rem;letter-spacing:.01em;color:var(--dx-polls-muted)}
+      .dx-polls-tabs{display:flex;gap:clamp(14px,2vw,26px);flex-wrap:wrap;align-items:center}
       .dx-polls-tab{
-        appearance:none;border:0;cursor:pointer;
-        padding:10px 14px;border-radius:var(--dx-header-glass-radius,var(--dx-radius-md,10px));
-        font-family:var(--font-heading);font-size:.84rem;letter-spacing:.02em;text-transform:uppercase;
-        background:var(--dx-control-bg-subtle,rgba(255,255,255,.56));
-        color:var(--dx-color-text,#1e2129);
+        appearance:none;background:none;border:0;cursor:pointer;padding:0 0 6px;
+        font-family:var(--font-body);font-size:.72rem;text-transform:uppercase;letter-spacing:.16em;
+        color:var(--dx-polls-faint);border-bottom:1px solid transparent;
+        transition:color .25s ease,border-color .25s ease;
       }
-      .dx-polls-tab.is-active{background:linear-gradient(90deg,#ff2d13 0%,#ff7a1a 100%);color:#fff}
-      .dx-polls-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,34%);gap:var(--dx-polls-gap)}
-      .dx-polls-list{display:grid;gap:12px}
+      .dx-polls-tab:hover{color:var(--dx-polls-ink)}
+      .dx-polls-tab.is-active{color:var(--dx-polls-ink);border-bottom-color:var(--dx-polls-ink)}
+
+      /* Scrolling body — the only region that scrolls; ends stay fixed against head/footer */
+      .dx-polls-body{
+        flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;
+        display:grid;grid-template-columns:minmax(0,1fr) minmax(290px,32%);
+        gap:clamp(18px,2.4vw,40px);
+        padding-top:var(--dx-polls-gap);
+        align-items:start;
+      }
+      .dx-polls-body::-webkit-scrollbar{width:9px}
+      .dx-polls-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.16);border-radius:9px}
+      .dx-polls-col{min-height:0}
+      .dx-polls-col--detail{
+        position:sticky;top:0;align-self:start;
+        border-left:1px solid var(--dx-polls-line);
+        padding-left:clamp(16px,2vw,32px);
+      }
+
+      .dx-polls-section + .dx-polls-section{margin-top:28px}
+      .dx-polls-section-label{margin:0 0 4px;font-family:var(--font-body);font-size:.66rem;text-transform:uppercase;letter-spacing:.16em;color:var(--dx-polls-muted)}
+
+      .dx-polls-list{display:grid;gap:0}
       .dx-poll-card{
-        display:grid;gap:10px;padding:14px;border-radius:var(--dx-radius-sm,8px);
-        background:rgba(255,255,255,.32);border:1px solid rgba(255,255,255,.56)
+        display:grid;gap:7px;padding:15px 0;
+        border-top:1px solid var(--dx-polls-line);
       }
-      .dx-poll-card-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-      .dx-poll-chip{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;border:1px solid rgba(38,42,52,.24);font-family:var(--font-body);font-size:.74rem;letter-spacing:.02em;text-transform:uppercase}
-      .dx-poll-chip.is-accent{background:linear-gradient(90deg,#ff2d13 0%,#ff7a1a 100%);color:#fff;border-color:rgba(0,0,0,.2)}
-      .dx-poll-chip.is-members{background:rgba(18,22,30,.9);color:#fff;border-color:rgba(255,255,255,.24)}
-      .dx-poll-question{margin:0;font-family:var(--font-heading);font-size:clamp(1rem,1.2vw,1.2rem);line-height:1.12;letter-spacing:.01em}
-      .dx-poll-meta{margin:0;font-family:var(--font-body);font-size:.86rem;color:var(--dx-color-text-muted,#5e6270)}
-      .dx-poll-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+      .dx-poll-card:first-child{border-top:0}
+      .dx-poll-card.is-locked{opacity:.72}
+      .dx-poll-card:hover .dx-poll-question{color:var(--dx-polls-accent)}
+      .dx-poll-card-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+      .dx-poll-chip{font-family:var(--font-body);font-size:.62rem;text-transform:uppercase;letter-spacing:.14em;color:var(--dx-polls-muted)}
+      .dx-poll-chip.is-accent{color:var(--dx-polls-accent)}
+      .dx-poll-chip.is-members{color:var(--dx-polls-ink)}
+      .dx-poll-question{margin:0;font-family:var(--font-heading);font-size:clamp(1rem,1.3vw,1.18rem);line-height:1.16;letter-spacing:.01em;transition:color .2s ease}
+      .dx-poll-meta{margin:0;font-family:var(--font-body);font-size:.76rem;color:var(--dx-polls-muted)}
+      .dx-poll-actions{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-top:2px}
       .dx-poll-action,
       .dx-poll-link{
-        appearance:none;border:0;cursor:pointer;text-decoration:none;
-        padding:10px 14px;border-radius:var(--dx-header-glass-radius,var(--dx-radius-md,10px));
-        font-family:var(--font-heading);font-size:.82rem;letter-spacing:.02em;text-transform:uppercase;
-        background:var(--dx-control-bg-subtle,rgba(255,255,255,.56));
-        color:var(--dx-color-text,#1e2129);
+        appearance:none;background:none;border:0;cursor:pointer;text-decoration:none;padding:0;
+        font-family:var(--font-body);font-size:.68rem;text-transform:uppercase;letter-spacing:.14em;
+        color:var(--dx-polls-muted);transition:color .2s ease;
       }
-      .dx-poll-action.is-primary,.dx-poll-link.is-primary{background:linear-gradient(90deg,#ff2d13 0%,#ff7a1a 100%);color:#fff}
-      .dx-poll-action[disabled]{opacity:.48;cursor:default}
-      .dx-polls-pager{display:flex;align-items:center;justify-content:space-between;gap:10px}
-      .dx-polls-empty{margin:0;padding:14px;border-radius:var(--dx-radius-sm,8px);border:1px solid rgba(38,42,52,.16);background:rgba(255,255,255,.4);font-family:var(--font-body);color:var(--dx-color-text-muted,#5e6270)}
-      .dx-polls-error{margin:0;padding:14px;border-radius:var(--dx-radius-sm,8px);border:1px solid rgba(175,29,23,.28);background:rgba(175,29,23,.08);font-family:var(--font-body);color:#611313}
-      .dx-polls-detail{display:grid;gap:12px}
-      .dx-polls-detail-grid{display:grid;gap:10px}
+      .dx-poll-link.is-primary{color:var(--dx-polls-ink)}
+      .dx-poll-action:hover,.dx-poll-link:hover{color:var(--dx-polls-accent)}
+      .dx-poll-action[disabled]{opacity:.4;cursor:default}
+      .dx-poll-action[disabled]:hover{color:var(--dx-polls-muted)}
+      .dx-polls-pager{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:18px;padding-top:14px;border-top:1px solid var(--dx-polls-line)}
+      .dx-polls-empty{margin:14px 0 0;font-family:var(--font-body);font-size:.82rem;color:var(--dx-polls-muted)}
+      .dx-polls-error{margin:0 0 6px;padding:10px 0;font-family:var(--font-body);font-size:.82rem;color:#a31410}
+
+      .dx-polls-detail{display:grid;gap:12px;align-content:start}
+      .dx-polls-detail .dx-poll-question{font-family:var(--font-heading);font-size:clamp(1.15rem,1.8vw,1.5rem);line-height:1.12}
+      .dx-polls-detail-grid{display:grid;gap:0;margin-top:2px}
       .dx-poll-option{
-        display:grid;gap:8px;cursor:pointer;text-align:left;border:0;
-        padding:12px;border-radius:var(--dx-radius-sm,8px);background:rgba(255,255,255,.48)
+        display:grid;gap:7px;cursor:pointer;text-align:left;border:0;background:none;width:100%;
+        padding:13px 0;border-top:1px solid var(--dx-polls-line);
       }
-      .dx-poll-option[disabled]{opacity:.82;cursor:default}
-      .dx-poll-option.is-selected{box-shadow:inset 0 0 0 1px rgba(255,77,26,.45)}
-      .dx-poll-option-title{font-family:var(--font-heading);font-size:.95rem;letter-spacing:.01em;text-transform:uppercase}
-      .dx-poll-bar{position:relative;height:8px;border-radius:999px;background:rgba(24,30,44,.12);overflow:hidden}
-      .dx-poll-bar-fill{height:100%;width:0;background:linear-gradient(90deg,#ff2d13 0%,#ff7a1a 100%);transition:width .2s var(--dx-motion-ease-standard,cubic-bezier(.22,.8,.24,1))}
-      .dx-poll-row-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;font-family:var(--font-body);font-size:.82rem;color:var(--dx-color-text-muted,#5e6270)}
-      .dx-poll-published{padding:10px;border-radius:var(--dx-radius-sm,8px);background:rgba(255,255,255,.48);border:1px solid rgba(255,255,255,.62)}
-      .dx-poll-trend{font-family:var(--font-body);font-size:.9rem;letter-spacing:.02em}
-      .dx-poll-trend-line{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9rem;letter-spacing:.02em}
-      .dx-polls-loading{opacity:.7}
+      .dx-poll-option:first-child{border-top:0}
+      .dx-poll-option[disabled]{cursor:default}
+      .dx-poll-option.is-selected .dx-poll-option-title{color:var(--dx-polls-accent)}
+      .dx-poll-option-title{font-family:var(--font-body);font-size:.84rem;letter-spacing:.02em;color:var(--dx-polls-ink)}
+      .dx-poll-bar{position:relative;height:2px;background:var(--dx-polls-line);overflow:hidden}
+      .dx-poll-bar-fill{height:100%;width:0;background:var(--dx-polls-accent);transition:width .25s var(--dx-motion-ease-standard,cubic-bezier(.22,.8,.24,1))}
+      .dx-poll-row-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;font-family:var(--font-body);font-size:.72rem;color:var(--dx-polls-muted)}
+      .dx-poll-published{margin-top:2px;padding-top:12px;border-top:1px solid var(--dx-polls-line)}
+      .dx-poll-trend{margin:0;font-family:var(--font-body);font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;color:var(--dx-polls-muted)}
+      .dx-poll-trend-line{margin:4px 0 0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9rem;letter-spacing:.04em;color:var(--dx-polls-ink)}
+      .dx-polls-loading{opacity:.6}
       @media (max-width:980px){
-        .dx-polls-layout{grid-template-columns:1fr}
+        .dx-polls-shell{height:auto;overflow:visible}
+        .dx-polls-body{grid-template-columns:1fr;overflow:visible}
+        .dx-polls-col--detail{position:static;border-left:0;border-top:1px solid var(--dx-polls-line);padding-left:0;padding-top:var(--dx-polls-gap)}
       }
     `;
     document.head.appendChild(style);
@@ -456,10 +495,12 @@
   function renderError(root, message) {
     root.innerHTML = `
       <section class="dx-polls-shell">
-        <article class="dx-polls-panel">
-          <h1 class="dx-polls-title">Dex Polls</h1>
+        <header class="dx-polls-head">
+          <h1 class="dx-polls-title">Polls</h1>
+        </header>
+        <div class="dx-polls-body">
           <p class="dx-polls-error">${htmlEscape(message || 'Unable to load polls right now.')}</p>
-        </article>
+        </div>
       </section>
     `;
   }
@@ -515,23 +556,24 @@
   function buildDetailPanel(detail) {
     if (!detail) {
       return `
-        <article class="dx-polls-panel dx-polls-detail">
+        <div class="dx-polls-detail">
+          <p class="dx-polls-section-label">Detail</p>
           <h2 class="dx-poll-question">Select a poll</h2>
-          <p class="dx-polls-empty">Choose a poll card to inspect live results, published snapshots, and vote state.</p>
-        </article>
+          <p class="dx-polls-empty">Choose a poll to see live results, published snapshots, and vote state.</p>
+        </div>
       `;
     }
 
     if (detail.locked) {
       return `
-        <article class="dx-polls-panel dx-polls-detail">
-          <h2 class="dx-poll-question">Members poll</h2>
-          <p class="dx-polls-subtitle">This poll requires sign-in.</p>
-          <div class="dx-polls-detail-grid">
-            <p class="dx-polls-empty">Poll id: ${htmlEscape(detail.pollId)}</p>
-            <button type="button" class="dx-poll-action is-primary" data-dx-poll-signin="true">Sign in to continue</button>
+        <div class="dx-polls-detail">
+          <p class="dx-polls-section-label">Members poll</p>
+          <h2 class="dx-poll-question">Sign in required</h2>
+          <p class="dx-polls-empty">This poll is for members only.</p>
+          <div class="dx-poll-actions">
+            <button type="button" class="dx-poll-link is-primary" data-dx-poll-signin="true">Sign in to continue →</button>
           </div>
-        </article>
+        </div>
       `;
     }
 
@@ -577,23 +619,23 @@
       : '';
 
     return `
-      <article class="dx-polls-panel dx-polls-detail">
+      <div class="dx-polls-detail">
         <div class="dx-poll-card-head">
           <span class="dx-poll-chip ${closed ? '' : 'is-accent'}">${closed ? 'Closed' : 'Open'}</span>
           <span class="dx-poll-chip">${htmlEscape(results.mode || 'live')}</span>
           ${poll.visibility === 'members' ? '<span class="dx-poll-chip is-members">Members only</span>' : ''}
         </div>
-        <h1 class="dx-poll-question">${htmlEscape(poll.question)}</h1>
-        <p class="dx-polls-subtitle">${closed ? `Closed ${htmlEscape(formatDate(poll.closeAt))}` : `Closes ${htmlEscape(formatDate(poll.closeAt))} (${htmlEscape(relativeClose(poll.closeAt))})`}</p>
+        <h2 class="dx-poll-question">${htmlEscape(poll.question)}</h2>
+        <p class="dx-poll-meta">${closed ? `Closed ${htmlEscape(formatDate(poll.closeAt))}` : `Closes ${htmlEscape(formatDate(poll.closeAt))} · ${htmlEscape(relativeClose(poll.closeAt))}`}</p>
         ${!state.authSnapshot.authenticated ? '<p class="dx-polls-empty">Sign in to vote. Results remain visible.</p>' : ''}
         ${snapshotMarkup}
         ${trendMarkup}
         <div class="dx-polls-detail-grid">${optionsHtml}</div>
         <div class="dx-polls-pager">
           <span class="dx-poll-meta">${results.total} total votes</span>
-          <a class="dx-poll-link" href="${htmlEscape(buildPollsHref(state.tab, ''))}" data-dx-poll-clear="true" data-dx-hover-variant="none" data-dx-motion-exclude="true" data-dx-soft-nav-skip="true">Back to polls</a>
+          <a class="dx-poll-link" href="${htmlEscape(buildPollsHref(state.tab, ''))}" data-dx-poll-clear="true" data-dx-hover-variant="none" data-dx-motion-exclude="true" data-dx-soft-nav-skip="true">← Back</a>
         </div>
-      </article>
+      </div>
     `;
   }
 
@@ -612,52 +654,52 @@
 
     const listBody = state.tab === 'open'
       ? `
-          <article class="dx-polls-panel">
-            <h2 class="dx-poll-question">Open polls</h2>
-            <p class="dx-polls-subtitle">Vote live. Members-only polls remain gated.</p>
+          <div class="dx-polls-section">
+            <p class="dx-polls-section-label">Open</p>
             <div class="dx-polls-list">${openCards}</div>
-            <h2 class="dx-poll-question">Recently closed</h2>
-            <p class="dx-polls-subtitle">Closed polls remain viewable here for quick routing compatibility.</p>
+          </div>
+          <div class="dx-polls-section">
+            <p class="dx-polls-section-label">Recently closed</p>
             <div class="dx-polls-list">${archiveCards}</div>
-          </article>
+          </div>
         `
       : state.tab === 'results'
         ? `
-          <article class="dx-polls-panel">
-            <h2 class="dx-poll-question">Published results</h2>
-            <p class="dx-polls-subtitle">Official snapshot stream published by Dex staff.</p>
+          <div class="dx-polls-section">
+            <p class="dx-polls-section-label">Published results</p>
             <div class="dx-polls-list">${publishedCards}</div>
-          </article>
+          </div>
         `
         : `
-          <article class="dx-polls-panel">
-            <h2 class="dx-poll-question">Archive + trends</h2>
-            <p class="dx-polls-subtitle">Closed polls with trend sparkline previews.</p>
+          <div class="dx-polls-section">
+            <p class="dx-polls-section-label">Archive &amp; trends</p>
             <div class="dx-polls-list">${archiveCards}</div>
             <div class="dx-polls-pager">
               <button type="button" class="dx-poll-action" data-dx-poll-closed-prev="true" ${state.collections.closed.page <= 1 ? 'disabled' : ''}>Previous</button>
               <span class="dx-poll-meta">Page ${state.collections.closed.page} of ${state.collections.closed.pages}</span>
               <button type="button" class="dx-poll-action" data-dx-poll-closed-next="true" ${state.collections.closed.page >= state.collections.closed.pages ? 'disabled' : ''}>Next</button>
             </div>
-          </article>
+          </div>
         `;
 
     root.innerHTML = `
       <section class="dx-polls-shell${state.loading ? ' dx-polls-loading' : ''}">
-        <article class="dx-polls-panel">
-          <h1 class="dx-polls-title">Dex Polls</h1>
-          <p class="dx-polls-subtitle">Community signal desk with open voting, official snapshots, and archive trends.</p>
-          <div class="dx-polls-tabs">
-            <button type="button" class="dx-polls-tab${state.tab === 'open' ? ' is-active' : ''}" data-dx-polls-tab="open">Open</button>
-            <button type="button" class="dx-polls-tab${state.tab === 'results' ? ' is-active' : ''}" data-dx-polls-tab="results">Results</button>
-            <button type="button" class="dx-polls-tab${state.tab === 'archive' ? ' is-active' : ''}" data-dx-polls-tab="archive">Archive & Trends</button>
+        <header class="dx-polls-head">
+          <div>
+            <h1 class="dx-polls-title">Polls</h1>
+            <p class="dx-polls-subtitle">Open voting, official snapshots, and archive trends.</p>
           </div>
-        </article>
-        ${state.error ? `<article class="dx-polls-panel"><p class="dx-polls-error">${htmlEscape(state.error)}</p></article>` : ''}
-        <section class="dx-polls-layout">
-          ${listBody}
-          ${buildDetailPanel(state.detail)}
-        </section>
+          <nav class="dx-polls-tabs" role="tablist" aria-label="Poll views">
+            <button type="button" role="tab" class="dx-polls-tab${state.tab === 'open' ? ' is-active' : ''}" data-dx-polls-tab="open">Open</button>
+            <button type="button" role="tab" class="dx-polls-tab${state.tab === 'results' ? ' is-active' : ''}" data-dx-polls-tab="results">Results</button>
+            <button type="button" role="tab" class="dx-polls-tab${state.tab === 'archive' ? ' is-active' : ''}" data-dx-polls-tab="archive">Archive</button>
+          </nav>
+        </header>
+        ${state.error ? `<p class="dx-polls-error">${htmlEscape(state.error)}</p>` : ''}
+        <div class="dx-polls-body">
+          <div class="dx-polls-col dx-polls-col--list">${listBody}</div>
+          <aside class="dx-polls-col dx-polls-col--detail">${buildDetailPanel(state.detail)}</aside>
+        </div>
       </section>
     `;
   }

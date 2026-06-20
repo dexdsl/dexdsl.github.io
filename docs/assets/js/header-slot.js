@@ -36,6 +36,7 @@
   const IOS_HOME_INDICATOR_VAR = '--dx-ios-home-indicator';
   const PROFILE_PROTECTED_ROUTES = new Set([
     '/favorites',
+    '/polls',
     '/submit',
     '/messages',
     '/settings',
@@ -53,6 +54,7 @@
   ]);
   const PROFILE_SHOW_MESH_ROUTES = new Set([
     '/favorites',
+    '/polls',
     '/settings',
     '/achievements',
     '/submit',

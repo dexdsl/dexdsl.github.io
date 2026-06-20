@@ -78,8 +78,11 @@ function verifyPublicPollRouteNotProtected() {
   const headerText = readText('public/assets/js/header-slot.js');
   const protectedVerifyText = readText('scripts/verify_protected_auth_contract.mjs');
 
-  assert(!authText.includes('"/polls": true'), 'dex-auth protected map should not include /polls');
-  assert(!headerText.includes("'/polls'"), 'header-slot protected route set should not include /polls');
+  // Polls uses the profile fixed-shell chrome (header-slot route classes) so it gets the
+  // favorites-style pinned header/footer with a single scrolling body. It must stay PUBLIC:
+  // auth gating lives only in the dex-auth PROTECTED_PATHS map, which must not include /polls.
+  assert(!authText.includes('"/polls": true'), 'dex-auth protected map should not include /polls (polls is public)');
+  assert(headerText.includes("'/polls'"), 'header-slot should register /polls for the profile fixed-shell chrome');
   assert(!protectedVerifyText.includes("'/polls'"), 'verify_protected_auth_contract should not require /polls protected');
 }
 
