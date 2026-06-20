@@ -13,8 +13,9 @@ declare global {
   }
 }
 
-test('bag download falls back when the merged bundle job stalls', async ({ page }) => {
+test('bag download keeps polling past the old merged bundle poll cap', async ({ page }) => {
   const apiCalls: string[] = [];
+  let mergedJobPolls = 0;
   const fulfillJson = (route: Route, payload: unknown, status = 200) => route.fulfill({
     status,
     contentType: 'application/json',
@@ -51,8 +52,17 @@ test('bag download falls back when the merged bundle job stalls', async ({ page 
     }
 
     if (requestUrl.pathname === '/me/assets/bundle/merged-job') {
+      mergedJobPolls += 1;
+      if (mergedJobPolls > 15) {
+        await fulfillJson(route, {
+          status: 'ready',
+          signedUrl: 'https://downloads.example.test/merged.zip',
+        });
+        return;
+      }
       await fulfillJson(route, {
         status: 'pending',
+        fileCount: 1,
         pollAfterMs: 1,
       });
       return;
@@ -106,10 +116,10 @@ test('bag download falls back when the merged bundle job stalls', async ({ page 
   await expect.poll(
     () => page.evaluate(() => window.__dxOpenedBagUrls),
     { timeout: 12_000 }
-  ).toContain('https://downloads.example.test/fallback.zip');
+  ).toContain('https://downloads.example.test/merged.zip');
   await expect(page.locator('.dx-bag-status')).toContainText('Bundle ready. Opening download');
-  expect(apiCalls.filter((call) => call === 'GET /me/assets/bundle/merged-job')).toHaveLength(14);
-  expect(apiCalls).toContain('POST /me/assets/Test%20Lookup/bundle');
+  expect(apiCalls.filter((call) => call === 'GET /me/assets/bundle/merged-job')).toHaveLength(16);
+  expect(apiCalls).not.toContain('POST /me/assets/Test%20Lookup/bundle');
 });
 
 test('bag download waits for slow lookup bundle fallback instead of timing out', async ({ page }) => {

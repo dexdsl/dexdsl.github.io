@@ -11,8 +11,9 @@
   const FETCH_TIMEOUT_MS = 9000;
   const BUNDLE_REQUEST_TIMEOUT_MS = 45000;
   const BUNDLE_POLL_TIMEOUT_MS = 18000;
-  const BUNDLE_JOB_MAX_POLLS = 14;
-  const BUNDLE_JOB_MAX_WAIT_MS = 1800;
+  const BUNDLE_JOB_MAX_ELAPSED_MS = 20 * 60 * 1000;
+  const BUNDLE_JOB_MIN_WAIT_MS = 320;
+  const BUNDLE_JOB_MAX_WAIT_MS = 5000;
   const RESUME_KEY = 'dex:bag:resume:v1';
   const BACK_CRUMB_MEMORY_KEY = 'dex:bag:back-crumb:v1';
   const BREADCRUMB_FALLBACK_HREF = '/catalog/';
@@ -127,6 +128,30 @@
   function normalizeMediaType(value) {
     const mediaType = toText(value).trim().toLowerCase();
     return mediaType === 'audio' || mediaType === 'video' ? mediaType : '';
+  }
+
+  function fileIdMatchesSelection(candidateValue, selectedValue) {
+    const candidate = toText(candidateValue).trim();
+    const selected = toText(selectedValue).trim();
+    if (!candidate || !selected) return false;
+    return candidate === selected || candidate.startsWith(`${selected}-`);
+  }
+
+  function formatElapsedMs(value) {
+    const elapsedMs = Math.max(0, Number(value) || 0);
+    const seconds = Math.max(1, Math.round(elapsedMs / 1000));
+    if (seconds < 60) return `${seconds}s`;
+    const minutes = Math.floor(seconds / 60);
+    const remainder = seconds % 60;
+    return remainder ? `${minutes}m ${remainder}s` : `${minutes}m`;
+  }
+
+  function getBundleJobMaxElapsedMs() {
+    const override = Number(window.__dxBagBundleJobMaxElapsedMs);
+    if (Number.isFinite(override) && override > 0) {
+      return Math.max(5000, Math.min(override, 60 * 60 * 1000));
+    }
+    return BUNDLE_JOB_MAX_ELAPSED_MS;
   }
 
   function htmlEscape(value) {
@@ -904,7 +929,7 @@
     const preferredTypes = normalizeAvailableTypes(node?.mediaTypes, node?.mediaType);
     const matching = (Array.isArray(files) ? files : []).filter((file) => {
       if (normalizeBucket(file?.bucket) !== bucket) return false;
-      if (toText(file?.fileId).trim() !== fileId) return false;
+      if (!fileIdMatchesSelection(file?.fileId, fileId)) return false;
       const fileTypes = normalizeAvailableTypes(file?.availableTypes, file?.type);
       if (!preferredTypes.length) return true;
       return preferredTypes.some((mediaType) => fileTypes.includes(mediaType));
@@ -1412,7 +1437,7 @@
         selectedByType = true;
       }
       if (selectedByType) continue;
-      const exact = selectedFiles.find((row) => row.bucket === file.bucket && row.fileId === file.fileId);
+      const exact = selectedFiles.find((row) => row.bucket === file.bucket && fileIdMatchesSelection(file.fileId, row.fileId));
       if (!exact) continue;
       const mediaTypes = exact.mediaTypes.length
         ? exact.mediaTypes.filter((mediaType) => file.availableTypes.includes(mediaType))
@@ -1469,18 +1494,23 @@
     return code === 'not-found' || code === 'empty' || code === 'timeout' || code === 'stalled';
   }
 
-  function formatBundlePollStatus(payload, attempt) {
+  function formatBundlePollStatus(payload, attempt, elapsedMs = 0) {
     const status = normalizeBundleStatus(payload);
     const label = status && BUNDLE_PENDING_STATUSES.has(status)
       ? status.replace(/-/g, ' ')
       : 'preparing';
-    return `Preparing secure bundle… ${label} (${attempt + 1}/${BUNDLE_JOB_MAX_POLLS})`;
+    const count = parseBundleHintCount(payload);
+    const countLabel = count > 0 ? `, ${count} ${count === 1 ? 'file' : 'files'}` : '';
+    return `Preparing secure bundle… ${label}${countLabel} (${formatElapsedMs(elapsedMs)})`;
   }
 
   async function pollBundleJob({ token, jobId, onTick }) {
     const safeJobId = encodeURIComponent(getBundleJobId({ jobId }));
     if (!safeJobId) throw createCodedError('failed', 'missing job id');
-    for (let attempt = 0; attempt < BUNDLE_JOB_MAX_POLLS; attempt += 1) {
+    const startedAt = Date.now();
+    const maxElapsedMs = getBundleJobMaxElapsedMs();
+    let attempt = 0;
+    for (;;) {
       const payload = await requestJson(`/me/assets/bundle/${safeJobId}`, {
         token,
         timeoutMs: BUNDLE_POLL_TIMEOUT_MS,
@@ -1488,16 +1518,25 @@
       const ready = resolveBundleReadyPayload(payload);
       if (ready) return { ...payload, ...ready };
       const waitMs = Number(payload?.pollAfterMs || 1100);
+      const elapsedMs = Date.now() - startedAt;
       if (typeof onTick === 'function') {
         onTick({
           attempt,
           payload,
           waitMs,
+          elapsedMs,
         });
       }
-      await new Promise((resolve) => window.setTimeout(resolve, Math.max(320, Math.min(waitMs, BUNDLE_JOB_MAX_WAIT_MS))));
+      if (elapsedMs >= maxElapsedMs) {
+        throw createCodedError('stalled', 'bundle job still preparing');
+      }
+      const nextWaitMs = Math.max(
+        BUNDLE_JOB_MIN_WAIT_MS,
+        Math.min(waitMs, BUNDLE_JOB_MAX_WAIT_MS, maxElapsedMs - elapsedMs),
+      );
+      await new Promise((resolve) => window.setTimeout(resolve, nextWaitMs));
+      attempt += 1;
     }
-    throw createCodedError('stalled', 'bundle job stalled');
   }
 
   function parseBundleHintCount(payload) {
@@ -1762,13 +1801,14 @@
         token,
         lookup,
         tokens,
-        onTick: () => {
+        onTick: (detail = {}) => {
           if (typeof onTick !== 'function') return;
           onTick({
             stage: 'poll',
             lookup,
             index,
             total: safeSelections.length,
+            ...detail,
           });
         },
       });
@@ -2461,8 +2501,8 @@
             const result = await pollBundleJob({
               token: state.auth.token,
               jobId: getBundleJobId(payload),
-              onTick: ({ attempt = 0, payload: pollPayload = null } = {}) => {
-                state.status = formatBundlePollStatus(pollPayload, Number(attempt) || 0);
+              onTick: ({ attempt = 0, payload: pollPayload = null, elapsedMs = 0 } = {}) => {
+                state.status = formatBundlePollStatus(pollPayload, Number(attempt) || 0, elapsedMs);
                 render();
               },
             });
@@ -2477,8 +2517,8 @@
               const result = await pollBundleJob({
                 token: state.auth.token,
                 jobId: getBundleJobId(payload),
-                onTick: ({ attempt = 0, payload: pollPayload = null } = {}) => {
-                  state.status = formatBundlePollStatus(pollPayload, Number(attempt) || 0);
+                onTick: ({ attempt = 0, payload: pollPayload = null, elapsedMs = 0 } = {}) => {
+                  state.status = formatBundlePollStatus(pollPayload, Number(attempt) || 0, elapsedMs);
                   render();
                 },
               });
@@ -2503,13 +2543,16 @@
             selections,
             filesByLookup: state.filesByLookup,
             entryMetaByLookup: state.entryMetaByLookup,
-            onTick: ({ stage = '', index = 0, total = 0 } = {}) => {
+            onTick: ({ stage = '', index = 0, total = 0, elapsedMs = 0, payload: pollPayload = null } = {}) => {
               const safeTotal = Number(total) > 1 ? Number(total) : 0;
               const safeIndex = Number(index) + 1;
               const verb = stage === 'poll' ? 'Preparing' : 'Requesting';
+              const elapsedLabel = stage === 'poll' ? ` ${formatElapsedMs(elapsedMs)}` : '';
+              const count = parseBundleHintCount(pollPayload);
+              const countLabel = count > 0 ? `, ${count} ${count === 1 ? 'file' : 'files'}` : '';
               state.status = safeTotal
-                ? `${verb} secure bundles… (${safeIndex}/${safeTotal})`
-                : `${verb} secure bundle…`;
+                ? `${verb} secure bundles${countLabel}… (${safeIndex}/${safeTotal}${elapsedLabel})`
+                : `${verb} secure bundle${countLabel}…${elapsedLabel ? ` (${elapsedLabel.trim()})` : ''}`;
               render();
             },
           });
@@ -2538,7 +2581,7 @@
         } else if (toText(error?.code) === 'forbidden') {
           state.error = 'Access denied for current selection.';
         } else if (toText(error?.code) === 'timeout' || toText(error?.code) === 'stalled') {
-          state.error = 'Bundle preparation timed out. Try again in a moment.';
+          state.error = 'Bundle is still preparing. Try again in a few minutes; staged work can be reused when it finishes.';
         } else {
           state.error = 'Unable to prepare bag bundle.';
         }
