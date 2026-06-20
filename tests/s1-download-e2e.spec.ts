@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { expect, test, type Route } from 'playwright/test';
+import { expect, test, type Page, type Route } from 'playwright/test';
 
 const API_ORIGIN = 'https://dex-api.spring-fog-8edd.workers.dev';
 const LOOKUP = 'S.Vlc. Lo AV2023 S1';
@@ -26,7 +26,7 @@ const readProtectedLookup = async () => {
   return lookup;
 };
 
-const installAuthenticatedViewer = async (page: Parameters<typeof test>[0]['page']) => {
+const installAuthenticatedViewer = async (page: Page) => {
   await page.addInitScript(({ sub }) => {
     const viewer = window as typeof window & {
       DEX_AUTH?: unknown;
@@ -53,6 +53,40 @@ const installAuthenticatedViewer = async (page: Parameters<typeof test>[0]['page
     };
   }, { sub: TEST_USER_SUB });
 };
+
+const restoreAuthenticatedViewer = async (page: Page) => page.evaluate(({ sub }) => {
+  const viewer = window as typeof window & {
+    DEX_AUTH?: unknown;
+    dexAuth?: unknown;
+    auth0Sub?: string;
+    __dxBag?: {
+      list: (options?: { scope?: string }) => Record<string, unknown>[];
+      upsertSelection: (input: Record<string, unknown>, options?: { scope?: string }) => unknown;
+    };
+    __dxOpenedBagUrls?: string[];
+  };
+  const user = { email: 's1-download@example.test', sub };
+  const auth = {
+    ready: Promise.resolve({ isAuthenticated: true, user }),
+    resolve: () => Promise.resolve({ isAuthenticated: true, user }),
+    isAuthenticated: () => Promise.resolve(true),
+    getAccessToken: () => Promise.resolve('s1-download-test-token'),
+    getUser: () => Promise.resolve(user),
+    signIn: () => Promise.resolve(),
+  };
+  viewer.DEX_AUTH = auth;
+  viewer.dexAuth = auth;
+  viewer.auth0Sub = sub;
+  viewer.__dxOpenedBagUrls = [];
+  window.open = (url: string | URL | undefined) => {
+    viewer.__dxOpenedBagUrls?.push(String(url || ''));
+    return { closed: false } as Window;
+  };
+
+  const rows = viewer.__dxBag?.list({ scope: sub }) || [];
+  if (rows[0]) viewer.__dxBag?.upsertSelection(rows[0], { scope: sub });
+  return rows;
+}, { sub: TEST_USER_SUB });
 
 test('S1 entry files can be added to the bag and downloaded as a secure bundle', async ({ page }) => {
   const protectedLookup = await readProtectedLookup();
@@ -102,6 +136,18 @@ test('S1 entry files can be added to the bag and downloaded as a secure bundle',
     page.waitForURL('**/entry/bag/'),
     page.locator('.dx-file-tree-actions .dx-button-element--primary').click(),
   ]);
+
+  await page.waitForFunction(() => {
+    const viewer = window as typeof window & { __dxBag?: unknown };
+    return Boolean(viewer.__dxBag);
+  });
+  const persistedRows = await restoreAuthenticatedViewer(page);
+  expect(persistedRows).toEqual(expect.arrayContaining([
+    expect.objectContaining({
+      kind: 'collection',
+      lookup: LOOKUP,
+    }),
+  ]));
 
   await expect(page.locator('.dx-bag-card')).toContainText(LOOKUP);
   await expect(page.locator('.dx-bag-count')).toContainText('50 files in download');
