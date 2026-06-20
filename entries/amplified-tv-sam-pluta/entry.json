@@ -104,6 +104,59 @@
     "metadata": {
       "sampleLength": "AUTO",
       "tags": []
+    },
+    "downloads": {
+      "recordingIndexPdfRef": "asset:amplified-tv-sam-pluta-recording-index-pdf",
+      "recordingIndexBundleRef": "bundle:recording-index:X.Tlv. Pl AV2023 S1:all",
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1MWEHmhya6BWV_hGWqGgBHAgi1aYrOo_Ayz9bZ5fVOzs/edit?gid=0#gid=0",
+      "fileTree": {
+        "lookup": "X.Tlv. Pl AV2023 S1",
+        "buckets": [
+          {
+            "bucket": "A",
+            "types": [
+              {
+                "mediaType": "audio",
+                "files": [
+                  {
+                    "fileId": "amplified-tv-sam-pluta-a-001-stereo",
+                    "label": "X.Tlv. Pl AV2023 S1 A.1 [ste].mp3",
+                    "filename": "001-stereo.mp3",
+                    "extension": "mp3",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "amplified-tv-sam-pluta-a-001-stereo-2",
+                    "label": "X.Tlv. Pl AV2023 S1 A.1 [ste].wav",
+                    "filename": "001-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  }
+                ]
+              },
+              {
+                "mediaType": "video",
+                "files": [
+                  {
+                    "fileId": "amplified-tv-sam-pluta-a-001-1080p",
+                    "label": "X.Tlv. Pl AV2023 S1 A.1 [1080p].mov",
+                    "filename": "001-1080p.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "amplified-tv-sam-pluta-a-001-4k",
+                    "label": "X.Tlv. Pl AV2023 S1 A.1 [4K].mov",
+                    "filename": "001-4k.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
     }
   }
 }

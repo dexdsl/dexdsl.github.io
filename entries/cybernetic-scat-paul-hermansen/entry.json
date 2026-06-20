@@ -62,7 +62,7 @@
   "sidebarPageConfig": {
     "lookupNumber": "V.Sc. He A2023 S1",
     "buckets": [
-      "A"
+      "B"
     ],
     "specialEventImage": "/assets/series/dex.png",
     "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and paul* hermansen.",
@@ -104,6 +104,257 @@
     "metadata": {
       "sampleLength": "AUTO",
       "tags": []
+    },
+    "downloads": {
+      "recordingIndexPdfRef": "asset:cybernetic-scat-paul-hermansen-recording-index-pdf",
+      "recordingIndexBundleRef": "bundle:recording-index:V.Sc. He A2023 S1:all",
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1xZ93Hr4hV1_u4CZlNlx0huRQ2_CrAi4Ul1XQ5us2Ybw/edit?gid=0#gid=0",
+      "fileTree": {
+        "lookup": "V.Sc. He A2023 S1",
+        "buckets": [
+          {
+            "bucket": "B",
+            "types": [
+              {
+                "mediaType": "audio",
+                "files": [
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-001-stereo",
+                    "label": "V.Sc. A2023 S1 B.1 [ste] [Met Sus Cle Mono Med Mid Sta].wav",
+                    "filename": "001-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-002-stereo",
+                    "label": "V.Sc. A2023 S1 B.2 [ste] [Free Sus Cle Poly Qui Ow Sta].wav",
+                    "filename": "002-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-003-stereo",
+                    "label": "V.Sc. A2023 S1 B.3 [ste] [Met Sus Cle Mono Med Low Mid Dyn].wav",
+                    "filename": "003-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-004-stereo",
+                    "label": "V.Sc. A2023 S1 B.4 [ste] [Met Sus Cle Mono Med Ow Sta].wav",
+                    "filename": "004-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-005-stereo",
+                    "label": "V.Sc. A2023 S1 B.5 [ste] [Fre Sus Cle Poly Lou Mid Hi Sta].wav",
+                    "filename": "005-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-006-stereo",
+                    "label": "V.Sc. A2023 S1 B.6 [ste] [Fre Sus Cle Mono Lou Mid Sta].wav",
+                    "filename": "006-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-007-stereo",
+                    "label": "V.Sc. A2023 S1 B.7 [ste] [Fre Sus Cle Mono Med Mid Sta].wav",
+                    "filename": "007-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-008-stereo",
+                    "label": "V.Sc. A2023 S1 B.8 [ste] [Fre Sus Cle Mono Qui Ow Sta].wav",
+                    "filename": "008-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-009-stereo",
+                    "label": "V.Sc. A2023 S1 B.9 [ste] [Fre Sus Cle Mono Med Qui Ow Sta].wav",
+                    "filename": "009-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-010-stereo",
+                    "label": "V.Sc. A2023 S1 B.10 [ste] [Free Sus Dis Mono Qui Mid Dyn].wav",
+                    "filename": "010-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-011-stereo",
+                    "label": "V.Sc. A2023 S1 B.11 [ste] [Fre Cle Mono Med Lou Mid Sta].wav",
+                    "filename": "011-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-012-stereo",
+                    "label": "V.Sc. A2023 S1 B.12 [ste] [Fre Cle Mono Poly Med Mid Hi Dyn].wav",
+                    "filename": "012-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-013-stereo",
+                    "label": "V.Sc. A2023 S1 B.13 [ste] [Met Sus Cle Mono Med Ow Mid Dyn].wav",
+                    "filename": "013-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-014-stereo",
+                    "label": "V.Sc. A2023 S1 B.14 [ste] [Met Perc Cle Mono Med Lou Ow Mid Dyn].wav",
+                    "filename": "014-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-015-stereo",
+                    "label": "V.Sc. A2023 S1 B.15 [ste] [Fre Sus Cle Mono Lou Ow Mid Sta].wav",
+                    "filename": "015-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-016-stereo",
+                    "label": "V.Sc. A2023 S1 B.16 [ste] [Met Sus Cle Mono Med Ow Mid Sta].wav",
+                    "filename": "016-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-017-stereo",
+                    "label": "V.Sc. A2023 S1 B.17 [ste] [Met Sus Cle Mono Med Mid Sta].wav",
+                    "filename": "017-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-018-stereo",
+                    "label": "V.Sc. A2023 S1 B.18 [ste] [Met Sus Cle Mono Med Mid Sta].wav",
+                    "filename": "018-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-019-stereo",
+                    "label": "V.Sc. A2023 S1 B.19 [ste] [Met Sus Perc Cle Mono Lou Ow Mid Sta].wav",
+                    "filename": "019-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-020-stereo",
+                    "label": "V.Sc. A2023 S1 B.20 [ste] [Met Perc Dis Mono Qui Ow Sta].wav",
+                    "filename": "020-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-021-stereo",
+                    "label": "V.Sc. A2023 S1 B.21 [ste] [Fre Sus Cle Dis Poly Qui Med Mid Sta].wav",
+                    "filename": "021-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-022-stereo",
+                    "label": "V.Sc. A2023 S1 B.22 [ste] [Met Sus Perc Cle Poly Dis Qui Med Mid Hi Dyn].wav",
+                    "filename": "022-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-023-stereo",
+                    "label": "V.Sc. A2023 S1 B.23 [ste] [Met Sus Cle Mono Poly Med Ow Mid Dyn].mp3",
+                    "filename": "023-stereo.mp3",
+                    "extension": "mp3",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-024-stereo",
+                    "label": "V.Sc. A2023 S1 B.24 [ste] [Met Fre Sus Cle Dis Mono Qui Med Mid Dyn].wav",
+                    "filename": "024-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-025-stereo",
+                    "label": "V.Sc. A2023 S1 B.25 [ste] [Fre Sus Dis Poly Qui Med Ow Hi Sta].wav",
+                    "filename": "025-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-026-stereo",
+                    "label": "V.Sc. A2023 S1 B.26 [ste] [Met Sus Cle Poly Qui Med Mid Hi Dyn].wav",
+                    "filename": "026-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-027-stereo",
+                    "label": "V.Sc. A2023 S1 B.27 [ste] [Met Fre Sus Perc Cle Dis Poly Lou Med Ow Mid Hi Dyn].wav",
+                    "filename": "027-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-028-stereo",
+                    "label": "V.Sc. A2023 S1 B.28 [ste] [Met Sus Dis Poly Med Ow Dyn Sho].wav",
+                    "filename": "028-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-029-stereo",
+                    "label": "V.Sc. A2023 S1 B.29 [ste] [Met Perc Dis Mono Lou Med Ow Mid Hi Sta].wav",
+                    "filename": "029-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-030-stereo",
+                    "label": "V.Sc. A2023 S1 B.30 [ste] [Met Fre Perc Sus Dis Poly Lou Med Qui Ow Mid Hi Dyn Lon].wav",
+                    "filename": "030-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-031-stereo",
+                    "label": "V.Sc. A2023 S1 B.31 [ste] [Fre Met Per Sus Cle Dis Poly Qui Lou Med Ow Mid Hi Dyn].wav",
+                    "filename": "031-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-032-stereo",
+                    "label": "V.Sc. A2023 S1 B.32 [ste] [Fre Met Per Sus Cle Dis Poly Qui Lou Med Ow Mid Hi Dyn].wav",
+                    "filename": "032-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "cybernetic-scat-paul-hermansen-b-033-stereo",
+                    "label": "V.Sc. A2023 S1 B.33 [ste] [Fre Met Per Sus Cle Dis Poly Qui Lou Med Ow Mid Hi Dyn].wav",
+                    "filename": "033-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
     }
   }
 }

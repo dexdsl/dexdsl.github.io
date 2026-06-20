@@ -62,7 +62,8 @@
   "sidebarPageConfig": {
     "lookupNumber": "V.Obj. Lu A2023 S1",
     "buckets": [
-      "A"
+      "A",
+      "B"
     ],
     "specialEventImage": "/assets/series/dex.png",
     "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and qiujiang levi lu.",
@@ -104,6 +105,134 @@
     "metadata": {
       "sampleLength": "AUTO",
       "tags": []
+    },
+    "downloads": {
+      "recordingIndexPdfRef": "asset:voice-everyday-object-manipulation-levi-lu-recording-index-pdf",
+      "recordingIndexBundleRef": "bundle:recording-index:V.Obj. Lu A2023 S1:all",
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1H9jV7dRqbxiWfjEHSNtgbe_rQUbFIxSvTviFEptuHX8/edit?gid=0#gid=0",
+      "fileTree": {
+        "lookup": "V.Obj. Lu A2023 S1",
+        "buckets": [
+          {
+            "bucket": "A",
+            "types": [
+              {
+                "mediaType": "audio",
+                "files": [
+                  {
+                    "fileId": "voice-everyday-object-manipulation-levi-lu-a-001-stereo",
+                    "label": "V.Obj. Lu A2023 S1 A.1 [ste].mp3",
+                    "filename": "001-stereo.mp3",
+                    "extension": "mp3",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "voice-everyday-object-manipulation-levi-lu-a-001-stereo-2",
+                    "label": "V.Obj. Lu A2023 S1 A.1 [ste].wav",
+                    "filename": "001-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "bucket": "B",
+            "types": [
+              {
+                "mediaType": "audio",
+                "files": [
+                  {
+                    "fileId": "voice-everyday-object-manipulation-levi-lu-b-001-stereo",
+                    "label": "V.Obj. Lu A2023 S1 B.1 [ste].wav",
+                    "filename": "001-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "voice-everyday-object-manipulation-levi-lu-b-002-stereo",
+                    "label": "V.Obj. Lu A2023 S1 B.2 [ste].wav",
+                    "filename": "002-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "voice-everyday-object-manipulation-levi-lu-b-003-stereo",
+                    "label": "V.Obj. Lu A2023 S1 B.3 [ste].wav",
+                    "filename": "003-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "voice-everyday-object-manipulation-levi-lu-b-004-stereo",
+                    "label": "V.Obj. Lu A2023 S1 B.4 [ste].wav",
+                    "filename": "004-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "voice-everyday-object-manipulation-levi-lu-b-005-stereo",
+                    "label": "V.Obj. Lu A2023 S1 B.5 [ste].wav",
+                    "filename": "005-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "voice-everyday-object-manipulation-levi-lu-b-006-stereo",
+                    "label": "V.Obj. Lu A2023 S1 B.6 [ste].wav",
+                    "filename": "006-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "voice-everyday-object-manipulation-levi-lu-b-007-stereo",
+                    "label": "V.Obj. Lu A2023 S1 B.7 [ste].wav",
+                    "filename": "007-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "voice-everyday-object-manipulation-levi-lu-b-008-stereo",
+                    "label": "V.Obj. Lu A2023 S1 B.8 [ste].wav",
+                    "filename": "008-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "voice-everyday-object-manipulation-levi-lu-b-009-stereo",
+                    "label": "V.Obj. Lu A2023 S1 B.9 [ste].wav",
+                    "filename": "009-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "voice-everyday-object-manipulation-levi-lu-b-010-stereo",
+                    "label": "V.Obj. Lu A2023 S1 B.10 [ste].wav",
+                    "filename": "010-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "voice-everyday-object-manipulation-levi-lu-b-011-stereo",
+                    "label": "V.Obj. Lu A2023 S1 B.11 [ste].wav",
+                    "filename": "011-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "fileId": "voice-everyday-object-manipulation-levi-lu-b-012-stereo",
+                    "label": "V.Obj. Lu A2023 S1 B.12 [ste].wav",
+                    "filename": "012-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
     }
   }
 }

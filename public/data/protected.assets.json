@@ -1,6 +1,6 @@
 {
   "version": "protected-assets-v1",
-  "updatedAt": "2026-06-10T22:04:57.404Z",
+  "updatedAt": "2026-06-20T02:07:19.372Z",
   "settings": {
     "storageBucket": "dex-protected-assets",
     "allowedBuckets": [
@@ -14,6 +14,219 @@
     "syncStrategy": "manifest-publish"
   },
   "lookups": [
+    {
+      "lookupNumber": "E.Gtr. Ba AV2023 S1",
+      "title": "ELECTRIC GUITAR + PEDALS",
+      "status": "active",
+      "season": "S1",
+      "files": [
+        {
+          "bucketNumber": "A.1",
+          "fileId": "electric-guitar-pedals-ethan-bailey-gould-a-001-stereo",
+          "bucket": "A",
+          "r2Key": "electric-guitar-pedals-ethan-bailey-gould/a/001-stereo.wav",
+          "driveFileId": "1gI6FRaLV-KpCrZlhuZNxwv1QZE_iDEUl",
+          "sizeBytes": 256379430,
+          "mime": "audio/x-wav",
+          "position": 1,
+          "label": "E.Gtr. Ba AV2023 S1 A.1 [ste].wav",
+          "sourceLabel": "E.Gtr. Ba AV2023 S1 A.1 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.1",
+          "fileId": "electric-guitar-pedals-ethan-bailey-gould-a-001-1080p",
+          "bucket": "A",
+          "r2Key": "electric-guitar-pedals-ethan-bailey-gould/a/001-1080p.mov",
+          "driveFileId": "1W4YWn_k02v7KqQm5JlefWqSBFVUYDEyu",
+          "sizeBytes": 1445561408,
+          "mime": "video/quicktime",
+          "position": 2,
+          "label": "E.Gtr. Ba AV2023 S1 A.1 [1080p].mov",
+          "sourceLabel": "E.Gtr. Ba AV2023 S1 A.1 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.1",
+          "fileId": "electric-guitar-pedals-ethan-bailey-gould-a-001-4k",
+          "bucket": "A",
+          "r2Key": "electric-guitar-pedals-ethan-bailey-gould/a/001-4k.mov",
+          "driveFileId": "1r351zv4bCfwy6lgfB5Zdtl0ubWpeqZG1",
+          "sizeBytes": 2629235131,
+          "mime": "video/quicktime",
+          "position": 3,
+          "label": "E.Gtr. Ba AV2023 S1 A.1 [4K].mov",
+          "sourceLabel": "E.Gtr. Ba AV2023 S1 A.1 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.1",
+          "fileId": "electric-guitar-pedals-ethan-bailey-gould-b-001-4k",
+          "bucket": "B",
+          "r2Key": "electric-guitar-pedals-ethan-bailey-gould/b/001-4k.mov",
+          "driveFileId": "18ZSd-EjvqMMEVC08ERQJAssgoLTZJyQQ",
+          "sizeBytes": 191095192,
+          "mime": "video/quicktime",
+          "position": 4,
+          "label": "E.Gui. Bai AV2023 S1 B.1 [4K].mov",
+          "sourceLabel": "E.Gui. Bai AV2023 S1 B.1 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.2",
+          "fileId": "electric-guitar-pedals-ethan-bailey-gould-b-002-4k",
+          "bucket": "B",
+          "r2Key": "electric-guitar-pedals-ethan-bailey-gould/b/002-4k.mov",
+          "driveFileId": "1wNYheU-HFVij_eKWDoNxaQid_wNqrcz-",
+          "sizeBytes": 434603752,
+          "mime": "video/quicktime",
+          "position": 5,
+          "label": "E.Gui. Bai AV2023 S1 B.2 [4K].mov",
+          "sourceLabel": "E.Gui. Bai AV2023 S1 B.2 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.3",
+          "fileId": "electric-guitar-pedals-ethan-bailey-gould-b-003-4k",
+          "bucket": "B",
+          "r2Key": "electric-guitar-pedals-ethan-bailey-gould/b/003-4k.mov",
+          "driveFileId": "1EToLPzb1aSaqaNcpWarxxRjnFpj5h23n",
+          "sizeBytes": 214687152,
+          "mime": "video/quicktime",
+          "position": 6,
+          "label": "E.Gui. Bai AV2023 S1 B.3 [4K].mov",
+          "sourceLabel": "E.Gui. Bai AV2023 S1 B.3 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.4",
+          "fileId": "electric-guitar-pedals-ethan-bailey-gould-b-004-4k",
+          "bucket": "B",
+          "r2Key": "electric-guitar-pedals-ethan-bailey-gould/b/004-4k.mov",
+          "driveFileId": "1vbbppW4oNmv6Pd8pJ-uehB73wF1e4KY4",
+          "sizeBytes": 258073389,
+          "mime": "video/quicktime",
+          "position": 7,
+          "label": "E.Gui. Bai AV2023 S1 B.4 [4K].mov",
+          "sourceLabel": "E.Gui. Bai AV2023 S1 B.4 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.5",
+          "fileId": "electric-guitar-pedals-ethan-bailey-gould-b-005-4k",
+          "bucket": "B",
+          "r2Key": "electric-guitar-pedals-ethan-bailey-gould/b/005-4k.mov",
+          "driveFileId": "1-jBzBjCEm--kXCEIwb58awtQEr0FEwrK",
+          "sizeBytes": 56173119,
+          "mime": "video/quicktime",
+          "position": 8,
+          "label": "E.Gui. Bai AV2023 S1 B.5 [4K].mov",
+          "sourceLabel": "E.Gui. Bai AV2023 S1 B.5 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.6",
+          "fileId": "electric-guitar-pedals-ethan-bailey-gould-b-006-4k",
+          "bucket": "B",
+          "r2Key": "electric-guitar-pedals-ethan-bailey-gould/b/006-4k.mov",
+          "driveFileId": "1tcZtN5aYdtMUg6Rnbo0DP9CUioOz8scS",
+          "sizeBytes": 983571443,
+          "mime": "video/quicktime",
+          "position": 9,
+          "label": "E.Gui. Bai AV2023 S1 B.6 [4K].mov",
+          "sourceLabel": "E.Gui. Bai AV2023 S1 B.6 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.7",
+          "fileId": "electric-guitar-pedals-ethan-bailey-gould-b-007-4k",
+          "bucket": "B",
+          "r2Key": "electric-guitar-pedals-ethan-bailey-gould/b/007-4k.mov",
+          "driveFileId": "1efWayvUIbZqivM3cBiLSVOLOLI1p918a",
+          "sizeBytes": 563117829,
+          "mime": "video/quicktime",
+          "position": 10,
+          "label": "E.Gui. Bai AV2023 S1 B.7 [4K].mov",
+          "sourceLabel": "E.Gui. Bai AV2023 S1 B.7 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "X.1",
+          "fileId": "electric-guitar-pedals-ethan-bailey-gould-recording-index-pdf",
+          "bucket": "X",
+          "r2Key": "electric-guitar-pedals-ethan-bailey-gould/recording-index/recording-index.pdf",
+          "driveFileId": "",
+          "sizeBytes": 0,
+          "mime": "application/pdf",
+          "position": 11,
+          "label": "Recording Index PDF",
+          "sourceLabel": "Recording Index PDF",
+          "type": "pdf",
+          "availableTypes": [
+            "pdf"
+          ],
+          "role": "recording_index_pdf"
+        }
+      ],
+      "entitlements": [
+        {
+          "type": "role",
+          "value": "authenticated"
+        }
+      ],
+      "recordingIndex": {
+        "sheetUrl": "https://docs.google.com/spreadsheets/d/1Dpr0rokJanJJ8_7UiQ90RBl6n8DoTId_Q-gfJBBRNh8/edit?gid=0#gid=0",
+        "sheetId": "1Dpr0rokJanJJ8_7UiQ90RBl6n8DoTId_Q-gfJBBRNh8",
+        "gid": "0",
+        "pdfAssetId": "electric-guitar-pedals-ethan-bailey-gould-recording-index-pdf",
+        "bundleAllToken": "bundle:recording-index:E.Gtr. Ba AV2023 S1:all",
+        "rootFolderUrl": "https://drive.google.com/drive/folders/1K436lrkluQh6geeuyWTNRwl2W47cAHiS",
+        "bucketFolderUrls": {
+          "A": "https://drive.google.com/drive/folders/1Uq_gaJJtt59TNJ3-0jZJrFBip5WIC0NO",
+          "B": "https://drive.google.com/drive/folders/1bSG0-26BknrQ2r0tqcy4lezcloBFjl-7"
+        }
+      }
+    },
     {
       "lookupNumber": "E.Gtr. Ch AV2024 S2",
       "title": "ELECTRIC GUITAR",
@@ -1942,6 +2155,406 @@
       }
     },
     {
+      "lookupNumber": "E.Kni. Jo AV2023 S1",
+      "title": "AMPLIFIED KNIVES",
+      "status": "active",
+      "season": "S1",
+      "files": [
+        {
+          "bucketNumber": "A.1",
+          "fileId": "amplified-knives-tyler-jordan-a-001-stereo",
+          "bucket": "A",
+          "r2Key": "amplified-knives-tyler-jordan/a/001-stereo.mp3",
+          "driveFileId": "1rmUBHgV4Kb0bcA9oeer4xneLQBE3xp-P",
+          "sizeBytes": 69791263,
+          "mime": "audio/mpeg",
+          "position": 1,
+          "label": "X.Kni. Jo AV2023 S1 A.1 [ste].mp3",
+          "sourceLabel": "X.Kni. Jo AV2023 S1 A.1 [ste].mp3",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.1",
+          "fileId": "amplified-knives-tyler-jordan-a-001-stereo-2",
+          "bucket": "A",
+          "r2Key": "amplified-knives-tyler-jordan/a/001-stereo.wav",
+          "driveFileId": "1intEjxHgBb_ifXr5jFUOxKApYtQdDEqX",
+          "sizeBytes": 924545582,
+          "mime": "audio/wav",
+          "position": 2,
+          "label": "X.Kni. Jo AV2023 S1 A.1 [ste].wav",
+          "sourceLabel": "X.Kni. Jo AV2023 S1 A.1 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.1",
+          "fileId": "amplified-knives-tyler-jordan-a-001-1080p",
+          "bucket": "A",
+          "r2Key": "amplified-knives-tyler-jordan/a/001-1080p.mov",
+          "driveFileId": "1W3Wd0-YijQ2nxfQuSOPvXCY2Ocql_9Ch",
+          "sizeBytes": 5191807909,
+          "mime": "video/quicktime",
+          "position": 3,
+          "label": "X.Kni. Jo AV2023 S1 A.1 [1080p].mov",
+          "sourceLabel": "X.Kni. Jo AV2023 S1 A.1 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.1",
+          "fileId": "amplified-knives-tyler-jordan-a-001-4k",
+          "bucket": "A",
+          "r2Key": "amplified-knives-tyler-jordan/a/001-4k.mov",
+          "driveFileId": "1LXWVNP87KRlvce8GqvpYKFArA6bIHIkd",
+          "sizeBytes": 8806232987,
+          "mime": "video/quicktime",
+          "position": 4,
+          "label": "X.Kni. Jo AV2023 S1 A.1 [4K].mov",
+          "sourceLabel": "X.Kni. Jo AV2023 S1 A.1 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.1",
+          "fileId": "amplified-knives-tyler-jordan-b-001-4k",
+          "bucket": "B",
+          "r2Key": "amplified-knives-tyler-jordan/b/001-4k.mov",
+          "driveFileId": "1A4PNCYNkzzAyrDioIAyLXtay6YG3dC3K",
+          "sizeBytes": 718592882,
+          "mime": "video/quicktime",
+          "position": 5,
+          "label": "X.Kni. Jo AV2023 S1 B.1 [4K].mov",
+          "sourceLabel": "X.Kni. Jo AV2023 S1 B.1 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.2",
+          "fileId": "amplified-knives-tyler-jordan-b-002-4k",
+          "bucket": "B",
+          "r2Key": "amplified-knives-tyler-jordan/b/002-4k.mov",
+          "driveFileId": "1LzoqfgyR89Y0JplBJ2pRP9Qxs9lj7gHf",
+          "sizeBytes": 566873122,
+          "mime": "video/quicktime",
+          "position": 6,
+          "label": "X.Kni. Jo AV2023 S1 B.2 [4K].mov",
+          "sourceLabel": "X.Kni. Jo AV2023 S1 B.2 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.3",
+          "fileId": "amplified-knives-tyler-jordan-b-003-4k",
+          "bucket": "B",
+          "r2Key": "amplified-knives-tyler-jordan/b/003-4k.mov",
+          "driveFileId": "1VX06jBw5uX9j2YCQnVhofUZJK7VdHZgV",
+          "sizeBytes": 219803385,
+          "mime": "video/quicktime",
+          "position": 7,
+          "label": "X.Kni. Jo AV2023 S1 B.3 [4K].mov",
+          "sourceLabel": "X.Kni. Jo AV2023 S1 B.3 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.4",
+          "fileId": "amplified-knives-tyler-jordan-b-004-4k",
+          "bucket": "B",
+          "r2Key": "amplified-knives-tyler-jordan/b/004-4k.mov",
+          "driveFileId": "1lknF8OYOrRdP8AtqCPbhunI9tRwVLHYF",
+          "sizeBytes": 402574552,
+          "mime": "video/quicktime",
+          "position": 8,
+          "label": "X.Kni. Jo AV2023 S1 B.4 [4K].mov",
+          "sourceLabel": "X.Kni. Jo AV2023 S1 B.4 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.5",
+          "fileId": "amplified-knives-tyler-jordan-b-005-4k",
+          "bucket": "B",
+          "r2Key": "amplified-knives-tyler-jordan/b/005-4k.mov",
+          "driveFileId": "1SP1v7w-mnuSnIgcnp3bDGIS8o27QC4MU",
+          "sizeBytes": 245703291,
+          "mime": "video/quicktime",
+          "position": 9,
+          "label": "X.Kni. Jo AV2023 S1 B.5 [4K].mov",
+          "sourceLabel": "X.Kni. Jo AV2023 S1 B.5 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.6",
+          "fileId": "amplified-knives-tyler-jordan-b-006-4k",
+          "bucket": "B",
+          "r2Key": "amplified-knives-tyler-jordan/b/006-4k.mov",
+          "driveFileId": "1wPSSOzvPiRzFlKVe_uErsycTYue-LB-A",
+          "sizeBytes": 512824192,
+          "mime": "video/quicktime",
+          "position": 10,
+          "label": "X.Kni. Jo AV2023 S1 B.6 [4K].mov",
+          "sourceLabel": "X.Kni. Jo AV2023 S1 B.6 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.7",
+          "fileId": "amplified-knives-tyler-jordan-b-007-4k",
+          "bucket": "B",
+          "r2Key": "amplified-knives-tyler-jordan/b/007-4k.mov",
+          "driveFileId": "10ly7jJT9IAoA7CXgbLNwlU7pQHFDmKdc",
+          "sizeBytes": 193949761,
+          "mime": "video/quicktime",
+          "position": 11,
+          "label": "X.Kni. Jo AV2023 S1 B.7 [4K].mov",
+          "sourceLabel": "X.Kni. Jo AV2023 S1 B.7 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.8",
+          "fileId": "amplified-knives-tyler-jordan-b-008-4k",
+          "bucket": "B",
+          "r2Key": "amplified-knives-tyler-jordan/b/008-4k.mov",
+          "driveFileId": "1oss4oI-pUZuVi0jxZZ05kb5E6w_Xq-si",
+          "sizeBytes": 247942722,
+          "mime": "video/quicktime",
+          "position": 12,
+          "label": "X.Kni. Jo AV2023 S1 B.8 [4K].mov",
+          "sourceLabel": "X.Kni. Jo AV2023 S1 B.8 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.9",
+          "fileId": "amplified-knives-tyler-jordan-b-009-4k",
+          "bucket": "B",
+          "r2Key": "amplified-knives-tyler-jordan/b/009-4k.mov",
+          "driveFileId": "1PRzDsjyleNNO86t2zCsxrX1C5JPsltRF",
+          "sizeBytes": 785438895,
+          "mime": "video/quicktime",
+          "position": 13,
+          "label": "X.Kni. Jo AV2023 S1 B.9 [4K].mov",
+          "sourceLabel": "X.Kni. Jo AV2023 S1 B.9 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.10",
+          "fileId": "amplified-knives-tyler-jordan-b-010-4k",
+          "bucket": "B",
+          "r2Key": "amplified-knives-tyler-jordan/b/010-4k.mov",
+          "driveFileId": "1VTUYELsyQ-XDBwRC_R7yTeVELDdj-OaF",
+          "sizeBytes": 482297877,
+          "mime": "video/quicktime",
+          "position": 14,
+          "label": "X.Kni. Jo AV2023 S1 B.10 [4K].mov",
+          "sourceLabel": "X.Kni. Jo AV2023 S1 B.10 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.11",
+          "fileId": "amplified-knives-tyler-jordan-b-011-4k",
+          "bucket": "B",
+          "r2Key": "amplified-knives-tyler-jordan/b/011-4k.mov",
+          "driveFileId": "1xm8CO_Xtyl_3WQOMhUvrj3wotKXNTLMw",
+          "sizeBytes": 227512492,
+          "mime": "video/quicktime",
+          "position": 15,
+          "label": "X.Kni. Jo AV2023 S1 B.11 [4K].mov",
+          "sourceLabel": "X.Kni. Jo AV2023 S1 B.11 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.12",
+          "fileId": "amplified-knives-tyler-jordan-b-012-4k",
+          "bucket": "B",
+          "r2Key": "amplified-knives-tyler-jordan/b/012-4k.mov",
+          "driveFileId": "1v9wf7zJoyxxWRTaX706Q3n519iqhUSBc",
+          "sizeBytes": 304944798,
+          "mime": "video/quicktime",
+          "position": 16,
+          "label": "X.Kni. Jo AV2023 S1 B.12 [4K].mov",
+          "sourceLabel": "X.Kni. Jo AV2023 S1 B.12 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.13",
+          "fileId": "amplified-knives-tyler-jordan-b-013-4k",
+          "bucket": "B",
+          "r2Key": "amplified-knives-tyler-jordan/b/013-4k.mov",
+          "driveFileId": "1y9fAt4XUFqEDaGQG-gnbkpAaBNlxjstT",
+          "sizeBytes": 510528679,
+          "mime": "video/quicktime",
+          "position": 17,
+          "label": "X.Kni. Jo AV2023 S1 B.13 [4K].mov",
+          "sourceLabel": "X.Kni. Jo AV2023 S1 B.13 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.14",
+          "fileId": "amplified-knives-tyler-jordan-b-014-4k",
+          "bucket": "B",
+          "r2Key": "amplified-knives-tyler-jordan/b/014-4k.mov",
+          "driveFileId": "19tuu6VEAwJkFdJ4oPbUCzdJP5R-3aZL2",
+          "sizeBytes": 275493927,
+          "mime": "video/quicktime",
+          "position": 18,
+          "label": "X.Kni. Jo AV2023 S1 B.14 [4K].mov",
+          "sourceLabel": "X.Kni. Jo AV2023 S1 B.14 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.15",
+          "fileId": "amplified-knives-tyler-jordan-b-015-4k",
+          "bucket": "B",
+          "r2Key": "amplified-knives-tyler-jordan/b/015-4k.mov",
+          "driveFileId": "1LlN5R7thbpbCE2zAyKRPWokwVZOCTRVg",
+          "sizeBytes": 1284613203,
+          "mime": "video/quicktime",
+          "position": 19,
+          "label": "X.Kni. Jo AV2023 S1 B.15 [4K].mov",
+          "sourceLabel": "X.Kni. Jo AV2023 S1 B.15 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.16",
+          "fileId": "amplified-knives-tyler-jordan-b-016-4k",
+          "bucket": "B",
+          "r2Key": "amplified-knives-tyler-jordan/b/016-4k.mov",
+          "driveFileId": "1jd3-cTQ4gGMEEvEKFmk70MsMc5PvQ_j_",
+          "sizeBytes": 1178610458,
+          "mime": "video/quicktime",
+          "position": 20,
+          "label": "X.Kni. Jo AV2023 S1 B.16 [4K].mov",
+          "sourceLabel": "X.Kni. Jo AV2023 S1 B.16 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.17",
+          "fileId": "amplified-knives-tyler-jordan-b-017-4k",
+          "bucket": "B",
+          "r2Key": "amplified-knives-tyler-jordan/b/017-4k.mov",
+          "driveFileId": "1JuNkUDYwgswS-c4OrGoIV1DuhKhtI9Hc",
+          "sizeBytes": 1571732080,
+          "mime": "video/quicktime",
+          "position": 21,
+          "label": "X.Kni. Jo AV2023 S1 B.17 [4K].mov",
+          "sourceLabel": "X.Kni. Jo AV2023 S1 B.17 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "X.1",
+          "fileId": "amplified-knives-tyler-jordan-recording-index-pdf",
+          "bucket": "X",
+          "r2Key": "amplified-knives-tyler-jordan/recording-index/recording-index.pdf",
+          "driveFileId": "",
+          "sizeBytes": 0,
+          "mime": "application/pdf",
+          "position": 22,
+          "label": "Recording Index PDF",
+          "sourceLabel": "Recording Index PDF",
+          "type": "pdf",
+          "availableTypes": [
+            "pdf"
+          ],
+          "role": "recording_index_pdf"
+        }
+      ],
+      "entitlements": [
+        {
+          "type": "role",
+          "value": "authenticated"
+        }
+      ],
+      "recordingIndex": {
+        "sheetUrl": "https://docs.google.com/spreadsheets/d/1egkj32jcWJO8Np1SdaopJRtLAdX6atDdLGbNq6e4pDc/edit?gid=0#gid=0",
+        "sheetId": "1egkj32jcWJO8Np1SdaopJRtLAdX6atDdLGbNq6e4pDc",
+        "gid": "0",
+        "pdfAssetId": "amplified-knives-tyler-jordan-recording-index-pdf",
+        "bundleAllToken": "bundle:recording-index:E.Kni. Jo AV2023 S1:all",
+        "rootFolderUrl": "https://drive.google.com/drive/folders/1WEHApgJmHAMUl7e_OlQ5JaCODR5cR8KW",
+        "bucketFolderUrls": {
+          "A": "https://drive.google.com/drive/folders/1C7a4mZFeFP2aA8k5WsW_9JNdOkx-pXKb",
+          "B": "https://drive.google.com/drive/folders/1Emml5tcJNx3kdiFkfnC78CF_Yxli5iSU"
+        }
+      }
+    },
+    {
       "lookupNumber": "E.Mod. Zh AV2024 S2",
       "title": "MODULAR SYNTH",
       "status": "active",
@@ -2999,6 +3612,2005 @@
         "bundleAllToken": "bundle:recording-index:E.Mod. Zh AV2024 S2:all",
         "rootFolderUrl": "",
         "bucketFolderUrls": {}
+      }
+    },
+    {
+      "lookupNumber": "E.Noi. Mu AV2023 S1",
+      "title": "NO INPUT MIXER SET",
+      "status": "active",
+      "season": "S1",
+      "files": [
+        {
+          "bucketNumber": "A.1",
+          "fileId": "no-input-mixer-jared-murphy-a-001-stereo",
+          "bucket": "A",
+          "r2Key": "no-input-mixer-jared-murphy/a/001-stereo.wav",
+          "driveFileId": "1uFzU_3KDsyucozT_WKARcbf3ltFmG7JF",
+          "sizeBytes": 1051885080,
+          "mime": "audio/wav",
+          "position": 1,
+          "label": "E.Noi. Mu AV2023 S1 A.1 [ste].wav",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 A.1 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.1",
+          "fileId": "no-input-mixer-jared-murphy-a-001-1080p",
+          "bucket": "A",
+          "r2Key": "no-input-mixer-jared-murphy/a/001-1080p.mov",
+          "driveFileId": "1VyVc8BqBQJTUkjSIxkN1ndX_kVc5xaIE",
+          "sizeBytes": 5443518969,
+          "mime": "video/quicktime",
+          "position": 2,
+          "label": "E.Noi. Mu AV2023 S1 A.1 [1080p].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 A.1 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.1",
+          "fileId": "no-input-mixer-jared-murphy-a-001-4k",
+          "bucket": "A",
+          "r2Key": "no-input-mixer-jared-murphy/a/001-4k.mov",
+          "driveFileId": "1siK9arz8jLmW7-1gJLvp9Uq4rQGpadZ7",
+          "sizeBytes": 9863637539,
+          "mime": "video/quicktime",
+          "position": 3,
+          "label": "E.Noi. Mu AV2023 S1 A.1 [4K].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 A.1 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.1",
+          "fileId": "no-input-mixer-jared-murphy-b-001-1080p",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/001-1080p.mov",
+          "driveFileId": "1CqTDwQsizAVJG2dsWA11Ly2VBxAUOF9O",
+          "sizeBytes": 500459291,
+          "mime": "video/quicktime",
+          "position": 4,
+          "label": "E.Noi. Mu AV2023 S1 B.1 [1080p].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.1 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.1",
+          "fileId": "no-input-mixer-jared-murphy-b-001-4k",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/001-4k.mov",
+          "driveFileId": "1d83QEVVzm5VOF-zedifnskEWk7Udh-c6",
+          "sizeBytes": 3984247047,
+          "mime": "video/quicktime",
+          "position": 5,
+          "label": "E.Noi. Mu AV2023 S1 B.1 [4K].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.1 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.2",
+          "fileId": "no-input-mixer-jared-murphy-b-002-1080p",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/002-1080p.mov",
+          "driveFileId": "1dwDk7_mAcKih_4CcXsmG9OXa6YiBdMOK",
+          "sizeBytes": 445524613,
+          "mime": "video/quicktime",
+          "position": 6,
+          "label": "E.Noi. Mu AV2023 S1 B.2 [1080p].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.2 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.2",
+          "fileId": "no-input-mixer-jared-murphy-b-002-4k",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/002-4k.mov",
+          "driveFileId": "1ZX_alcTpgz-g8MK8Q7IwZBMHKYfosBgH",
+          "sizeBytes": 3559835701,
+          "mime": "video/quicktime",
+          "position": 7,
+          "label": "E.Noi. Mu AV2023 S1 B.2 [4K].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.2 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.3",
+          "fileId": "no-input-mixer-jared-murphy-b-003-1080p",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/003-1080p.mov",
+          "driveFileId": "17s0g0nnPNDfTTYkP_PyncaGOBD3mR355",
+          "sizeBytes": 348549740,
+          "mime": "video/quicktime",
+          "position": 8,
+          "label": "E.Noi. Mu AV2023 S1 B.3 [1080p].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.3 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.3",
+          "fileId": "no-input-mixer-jared-murphy-b-003-4k",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/003-4k.mov",
+          "driveFileId": "1_2qmWlnmNdz49jK1xIwQifnLiYFC2IaH",
+          "sizeBytes": 2778943945,
+          "mime": "video/quicktime",
+          "position": 9,
+          "label": "E.Noi. Mu AV2023 S1 B.3 [4K].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.3 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.4",
+          "fileId": "no-input-mixer-jared-murphy-b-004-1080p",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/004-1080p.mov",
+          "driveFileId": "1HNS85SQQf3h5HphKYkc-smWey99A01T3",
+          "sizeBytes": 704930258,
+          "mime": "video/quicktime",
+          "position": 10,
+          "label": "E.Noi. Mu AV2023 S1 B.4 [1080p].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.4 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.4",
+          "fileId": "no-input-mixer-jared-murphy-b-004-4k",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/004-4k.mov",
+          "driveFileId": "1bIAZCc9cfk7xPYyh9D3GXXyy3laM7eq3",
+          "sizeBytes": 5547785139,
+          "mime": "video/quicktime",
+          "position": 11,
+          "label": "E.Noi. Mu AV2023 S1 B.4 [4K].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.4 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.5",
+          "fileId": "no-input-mixer-jared-murphy-b-005-1080p",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/005-1080p.mov",
+          "driveFileId": "1ZlFnlm6BozepqWpUblQbvUPG16zEIcq7",
+          "sizeBytes": 378758834,
+          "mime": "video/quicktime",
+          "position": 12,
+          "label": "E.Noi. Mu AV2023 S1 B.5 [1080p].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.5 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.5",
+          "fileId": "no-input-mixer-jared-murphy-b-005-4k",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/005-4k.mov",
+          "driveFileId": "1ZVrt5d0nSYlj8wSOIDXmEXe9FSERv6iL",
+          "sizeBytes": 2980532809,
+          "mime": "video/quicktime",
+          "position": 13,
+          "label": "E.Noi. Mu AV2023 S1 B.5 [4K].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.5 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.6",
+          "fileId": "no-input-mixer-jared-murphy-b-006-1080p",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/006-1080p.mov",
+          "driveFileId": "1eH5MYH4Uc4Ta9MrUz_sR3un80jwV2-Sp",
+          "sizeBytes": 264812464,
+          "mime": "video/quicktime",
+          "position": 14,
+          "label": "E.Noi. Mu AV2023 S1 B.6 [1080p].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.6 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.6",
+          "fileId": "no-input-mixer-jared-murphy-b-006-4k",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/006-4k.mov",
+          "driveFileId": "1EESngYSHFYMA03T40EFXJiRvqofUtf0p",
+          "sizeBytes": 2099345051,
+          "mime": "video/quicktime",
+          "position": 15,
+          "label": "E.Noi. Mu AV2023 S1 B.6 [4K].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.6 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.7",
+          "fileId": "no-input-mixer-jared-murphy-b-007-1080p",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/007-1080p.mov",
+          "driveFileId": "1GwVCIh1ORshxfZm2cfV378CAD7HF4ViW",
+          "sizeBytes": 939274102,
+          "mime": "video/quicktime",
+          "position": 16,
+          "label": "E.Noi. Mu AV2023 S1 B.7 [1080p].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.7 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.7",
+          "fileId": "no-input-mixer-jared-murphy-b-007-4k",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/007-4k.mov",
+          "driveFileId": "1cPyzE9a8JppjcH8qDyywHYOdB1hNUZ7I",
+          "sizeBytes": 7501415514,
+          "mime": "video/quicktime",
+          "position": 17,
+          "label": "E.Noi. Mu AV2023 S1 B.7 [4K].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.7 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.8",
+          "fileId": "no-input-mixer-jared-murphy-b-008-1080p",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/008-1080p.mov",
+          "driveFileId": "1mGov3IH4Fkzy-e5yWckLB7ReUtGnXtsi",
+          "sizeBytes": 315358567,
+          "mime": "video/quicktime",
+          "position": 18,
+          "label": "E.Noi. Mu AV2023 S1 B.8 [1080p].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.8 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.8",
+          "fileId": "no-input-mixer-jared-murphy-b-008-4k",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/008-4k.mov",
+          "driveFileId": "1Q6_btrfXdUlr3EkB29aOxgyNVcCiQJhM",
+          "sizeBytes": 2510606385,
+          "mime": "video/quicktime",
+          "position": 19,
+          "label": "E.Noi. Mu AV2023 S1 B.8 [4K].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.8 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.9",
+          "fileId": "no-input-mixer-jared-murphy-b-009-1080p",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/009-1080p.mov",
+          "driveFileId": "1Km_Jbke71jYsJg2Uva0RLOJZ1xJXkesL",
+          "sizeBytes": 541563834,
+          "mime": "video/quicktime",
+          "position": 20,
+          "label": "E.Noi. Mu AV2023 S1 B.9 [1080p].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.9 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.9",
+          "fileId": "no-input-mixer-jared-murphy-b-009-4k",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/009-4k.mov",
+          "driveFileId": "1GD0QUE8dJ2ZPKy__E3EkzO9OCaZFpN7X",
+          "sizeBytes": 4265225343,
+          "mime": "video/quicktime",
+          "position": 21,
+          "label": "E.Noi. Mu AV2023 S1 B.9 [4K].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.9 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.10",
+          "fileId": "no-input-mixer-jared-murphy-b-010-1080p",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/010-1080p.mov",
+          "driveFileId": "1rqHDf8qu3gefT4qAkaGtugPFYS0yKJxY",
+          "sizeBytes": 523543018,
+          "mime": "video/quicktime",
+          "position": 22,
+          "label": "E.Noi. Mu AV2023 S1 B.10 [1080p].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.10 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.10",
+          "fileId": "no-input-mixer-jared-murphy-b-010-4k",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/010-4k.mov",
+          "driveFileId": "1ZoYqm-dW4FqWuQ9AT7FXXhbeOHztvqy9",
+          "sizeBytes": 4161453013,
+          "mime": "video/quicktime",
+          "position": 23,
+          "label": "E.Noi. Mu AV2023 S1 B.10 [4K].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.10 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.11",
+          "fileId": "no-input-mixer-jared-murphy-b-011-1080p",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/011-1080p.mov",
+          "driveFileId": "16ovFELhZ1ubmxEmoBKjkxb_sYI-SG_3q",
+          "sizeBytes": 313278465,
+          "mime": "video/quicktime",
+          "position": 24,
+          "label": "E.Noi. Mu AV2023 S1 B.11 [1080p].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.11 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.11",
+          "fileId": "no-input-mixer-jared-murphy-b-011-4k",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/011-4k.mov",
+          "driveFileId": "1QNCnDPL56zFfsFfIJr62Won7ojoJXHi2",
+          "sizeBytes": 2512459319,
+          "mime": "video/quicktime",
+          "position": 25,
+          "label": "E.Noi. Mu AV2023 S1 B.11 [4K].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.11 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.12",
+          "fileId": "no-input-mixer-jared-murphy-b-012-1080p",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/012-1080p.mov",
+          "driveFileId": "1tFnWINqnwc1EjdhmxfD-oB_5Lz889i4i",
+          "sizeBytes": 715710048,
+          "mime": "video/quicktime",
+          "position": 26,
+          "label": "E.Noi. Mu AV2023 S1 B.12 [1080p].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.12 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.12",
+          "fileId": "no-input-mixer-jared-murphy-b-012-4k",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/012-4k.mov",
+          "driveFileId": "1ZhiakKXICKw6HgE-YIGJzFTq7Vr7KRJa",
+          "sizeBytes": 5712508456,
+          "mime": "video/quicktime",
+          "position": 27,
+          "label": "E.Noi. Mu AV2023 S1 B.12 [4K].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.12 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.13",
+          "fileId": "no-input-mixer-jared-murphy-b-013-1080p",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/013-1080p.mov",
+          "driveFileId": "1RaFKB9A70OC9cJPrhYupbcH1op2tg8m0",
+          "sizeBytes": 372296297,
+          "mime": "video/quicktime",
+          "position": 28,
+          "label": "E.Noi. Mu AV2023 S1 B.13 [1080p].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.13 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.13",
+          "fileId": "no-input-mixer-jared-murphy-b-013-4k",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/013-4k.mov",
+          "driveFileId": "1XAFt99kBMRNSsp8v3FpP3SsGKvPaCR3q",
+          "sizeBytes": 2960988380,
+          "mime": "video/quicktime",
+          "position": 29,
+          "label": "E.Noi. Mu AV2023 S1 B.13 [4K].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.13 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.14",
+          "fileId": "no-input-mixer-jared-murphy-b-014-1080p",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/014-1080p.mov",
+          "driveFileId": "1GmSW4t_8FflMjYAVGaxSHJmWLHo-bwQM",
+          "sizeBytes": 1684149176,
+          "mime": "video/quicktime",
+          "position": 30,
+          "label": "E.Noi. Mu AV2023 S1 B.14 [1080p].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.14 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.14",
+          "fileId": "no-input-mixer-jared-murphy-b-014-4k",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/014-4k.mov",
+          "driveFileId": "1sWVW539Q5C3mREBp-W83u4Tb7gt7Ink9",
+          "sizeBytes": 13428591644,
+          "mime": "video/quicktime",
+          "position": 31,
+          "label": "E.Noi. Mu AV2023 S1 B.14 [4K].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.14 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.15",
+          "fileId": "no-input-mixer-jared-murphy-b-015-1080p",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/015-1080p.mov",
+          "driveFileId": "1QKdu93qmkW-7nzexkheHd5bclUe4eaoz",
+          "sizeBytes": 812284664,
+          "mime": "video/quicktime",
+          "position": 32,
+          "label": "E.Noi. Mu AV2023 S1 B.15 [1080p].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.15 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.15",
+          "fileId": "no-input-mixer-jared-murphy-b-015-4k",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/015-4k.mov",
+          "driveFileId": "1u1g8_Vg835VbhNjVHOlwOJgm6IBbbIIu",
+          "sizeBytes": 6445793291,
+          "mime": "video/quicktime",
+          "position": 33,
+          "label": "E.Noi. Mu AV2023 S1 B.15 [4K].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.15 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.16",
+          "fileId": "no-input-mixer-jared-murphy-b-016-1080p",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/016-1080p.mov",
+          "driveFileId": "1I9r110DJcN_eg47sLSmeiXdjSx0wXvkp",
+          "sizeBytes": 902120019,
+          "mime": "video/quicktime",
+          "position": 34,
+          "label": "E.Noi. Mu AV2023 S1 B.16 [1080p].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.16 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.16",
+          "fileId": "no-input-mixer-jared-murphy-b-016-4k",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/016-4k.mov",
+          "driveFileId": "1hfdwdbhtQ434JjrOUJYrXHEUp9sS2l8p",
+          "sizeBytes": 7174735454,
+          "mime": "video/quicktime",
+          "position": 35,
+          "label": "E.Noi. Mu AV2023 S1 B.16 [4K].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.16 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.17",
+          "fileId": "no-input-mixer-jared-murphy-b-017-1080p",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/017-1080p.mov",
+          "driveFileId": "1oQ0YgpvWInE7bMV6pyly8npXqpQ62Gvo",
+          "sizeBytes": 465076635,
+          "mime": "video/quicktime",
+          "position": 36,
+          "label": "E.Noi. Mu AV2023 S1 B.17 [1080p].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.17 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.17",
+          "fileId": "no-input-mixer-jared-murphy-b-017-4k",
+          "bucket": "B",
+          "r2Key": "no-input-mixer-jared-murphy/b/017-4k.mov",
+          "driveFileId": "1VgBNfIAJ83FFGHnIorWqdldUbnU0yh_y",
+          "sizeBytes": 3678402824,
+          "mime": "video/quicktime",
+          "position": 37,
+          "label": "E.Noi. Mu AV2023 S1 B.17 [4K].mov",
+          "sourceLabel": "E.Noi. Mu AV2023 S1 B.17 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "X.1",
+          "fileId": "no-input-mixer-jared-murphy-recording-index-pdf",
+          "bucket": "X",
+          "r2Key": "no-input-mixer-jared-murphy/recording-index/recording-index.pdf",
+          "driveFileId": "",
+          "sizeBytes": 0,
+          "mime": "application/pdf",
+          "position": 38,
+          "label": "Recording Index PDF",
+          "sourceLabel": "Recording Index PDF",
+          "type": "pdf",
+          "availableTypes": [
+            "pdf"
+          ],
+          "role": "recording_index_pdf"
+        }
+      ],
+      "entitlements": [
+        {
+          "type": "role",
+          "value": "authenticated"
+        }
+      ],
+      "recordingIndex": {
+        "sheetUrl": "https://docs.google.com/spreadsheets/d/13CSt_I1EYHwKFHmZwhJ1l8cfQvohClg7bwS1VZ132k4/edit?gid=0#gid=0",
+        "sheetId": "13CSt_I1EYHwKFHmZwhJ1l8cfQvohClg7bwS1VZ132k4",
+        "gid": "0",
+        "pdfAssetId": "no-input-mixer-jared-murphy-recording-index-pdf",
+        "bundleAllToken": "bundle:recording-index:E.Noi. Mu AV2023 S1:all",
+        "rootFolderUrl": "https://drive.google.com/drive/folders/1kP3_DAT5_IrfJYEFrMCgBZI71waMJBRZ",
+        "bucketFolderUrls": {
+          "A": "https://drive.google.com/drive/folders/1_rn_Pvgpe3ApWT5_4wiNsvS_hQf4n5YH",
+          "B": "https://drive.google.com/drive/folders/1S_8uJuYeuKM_ByUvHIiXRM5A9l4METvu"
+        }
+      }
+    },
+    {
+      "lookupNumber": "K.Hps. Su AV2023 S1",
+      "title": "PREPARED HARPSICHORD",
+      "status": "active",
+      "season": "S1",
+      "files": [
+        {
+          "bucketNumber": "A.1",
+          "fileId": "prepared-harpsichord-suarez-solis-a-001-stereo",
+          "bucket": "A",
+          "r2Key": "prepared-harpsichord-suarez-solis/a/001-stereo.wav",
+          "driveFileId": "1G3sigkNa-24T6lPTxwFSiL-lYUOkjuzp",
+          "sizeBytes": 957276626,
+          "mime": "audio/x-wav",
+          "position": 1,
+          "label": "K.Hps. Su AV2023 S1 A.1 [ste].wav",
+          "sourceLabel": "K.Hps. Su AV2023 S1 A.1 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.1",
+          "fileId": "prepared-harpsichord-suarez-solis-a-001-1080p",
+          "bucket": "A",
+          "r2Key": "prepared-harpsichord-suarez-solis/a/001-1080p.mov",
+          "driveFileId": "1Vv0Eyf3rZ0szn_8fcWyZqTSNBWu01JTb",
+          "sizeBytes": 5389191094,
+          "mime": "video/quicktime",
+          "position": 2,
+          "label": "K.Hps. Su AV2023 S1 A.1 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 A.1 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.1",
+          "fileId": "prepared-harpsichord-suarez-solis-a-001-4k",
+          "bucket": "A",
+          "r2Key": "prepared-harpsichord-suarez-solis/a/001-4k.mov",
+          "driveFileId": "10_4cQDz9fWWg1hGMSCVJaERu7F8jDl3V",
+          "sizeBytes": 9760938016,
+          "mime": "video/quicktime",
+          "position": 3,
+          "label": "K.Hps. Su AV2023 S1 A.1 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 A.1 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.1",
+          "fileId": "prepared-harpsichord-suarez-solis-b-001-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/001-1080p.mov",
+          "driveFileId": "1fj5z6O5BtT58SytwDjIyPu6FzpQxYJWm",
+          "sizeBytes": 273779325,
+          "mime": "video/quicktime",
+          "position": 4,
+          "label": "K.Hps. Su AV2023 S1 B.1 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.1 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.1",
+          "fileId": "prepared-harpsichord-suarez-solis-b-001-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/001-4k.mov",
+          "driveFileId": "1Hi1qn7xeoPXnqzgEmnPpNyHjOuj6IlH7",
+          "sizeBytes": 513216129,
+          "mime": "video/quicktime",
+          "position": 5,
+          "label": "K.Hps. Su AV2023 S1 B.1 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.1 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.2",
+          "fileId": "prepared-harpsichord-suarez-solis-b-002-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/002-1080p.mov",
+          "driveFileId": "1xQzr1Rooz0owdUzW6AUU78YaQGcq0_FU",
+          "sizeBytes": 271527325,
+          "mime": "video/quicktime",
+          "position": 6,
+          "label": "K.Hps. Su AV2023 S1 B.2 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.2 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.2",
+          "fileId": "prepared-harpsichord-suarez-solis-b-002-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/002-4k.mov",
+          "driveFileId": "1qK_8Ut_iR_6m9So1qVlCtn6O3aWN84yN",
+          "sizeBytes": 508734099,
+          "mime": "video/quicktime",
+          "position": 7,
+          "label": "K.Hps. Su AV2023 S1 B.2 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.2 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.3",
+          "fileId": "prepared-harpsichord-suarez-solis-b-003-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/003-1080p.mov",
+          "driveFileId": "14_yX2q48xRkoBzu8VIjDY3JkMD3D5gxV",
+          "sizeBytes": 323585922,
+          "mime": "video/quicktime",
+          "position": 8,
+          "label": "K.Hps. Su AV2023 S1 B.3 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.3 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.3",
+          "fileId": "prepared-harpsichord-suarez-solis-b-003-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/003-4k.mov",
+          "driveFileId": "1iAiLGqepIsJasHCZfo4sbz5JfeYhyWqh",
+          "sizeBytes": 606171894,
+          "mime": "video/quicktime",
+          "position": 9,
+          "label": "K.Hps. Su AV2023 S1 B.3 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.3 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.4",
+          "fileId": "prepared-harpsichord-suarez-solis-b-004-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/004-1080p.mov",
+          "driveFileId": "1o7qsgDXpJENMD743-ze0wQeg8dEB4HiX",
+          "sizeBytes": 143180171,
+          "mime": "video/quicktime",
+          "position": 10,
+          "label": "K.Hps. Su AV2023 S1 B.4 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.4 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.4",
+          "fileId": "prepared-harpsichord-suarez-solis-b-004-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/004-4k.mov",
+          "driveFileId": "1w_Br6aGDdd1liOZpROOhtFwzWo9rwOXk",
+          "sizeBytes": 268720043,
+          "mime": "video/quicktime",
+          "position": 11,
+          "label": "K.Hps. Su AV2023 S1 B.4 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.4 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.5",
+          "fileId": "prepared-harpsichord-suarez-solis-b-005-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/005-1080p.mov",
+          "driveFileId": "1rdCLVU4QIwqEQq8NerjSmHUQoZ7wcTS1",
+          "sizeBytes": 105930934,
+          "mime": "video/quicktime",
+          "position": 12,
+          "label": "K.Hps. Su AV2023 S1 B.5 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.5 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.5",
+          "fileId": "prepared-harpsichord-suarez-solis-b-005-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/005-4k.mov",
+          "driveFileId": "101Yd_9yeO6nwnLT-F9Pp05FLiGM8-mxU",
+          "sizeBytes": 199564579,
+          "mime": "video/quicktime",
+          "position": 13,
+          "label": "K.Hps. Su AV2023 S1 B.5 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.5 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.6",
+          "fileId": "prepared-harpsichord-suarez-solis-b-006-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/006-1080p.mov",
+          "driveFileId": "14Eb7eHh2BE8C83vCTDbW-hO6ift5CweV",
+          "sizeBytes": 35047718,
+          "mime": "video/quicktime",
+          "position": 14,
+          "label": "K.Hps. Su AV2023 S1 B.6 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.6 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.6",
+          "fileId": "prepared-harpsichord-suarez-solis-b-006-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/006-4k.mov",
+          "driveFileId": "1v1MfvwRGcu9GKGo9zaEyYQnzJBZHdTGL",
+          "sizeBytes": 66777071,
+          "mime": "video/quicktime",
+          "position": 15,
+          "label": "K.Hps. Su AV2023 S1 B.6 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.6 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.7",
+          "fileId": "prepared-harpsichord-suarez-solis-b-007-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/007-1080p.mov",
+          "driveFileId": "1_KBRdkeSphVo6_SQlx8YzfrhqJg1wUUk",
+          "sizeBytes": 380300204,
+          "mime": "video/quicktime",
+          "position": 16,
+          "label": "K.Hps. Su AV2023 S1 B.7 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.7 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.7",
+          "fileId": "prepared-harpsichord-suarez-solis-b-007-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/007-4k.mov",
+          "driveFileId": "16qV93voG_jTincvVx658_EZ4W0pzmVgc",
+          "sizeBytes": 712984872,
+          "mime": "video/quicktime",
+          "position": 17,
+          "label": "K.Hps. Su AV2023 S1 B.7 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.7 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.8",
+          "fileId": "prepared-harpsichord-suarez-solis-b-008-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/008-1080p.mov",
+          "driveFileId": "1qGFkIgNBJFWqeVN9zMYx81yP--9vpWd8",
+          "sizeBytes": 135691121,
+          "mime": "video/quicktime",
+          "position": 18,
+          "label": "K.Hps. Su AV2023 S1 B.8 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.8 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.8",
+          "fileId": "prepared-harpsichord-suarez-solis-b-008-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/008-4k.mov",
+          "driveFileId": "1ZrAWzURo8XXQS7dbd0-bgwm4tVVD2cZL",
+          "sizeBytes": 254377250,
+          "mime": "video/quicktime",
+          "position": 19,
+          "label": "K.Hps. Su AV2023 S1 B.8 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.8 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.9",
+          "fileId": "prepared-harpsichord-suarez-solis-b-009-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/009-1080p.mov",
+          "driveFileId": "1dYeaVS_18kGVTFNO0XNuDoF8CjUO0NQY",
+          "sizeBytes": 97013962,
+          "mime": "video/quicktime",
+          "position": 20,
+          "label": "K.Hps. Su AV2023 S1 B.9 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.9 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.9",
+          "fileId": "prepared-harpsichord-suarez-solis-b-009-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/009-4k.mov",
+          "driveFileId": "1P8bazJiNuBVLesp8JCH-tEhohioykDZk",
+          "sizeBytes": 182353080,
+          "mime": "video/quicktime",
+          "position": 21,
+          "label": "K.Hps. Su AV2023 S1 B.9 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.9 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.10",
+          "fileId": "prepared-harpsichord-suarez-solis-b-010-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/010-1080p.mov",
+          "driveFileId": "10KdIDH2-nuOBZGUuKMmsc3RiPOVjFOzr",
+          "sizeBytes": 368488211,
+          "mime": "video/quicktime",
+          "position": 22,
+          "label": "K.Hps. Su AV2023 S1 B.10 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.10 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.10",
+          "fileId": "prepared-harpsichord-suarez-solis-b-010-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/010-4k.mov",
+          "driveFileId": "1b8O2EgpE33ZRoYgbovQHgkI2MbBvZyF1",
+          "sizeBytes": 690943610,
+          "mime": "video/quicktime",
+          "position": 23,
+          "label": "K.Hps. Su AV2023 S1 B.10 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.10 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.11",
+          "fileId": "prepared-harpsichord-suarez-solis-b-011-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/011-1080p.mov",
+          "driveFileId": "19yJB4SrNWATMckrfx9Z9wkbFzwoVdg5K",
+          "sizeBytes": 152525527,
+          "mime": "video/quicktime",
+          "position": 24,
+          "label": "K.Hps. Su AV2023 S1 B.11 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.11 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.11",
+          "fileId": "prepared-harpsichord-suarez-solis-b-011-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/011-4k.mov",
+          "driveFileId": "1oq2VG3lpCiDmYvBmfW67b8DU_BhWKFqQ",
+          "sizeBytes": 286081860,
+          "mime": "video/quicktime",
+          "position": 25,
+          "label": "K.Hps. Su AV2023 S1 B.11 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.11 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.12",
+          "fileId": "prepared-harpsichord-suarez-solis-b-012-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/012-1080p.mov",
+          "driveFileId": "1by_mIJqoXsw2ZoOS6W47EXRbfSzyau2n",
+          "sizeBytes": 66273527,
+          "mime": "video/quicktime",
+          "position": 26,
+          "label": "K.Hps. Su AV2023 S1 B.12 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.12 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.12",
+          "fileId": "prepared-harpsichord-suarez-solis-b-012-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/012-4k.mov",
+          "driveFileId": "1y0cR8VXMvmcnOhW0IgVokdNhwrhGPvw7",
+          "sizeBytes": 125045942,
+          "mime": "video/quicktime",
+          "position": 27,
+          "label": "K.Hps. Su AV2023 S1 B.12 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.12 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.13",
+          "fileId": "prepared-harpsichord-suarez-solis-b-013-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/013-1080p.mov",
+          "driveFileId": "1XE6uQ7L0K5HM2zgDa6VwJu-nHzHmrcvl",
+          "sizeBytes": 9113524,
+          "mime": "video/quicktime",
+          "position": 28,
+          "label": "K.Hps. Su AV2023 S1 B.13 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.13 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.13",
+          "fileId": "prepared-harpsichord-suarez-solis-b-013-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/013-4k.mov",
+          "driveFileId": "1sJ9MpmEviQynBoKgJ6ESG4hKJW442Moq",
+          "sizeBytes": 17974071,
+          "mime": "video/quicktime",
+          "position": 29,
+          "label": "K.Hps. Su AV2023 S1 B.13 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.13 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.14",
+          "fileId": "prepared-harpsichord-suarez-solis-b-014-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/014-1080p.mov",
+          "driveFileId": "1dVsWiFnBqtib7S8-stJx4PeJDGt7QsLD",
+          "sizeBytes": 653197704,
+          "mime": "video/quicktime",
+          "position": 30,
+          "label": "K.Hps. Su AV2023 S1 B.14 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.14 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.14",
+          "fileId": "prepared-harpsichord-suarez-solis-b-014-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/014-4k.mov",
+          "driveFileId": "1RwUmQYWow-_KPEQIq-VvMlomgBeY5Jns",
+          "sizeBytes": 1223976997,
+          "mime": "video/quicktime",
+          "position": 31,
+          "label": "K.Hps. Su AV2023 S1 B.14 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.14 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.15",
+          "fileId": "prepared-harpsichord-suarez-solis-b-015-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/015-1080p.mov",
+          "driveFileId": "1L840mb1EYcfx3M2y6a4-87qzPvfkFlMa",
+          "sizeBytes": 67242512,
+          "mime": "video/quicktime",
+          "position": 32,
+          "label": "K.Hps. Su AV2023 S1 B.15 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.15 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.15",
+          "fileId": "prepared-harpsichord-suarez-solis-b-015-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/015-4k.mov",
+          "driveFileId": "1hFgapBKWpuHUMpiIyJKvhirfR6RSg4kB",
+          "sizeBytes": 126461189,
+          "mime": "video/quicktime",
+          "position": 33,
+          "label": "K.Hps. Su AV2023 S1 B.15 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.15 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.16",
+          "fileId": "prepared-harpsichord-suarez-solis-b-016-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/016-1080p.mov",
+          "driveFileId": "1g5gZaLpqVNZ1UOJ00PZXEQpcKOyUCmAR",
+          "sizeBytes": 3689616,
+          "mime": "video/quicktime",
+          "position": 34,
+          "label": "K.Hps. Su AV2023 S1 B.16 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.16 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.16",
+          "fileId": "prepared-harpsichord-suarez-solis-b-016-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/016-4k.mov",
+          "driveFileId": "1zdbCC_kuN2OBzreJoP_7TferoT-NdyVS",
+          "sizeBytes": 6777069,
+          "mime": "video/quicktime",
+          "position": 35,
+          "label": "K.Hps. Su AV2023 S1 B.16 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.16 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.17",
+          "fileId": "prepared-harpsichord-suarez-solis-b-017-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/017-1080p.mov",
+          "driveFileId": "1qtxHcoPhkA1wf0Q2ndvCe4b2-cFNhkJw",
+          "sizeBytes": 634031959,
+          "mime": "video/quicktime",
+          "position": 36,
+          "label": "K.Hps. Su AV2023 S1 B.17 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.17 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.17",
+          "fileId": "prepared-harpsichord-suarez-solis-b-017-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/017-4k.mov",
+          "driveFileId": "1AeBIBPtqZzVWMFYunpFE8sqqVNrs7SrV",
+          "sizeBytes": 1188631343,
+          "mime": "video/quicktime",
+          "position": 37,
+          "label": "K.Hps. Su AV2023 S1 B.17 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.17 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.18",
+          "fileId": "prepared-harpsichord-suarez-solis-b-018-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/018-1080p.mov",
+          "driveFileId": "1Xn9lkRUgRX43pgokvoj8yrz_cQvsjvZS",
+          "sizeBytes": 19169726,
+          "mime": "video/quicktime",
+          "position": 38,
+          "label": "K.Hps. Su AV2023 S1 B.18 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.18 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.18",
+          "fileId": "prepared-harpsichord-suarez-solis-b-018-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/018-4k.mov",
+          "driveFileId": "1P2TYTdLEudfg-HUUYjBbSersZrWQYpEH",
+          "sizeBytes": 36258362,
+          "mime": "video/quicktime",
+          "position": 39,
+          "label": "K.Hps. Su AV2023 S1 B.18 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.18 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.19",
+          "fileId": "prepared-harpsichord-suarez-solis-b-019-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/019-1080p.mov",
+          "driveFileId": "15gQKfMpa3b_7vvONLNk96PAAPZUUvieC",
+          "sizeBytes": 42365736,
+          "mime": "video/quicktime",
+          "position": 40,
+          "label": "K.Hps. Su AV2023 S1 B.19 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.19 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.19",
+          "fileId": "prepared-harpsichord-suarez-solis-b-019-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/019-4k.mov",
+          "driveFileId": "1Q7MeyzxsrxAHvFfVlPcH1VUflu8TY1W0",
+          "sizeBytes": 79576977,
+          "mime": "video/quicktime",
+          "position": 41,
+          "label": "K.Hps. Su AV2023 S1 B.19 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.19 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.20",
+          "fileId": "prepared-harpsichord-suarez-solis-b-020-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/020-1080p.mov",
+          "driveFileId": "1DiDOrZFXWeanFHMzLJyELiWG1LDU6e3t",
+          "sizeBytes": 28467832,
+          "mime": "video/quicktime",
+          "position": 42,
+          "label": "K.Hps. Su AV2023 S1 B.20 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.20 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.20",
+          "fileId": "prepared-harpsichord-suarez-solis-b-020-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/020-4k.mov",
+          "driveFileId": "1MbL2wPLURdoebqS8C3bFsfqYu05Bc0Kt",
+          "sizeBytes": 53780100,
+          "mime": "video/quicktime",
+          "position": 43,
+          "label": "K.Hps. Su AV2023 S1 B.20 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.20 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.21",
+          "fileId": "prepared-harpsichord-suarez-solis-b-021-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/021-1080p.mov",
+          "driveFileId": "1Ki_-Glof02WcxlAZ1FxdNsa7m4SlboAU",
+          "sizeBytes": 177525472,
+          "mime": "video/quicktime",
+          "position": 44,
+          "label": "K.Hps. Su AV2023 S1 B.21 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.21 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.21",
+          "fileId": "prepared-harpsichord-suarez-solis-b-021-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/021-4k.mov",
+          "driveFileId": "1BhhwNRYAFuDmhoDF1_KHyqbIoToDTX4W",
+          "sizeBytes": 333101396,
+          "mime": "video/quicktime",
+          "position": 45,
+          "label": "K.Hps. Su AV2023 S1 B.21 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.21 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.22",
+          "fileId": "prepared-harpsichord-suarez-solis-b-022-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/022-1080p.mov",
+          "driveFileId": "1x7thLyOaBOWLBdY7bjB96DFjS9mk3iRO",
+          "sizeBytes": 204811104,
+          "mime": "video/quicktime",
+          "position": 46,
+          "label": "K.Hps. Su AV2023 S1 B.22 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.22 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.22",
+          "fileId": "prepared-harpsichord-suarez-solis-b-022-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/022-4k.mov",
+          "driveFileId": "1bnVZ97uExlDWr8bNjz76Wk1UZxZLwyTa",
+          "sizeBytes": 384488620,
+          "mime": "video/quicktime",
+          "position": 47,
+          "label": "K.Hps. Su AV2023 S1 B.22 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.22 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.23",
+          "fileId": "prepared-harpsichord-suarez-solis-b-023-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/023-1080p.mov",
+          "driveFileId": "1QzKtQccPXQhsS2aAIn6aEdGBZ1lh9-F4",
+          "sizeBytes": 201814122,
+          "mime": "video/quicktime",
+          "position": 48,
+          "label": "K.Hps. Su AV2023 S1 B.23 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.23 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.23",
+          "fileId": "prepared-harpsichord-suarez-solis-b-023-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/023-4k.mov",
+          "driveFileId": "1LxZkEWFmNxZavcwaMdZXC73QqAa_NJQW",
+          "sizeBytes": 379213477,
+          "mime": "video/quicktime",
+          "position": 49,
+          "label": "K.Hps. Su AV2023 S1 B.23 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.23 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.24",
+          "fileId": "prepared-harpsichord-suarez-solis-b-024-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/024-1080p.mov",
+          "driveFileId": "1Rhi1oHnKLYFQLpRvkpk6Hy0zLXGPS8tL",
+          "sizeBytes": 463691861,
+          "mime": "video/quicktime",
+          "position": 50,
+          "label": "K.Hps. Su AV2023 S1 B.24 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.24 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.24",
+          "fileId": "prepared-harpsichord-suarez-solis-b-024-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/024-4k.mov",
+          "driveFileId": "1LpiLbYhVvwQ-zHX3mZM7B1c1OYHw-p9_",
+          "sizeBytes": 869782059,
+          "mime": "video/quicktime",
+          "position": 51,
+          "label": "K.Hps. Su AV2023 S1 B.24 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.24 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.25",
+          "fileId": "prepared-harpsichord-suarez-solis-b-025-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/025-1080p.mov",
+          "driveFileId": "10Ooe3QGHjy0C1nP4n0L6u5PmCYfwkk05",
+          "sizeBytes": 262191757,
+          "mime": "video/quicktime",
+          "position": 52,
+          "label": "K.Hps. Su AV2023 S1 B.25 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.25 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.25",
+          "fileId": "prepared-harpsichord-suarez-solis-b-025-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/025-4k.mov",
+          "driveFileId": "1gRNdgzDSiXNQfAZKPf7OYfVlXspLO3vA",
+          "sizeBytes": 492091836,
+          "mime": "video/quicktime",
+          "position": 53,
+          "label": "K.Hps. Su AV2023 S1 B.25 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.25 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.26",
+          "fileId": "prepared-harpsichord-suarez-solis-b-026-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/026-1080p.mov",
+          "driveFileId": "1QWIfC2mLCLLNsXQun57z3Qme_CReyqZN",
+          "sizeBytes": 274276121,
+          "mime": "video/quicktime",
+          "position": 54,
+          "label": "K.Hps. Su AV2023 S1 B.26 [1080p].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.26 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.26",
+          "fileId": "prepared-harpsichord-suarez-solis-b-026-4k",
+          "bucket": "B",
+          "r2Key": "prepared-harpsichord-suarez-solis/b/026-4k.mov",
+          "driveFileId": "1tt-UqtUBWXwfxnbqqWPRxgtKwP6h1dCz",
+          "sizeBytes": 514611238,
+          "mime": "video/quicktime",
+          "position": 55,
+          "label": "K.Hps. Su AV2023 S1 B.26 [4K].mov",
+          "sourceLabel": "K.Hps. Su AV2023 S1 B.26 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "X.1",
+          "fileId": "prepared-harpsichord-suarez-solis-recording-index-pdf",
+          "bucket": "X",
+          "r2Key": "prepared-harpsichord-suarez-solis/recording-index/recording-index.pdf",
+          "driveFileId": "",
+          "sizeBytes": 0,
+          "mime": "application/pdf",
+          "position": 56,
+          "label": "Recording Index PDF",
+          "sourceLabel": "Recording Index PDF",
+          "type": "pdf",
+          "availableTypes": [
+            "pdf"
+          ],
+          "role": "recording_index_pdf"
+        }
+      ],
+      "entitlements": [
+        {
+          "type": "role",
+          "value": "authenticated"
+        }
+      ],
+      "recordingIndex": {
+        "sheetUrl": "https://docs.google.com/spreadsheets/d/1SYil4lH1p0jj3DRlgroRb_hWYAGipa1jLrsPez9IL_U/edit?gid=0#gid=0",
+        "sheetId": "1SYil4lH1p0jj3DRlgroRb_hWYAGipa1jLrsPez9IL_U",
+        "gid": "0",
+        "pdfAssetId": "prepared-harpsichord-suarez-solis-recording-index-pdf",
+        "bundleAllToken": "bundle:recording-index:K.Hps. Su AV2023 S1:all",
+        "rootFolderUrl": "https://drive.google.com/drive/folders/1SEvIhMf2mkVv4PvzSX3RuejmWhJTX43D",
+        "bucketFolderUrls": {
+          "A": "https://drive.google.com/drive/folders/1Im9ZFGvJc82WVSvcGPrV9mp1voFuidSV",
+          "B": "https://drive.google.com/drive/folders/1Vr4lVxv9VpbYSFhNcLeK1IeaK5SiRLSE"
+        }
+      }
+    },
+    {
+      "lookupNumber": "K.Org. At AV2023 S1",
+      "title": "“2 ORGANS”: PIPE ORGAN (“GRISWOLD”), PORTATIVE ORGAN",
+      "status": "active",
+      "season": "S1",
+      "files": [
+        {
+          "bucketNumber": "A.1",
+          "fileId": "2-organs-midori-ataka-a-001-stereo",
+          "bucket": "A",
+          "r2Key": "2-organs-midori-ataka/a/001-stereo.wav",
+          "driveFileId": "1RabLpQZiQvAW8Z-FagHzOGjAYUd7msnf",
+          "sizeBytes": 556489080,
+          "mime": "audio/x-wav",
+          "position": 1,
+          "label": "K.Org. At AV2023 S1 A.1 [ste].wav",
+          "sourceLabel": "K.Org. At AV2023 S1 A.1 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.1",
+          "fileId": "2-organs-midori-ataka-a-001-1080p",
+          "bucket": "A",
+          "r2Key": "2-organs-midori-ataka/a/001-1080p.mov",
+          "driveFileId": "1ReYckrwpQCs9THtyFjm4Blb3IlwbeAAB",
+          "sizeBytes": 2889753989,
+          "mime": "video/quicktime",
+          "position": 2,
+          "label": "K.Org. At AV2023 S1 A.1 [1080p].mov",
+          "sourceLabel": "K.Org. At AV2023 S1 A.1 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.1",
+          "fileId": "2-organs-midori-ataka-a-001-4k",
+          "bucket": "A",
+          "r2Key": "2-organs-midori-ataka/a/001-4k.mov",
+          "driveFileId": "1c3pJRMgjk3rZMeDtSdczDPJy1CdfLI-3",
+          "sizeBytes": 5425775073,
+          "mime": "video/quicktime",
+          "position": 3,
+          "label": "K.Org. At AV2023 S1 A.1 [4K].mov",
+          "sourceLabel": "K.Org. At AV2023 S1 A.1 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.1",
+          "fileId": "2-organs-midori-ataka-b-001-stereo",
+          "bucket": "B",
+          "r2Key": "2-organs-midori-ataka/b/001-stereo.wav",
+          "driveFileId": "1SeCttd64TNH2e4Ro0_RM-CRhOpYKcz2_",
+          "sizeBytes": 102157236,
+          "mime": "audio/wav",
+          "position": 4,
+          "label": "K.Org. At AV2023 S1 B.1 [ste].wav",
+          "sourceLabel": "K.Org. At AV2023 S1 B.1 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.1",
+          "fileId": "2-organs-midori-ataka-b-001-1080p",
+          "bucket": "B",
+          "r2Key": "2-organs-midori-ataka/b/001-1080p.mov",
+          "driveFileId": "1SJHRnrNsxBdSR4eLmVk98yZgnvN7HLn-",
+          "sizeBytes": 582139482,
+          "mime": "video/quicktime",
+          "position": 5,
+          "label": "K.Org. At AV2023 S1 B.1 [1080p].mov",
+          "sourceLabel": "K.Org. At AV2023 S1 B.1 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.1",
+          "fileId": "2-organs-midori-ataka-b-001-4k",
+          "bucket": "B",
+          "r2Key": "2-organs-midori-ataka/b/001-4k.mov",
+          "driveFileId": "1Ro1HtoeQCsMwsB4p-YOcwFBCC65LvDpd",
+          "sizeBytes": 1091792340,
+          "mime": "video/quicktime",
+          "position": 6,
+          "label": "K.Org. At AV2023 S1 B.1 [4K].mov",
+          "sourceLabel": "K.Org. At AV2023 S1 B.1 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.2",
+          "fileId": "2-organs-midori-ataka-b-002-stereo",
+          "bucket": "B",
+          "r2Key": "2-organs-midori-ataka/b/002-stereo.wav",
+          "driveFileId": "1R7SB0ZqHhuEW8GM_c-FWnzmmekDE7WIC",
+          "sizeBytes": 57794058,
+          "mime": "audio/wav",
+          "position": 7,
+          "label": "K.Org. At AV2023 S1 B.2 [ste].wav",
+          "sourceLabel": "K.Org. At AV2023 S1 B.2 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.2",
+          "fileId": "2-organs-midori-ataka-b-002-1080p",
+          "bucket": "B",
+          "r2Key": "2-organs-midori-ataka/b/002-1080p.mov",
+          "driveFileId": "1SV4qtPALc2ANuICbbz-5wORuzE6asplD",
+          "sizeBytes": 330644776,
+          "mime": "video/quicktime",
+          "position": 8,
+          "label": "K.Org. At AV2023 S1 B.2 [1080p].mov",
+          "sourceLabel": "K.Org. At AV2023 S1 B.2 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.2",
+          "fileId": "2-organs-midori-ataka-b-002-4k",
+          "bucket": "B",
+          "r2Key": "2-organs-midori-ataka/b/002-4k.mov",
+          "driveFileId": "1RrZIpK9E3yXntSjmDcXuNdAAatR9Dfmr",
+          "sizeBytes": 619520891,
+          "mime": "video/quicktime",
+          "position": 9,
+          "label": "K.Org. At AV2023 S1 B.2 [4K].mov",
+          "sourceLabel": "K.Org. At AV2023 S1 B.2 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.3",
+          "fileId": "2-organs-midori-ataka-b-003-stereo",
+          "bucket": "B",
+          "r2Key": "2-organs-midori-ataka/b/003-stereo.wav",
+          "driveFileId": "1SFiWmvQBqmmvUbeErkrw4-oaUP_SYLlS",
+          "sizeBytes": 53389226,
+          "mime": "audio/wav",
+          "position": 10,
+          "label": "K.Org. At AV2023 S1 B.3 [ste].wav",
+          "sourceLabel": "K.Org. At AV2023 S1 B.3 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.3",
+          "fileId": "2-organs-midori-ataka-b-003-1080p",
+          "bucket": "B",
+          "r2Key": "2-organs-midori-ataka/b/003-1080p.mov",
+          "driveFileId": "1SZFSuYmWHtVYTXUcumVXHNNLg9qrc03U",
+          "sizeBytes": 301953426,
+          "mime": "video/quicktime",
+          "position": 11,
+          "label": "K.Org. At AV2023 S1 B.3 [1080p].mov",
+          "sourceLabel": "K.Org. At AV2023 S1 B.3 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.3",
+          "fileId": "2-organs-midori-ataka-b-003-4k",
+          "bucket": "B",
+          "r2Key": "2-organs-midori-ataka/b/003-4k.mov",
+          "driveFileId": "1RvYeYi-MARMw3E2cONlDKx5BlFNG2xip",
+          "sizeBytes": 565957824,
+          "mime": "video/quicktime",
+          "position": 12,
+          "label": "K.Org. At AV2023 S1 B.3 [4K].mov",
+          "sourceLabel": "K.Org. At AV2023 S1 B.3 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.4",
+          "fileId": "2-organs-midori-ataka-b-004-stereo",
+          "bucket": "B",
+          "r2Key": "2-organs-midori-ataka/b/004-stereo.wav",
+          "driveFileId": "1NOSDyGbw2kdMrHampUZ_29GR1s8vz4Uk",
+          "sizeBytes": 154873672,
+          "mime": "audio/wav",
+          "position": 13,
+          "label": "K.Org. At AV2023 S1 B.4 [ste].wav",
+          "sourceLabel": "K.Org. At AV2023 S1 B.4 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.4",
+          "fileId": "2-organs-midori-ataka-b-004-1080p",
+          "bucket": "B",
+          "r2Key": "2-organs-midori-ataka/b/004-1080p.mov",
+          "driveFileId": "1ScDradrypl9GlID4KBINzsuyOIfGCyjw",
+          "sizeBytes": 878540102,
+          "mime": "video/quicktime",
+          "position": 14,
+          "label": "K.Org. At AV2023 S1 B.4 [1080p].mov",
+          "sourceLabel": "K.Org. At AV2023 S1 B.4 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.4",
+          "fileId": "2-organs-midori-ataka-b-004-4k",
+          "bucket": "B",
+          "r2Key": "2-organs-midori-ataka/b/004-4k.mov",
+          "driveFileId": "1S0ABPAq5mwJ_ZpFn_Yv_-AIrsTdEU59R",
+          "sizeBytes": 1646029219,
+          "mime": "video/quicktime",
+          "position": 15,
+          "label": "K.Org. At AV2023 S1 B.4 [4K].mov",
+          "sourceLabel": "K.Org. At AV2023 S1 B.4 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.5",
+          "fileId": "2-organs-midori-ataka-b-005-stereo",
+          "bucket": "B",
+          "r2Key": "2-organs-midori-ataka/b/005-stereo.wav",
+          "driveFileId": "1BID3tVe0xSzlJeQYySqvT99Xs9Rz0pcE",
+          "sizeBytes": 139628298,
+          "mime": "audio/wav",
+          "position": 16,
+          "label": "K.Org. At AV2023 S1 B.5 [ste].wav",
+          "sourceLabel": "K.Org. At AV2023 S1 B.5 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.5",
+          "fileId": "2-organs-midori-ataka-b-005-1080p",
+          "bucket": "B",
+          "r2Key": "2-organs-midori-ataka/b/005-1080p.mov",
+          "driveFileId": "1SjYWRXMlDz4Gh2rCZG9oMKki4DfAHj61",
+          "sizeBytes": 784463611,
+          "mime": "video/quicktime",
+          "position": 17,
+          "label": "K.Org. At AV2023 S1 B.5 [1080p].mov",
+          "sourceLabel": "K.Org. At AV2023 S1 B.5 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.5",
+          "fileId": "2-organs-midori-ataka-b-005-4k",
+          "bucket": "B",
+          "r2Key": "2-organs-midori-ataka/b/005-4k.mov",
+          "driveFileId": "1S0LXU_8hQY5vjZiam3pjfLy6nUjnAR1k",
+          "sizeBytes": 1469955122,
+          "mime": "video/quicktime",
+          "position": 18,
+          "label": "K.Org. At AV2023 S1 B.5 [4K].mov",
+          "sourceLabel": "K.Org. At AV2023 S1 B.5 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "X.1",
+          "fileId": "2-organs-midori-ataka-recording-index-pdf",
+          "bucket": "X",
+          "r2Key": "2-organs-midori-ataka/recording-index/recording-index.pdf",
+          "driveFileId": "",
+          "sizeBytes": 0,
+          "mime": "application/pdf",
+          "position": 19,
+          "label": "Recording Index PDF",
+          "sourceLabel": "Recording Index PDF",
+          "type": "pdf",
+          "availableTypes": [
+            "pdf"
+          ],
+          "role": "recording_index_pdf"
+        }
+      ],
+      "entitlements": [
+        {
+          "type": "role",
+          "value": "authenticated"
+        }
+      ],
+      "recordingIndex": {
+        "sheetUrl": "https://docs.google.com/spreadsheets/d/1AHjmoqS4r6DnI2KY3GsqBlrYbP0xAPAJMYS0E6MSQAE/edit?gid=0#gid=0",
+        "sheetId": "1AHjmoqS4r6DnI2KY3GsqBlrYbP0xAPAJMYS0E6MSQAE",
+        "gid": "0",
+        "pdfAssetId": "2-organs-midori-ataka-recording-index-pdf",
+        "bundleAllToken": "bundle:recording-index:K.Org. At AV2023 S1:all",
+        "rootFolderUrl": "https://drive.google.com/drive/folders/1Iu0ZEydixW7tpN7EezFd5qh5TX_w5dXE",
+        "bucketFolderUrls": {
+          "A": "https://drive.google.com/drive/folders/1RR-RdzBLRU6VuVPAGip8fESOUtzshYD2",
+          "B": "https://drive.google.com/drive/folders/1JgFnHHW3qiolEBkUZFnTo9xRKTJMgmoN"
+        }
       }
     },
     {
@@ -7057,6 +9669,151 @@
         "bundleAllToken": "bundle:recording-index:P.Ens. JaYo AV2024 S2:all",
         "rootFolderUrl": "",
         "bucketFolderUrls": {}
+      }
+    },
+    {
+      "lookupNumber": "P.Hdl. Ch AV2023 S1",
+      "title": "PREPARED HAMMERED DULCIMER + DIGITAL SIGNAL PROCESSOR",
+      "status": "active",
+      "season": "S1",
+      "files": [
+        {
+          "bucketNumber": "A.1",
+          "fileId": "hammered-dulcimer-cameron-church-a-001-stereo",
+          "bucket": "A",
+          "r2Key": "hammered-dulcimer-cameron-church/a/001-stereo.wav",
+          "driveFileId": "1QnM4yChWQGfQYCuHsFYU52OXS_YS7Gg2",
+          "sizeBytes": 1067159172,
+          "mime": "audio/x-wav",
+          "position": 1,
+          "label": "P.Hdl. Ch AV2023 S1 A.1 [ste].wav",
+          "sourceLabel": "P.Hdl. Ch AV2023 S1 A.1 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.1",
+          "fileId": "hammered-dulcimer-cameron-church-a-001-1080p",
+          "bucket": "A",
+          "r2Key": "hammered-dulcimer-cameron-church/a/001-1080p.mov",
+          "driveFileId": "1UN4JP6j1qEFymTmsj2FGU4MNlUX59Xor",
+          "sizeBytes": 5522384629,
+          "mime": "video/quicktime",
+          "position": 2,
+          "label": "P.Hdl. Ch AV2023 S1 A.1 [1080p].mov",
+          "sourceLabel": "P.Hdl. Ch AV2023 S1 A.1 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.1",
+          "fileId": "hammered-dulcimer-cameron-church-b-001-stereo",
+          "bucket": "B",
+          "r2Key": "hammered-dulcimer-cameron-church/b/001-stereo.wav",
+          "driveFileId": "18LTLQj0-LYKXSbPM_dGZ8KJBhOJh0pzW",
+          "sizeBytes": 786799804,
+          "mime": "audio/x-wav",
+          "position": 3,
+          "label": "P.Hdl. Ch AV2023 S1 B.1 [ste].wav",
+          "sourceLabel": "P.Hdl. Ch AV2023 S1 B.1 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.1",
+          "fileId": "hammered-dulcimer-cameron-church-b-001-1080p",
+          "bucket": "B",
+          "r2Key": "hammered-dulcimer-cameron-church/b/001-1080p.mov",
+          "driveFileId": "1Qqclcy4HmlQXohj__TrOHBBlQGhZzOLL",
+          "sizeBytes": 4398344920,
+          "mime": "video/quicktime",
+          "position": 4,
+          "label": "P.Hdl. Ch AV2023 S1 B.1 [1080p].mov",
+          "sourceLabel": "P.Hdl. Ch AV2023 S1 B.1 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.2",
+          "fileId": "hammered-dulcimer-cameron-church-b-002-stereo",
+          "bucket": "B",
+          "r2Key": "hammered-dulcimer-cameron-church/b/002-stereo.wav",
+          "driveFileId": "1TyCf1ubIbR6M6GMmWvPd7gYiokflIPWa",
+          "sizeBytes": 198491294,
+          "mime": "audio/x-wav",
+          "position": 5,
+          "label": "P.Hdl. Ch AV2023 S1 B.2 [ste].wav",
+          "sourceLabel": "P.Hdl. Ch AV2023 S1 B.2 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.2",
+          "fileId": "hammered-dulcimer-cameron-church-b-002-1080p",
+          "bucket": "B",
+          "r2Key": "hammered-dulcimer-cameron-church/b/002-1080p.mov",
+          "driveFileId": "1QtzB6rZmp0Gu6TQhCHNNXbshke06tw4h",
+          "sizeBytes": 1115191256,
+          "mime": "video/quicktime",
+          "position": 6,
+          "label": "P.Hdl. Ch AV2023 S1 B.2 [1080p].mov",
+          "sourceLabel": "P.Hdl. Ch AV2023 S1 B.2 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "X.1",
+          "fileId": "hammered-dulcimer-cameron-church-recording-index-pdf",
+          "bucket": "X",
+          "r2Key": "hammered-dulcimer-cameron-church/recording-index/recording-index.pdf",
+          "driveFileId": "",
+          "sizeBytes": 0,
+          "mime": "application/pdf",
+          "position": 7,
+          "label": "Recording Index PDF",
+          "sourceLabel": "Recording Index PDF",
+          "type": "pdf",
+          "availableTypes": [
+            "pdf"
+          ],
+          "role": "recording_index_pdf"
+        }
+      ],
+      "entitlements": [
+        {
+          "type": "role",
+          "value": "authenticated"
+        }
+      ],
+      "recordingIndex": {
+        "sheetUrl": "https://docs.google.com/spreadsheets/d/1pKp5oly0BwxNhKcm4mX51YZOXX-Fq3WlnDeeVteg5ys/edit?gid=0#gid=0",
+        "sheetId": "1pKp5oly0BwxNhKcm4mX51YZOXX-Fq3WlnDeeVteg5ys",
+        "gid": "0",
+        "pdfAssetId": "hammered-dulcimer-cameron-church-recording-index-pdf",
+        "bundleAllToken": "bundle:recording-index:P.Hdl. Ch AV2023 S1:all",
+        "rootFolderUrl": "https://drive.google.com/drive/folders/1CbG3MKx0IhU51RsAwz-uFuFuVyysOcn4",
+        "bucketFolderUrls": {
+          "A": "https://drive.google.com/drive/folders/11wqo47uexmOenDklZM6aqcRKjS-61_UJ",
+          "B": "https://drive.google.com/drive/folders/11m1Mmz-fFZhH42MTq0sZ9rB5ESH5Xd26"
+        }
       }
     },
     {
@@ -16910,6 +19667,2082 @@
       }
     },
     {
+      "lookupNumber": "S.VdG. Su AV2023 S1",
+      "title": "PREPARED BASS VIOL",
+      "status": "active",
+      "season": "S1",
+      "files": [
+        {
+          "bucketNumber": "A.1",
+          "fileId": "prepared-bass-viol-suarez-solis-a-001-stereo",
+          "bucket": "A",
+          "r2Key": "prepared-bass-viol-suarez-solis/a/001-stereo.wav",
+          "driveFileId": "1TnvisbitWbVvSJxZZRXV_jEEqEH_90DD",
+          "sizeBytes": 856537080,
+          "mime": "audio/x-wav",
+          "position": 1,
+          "label": "S.VdG. Su AV2023 S1 A.1 [ste].wav",
+          "sourceLabel": "S.VdG. Su AV2023 S1 A.1 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.1",
+          "fileId": "prepared-bass-viol-suarez-solis-a-001-1080p",
+          "bucket": "A",
+          "r2Key": "prepared-bass-viol-suarez-solis/a/001-1080p.mov",
+          "driveFileId": "1Tn45YjGWNLwYBZIgtz-mGNhhf9yPXYXy",
+          "sizeBytes": 4436548863,
+          "mime": "video/quicktime",
+          "position": 2,
+          "label": "S.VdG. Su AV2023 S1 A.1 [1080p].mov",
+          "sourceLabel": "S.VdG. Su AV2023 S1 A.1 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.1",
+          "fileId": "prepared-bass-viol-suarez-solis-a-001-4k",
+          "bucket": "A",
+          "r2Key": "prepared-bass-viol-suarez-solis/a/001-4k.mov",
+          "driveFileId": "1FaK4LjOY3PNi3RU-IE_t7Y0yuNfTxH5c",
+          "sizeBytes": 8042116166,
+          "mime": "video/quicktime",
+          "position": 3,
+          "label": "S.VdG. Su AV2023 S1 A.1 [4K].mov",
+          "sourceLabel": "S.VdG. Su AV2023 S1 A.1 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.1",
+          "fileId": "prepared-bass-viol-suarez-solis-b-001-stereo",
+          "bucket": "B",
+          "r2Key": "prepared-bass-viol-suarez-solis/b/001-stereo.wav",
+          "driveFileId": "1RrdnVSaRnMsbEEDN6bvHWnBfnNPSGb-U",
+          "sizeBytes": 221563202,
+          "mime": "audio/x-wav",
+          "position": 4,
+          "label": "S.VdG. Su AV2023 S1 B.1 [ste].wav",
+          "sourceLabel": "S.VdG. Su AV2023 S1 B.1 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.1",
+          "fileId": "prepared-bass-viol-suarez-solis-b-001-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-bass-viol-suarez-solis/b/001-1080p.mov",
+          "driveFileId": "1J_ugK65gOyRu96jhWy0XB1zohCQfa6XP",
+          "sizeBytes": 1165295073,
+          "mime": "video/quicktime",
+          "position": 5,
+          "label": "S.VdG. Su AV2023 S1 B.1 [1080p].mov",
+          "sourceLabel": "S.VdG. Su AV2023 S1 B.1 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.1",
+          "fileId": "prepared-bass-viol-suarez-solis-b-001-4k",
+          "bucket": "B",
+          "r2Key": "prepared-bass-viol-suarez-solis/b/001-4k.mov",
+          "driveFileId": "1ymY4EmxbLQByD-d8lahivlNilaXE6kwn",
+          "sizeBytes": 2253867139,
+          "mime": "video/quicktime",
+          "position": 6,
+          "label": "S.VdG. Su AV2023 S1 B.1 [4K].mov",
+          "sourceLabel": "S.VdG. Su AV2023 S1 B.1 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.2",
+          "fileId": "prepared-bass-viol-suarez-solis-b-002-stereo",
+          "bucket": "B",
+          "r2Key": "prepared-bass-viol-suarez-solis/b/002-stereo.wav",
+          "driveFileId": "193P6Aors4jIMoCM-dEHNZrVdxRRihO6X",
+          "sizeBytes": 261234448,
+          "mime": "audio/x-wav",
+          "position": 7,
+          "label": "S.VdG. Su AV2023 S1 B.2 [ste].wav",
+          "sourceLabel": "S.VdG. Su AV2023 S1 B.2 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.2",
+          "fileId": "prepared-bass-viol-suarez-solis-b-002-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-bass-viol-suarez-solis/b/002-1080p.mov",
+          "driveFileId": "1xJV4aAUMlqT3xVyaQ2Ii8QDuZnVPkTf2",
+          "sizeBytes": 1374235183,
+          "mime": "video/quicktime",
+          "position": 8,
+          "label": "S.VdG. Su AV2023 S1 B.2 [1080p].mov",
+          "sourceLabel": "S.VdG. Su AV2023 S1 B.2 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.2",
+          "fileId": "prepared-bass-viol-suarez-solis-b-002-4k",
+          "bucket": "B",
+          "r2Key": "prepared-bass-viol-suarez-solis/b/002-4k.mov",
+          "driveFileId": "1_VM-Yd25qxY_iEUu4cgrvYX4ptqraCjh",
+          "sizeBytes": 2658336908,
+          "mime": "video/quicktime",
+          "position": 9,
+          "label": "S.VdG. Su AV2023 S1 B.2 [4K].mov",
+          "sourceLabel": "S.VdG. Su AV2023 S1 B.2 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.3",
+          "fileId": "prepared-bass-viol-suarez-solis-b-003-stereo",
+          "bucket": "B",
+          "r2Key": "prepared-bass-viol-suarez-solis/b/003-stereo.wav",
+          "driveFileId": "1YWcrF1MiYlCPmCj6xVkKpF6aLo23vCSC",
+          "sizeBytes": 148613058,
+          "mime": "audio/x-wav",
+          "position": 10,
+          "label": "S.VdG. Su AV2023 S1 B.3 [ste].wav",
+          "sourceLabel": "S.VdG. Su AV2023 S1 B.3 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.3",
+          "fileId": "prepared-bass-viol-suarez-solis-b-003-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-bass-viol-suarez-solis/b/003-1080p.mov",
+          "driveFileId": "1sJy2gIWcH7G8VXI9gl1eZjr-Sb4M0tEC",
+          "sizeBytes": 782326553,
+          "mime": "video/quicktime",
+          "position": 11,
+          "label": "S.VdG. Su AV2023 S1 B.3 [1080p].mov",
+          "sourceLabel": "S.VdG. Su AV2023 S1 B.3 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.3",
+          "fileId": "prepared-bass-viol-suarez-solis-b-003-4k",
+          "bucket": "B",
+          "r2Key": "prepared-bass-viol-suarez-solis/b/003-4k.mov",
+          "driveFileId": "1sOwqM6U_-CtK1n6QvWm0ZtZBidxuLaQ_",
+          "sizeBytes": 1513541450,
+          "mime": "video/quicktime",
+          "position": 12,
+          "label": "S.VdG. Su AV2023 S1 B.3 [4K].mov",
+          "sourceLabel": "S.VdG. Su AV2023 S1 B.3 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.4",
+          "fileId": "prepared-bass-viol-suarez-solis-b-004-stereo",
+          "bucket": "B",
+          "r2Key": "prepared-bass-viol-suarez-solis/b/004-stereo.wav",
+          "driveFileId": "1saaiZZIwP-h84Kguao0KZgkK2MV3HdoF",
+          "sizeBytes": 156928894,
+          "mime": "audio/x-wav",
+          "position": 13,
+          "label": "S.VdG. Su AV2023 S1 B.4 [ste].wav",
+          "sourceLabel": "S.VdG. Su AV2023 S1 B.4 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.4",
+          "fileId": "prepared-bass-viol-suarez-solis-b-004-1080p",
+          "bucket": "B",
+          "r2Key": "prepared-bass-viol-suarez-solis/b/004-1080p.mov",
+          "driveFileId": "1YyB3CyeamIfzW0h5HYd1IVxStKpjN8P2",
+          "sizeBytes": 825646658,
+          "mime": "video/quicktime",
+          "position": 14,
+          "label": "S.VdG. Su AV2023 S1 B.4 [1080p].mov",
+          "sourceLabel": "S.VdG. Su AV2023 S1 B.4 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.4",
+          "fileId": "prepared-bass-viol-suarez-solis-b-004-4k",
+          "bucket": "B",
+          "r2Key": "prepared-bass-viol-suarez-solis/b/004-4k.mov",
+          "driveFileId": "1qqPM6xk0UImHvhwZ02imQIvvCtcckhbV",
+          "sizeBytes": 1597138804,
+          "mime": "video/quicktime",
+          "position": 15,
+          "label": "S.VdG. Su AV2023 S1 B.4 [4K].mov",
+          "sourceLabel": "S.VdG. Su AV2023 S1 B.4 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "X.1",
+          "fileId": "prepared-bass-viol-suarez-solis-recording-index-pdf",
+          "bucket": "X",
+          "r2Key": "prepared-bass-viol-suarez-solis/recording-index/recording-index.pdf",
+          "driveFileId": "",
+          "sizeBytes": 0,
+          "mime": "application/pdf",
+          "position": 16,
+          "label": "Recording Index PDF",
+          "sourceLabel": "Recording Index PDF",
+          "type": "pdf",
+          "availableTypes": [
+            "pdf"
+          ],
+          "role": "recording_index_pdf"
+        }
+      ],
+      "entitlements": [
+        {
+          "type": "role",
+          "value": "authenticated"
+        }
+      ],
+      "recordingIndex": {
+        "sheetUrl": "https://docs.google.com/spreadsheets/d/1_D1YUEMfFaLKw4PbjS5NdjpF5CxY1K0Kj2hO_EpPqjY/edit?gid=0#gid=0",
+        "sheetId": "1_D1YUEMfFaLKw4PbjS5NdjpF5CxY1K0Kj2hO_EpPqjY",
+        "gid": "0",
+        "pdfAssetId": "prepared-bass-viol-suarez-solis-recording-index-pdf",
+        "bundleAllToken": "bundle:recording-index:S.VdG. Su AV2023 S1:all",
+        "rootFolderUrl": "https://drive.google.com/drive/folders/1vSMV46BBWADVatHFgywLqngmOSvERE3s",
+        "bucketFolderUrls": {
+          "A": "https://drive.google.com/drive/folders/1KKGzAqM3yD-SAsOMATrMsok-zqrah1Ck",
+          "B": "https://drive.google.com/drive/folders/1R061CvIbCmdh-IlhQ9wFbCQ23CMwnp5a"
+        }
+      }
+    },
+    {
+      "lookupNumber": "S.Vlc. Lo AV2023 S1",
+      "title": "CELLO",
+      "status": "active",
+      "season": "S1",
+      "files": [
+        {
+          "bucketNumber": "A.1",
+          "fileId": "cello-emmanuel-losa-a-001-stereo",
+          "bucket": "A",
+          "r2Key": "cello-emmanuel-losa/a/001-stereo.wav",
+          "driveFileId": "1TjYVHAkcGOgiOYd-P6cUoh7WJk9W9ax0",
+          "sizeBytes": 353185080,
+          "mime": "audio/x-wav",
+          "position": 1,
+          "label": "S.Vlc. Lo AV2023 S1 A.1 [ste].wav",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 A.1 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.1",
+          "fileId": "cello-emmanuel-losa-a-001-1080p",
+          "bucket": "A",
+          "r2Key": "cello-emmanuel-losa/a/001-1080p.mov",
+          "driveFileId": "1TinY8YqaZZlsX4mZeCshBDtmT-t4tDJ8",
+          "sizeBytes": 1834853568,
+          "mime": "video/quicktime",
+          "position": 2,
+          "label": "S.Vlc. Lo AV2023 S1 A.1 [1080p].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 A.1 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.1",
+          "fileId": "cello-emmanuel-losa-a-001-4k",
+          "bucket": "A",
+          "r2Key": "cello-emmanuel-losa/a/001-4k.mov",
+          "driveFileId": "1-iMjcFGkG2vCacm_A60p5Ub1ROtL7vUX",
+          "sizeBytes": 3335451633,
+          "mime": "video/quicktime",
+          "position": 3,
+          "label": "S.Vlc. Lo AV2023 S1 A.1 [4K].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 A.1 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.0",
+          "fileId": "cello-emmanuel-losa-b-000-stereo",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/000-stereo.wav",
+          "driveFileId": "1UTKbL1IsA4O7KpdIX0bn5VuBKvzZwMuu",
+          "sizeBytes": 353185080,
+          "mime": "audio/x-wav",
+          "position": 4,
+          "label": "S.Vlc. Lo AV2023 S1 B..wav",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B..wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.0",
+          "fileId": "cello-emmanuel-losa-b-000-1080p",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/000-1080p.mov",
+          "driveFileId": "1UMZrDhZ1l6ujbWBEZopKt5ppx3Ts85KF",
+          "sizeBytes": 1824141521,
+          "mime": "video/quicktime",
+          "position": 5,
+          "label": "S.Vlc. Lo AV2023 S1 B..mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B..mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.0",
+          "fileId": "cello-emmanuel-losa-b-000-4k",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/000-4k.mov",
+          "driveFileId": "1U8nCSx1i6JGIE_sAf26yuSdDs6oALiWk",
+          "sizeBytes": 3418227323,
+          "mime": "video/quicktime",
+          "position": 6,
+          "label": "S.Vlc. Lo AV2023 S1 B..mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B..mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.1",
+          "fileId": "cello-emmanuel-losa-b-001-stereo",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/001-stereo.wav",
+          "driveFileId": "1VE9a4NGpP4FqU3roICsFU-LTwL0ZjnU2",
+          "sizeBytes": 45481080,
+          "mime": "audio/x-wav",
+          "position": 7,
+          "label": "S.Vlc. Lo AV2023 S1 B.1 [ste].wav",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.1 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.1",
+          "fileId": "cello-emmanuel-losa-b-001-1080p",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/001-1080p.mov",
+          "driveFileId": "1Usald30NofFSUTter1nOVThKe12WG3ck",
+          "sizeBytes": 235292113,
+          "mime": "video/quicktime",
+          "position": 8,
+          "label": "S.Vlc. Lo AV2023 S1 B.1 [1080p].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.1 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.1",
+          "fileId": "cello-emmanuel-losa-b-001-4k",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/001-4k.mov",
+          "driveFileId": "1Ue2miWME1bh42KWAbNsQ8RL4WtAo42pK",
+          "sizeBytes": 441165176,
+          "mime": "video/quicktime",
+          "position": 9,
+          "label": "S.Vlc. Lo AV2023 S1 B.1 [4K].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.1 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.2",
+          "fileId": "cello-emmanuel-losa-b-002-stereo",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/002-stereo.wav",
+          "driveFileId": "1VHvKiQugqamOkr57noWRjgGtijAMXv6q",
+          "sizeBytes": 20461080,
+          "mime": "audio/x-wav",
+          "position": 10,
+          "label": "S.Vlc. Lo AV2023 S1 B.2 [ste].wav",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.2 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.2",
+          "fileId": "cello-emmanuel-losa-b-002-1080p",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/002-1080p.mov",
+          "driveFileId": "1UtFOqJd_bOBgHzbERCNFUgsHogHS5G95",
+          "sizeBytes": 106247028,
+          "mime": "video/quicktime",
+          "position": 11,
+          "label": "S.Vlc. Lo AV2023 S1 B.2 [1080p].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.2 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.2",
+          "fileId": "cello-emmanuel-losa-b-002-4k",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/002-4k.mov",
+          "driveFileId": "1UjY0XAjoUNH6VTwLjrBxSIMYIWMtunGO",
+          "sizeBytes": 199420204,
+          "mime": "video/quicktime",
+          "position": 12,
+          "label": "S.Vlc. Lo AV2023 S1 B.2 [4K].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.2 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.3",
+          "fileId": "cello-emmanuel-losa-b-003-stereo",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/003-stereo.wav",
+          "driveFileId": "1VKZf8XkwlewyDPOnFRwTF550tWISIMqu",
+          "sizeBytes": 45265080,
+          "mime": "audio/x-wav",
+          "position": 13,
+          "label": "S.Vlc. Lo AV2023 S1 B.3 [ste].wav",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.3 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.3",
+          "fileId": "cello-emmanuel-losa-b-003-1080p",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/003-1080p.mov",
+          "driveFileId": "1UzPApDcUA69rm4jK9hBoy_9xnPFr19Ni",
+          "sizeBytes": 234375888,
+          "mime": "video/quicktime",
+          "position": 14,
+          "label": "S.Vlc. Lo AV2023 S1 B.3 [1080p].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.3 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.3",
+          "fileId": "cello-emmanuel-losa-b-003-4k",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/003-4k.mov",
+          "driveFileId": "1Ujg1Z7MJYx4FdUHoTeLQb7fmLo-XjUAJ",
+          "sizeBytes": 439542892,
+          "mime": "video/quicktime",
+          "position": 15,
+          "label": "S.Vlc. Lo AV2023 S1 B.3 [4K].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.3 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.4",
+          "fileId": "cello-emmanuel-losa-b-004-stereo",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/004-stereo.wav",
+          "driveFileId": "1VOJCgG1Inwx03u0cIJdwYRy_oAU7bpmc",
+          "sizeBytes": 42313080,
+          "mime": "audio/x-wav",
+          "position": 16,
+          "label": "S.Vlc. Lo AV2023 S1 B.4 [ste].wav",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.4 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.4",
+          "fileId": "cello-emmanuel-losa-b-004-1080p",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/004-1080p.mov",
+          "driveFileId": "1V0O0eKfRZIBG7kFa5856ZhN3c0J_pf8o",
+          "sizeBytes": 219261387,
+          "mime": "video/quicktime",
+          "position": 17,
+          "label": "S.Vlc. Lo AV2023 S1 B.4 [1080p].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.4 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.4",
+          "fileId": "cello-emmanuel-losa-b-004-4k",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/004-4k.mov",
+          "driveFileId": "1UkPq7v1fVBjuxDJy6s8oa7RqTmWEsnOt",
+          "sizeBytes": 410811775,
+          "mime": "video/quicktime",
+          "position": 18,
+          "label": "S.Vlc. Lo AV2023 S1 B.4 [4K].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.4 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.5",
+          "fileId": "cello-emmanuel-losa-b-005-stereo",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/005-stereo.wav",
+          "driveFileId": "1VSdLenKLS4osqfnoqbb9F_irPhVurdU5",
+          "sizeBytes": 19117080,
+          "mime": "audio/x-wav",
+          "position": 19,
+          "label": "S.Vlc. Lo AV2023 S1 B.5 [ste].wav",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.5 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.5",
+          "fileId": "cello-emmanuel-losa-b-005-1080p",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/005-1080p.mov",
+          "driveFileId": "1V2KQD4jU_F4wkaShZEm3_kI-9m7hTuDZ",
+          "sizeBytes": 99124968,
+          "mime": "video/quicktime",
+          "position": 20,
+          "label": "S.Vlc. Lo AV2023 S1 B.5 [1080p].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.5 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.5",
+          "fileId": "cello-emmanuel-losa-b-005-4k",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/005-4k.mov",
+          "driveFileId": "1UkTcSQcYG_2PDye4-2QPPVgrHsgMgGE8",
+          "sizeBytes": 185861203,
+          "mime": "video/quicktime",
+          "position": 21,
+          "label": "S.Vlc. Lo AV2023 S1 B.5 [4K].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.5 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.6",
+          "fileId": "cello-emmanuel-losa-b-006-stereo",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/006-stereo.wav",
+          "driveFileId": "1VUuPtOTPauIRcvPT9sJBOtZFmOdpNUYh",
+          "sizeBytes": 54601080,
+          "mime": "audio/x-wav",
+          "position": 22,
+          "label": "S.Vlc. Lo AV2023 S1 B.6 [ste].wav",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.6 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.6",
+          "fileId": "cello-emmanuel-losa-b-006-1080p",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/006-1080p.mov",
+          "driveFileId": "1V7pTwcWLv9L5uIx7zz0aj7UY7UviaUG1",
+          "sizeBytes": 282251284,
+          "mime": "video/quicktime",
+          "position": 23,
+          "label": "S.Vlc. Lo AV2023 S1 B.6 [1080p].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.6 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.6",
+          "fileId": "cello-emmanuel-losa-b-006-4k",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/006-4k.mov",
+          "driveFileId": "1UlGNZpfSRVuQSmW761mU6BJ9FM7gwpfO",
+          "sizeBytes": 528844091,
+          "mime": "video/quicktime",
+          "position": 24,
+          "label": "S.Vlc. Lo AV2023 S1 B.6 [4K].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.6 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.7",
+          "fileId": "cello-emmanuel-losa-b-007-stereo",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/007-stereo.wav",
+          "driveFileId": "1VXPKs1C4rtgTjXizyHuZdjRCb1bgrN_X",
+          "sizeBytes": 62641080,
+          "mime": "audio/x-wav",
+          "position": 25,
+          "label": "S.Vlc. Lo AV2023 S1 B.7 [ste].wav",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.7 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.7",
+          "fileId": "cello-emmanuel-losa-b-007-1080p",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/007-1080p.mov",
+          "driveFileId": "1V9aeuD8WQgW82-CCOWopIC-H90DxvQrr",
+          "sizeBytes": 324079259,
+          "mime": "video/quicktime",
+          "position": 26,
+          "label": "S.Vlc. Lo AV2023 S1 B.7 [1080p].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.7 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.7",
+          "fileId": "cello-emmanuel-losa-b-007-4k",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/007-4k.mov",
+          "driveFileId": "1Unr_n_AU379oiXLjq6rk4_JbhVrOxPj_",
+          "sizeBytes": 607058537,
+          "mime": "video/quicktime",
+          "position": 27,
+          "label": "S.Vlc. Lo AV2023 S1 B.7 [4K].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.7 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.8",
+          "fileId": "cello-emmanuel-losa-b-008-stereo",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/008-stereo.wav",
+          "driveFileId": "1VjyAXsroa-NUVo_mcJpoZgQJAZVK9ZSN",
+          "sizeBytes": 63313080,
+          "mime": "audio/x-wav",
+          "position": 28,
+          "label": "S.Vlc. Lo AV2023 S1 B.8 [ste].wav",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.8 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.8",
+          "fileId": "cello-emmanuel-losa-b-008-1080p",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/008-1080p.mov",
+          "driveFileId": "1VAr15g_Vnn1TslXKcpT5qW5X6sC_RcCX",
+          "sizeBytes": 327323280,
+          "mime": "video/quicktime",
+          "position": 29,
+          "label": "S.Vlc. Lo AV2023 S1 B.8 [1080p].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.8 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.8",
+          "fileId": "cello-emmanuel-losa-b-008-4k",
+          "bucket": "B",
+          "r2Key": "cello-emmanuel-losa/b/008-4k.mov",
+          "driveFileId": "1Uo9PlIzbrK7GB4XrlyEg-0TsUIiPaJtV",
+          "sizeBytes": 613422378,
+          "mime": "video/quicktime",
+          "position": 30,
+          "label": "S.Vlc. Lo AV2023 S1 B.8 [4K].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 B.8 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "C.1",
+          "fileId": "cello-emmanuel-losa-c-001-1080p",
+          "bucket": "C",
+          "r2Key": "cello-emmanuel-losa/c/001-1080p.mov",
+          "driveFileId": "1w1mjFnkcG2JRheiiZ1uDIJbN7Fa_BCOq",
+          "sizeBytes": 194104707,
+          "mime": "video/quicktime",
+          "position": 31,
+          "label": "S.Vlc. Lo AV2023 S1 C.1 [1080p].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 C.1 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "C.1",
+          "fileId": "cello-emmanuel-losa-c-001-4k",
+          "bucket": "C",
+          "r2Key": "cello-emmanuel-losa/c/001-4k.mov",
+          "driveFileId": "1Gle5aj476oz98eKwHHutOqaYQ3r-inG2",
+          "sizeBytes": 364035309,
+          "mime": "video/quicktime",
+          "position": 32,
+          "label": "S.Vlc. Lo AV2023 S1 C.1 [4K].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 C.1 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "C.2",
+          "fileId": "cello-emmanuel-losa-c-002-1080p",
+          "bucket": "C",
+          "r2Key": "cello-emmanuel-losa/c/002-1080p.mov",
+          "driveFileId": "1EzP8ju0KWQL6ZzHnrJbnPv0xuTu1kb6t",
+          "sizeBytes": 41967986,
+          "mime": "video/quicktime",
+          "position": 33,
+          "label": "S.Vlc. Lo AV2023 S1 C.2 [1080p].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 C.2 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "C.2",
+          "fileId": "cello-emmanuel-losa-c-002-4k",
+          "bucket": "C",
+          "r2Key": "cello-emmanuel-losa/c/002-4k.mov",
+          "driveFileId": "1e1AYA4LSttgvVkBB8WXVNMCKvcvvWzVU",
+          "sizeBytes": 79051816,
+          "mime": "video/quicktime",
+          "position": 34,
+          "label": "S.Vlc. Lo AV2023 S1 C.2 [4K].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 C.2 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "C.3",
+          "fileId": "cello-emmanuel-losa-c-003-1080p",
+          "bucket": "C",
+          "r2Key": "cello-emmanuel-losa/c/003-1080p.mov",
+          "driveFileId": "1E6ydp_qk15Jj1Rja9xeBas8mE2cTW6qP",
+          "sizeBytes": 106307442,
+          "mime": "video/quicktime",
+          "position": 35,
+          "label": "S.Vlc. Lo AV2023 S1 C.3 [1080p].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 C.3 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "C.3",
+          "fileId": "cello-emmanuel-losa-c-003-4k",
+          "bucket": "C",
+          "r2Key": "cello-emmanuel-losa/c/003-4k.mov",
+          "driveFileId": "1p8a38Vkxiu4qsaOncxGe3s8Nj6Lx77H9",
+          "sizeBytes": 199542037,
+          "mime": "video/quicktime",
+          "position": 36,
+          "label": "S.Vlc. Lo AV2023 S1 C.3 [4K].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 C.3 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "C.4",
+          "fileId": "cello-emmanuel-losa-c-004-1080p",
+          "bucket": "C",
+          "r2Key": "cello-emmanuel-losa/c/004-1080p.mov",
+          "driveFileId": "1jIKDlWKDZJ6vIv5kpWY82lI_uOvfyGcU",
+          "sizeBytes": 234474444,
+          "mime": "video/quicktime",
+          "position": 37,
+          "label": "S.Vlc. Lo AV2023 S1 C.4 [1080p].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 C.4 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "C.4",
+          "fileId": "cello-emmanuel-losa-c-004-4k",
+          "bucket": "C",
+          "r2Key": "cello-emmanuel-losa/c/004-4k.mov",
+          "driveFileId": "1TQirpqLsaYwNpZwCa4jmG8nAH3ctpcu7",
+          "sizeBytes": 439630750,
+          "mime": "video/quicktime",
+          "position": 38,
+          "label": "S.Vlc. Lo AV2023 S1 C.4 [4K].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 C.4 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "C.5",
+          "fileId": "cello-emmanuel-losa-c-005-1080p",
+          "bucket": "C",
+          "r2Key": "cello-emmanuel-losa/c/005-1080p.mov",
+          "driveFileId": "1rdxsBUKbaWrKZC6yMsWbTD6MHY0-MvXt",
+          "sizeBytes": 220089779,
+          "mime": "video/quicktime",
+          "position": 39,
+          "label": "S.Vlc. Lo AV2023 S1 C.5 [1080p].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 C.5 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "C.5",
+          "fileId": "cello-emmanuel-losa-c-005-4k",
+          "bucket": "C",
+          "r2Key": "cello-emmanuel-losa/c/005-4k.mov",
+          "driveFileId": "10FVihUl6T9_3_GR_4MOMS4JDUvXN8hOn",
+          "sizeBytes": 412704182,
+          "mime": "video/quicktime",
+          "position": 40,
+          "label": "S.Vlc. Lo AV2023 S1 C.5 [4K].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 C.5 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "C.6",
+          "fileId": "cello-emmanuel-losa-c-006-1080p",
+          "bucket": "C",
+          "r2Key": "cello-emmanuel-losa/c/006-1080p.mov",
+          "driveFileId": "1stqaHWtYuX3La84jzawWPpvR0Iio2lNG",
+          "sizeBytes": 98784424,
+          "mime": "video/quicktime",
+          "position": 41,
+          "label": "S.Vlc. Lo AV2023 S1 C.6 [1080p].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 C.6 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "C.6",
+          "fileId": "cello-emmanuel-losa-c-006-4k",
+          "bucket": "C",
+          "r2Key": "cello-emmanuel-losa/c/006-4k.mov",
+          "driveFileId": "152u3MbA_6ntiJo4cPpaUGJVyQKv61242",
+          "sizeBytes": 185369140,
+          "mime": "video/quicktime",
+          "position": 42,
+          "label": "S.Vlc. Lo AV2023 S1 C.6 [4K].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 C.6 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "C.7",
+          "fileId": "cello-emmanuel-losa-c-007-1080p",
+          "bucket": "C",
+          "r2Key": "cello-emmanuel-losa/c/007-1080p.mov",
+          "driveFileId": "1c4Yj_UDMFlhMzJ5KTKXd3XgoF0D7yUOq",
+          "sizeBytes": 229702971,
+          "mime": "video/quicktime",
+          "position": 43,
+          "label": "S.Vlc. Lo AV2023 S1 C.7 [1080p].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 C.7 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "C.7",
+          "fileId": "cello-emmanuel-losa-c-007-4k",
+          "bucket": "C",
+          "r2Key": "cello-emmanuel-losa/c/007-4k.mov",
+          "driveFileId": "1Pnvq63pWbMwiaBqbdy6Fnf19Xjw0GAdn",
+          "sizeBytes": 430655745,
+          "mime": "video/quicktime",
+          "position": 44,
+          "label": "S.Vlc. Lo AV2023 S1 C.7 [4K].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 C.7 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "C.8",
+          "fileId": "cello-emmanuel-losa-c-008-1080p",
+          "bucket": "C",
+          "r2Key": "cello-emmanuel-losa/c/008-1080p.mov",
+          "driveFileId": "1HfvFx7Ymnr7-nEVE5slXK-0uXVLCQj4s",
+          "sizeBytes": 53252697,
+          "mime": "video/quicktime",
+          "position": 45,
+          "label": "S.Vlc. Lo AV2023 S1 C.8 [1080p].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 C.8 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "C.8",
+          "fileId": "cello-emmanuel-losa-c-008-4k",
+          "bucket": "C",
+          "r2Key": "cello-emmanuel-losa/c/008-4k.mov",
+          "driveFileId": "1ZDjMWJdUZnlionaxcHv8lPCXsoYnOfLn",
+          "sizeBytes": 99964152,
+          "mime": "video/quicktime",
+          "position": 46,
+          "label": "S.Vlc. Lo AV2023 S1 C.8 [4K].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 C.8 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "C.9",
+          "fileId": "cello-emmanuel-losa-c-009-1080p",
+          "bucket": "C",
+          "r2Key": "cello-emmanuel-losa/c/009-1080p.mov",
+          "driveFileId": "1_4MBVm01pqeROIsfzcwAfu2DQFBZFSYt",
+          "sizeBytes": 323634996,
+          "mime": "video/quicktime",
+          "position": 47,
+          "label": "S.Vlc. Lo AV2023 S1 C.9 [1080p].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 C.9 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "C.9",
+          "fileId": "cello-emmanuel-losa-c-009-4k",
+          "bucket": "C",
+          "r2Key": "cello-emmanuel-losa/c/009-4k.mov",
+          "driveFileId": "1PS7zYQGeWNV2Dy_J1-gH8Eo3W0ajpEoj",
+          "sizeBytes": 606703097,
+          "mime": "video/quicktime",
+          "position": 48,
+          "label": "S.Vlc. Lo AV2023 S1 C.9 [4K].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 C.9 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "C.10",
+          "fileId": "cello-emmanuel-losa-c-010-1080p",
+          "bucket": "C",
+          "r2Key": "cello-emmanuel-losa/c/010-1080p.mov",
+          "driveFileId": "1EfZ216CD9SWZo-Ew_yaPvXeIfIkdyBYm",
+          "sizeBytes": 328878291,
+          "mime": "video/quicktime",
+          "position": 49,
+          "label": "S.Vlc. Lo AV2023 S1 C.10 [1080p].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 C.10 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "C.10",
+          "fileId": "cello-emmanuel-losa-c-010-4k",
+          "bucket": "C",
+          "r2Key": "cello-emmanuel-losa/c/010-4k.mov",
+          "driveFileId": "11yYVf6pvmtCksRVlsyoFuH21JTwdWTQg",
+          "sizeBytes": 616622409,
+          "mime": "video/quicktime",
+          "position": 50,
+          "label": "S.Vlc. Lo AV2023 S1 C.10 [4K].mov",
+          "sourceLabel": "S.Vlc. Lo AV2023 S1 C.10 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "X.1",
+          "fileId": "cello-emmanuel-losa-recording-index-pdf",
+          "bucket": "X",
+          "r2Key": "cello-emmanuel-losa/recording-index/recording-index.pdf",
+          "driveFileId": "",
+          "sizeBytes": 0,
+          "mime": "application/pdf",
+          "position": 51,
+          "label": "Recording Index PDF",
+          "sourceLabel": "Recording Index PDF",
+          "type": "pdf",
+          "availableTypes": [
+            "pdf"
+          ],
+          "role": "recording_index_pdf"
+        }
+      ],
+      "entitlements": [
+        {
+          "type": "role",
+          "value": "authenticated"
+        }
+      ],
+      "recordingIndex": {
+        "sheetUrl": "https://docs.google.com/spreadsheets/d/1-ZsNlXLIdfAzLgUJakHb9k9rPVn2wFBH_8JLmELA6nA/edit?gid=0#gid=0",
+        "sheetId": "1-ZsNlXLIdfAzLgUJakHb9k9rPVn2wFBH_8JLmELA6nA",
+        "gid": "0",
+        "pdfAssetId": "cello-emmanuel-losa-recording-index-pdf",
+        "bundleAllToken": "bundle:recording-index:S.Vlc. Lo AV2023 S1:all",
+        "rootFolderUrl": "https://drive.google.com/drive/folders/1sPQGdx_lhEt1teXCEn1eWbH-nH0F6whh",
+        "bucketFolderUrls": {
+          "A": "https://drive.google.com/drive/folders/12EPq8Zxhw1xaPRAVYbvyWjYwz31xWHy3",
+          "B": "https://drive.google.com/drive/folders/1eC7vFj0jcWfW8Lo2V3b7iHUNpeTTSuMQ",
+          "C": "https://drive.google.com/drive/folders/11xwNWgfoXzD-WwvMmGTrdzfu_dRWWpRf"
+        }
+      }
+    },
+    {
+      "lookupNumber": "V.Obj. Lu A2023 S1",
+      "title": "VOICE W/ EVERYDAY OBJECT MANIPULATION",
+      "status": "active",
+      "season": "S1",
+      "files": [
+        {
+          "bucketNumber": "A.1",
+          "fileId": "voice-everyday-object-manipulation-levi-lu-a-001-stereo",
+          "bucket": "A",
+          "r2Key": "voice-everyday-object-manipulation-levi-lu/a/001-stereo.mp3",
+          "driveFileId": "1O5tGgAoezlcb2y9dNI6iI7xDs0UBcOUo",
+          "sizeBytes": 33869536,
+          "mime": "audio/mpeg",
+          "position": 1,
+          "label": "V.Obj. Lu A2023 S1 A.1 [ste].mp3",
+          "sourceLabel": "V.Obj. Lu A2023 S1 A.1 [ste].mp3",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.1",
+          "fileId": "voice-everyday-object-manipulation-levi-lu-a-001-stereo-2",
+          "bucket": "A",
+          "r2Key": "voice-everyday-object-manipulation-levi-lu/a/001-stereo.wav",
+          "driveFileId": "1mJlZOgFPcAC7DdNc7XpAViQVF7BrmDSw",
+          "sizeBytes": 488315422,
+          "mime": "audio/x-wav",
+          "position": 2,
+          "label": "V.Obj. Lu A2023 S1 A.1 [ste].wav",
+          "sourceLabel": "V.Obj. Lu A2023 S1 A.1 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.1",
+          "fileId": "voice-everyday-object-manipulation-levi-lu-b-001-stereo",
+          "bucket": "B",
+          "r2Key": "voice-everyday-object-manipulation-levi-lu/b/001-stereo.wav",
+          "driveFileId": "1TuLZ133uituOR_gbGY_ugxaMe57xpkti",
+          "sizeBytes": 24298584,
+          "mime": "audio/wav",
+          "position": 3,
+          "label": "V.Obj. Lu A2023 S1 B.1 [ste].wav",
+          "sourceLabel": "V.Obj. Lu A2023 S1 B.1 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.2",
+          "fileId": "voice-everyday-object-manipulation-levi-lu-b-002-stereo",
+          "bucket": "B",
+          "r2Key": "voice-everyday-object-manipulation-levi-lu/b/002-stereo.wav",
+          "driveFileId": "1SSJgvmGfzjTLeBea9CPD-3Yy66WeHVEj",
+          "sizeBytes": 26307552,
+          "mime": "audio/wav",
+          "position": 4,
+          "label": "V.Obj. Lu A2023 S1 B.2 [ste].wav",
+          "sourceLabel": "V.Obj. Lu A2023 S1 B.2 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.3",
+          "fileId": "voice-everyday-object-manipulation-levi-lu-b-003-stereo",
+          "bucket": "B",
+          "r2Key": "voice-everyday-object-manipulation-levi-lu/b/003-stereo.wav",
+          "driveFileId": "1g_KjAYsosyx7rPlaX6FGGiZl02cicg7J",
+          "sizeBytes": 28850478,
+          "mime": "audio/wav",
+          "position": 5,
+          "label": "V.Obj. Lu A2023 S1 B.3 [ste].wav",
+          "sourceLabel": "V.Obj. Lu A2023 S1 B.3 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.4",
+          "fileId": "voice-everyday-object-manipulation-levi-lu-b-004-stereo",
+          "bucket": "B",
+          "r2Key": "voice-everyday-object-manipulation-levi-lu/b/004-stereo.wav",
+          "driveFileId": "11f_n3NOBP-78Zk1oRseEvfUsTinUFk1v",
+          "sizeBytes": 35106564,
+          "mime": "audio/wav",
+          "position": 6,
+          "label": "V.Obj. Lu A2023 S1 B.4 [ste].wav",
+          "sourceLabel": "V.Obj. Lu A2023 S1 B.4 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.5",
+          "fileId": "voice-everyday-object-manipulation-levi-lu-b-005-stereo",
+          "bucket": "B",
+          "r2Key": "voice-everyday-object-manipulation-levi-lu/b/005-stereo.wav",
+          "driveFileId": "1OVf83HHUDPkD7KQY9BJCnTuxg8G2vFZw",
+          "sizeBytes": 40998612,
+          "mime": "audio/wav",
+          "position": 7,
+          "label": "V.Obj. Lu A2023 S1 B.5 [ste].wav",
+          "sourceLabel": "V.Obj. Lu A2023 S1 B.5 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.6",
+          "fileId": "voice-everyday-object-manipulation-levi-lu-b-006-stereo",
+          "bucket": "B",
+          "r2Key": "voice-everyday-object-manipulation-levi-lu/b/006-stereo.wav",
+          "driveFileId": "1Ya70cLfy8VPmFYfklaHc9J3Nvr_U0K8H",
+          "sizeBytes": 37561806,
+          "mime": "audio/wav",
+          "position": 8,
+          "label": "V.Obj. Lu A2023 S1 B.6 [ste].wav",
+          "sourceLabel": "V.Obj. Lu A2023 S1 B.6 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.7",
+          "fileId": "voice-everyday-object-manipulation-levi-lu-b-007-stereo",
+          "bucket": "B",
+          "r2Key": "voice-everyday-object-manipulation-levi-lu/b/007-stereo.wav",
+          "driveFileId": "1wg6FJA2q1bE8OZ3BqK2Z8HUJTy5I6e2E",
+          "sizeBytes": 91876248,
+          "mime": "audio/wav",
+          "position": 9,
+          "label": "V.Obj. Lu A2023 S1 B.7 [ste].wav",
+          "sourceLabel": "V.Obj. Lu A2023 S1 B.7 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.8",
+          "fileId": "voice-everyday-object-manipulation-levi-lu-b-008-stereo",
+          "bucket": "B",
+          "r2Key": "voice-everyday-object-manipulation-levi-lu/b/008-stereo.wav",
+          "driveFileId": "1SqSSPpXsYddCE35V4S1SlYZZhr14oBxf",
+          "sizeBytes": 47831700,
+          "mime": "audio/wav",
+          "position": 10,
+          "label": "V.Obj. Lu A2023 S1 B.8 [ste].wav",
+          "sourceLabel": "V.Obj. Lu A2023 S1 B.8 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.9",
+          "fileId": "voice-everyday-object-manipulation-levi-lu-b-009-stereo",
+          "bucket": "B",
+          "r2Key": "voice-everyday-object-manipulation-levi-lu/b/009-stereo.wav",
+          "driveFileId": "1QhRO0k2c-5XTgqpRpXc91RDIj8BmBzgT",
+          "sizeBytes": 41325102,
+          "mime": "audio/wav",
+          "position": 11,
+          "label": "V.Obj. Lu A2023 S1 B.9 [ste].wav",
+          "sourceLabel": "V.Obj. Lu A2023 S1 B.9 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.10",
+          "fileId": "voice-everyday-object-manipulation-levi-lu-b-010-stereo",
+          "bucket": "B",
+          "r2Key": "voice-everyday-object-manipulation-levi-lu/b/010-stereo.wav",
+          "driveFileId": "19J5AcT93hGgYeSCo-YVEZniwvJjGDTHW",
+          "sizeBytes": 26689614,
+          "mime": "audio/wav",
+          "position": 12,
+          "label": "V.Obj. Lu A2023 S1 B.10 [ste].wav",
+          "sourceLabel": "V.Obj. Lu A2023 S1 B.10 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.11",
+          "fileId": "voice-everyday-object-manipulation-levi-lu-b-011-stereo",
+          "bucket": "B",
+          "r2Key": "voice-everyday-object-manipulation-levi-lu/b/011-stereo.wav",
+          "driveFileId": "1RpJl0-DTk72QUHHHPd1n9iGs1oEYsDUe",
+          "sizeBytes": 31491792,
+          "mime": "audio/wav",
+          "position": 13,
+          "label": "V.Obj. Lu A2023 S1 B.11 [ste].wav",
+          "sourceLabel": "V.Obj. Lu A2023 S1 B.11 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.12",
+          "fileId": "voice-everyday-object-manipulation-levi-lu-b-012-stereo",
+          "bucket": "B",
+          "r2Key": "voice-everyday-object-manipulation-levi-lu/b/012-stereo.wav",
+          "driveFileId": "1abumLelkcsvCnY2mepg2jWEJXbiJkk_S",
+          "sizeBytes": 15693156,
+          "mime": "audio/wav",
+          "position": 14,
+          "label": "V.Obj. Lu A2023 S1 B.12 [ste].wav",
+          "sourceLabel": "V.Obj. Lu A2023 S1 B.12 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "X.1",
+          "fileId": "voice-everyday-object-manipulation-levi-lu-recording-index-pdf",
+          "bucket": "X",
+          "r2Key": "voice-everyday-object-manipulation-levi-lu/recording-index/recording-index.pdf",
+          "driveFileId": "",
+          "sizeBytes": 0,
+          "mime": "application/pdf",
+          "position": 15,
+          "label": "Recording Index PDF",
+          "sourceLabel": "Recording Index PDF",
+          "type": "pdf",
+          "availableTypes": [
+            "pdf"
+          ],
+          "role": "recording_index_pdf"
+        }
+      ],
+      "entitlements": [
+        {
+          "type": "role",
+          "value": "authenticated"
+        }
+      ],
+      "recordingIndex": {
+        "sheetUrl": "https://docs.google.com/spreadsheets/d/1H9jV7dRqbxiWfjEHSNtgbe_rQUbFIxSvTviFEptuHX8/edit?gid=0#gid=0",
+        "sheetId": "1H9jV7dRqbxiWfjEHSNtgbe_rQUbFIxSvTviFEptuHX8",
+        "gid": "0",
+        "pdfAssetId": "voice-everyday-object-manipulation-levi-lu-recording-index-pdf",
+        "bundleAllToken": "bundle:recording-index:V.Obj. Lu A2023 S1:all",
+        "rootFolderUrl": "https://drive.google.com/drive/folders/1HW7VSeR7uTfhbKoZTqvYwFigbzCTPxIL",
+        "bucketFolderUrls": {
+          "A": "https://drive.google.com/drive/folders/1v_EkF-HCqyDF4r5GseBYCZYxqT9aepRd",
+          "B": "https://drive.google.com/drive/folders/1rjENX6ivAehYhFlVQwVDidvWRG5bYIwk"
+        }
+      }
+    },
+    {
+      "lookupNumber": "V.Sc. He A2023 S1",
+      "title": "CYBERNETIC SCAT",
+      "status": "active",
+      "season": "S1",
+      "files": [
+        {
+          "bucketNumber": "B.1",
+          "fileId": "cybernetic-scat-paul-hermansen-b-001-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/001-stereo.wav",
+          "driveFileId": "1J8F1D4tbefLwZYM_CdcuFU_5YIW-oc5b",
+          "sizeBytes": 5028566,
+          "mime": "audio/wav",
+          "position": 1,
+          "label": "V.Sc. A2023 S1 B.1 [ste] [Met Sus Cle Mono Med Mid Sta].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.1 [ste] [Met Sus Cle Mono Med Mid Sta].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.2",
+          "fileId": "cybernetic-scat-paul-hermansen-b-002-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/002-stereo.wav",
+          "driveFileId": "1yQfVQQAaDooL0SHkGy1kY2oC0o-h-3L3",
+          "sizeBytes": 6711232,
+          "mime": "audio/wav",
+          "position": 2,
+          "label": "V.Sc. A2023 S1 B.2 [ste] [Free Sus Cle Poly Qui Ow Sta].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.2 [ste] [Free Sus Cle Poly Qui Ow Sta].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.3",
+          "fileId": "cybernetic-scat-paul-hermansen-b-003-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/003-stereo.wav",
+          "driveFileId": "1WWMZIvdzoUcGeSIQcS9a2RzoZiWkWBX0",
+          "sizeBytes": 6523948,
+          "mime": "audio/wav",
+          "position": 3,
+          "label": "V.Sc. A2023 S1 B.3 [ste] [Met Sus Cle Mono Med Low Mid Dyn].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.3 [ste] [Met Sus Cle Mono Med Low Mid Dyn].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.4",
+          "fileId": "cybernetic-scat-paul-hermansen-b-004-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/004-stereo.wav",
+          "driveFileId": "1cQK-FEkvYzKsrtDgeY8oV6yY5jou8YI4",
+          "sizeBytes": 4593550,
+          "mime": "audio/wav",
+          "position": 4,
+          "label": "V.Sc. A2023 S1 B.4 [ste] [Met Sus Cle Mono Med Ow Sta].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.4 [ste] [Met Sus Cle Mono Med Ow Sta].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.5",
+          "fileId": "cybernetic-scat-paul-hermansen-b-005-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/005-stereo.wav",
+          "driveFileId": "17btkw7Drknf-Bvnn_7NGLUHs8pDT-VMg",
+          "sizeBytes": 12495382,
+          "mime": "audio/wav",
+          "position": 5,
+          "label": "V.Sc. A2023 S1 B.5 [ste] [Fre Sus Cle Poly Lou Mid Hi Sta].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.5 [ste] [Fre Sus Cle Poly Lou Mid Hi Sta].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.6",
+          "fileId": "cybernetic-scat-paul-hermansen-b-006-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/006-stereo.wav",
+          "driveFileId": "1xzOPR0UDhN5-a5uF3trd7IOE95V6Z7jH",
+          "sizeBytes": 21369176,
+          "mime": "audio/wav",
+          "position": 6,
+          "label": "V.Sc. A2023 S1 B.6 [ste] [Fre Sus Cle Mono Lou Mid Sta].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.6 [ste] [Fre Sus Cle Mono Lou Mid Sta].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.7",
+          "fileId": "cybernetic-scat-paul-hermansen-b-007-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/007-stereo.wav",
+          "driveFileId": "1uD2f1oq4UWFvpAcgSDT3vWFHK-HYKJo1",
+          "sizeBytes": 10253338,
+          "mime": "audio/wav",
+          "position": 7,
+          "label": "V.Sc. A2023 S1 B.7 [ste] [Fre Sus Cle Mono Med Mid Sta].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.7 [ste] [Fre Sus Cle Mono Med Mid Sta].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.8",
+          "fileId": "cybernetic-scat-paul-hermansen-b-008-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/008-stereo.wav",
+          "driveFileId": "1Dt0UPartFAB21S1YxQR3c53dnPZlq_C6",
+          "sizeBytes": 12881964,
+          "mime": "audio/wav",
+          "position": 8,
+          "label": "V.Sc. A2023 S1 B.8 [ste] [Fre Sus Cle Mono Qui Ow Sta].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.8 [ste] [Fre Sus Cle Mono Qui Ow Sta].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.9",
+          "fileId": "cybernetic-scat-paul-hermansen-b-009-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/009-stereo.wav",
+          "driveFileId": "1UdiKK8WNnz4ikyncPFthYnzS_jYEtaR-",
+          "sizeBytes": 28869346,
+          "mime": "audio/wav",
+          "position": 9,
+          "label": "V.Sc. A2023 S1 B.9 [ste] [Fre Sus Cle Mono Med Qui Ow Sta].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.9 [ste] [Fre Sus Cle Mono Med Qui Ow Sta].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.10",
+          "fileId": "cybernetic-scat-paul-hermansen-b-010-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/010-stereo.wav",
+          "driveFileId": "1ZR-aeLQOMYIOAxd8nV7hiKdKIXcgbSiS",
+          "sizeBytes": 24775666,
+          "mime": "audio/wav",
+          "position": 10,
+          "label": "V.Sc. A2023 S1 B.10 [ste] [Free Sus Dis Mono Qui Mid Dyn].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.10 [ste] [Free Sus Dis Mono Qui Mid Dyn].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.11",
+          "fileId": "cybernetic-scat-paul-hermansen-b-011-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/011-stereo.wav",
+          "driveFileId": "1bdp_-nLbeyJwuBqG-d-YSTOTRoxh08K4",
+          "sizeBytes": 23420826,
+          "mime": "audio/wav",
+          "position": 11,
+          "label": "V.Sc. A2023 S1 B.11 [ste] [Fre Cle Mono Med Lou Mid Sta].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.11 [ste] [Fre Cle Mono Med Lou Mid Sta].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.12",
+          "fileId": "cybernetic-scat-paul-hermansen-b-012-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/012-stereo.wav",
+          "driveFileId": "1b3WuNtYF3r5OHoUW9dQCBtbL0Nq4eUh9",
+          "sizeBytes": 26098578,
+          "mime": "audio/wav",
+          "position": 12,
+          "label": "V.Sc. A2023 S1 B.12 [ste] [Fre Cle Mono Poly Med Mid Hi Dyn].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.12 [ste] [Fre Cle Mono Poly Med Mid Hi Dyn].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.13",
+          "fileId": "cybernetic-scat-paul-hermansen-b-013-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/013-stereo.wav",
+          "driveFileId": "13Dl8v4t52YV9kmgqVxBY8KWevFwmh-4W",
+          "sizeBytes": 18999430,
+          "mime": "audio/wav",
+          "position": 13,
+          "label": "V.Sc. A2023 S1 B.13 [ste] [Met Sus Cle Mono Med Ow Mid Dyn].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.13 [ste] [Met Sus Cle Mono Med Ow Mid Dyn].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.14",
+          "fileId": "cybernetic-scat-paul-hermansen-b-014-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/014-stereo.wav",
+          "driveFileId": "1wkPDh_yZzEtYVAxzSl82UceOgDwu5FHm",
+          "sizeBytes": 6490156,
+          "mime": "audio/wav",
+          "position": 14,
+          "label": "V.Sc. A2023 S1 B.14 [ste] [Met Perc Cle Mono Med Lou Ow Mid Dyn].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.14 [ste] [Met Perc Cle Mono Med Lou Ow Mid Dyn].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.15",
+          "fileId": "cybernetic-scat-paul-hermansen-b-015-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/015-stereo.wav",
+          "driveFileId": "1fqu2lRQLrZ2hsTAMq0MkE5Mb9Z061m3F",
+          "sizeBytes": 6055892,
+          "mime": "audio/wav",
+          "position": 15,
+          "label": "V.Sc. A2023 S1 B.15 [ste] [Fre Sus Cle Mono Lou Ow Mid Sta].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.15 [ste] [Fre Sus Cle Mono Lou Ow Mid Sta].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.16",
+          "fileId": "cybernetic-scat-paul-hermansen-b-016-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/016-stereo.wav",
+          "driveFileId": "1Pi_Ro83MB6o1eMzMj-yQByAP4D1Ua7G2",
+          "sizeBytes": 15171714,
+          "mime": "audio/wav",
+          "position": 16,
+          "label": "V.Sc. A2023 S1 B.16 [ste] [Met Sus Cle Mono Med Ow Mid Sta].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.16 [ste] [Met Sus Cle Mono Med Ow Mid Sta].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.17",
+          "fileId": "cybernetic-scat-paul-hermansen-b-017-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/017-stereo.wav",
+          "driveFileId": "1kBhWF7hl3Amb8fwOb3ZD9BRhsU-Gr4Tq",
+          "sizeBytes": 5081132,
+          "mime": "audio/wav",
+          "position": 17,
+          "label": "V.Sc. A2023 S1 B.17 [ste] [Met Sus Cle Mono Med Mid Sta].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.17 [ste] [Met Sus Cle Mono Med Mid Sta].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.18",
+          "fileId": "cybernetic-scat-paul-hermansen-b-018-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/018-stereo.wav",
+          "driveFileId": "1zWWYsUS6VgZm16q8heBE8RroCbBUefes",
+          "sizeBytes": 4677676,
+          "mime": "audio/wav",
+          "position": 18,
+          "label": "V.Sc. A2023 S1 B.18 [ste] [Met Sus Cle Mono Med Mid Sta].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.18 [ste] [Met Sus Cle Mono Med Mid Sta].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.19",
+          "fileId": "cybernetic-scat-paul-hermansen-b-019-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/019-stereo.wav",
+          "driveFileId": "1vml1C5vlqJR9th564hF_yDLKUO9YQ4md",
+          "sizeBytes": 1887846,
+          "mime": "audio/wav",
+          "position": 19,
+          "label": "V.Sc. A2023 S1 B.19 [ste] [Met Sus Perc Cle Mono Lou Ow Mid Sta].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.19 [ste] [Met Sus Perc Cle Mono Lou Ow Mid Sta].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.20",
+          "fileId": "cybernetic-scat-paul-hermansen-b-020-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/020-stereo.wav",
+          "driveFileId": "13Hc2v-C1vB_ZAxx8ow5Lsu8Odmo6wmY1",
+          "sizeBytes": 26098594,
+          "mime": "audio/wav",
+          "position": 20,
+          "label": "V.Sc. A2023 S1 B.20 [ste] [Met Perc Dis Mono Qui Ow Sta].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.20 [ste] [Met Perc Dis Mono Qui Ow Sta].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.21",
+          "fileId": "cybernetic-scat-paul-hermansen-b-021-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/021-stereo.wav",
+          "driveFileId": "1NDAPd6quoAkcgRaVMjyn4HkEx5RRU_o0",
+          "sizeBytes": 26098594,
+          "mime": "audio/wav",
+          "position": 21,
+          "label": "V.Sc. A2023 S1 B.21 [ste] [Fre Sus Cle Dis Poly Qui Med Mid Sta].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.21 [ste] [Fre Sus Cle Dis Poly Qui Med Mid Sta].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.22",
+          "fileId": "cybernetic-scat-paul-hermansen-b-022-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/022-stereo.wav",
+          "driveFileId": "1BkjuKQF7TdXC1io53z56JC9hTRlnl_ul",
+          "sizeBytes": 26098594,
+          "mime": "audio/wav",
+          "position": 22,
+          "label": "V.Sc. A2023 S1 B.22 [ste] [Met Sus Perc Cle Poly Dis Qui Med Mid Hi Dyn].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.22 [ste] [Met Sus Perc Cle Poly Dis Qui Med Mid Hi Dyn].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.23",
+          "fileId": "cybernetic-scat-paul-hermansen-b-023-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/023-stereo.mp3",
+          "driveFileId": "1E-IuGh3BGf5RRe4z4LL7QB1JhKgtpJsn",
+          "sizeBytes": 5204504,
+          "mime": "audio/mpeg",
+          "position": 23,
+          "label": "V.Sc. A2023 S1 B.23 [ste] [Met Sus Cle Mono Poly Med Ow Mid Dyn].mp3",
+          "sourceLabel": "V.Sc. A2023 S1 B.23 [ste] [Met Sus Cle Mono Poly Med Ow Mid Dyn].mp3",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.24",
+          "fileId": "cybernetic-scat-paul-hermansen-b-024-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/024-stereo.wav",
+          "driveFileId": "1MK0TIXa7tFjGht9CPay34en4zIgN37Mt",
+          "sizeBytes": 49771688,
+          "mime": "audio/wav",
+          "position": 24,
+          "label": "V.Sc. A2023 S1 B.24 [ste] [Met Fre Sus Cle Dis Mono Qui Med Mid Dyn].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.24 [ste] [Met Fre Sus Cle Dis Mono Qui Med Mid Dyn].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.25",
+          "fileId": "cybernetic-scat-paul-hermansen-b-025-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/025-stereo.wav",
+          "driveFileId": "19CP3qBU-Bu0kbZEw9CkuNEJN24Csf50l",
+          "sizeBytes": 11200584,
+          "mime": "audio/wav",
+          "position": 25,
+          "label": "V.Sc. A2023 S1 B.25 [ste] [Fre Sus Dis Poly Qui Med Ow Hi Sta].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.25 [ste] [Fre Sus Dis Poly Qui Med Ow Hi Sta].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.26",
+          "fileId": "cybernetic-scat-paul-hermansen-b-026-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/026-stereo.wav",
+          "driveFileId": "17W1ndGklHqRi9LmCokzjljl05bkXv-X9",
+          "sizeBytes": 40734792,
+          "mime": "audio/wav",
+          "position": 26,
+          "label": "V.Sc. A2023 S1 B.26 [ste] [Met Sus Cle Poly Qui Med Mid Hi Dyn].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.26 [ste] [Met Sus Cle Poly Qui Med Mid Hi Dyn].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.27",
+          "fileId": "cybernetic-scat-paul-hermansen-b-027-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/027-stereo.wav",
+          "driveFileId": "1B1de3K10o1D2gJQtsKWuOgvIufHcGOWH",
+          "sizeBytes": 320829444,
+          "mime": "audio/wav",
+          "position": 27,
+          "label": "V.Sc. A2023 S1 B.27 [ste] [Met Fre Sus Perc Cle Dis Poly Lou Med Ow Mid Hi Dyn].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.27 [ste] [Met Fre Sus Perc Cle Dis Poly Lou Med Ow Mid Hi Dyn].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.28",
+          "fileId": "cybernetic-scat-paul-hermansen-b-028-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/028-stereo.wav",
+          "driveFileId": "1OVQWs4aFcDmPLpVzGugFxcz_bu8QO7K1",
+          "sizeBytes": 234056,
+          "mime": "audio/wav",
+          "position": 28,
+          "label": "V.Sc. A2023 S1 B.28 [ste] [Met Sus Dis Poly Med Ow Dyn Sho].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.28 [ste] [Met Sus Dis Poly Med Ow Dyn Sho].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.29",
+          "fileId": "cybernetic-scat-paul-hermansen-b-029-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/029-stereo.wav",
+          "driveFileId": "1iTQ2SpIKQtwNI0qXAW7t12kR0RHUWl7Q",
+          "sizeBytes": 208216360,
+          "mime": "audio/wav",
+          "position": 29,
+          "label": "V.Sc. A2023 S1 B.29 [ste] [Met Perc Dis Mono Lou Med Ow Mid Hi Sta].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.29 [ste] [Met Perc Dis Mono Lou Med Ow Mid Hi Sta].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.30",
+          "fileId": "cybernetic-scat-paul-hermansen-b-030-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/030-stereo.wav",
+          "driveFileId": "1NI3uJZHK5YAZ2nmMVi5qgWTsuGDk0b1R",
+          "sizeBytes": 591721568,
+          "mime": "audio/wav",
+          "position": 30,
+          "label": "V.Sc. A2023 S1 B.30 [ste] [Met Fre Perc Sus Dis Poly Lou Med Qui Ow Mid Hi Dyn Lon].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.30 [ste] [Met Fre Perc Sus Dis Poly Lou Med Qui Ow Mid Hi Dyn Lon].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.31",
+          "fileId": "cybernetic-scat-paul-hermansen-b-031-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/031-stereo.wav",
+          "driveFileId": "1TxFLXzaP2Z1g9aWdz1SscNIXAQz0ultX",
+          "sizeBytes": 198058610,
+          "mime": "audio/wav",
+          "position": 31,
+          "label": "V.Sc. A2023 S1 B.31 [ste] [Fre Met Per Sus Cle Dis Poly Qui Lou Med Ow Mid Hi Dyn].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.31 [ste] [Fre Met Per Sus Cle Dis Poly Qui Lou Med Ow Mid Hi Dyn].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.32",
+          "fileId": "cybernetic-scat-paul-hermansen-b-032-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/032-stereo.wav",
+          "driveFileId": "1dfUsbIuu2iIyV4JO8nWcsRiHbCEGKJhn",
+          "sizeBytes": 321108194,
+          "mime": "audio/wav",
+          "position": 32,
+          "label": "V.Sc. A2023 S1 B.32 [ste] [Fre Met Per Sus Cle Dis Poly Qui Lou Med Ow Mid Hi Dyn].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.32 [ste] [Fre Met Per Sus Cle Dis Poly Qui Lou Med Ow Mid Hi Dyn].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "B.33",
+          "fileId": "cybernetic-scat-paul-hermansen-b-033-stereo",
+          "bucket": "B",
+          "r2Key": "cybernetic-scat-paul-hermansen/b/033-stereo.wav",
+          "driveFileId": "1xBqJOgI6hrCOdbz8BRf9PdSm2IKWjtAV",
+          "sizeBytes": 137953324,
+          "mime": "audio/wav",
+          "position": 33,
+          "label": "V.Sc. A2023 S1 B.33 [ste] [Fre Met Per Sus Cle Dis Poly Qui Lou Med Ow Mid Hi Dyn].wav",
+          "sourceLabel": "V.Sc. A2023 S1 B.33 [ste] [Fre Met Per Sus Cle Dis Poly Qui Lou Med Ow Mid Hi Dyn].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "X.1",
+          "fileId": "cybernetic-scat-paul-hermansen-recording-index-pdf",
+          "bucket": "X",
+          "r2Key": "cybernetic-scat-paul-hermansen/recording-index/recording-index.pdf",
+          "driveFileId": "",
+          "sizeBytes": 0,
+          "mime": "application/pdf",
+          "position": 34,
+          "label": "Recording Index PDF",
+          "sourceLabel": "Recording Index PDF",
+          "type": "pdf",
+          "availableTypes": [
+            "pdf"
+          ],
+          "role": "recording_index_pdf"
+        }
+      ],
+      "entitlements": [
+        {
+          "type": "role",
+          "value": "authenticated"
+        }
+      ],
+      "recordingIndex": {
+        "sheetUrl": "https://docs.google.com/spreadsheets/d/1xZ93Hr4hV1_u4CZlNlx0huRQ2_CrAi4Ul1XQ5us2Ybw/edit?gid=0#gid=0",
+        "sheetId": "1xZ93Hr4hV1_u4CZlNlx0huRQ2_CrAi4Ul1XQ5us2Ybw",
+        "gid": "0",
+        "pdfAssetId": "cybernetic-scat-paul-hermansen-recording-index-pdf",
+        "bundleAllToken": "bundle:recording-index:V.Sc. He A2023 S1:all",
+        "rootFolderUrl": "https://drive.google.com/drive/folders/1GAdJnRsv55rrxqP72VJpRmfsXMNhBUGv",
+        "bucketFolderUrls": {
+          "B": "https://drive.google.com/drive/folders/1NbqLuRjTo96bRPHP2ETyx7yBV-QSXOqv"
+        }
+      }
+    },
+    {
       "lookupNumber": "V.Sng. Ye AV2024 S2",
       "title": "GUITAR AND VOICE",
       "status": "active",
@@ -25352,6 +30185,116 @@
         "bundleAllToken": "bundle:recording-index:X.Prt. Ch AV2024 S2:all",
         "rootFolderUrl": "",
         "bucketFolderUrls": {}
+      }
+    },
+    {
+      "lookupNumber": "X.Tlv. Pl AV2023 S1",
+      "title": "AMPLIFIED TV SETS",
+      "status": "active",
+      "season": "S1",
+      "files": [
+        {
+          "bucketNumber": "A.1",
+          "fileId": "amplified-tv-sam-pluta-a-001-stereo",
+          "bucket": "A",
+          "r2Key": "amplified-tv-sam-pluta/a/001-stereo.mp3",
+          "driveFileId": "12IasTtRR08xcPpC39-dHCeA6S74t-U5B",
+          "sizeBytes": 71373761,
+          "mime": "audio/mpeg",
+          "position": 1,
+          "label": "X.Tlv. Pl AV2023 S1 A.1 [ste].mp3",
+          "sourceLabel": "X.Tlv. Pl AV2023 S1 A.1 [ste].mp3",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.1",
+          "fileId": "amplified-tv-sam-pluta-a-001-stereo-2",
+          "bucket": "A",
+          "r2Key": "amplified-tv-sam-pluta/a/001-stereo.wav",
+          "driveFileId": "1TX9Y2U4iPEaYcqfGWwT4HJHL7aPHy00F",
+          "sizeBytes": 945508674,
+          "mime": "audio/x-wav",
+          "position": 2,
+          "label": "X.Tlv. Pl AV2023 S1 A.1 [ste].wav",
+          "sourceLabel": "X.Tlv. Pl AV2023 S1 A.1 [ste].wav",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.1",
+          "fileId": "amplified-tv-sam-pluta-a-001-1080p",
+          "bucket": "A",
+          "r2Key": "amplified-tv-sam-pluta/a/001-1080p.mov",
+          "driveFileId": "1TueiZZ5eqPCZQJ87EvEhAdztX42iLw6X",
+          "sizeBytes": 5208027847,
+          "mime": "video/quicktime",
+          "position": 3,
+          "label": "X.Tlv. Pl AV2023 S1 A.1 [1080p].mov",
+          "sourceLabel": "X.Tlv. Pl AV2023 S1 A.1 [1080p].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.1",
+          "fileId": "amplified-tv-sam-pluta-a-001-4k",
+          "bucket": "A",
+          "r2Key": "amplified-tv-sam-pluta/a/001-4k.mov",
+          "driveFileId": "1e_Ko5Zn9FckRRO0tiY__VCg3-KJfrvjx",
+          "sizeBytes": 9934925721,
+          "mime": "video/quicktime",
+          "position": 4,
+          "label": "X.Tlv. Pl AV2023 S1 A.1 [4K].mov",
+          "sourceLabel": "X.Tlv. Pl AV2023 S1 A.1 [4K].mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "X.1",
+          "fileId": "amplified-tv-sam-pluta-recording-index-pdf",
+          "bucket": "X",
+          "r2Key": "amplified-tv-sam-pluta/recording-index/recording-index.pdf",
+          "driveFileId": "",
+          "sizeBytes": 0,
+          "mime": "application/pdf",
+          "position": 5,
+          "label": "Recording Index PDF",
+          "sourceLabel": "Recording Index PDF",
+          "type": "pdf",
+          "availableTypes": [
+            "pdf"
+          ],
+          "role": "recording_index_pdf"
+        }
+      ],
+      "entitlements": [
+        {
+          "type": "role",
+          "value": "authenticated"
+        }
+      ],
+      "recordingIndex": {
+        "sheetUrl": "https://docs.google.com/spreadsheets/d/1MWEHmhya6BWV_hGWqGgBHAgi1aYrOo_Ayz9bZ5fVOzs/edit?gid=0#gid=0",
+        "sheetId": "1MWEHmhya6BWV_hGWqGgBHAgi1aYrOo_Ayz9bZ5fVOzs",
+        "gid": "0",
+        "pdfAssetId": "amplified-tv-sam-pluta-recording-index-pdf",
+        "bundleAllToken": "bundle:recording-index:X.Tlv. Pl AV2023 S1:all",
+        "rootFolderUrl": "https://drive.google.com/drive/folders/1IQSEp2Tr_6MPvB3W7IWVxWVMXjPL48WW",
+        "bucketFolderUrls": {
+          "A": "https://drive.google.com/drive/folders/15eIU2v-NcpUBBkz5miUKAau9OJ9GYjIB"
+        }
       }
     }
   ],

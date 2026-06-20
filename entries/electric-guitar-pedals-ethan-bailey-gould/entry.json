@@ -62,7 +62,8 @@
   "sidebarPageConfig": {
     "lookupNumber": "E.Gtr. Ba AV2023 S1",
     "buckets": [
-      "A"
+      "A",
+      "B"
     ],
     "specialEventImage": "/assets/series/dex.png",
     "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and ethan bailey-gould.",
@@ -104,6 +105,111 @@
     "metadata": {
       "sampleLength": "AUTO",
       "tags": []
+    },
+    "downloads": {
+      "recordingIndexPdfRef": "asset:electric-guitar-pedals-ethan-bailey-gould-recording-index-pdf",
+      "recordingIndexBundleRef": "bundle:recording-index:E.Gtr. Ba AV2023 S1:all",
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1Dpr0rokJanJJ8_7UiQ90RBl6n8DoTId_Q-gfJBBRNh8/edit?gid=0#gid=0",
+      "fileTree": {
+        "lookup": "E.Gtr. Ba AV2023 S1",
+        "buckets": [
+          {
+            "bucket": "A",
+            "types": [
+              {
+                "mediaType": "audio",
+                "files": [
+                  {
+                    "fileId": "electric-guitar-pedals-ethan-bailey-gould-a-001-stereo",
+                    "label": "E.Gtr. Ba AV2023 S1 A.1 [ste].wav",
+                    "filename": "001-stereo.wav",
+                    "extension": "wav",
+                    "variantKey": "default-audio"
+                  }
+                ]
+              },
+              {
+                "mediaType": "video",
+                "files": [
+                  {
+                    "fileId": "electric-guitar-pedals-ethan-bailey-gould-a-001-1080p",
+                    "label": "E.Gtr. Ba AV2023 S1 A.1 [1080p].mov",
+                    "filename": "001-1080p.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "electric-guitar-pedals-ethan-bailey-gould-a-001-4k",
+                    "label": "E.Gtr. Ba AV2023 S1 A.1 [4K].mov",
+                    "filename": "001-4k.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "bucket": "B",
+            "types": [
+              {
+                "mediaType": "video",
+                "files": [
+                  {
+                    "fileId": "electric-guitar-pedals-ethan-bailey-gould-b-001-4k",
+                    "label": "E.Gui. Bai AV2023 S1 B.1 [4K].mov",
+                    "filename": "001-4k.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "electric-guitar-pedals-ethan-bailey-gould-b-002-4k",
+                    "label": "E.Gui. Bai AV2023 S1 B.2 [4K].mov",
+                    "filename": "002-4k.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "electric-guitar-pedals-ethan-bailey-gould-b-003-4k",
+                    "label": "E.Gui. Bai AV2023 S1 B.3 [4K].mov",
+                    "filename": "003-4k.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "electric-guitar-pedals-ethan-bailey-gould-b-004-4k",
+                    "label": "E.Gui. Bai AV2023 S1 B.4 [4K].mov",
+                    "filename": "004-4k.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "electric-guitar-pedals-ethan-bailey-gould-b-005-4k",
+                    "label": "E.Gui. Bai AV2023 S1 B.5 [4K].mov",
+                    "filename": "005-4k.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "electric-guitar-pedals-ethan-bailey-gould-b-006-4k",
+                    "label": "E.Gui. Bai AV2023 S1 B.6 [4K].mov",
+                    "filename": "006-4k.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "fileId": "electric-guitar-pedals-ethan-bailey-gould-b-007-4k",
+                    "label": "E.Gui. Bai AV2023 S1 B.7 [4K].mov",
+                    "filename": "007-4k.mov",
+                    "extension": "mov",
+                    "variantKey": "default-video"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
     }
   }
 }

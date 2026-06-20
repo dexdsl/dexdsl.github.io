@@ -105,3 +105,16 @@ CREATE TABLE IF NOT EXISTS bundle_job (
 - Set `mime` to `application/pdf` (or ensure `r2_key` ends with `.pdf`) so readiness audits can verify PDF resolution deterministically.
 - `available_types_json` should describe all bundle-capable families for each file (for example `["audio","video"]` when one link is dual-capability).
 - Use `file_role = 'recording_index_pdf'` for the recording-index document so audit/UI can isolate it from bucket media matrix views.
+
+## Season recording-index source registry
+
+- Canonical season/source mappings live in `data/recording-index.sources.json`.
+- Use the season-agnostic CLI for Drive-backed discovery and import:
+  - `npm run recording-indexes -- init-season --season S1 --drive-root <folder-id-or-url>`
+  - `npm run recording-indexes -- discover --season S1 --write`
+  - `npm run recording-indexes -- validate --season S1 --import`
+  - `npm run recording-indexes -- apply --season S1 --dry-run`
+  - `npm run recording-indexes -- apply --season S1`
+- Discovery maps Google Sheets and Drive bucket folders back to catalog entries. Apply reuses the Sheets API recording-index importer so per-cell text-run links like `4K | 1080p | ste` are preserved.
+- Drive folders are used as the source inventory and fallback folder-link metadata; the recording-index sheet remains canonical for row order, labels, and rendition links.
+- Seasons with placeholder/empty index sheets can set `importMode: "drive-files"` in the registry. That manifests audio/video files directly from the discovered Drive entry roots while still preserving the sheet URL as the recording-index/PDF source.

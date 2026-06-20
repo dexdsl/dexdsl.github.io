@@ -1414,6 +1414,22 @@
     }
   }
 
+  function moveDetachedFooterSectionsIntoForeground(foregroundRoot) {
+    if (!(foregroundRoot instanceof HTMLElement)) return;
+    if (!(document.body instanceof HTMLElement)) return;
+
+    const detachedFooters = Array.from(document.body.children).filter((node) =>
+      node instanceof HTMLElement
+      && node.id === 'footer-sections'
+      && node.parentElement === document.body
+      && !foregroundRoot.contains(node)
+    );
+
+    for (const footer of detachedFooters) {
+      foregroundRoot.appendChild(footer);
+    }
+  }
+
   function ensureBackdropLayersOutsideForeground() {
     if (!document.body) return;
 
@@ -3350,6 +3366,7 @@
     const { fragment: nextFragment, inlineScripts } = buildForegroundFragment(sourceDocument);
     clearChildren(foregroundRoot);
     foregroundRoot.appendChild(nextFragment);
+    moveDetachedFooterSectionsIntoForeground(foregroundRoot);
     await ensureBackdropElementsFromTemplateIfMissing();
     ensureBackdropLayersOutsideForeground();
     ensureCanonicalGooeyMeshPresentation();
@@ -3577,6 +3594,7 @@
     const { scrollRoot, foregroundRoot } = ensureSlotRoots(container, headerElement);
 
     moveForegroundNodes(container, headerElement, scrollRoot, foregroundRoot);
+    moveDetachedFooterSectionsIntoForeground(foregroundRoot);
     await ensureBackdropElementsFromTemplateIfMissing();
     ensureBackdropLayersOutsideForeground();
     ensureCanonicalGooeyMeshPresentation();

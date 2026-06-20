@@ -9,6 +9,8 @@
   const PROFILE_SHOW_MESH_ROUTE_CLASS = 'dx-route-show-mesh';
   const DEFAULT_API_BASE = 'https://dex-api.spring-fog-8edd.workers.dev';
   const FETCH_TIMEOUT_MS = 9000;
+  const BUNDLE_JOB_MAX_POLLS = 14;
+  const BUNDLE_JOB_MAX_WAIT_MS = 1800;
   const RESUME_KEY = 'dex:bag:resume:v1';
   const BACK_CRUMB_MEMORY_KEY = 'dex:bag:back-crumb:v1';
   const BREADCRUMB_FALLBACK_HREF = '/catalog/';
@@ -20,9 +22,56 @@
   const BAG_DESCRIPTION_COPY = 'Review queued selections across entries, adjust scope, and export one merged download bundle.';
   const BAG_SIGNED_IN_PREFIX = 'Signed in as';
   const LEGACY_BUNDLE_BUCKETS = ['A', 'B', 'C', 'D', 'E', 'X'];
+  const BUNDLE_READY_STATUSES = new Set(['ready', 'complete', 'completed', 'done', 'success', 'succeeded', 'finished']);
+  const BUNDLE_PENDING_STATUSES = new Set(['', 'accepted', 'created', 'pending', 'queued', 'processing', 'running', 'building', 'preparing', 'started']);
+  const BUNDLE_FORBIDDEN_STATUSES = new Set(['forbidden', 'unauthorized', 'unauthorised', 'denied']);
+  const BUNDLE_NOT_FOUND_STATUSES = new Set(['not-found', 'not_found', 'missing']);
+  const BUNDLE_FAILED_STATUSES = new Set(['error', 'failed', 'failure', 'cancelled', 'canceled', 'expired']);
 
   function toText(value) {
     return String(value ?? '');
+  }
+
+  function createCodedError(code, message = code) {
+    const err = new Error(message);
+    err.code = code;
+    return err;
+  }
+
+  function normalizeBundleStatus(payload) {
+    return toText(payload?.status || payload?.state || payload?.phase)
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, '-');
+  }
+
+  function getNestedBundlePayload(payload) {
+    if (!payload || typeof payload !== 'object') return null;
+    return payload.bundle || payload.download || payload.result || payload.data || null;
+  }
+
+  function getBundleSignedUrl(payload) {
+    const nested = getNestedBundlePayload(payload);
+    return toText(
+      payload?.signedUrl
+      || payload?.url
+      || payload?.downloadUrl
+      || nested?.signedUrl
+      || nested?.url
+      || nested?.downloadUrl
+    ).trim();
+  }
+
+  function getBundleJobId(payload) {
+    const nested = getNestedBundlePayload(payload);
+    return toText(
+      payload?.jobId
+      || payload?.job_id
+      || payload?.id
+      || nested?.jobId
+      || nested?.job_id
+      || nested?.id
+    ).trim();
   }
 
   function normalizeLookupKey(value) {
@@ -409,6 +458,11 @@
         throw err;
       }
       return payload;
+    } catch (error) {
+      if (error?.name === 'AbortError') {
+        throw createCodedError('timeout', 'request timeout');
+      }
+      throw error;
     } finally {
       window.clearTimeout(timer);
     }
@@ -1382,60 +1436,60 @@
   }
 
   function resolveBundleReadyPayload(payload) {
-    const status = toText(payload?.status).toLowerCase();
-    if (status === 'forbidden') {
-      const err = new Error('forbidden');
-      err.code = 'forbidden';
-      throw err;
+    const status = normalizeBundleStatus(payload);
+    if (BUNDLE_FORBIDDEN_STATUSES.has(status)) {
+      throw createCodedError('forbidden', 'forbidden');
     }
-    if (status === 'not_found' || status === 'not-found') {
-      const err = new Error('not-found');
-      err.code = 'not-found';
-      throw err;
+    if (BUNDLE_NOT_FOUND_STATUSES.has(status)) {
+      throw createCodedError('not-found', 'not-found');
     }
-    if (status === 'error' || status === 'failed') {
-      const err = new Error(toText(payload?.message).trim() || 'failed');
-      err.code = 'failed';
-      throw err;
+    if (BUNDLE_FAILED_STATUSES.has(status)) {
+      throw createCodedError('failed', toText(payload?.message).trim() || 'failed');
     }
-    const signedUrl = toText(payload?.signedUrl || payload?.url || payload?.downloadUrl).trim();
-    if (status === 'ready' && signedUrl) {
+    const signedUrl = getBundleSignedUrl(payload);
+    if (signedUrl) {
       return {
         signedUrl,
         expiresAt: toText(payload?.expiresAt).trim(),
       };
     }
+    if (BUNDLE_READY_STATUSES.has(status)) {
+      throw createCodedError('failed', 'missing signed url');
+    }
     return null;
   }
 
+  function shouldFallbackToLookupBundles(error) {
+    const code = toText(error?.code).toLowerCase();
+    return code === 'not-found' || code === 'empty' || code === 'timeout' || code === 'stalled';
+  }
+
+  function formatBundlePollStatus(payload, attempt) {
+    const status = normalizeBundleStatus(payload);
+    const label = status && BUNDLE_PENDING_STATUSES.has(status)
+      ? status.replace(/-/g, ' ')
+      : 'preparing';
+    return `Preparing secure bundle… ${label} (${attempt + 1}/${BUNDLE_JOB_MAX_POLLS})`;
+  }
+
   async function pollBundleJob({ token, jobId, onTick }) {
-    const safeJobId = encodeURIComponent(toText(jobId).trim());
-    if (!safeJobId) throw new Error('missing job id');
-    for (let attempt = 0; attempt < 30; attempt += 1) {
+    const safeJobId = encodeURIComponent(getBundleJobId({ jobId }));
+    if (!safeJobId) throw createCodedError('failed', 'missing job id');
+    for (let attempt = 0; attempt < BUNDLE_JOB_MAX_POLLS; attempt += 1) {
       const payload = await requestJson(`/me/assets/bundle/${safeJobId}`, { token });
-      const status = toText(payload?.status).toLowerCase();
-      const signedUrl = toText(payload?.signedUrl || payload?.url || payload?.downloadUrl).trim();
-      if (status === 'ready' && signedUrl) return payload;
-      if (status === 'forbidden') {
-        const err = new Error('forbidden');
-        err.code = 'forbidden';
-        throw err;
-      }
-      if (status === 'not_found' || status === 'not-found') {
-        const err = new Error('not-found');
-        err.code = 'not-found';
-        throw err;
-      }
-      if (status === 'error' || status === 'failed') {
-        const err = new Error('failed');
-        err.code = 'failed';
-        throw err;
-      }
-      if (typeof onTick === 'function') onTick(attempt, payload);
+      const ready = resolveBundleReadyPayload(payload);
+      if (ready) return { ...payload, ...ready };
       const waitMs = Number(payload?.pollAfterMs || 1100);
-      await new Promise((resolve) => window.setTimeout(resolve, Math.max(320, Math.min(waitMs, 3000))));
+      if (typeof onTick === 'function') {
+        onTick({
+          attempt,
+          payload,
+          waitMs,
+        });
+      }
+      await new Promise((resolve) => window.setTimeout(resolve, Math.max(320, Math.min(waitMs, BUNDLE_JOB_MAX_WAIT_MS))));
     }
-    throw new Error('bundle timeout');
+    throw createCodedError('stalled', 'bundle job stalled');
   }
 
   function parseBundleHintCount(payload) {
@@ -1617,11 +1671,9 @@
 
     const delivery = toText(payload?.delivery).toLowerCase();
     if (delivery === 'sync') {
-      const signedUrl = toText(payload?.signedUrl || payload?.url || payload?.downloadUrl).trim();
+      const signedUrl = getBundleSignedUrl(payload);
       if (!signedUrl) {
-        const err = new Error('missing signed url');
-        err.code = 'failed';
-        throw err;
+        throw createCodedError('failed', 'missing signed url');
       }
       return {
         signedUrl,
@@ -1629,10 +1681,9 @@
       };
     }
     if (delivery === 'async') {
-      const jobId = toText(payload?.jobId).trim();
       return pollBundleJob({
         token,
-        jobId,
+        jobId: getBundleJobId(payload),
         onTick,
       });
     }
@@ -1640,7 +1691,16 @@
     const ready = resolveBundleReadyPayload(payload);
     if (ready) return ready;
 
-    const directSignedUrl = toText(payload?.signedUrl || payload?.url || payload?.downloadUrl).trim();
+    const jobId = getBundleJobId(payload);
+    if (jobId) {
+      return pollBundleJob({
+        token,
+        jobId,
+        onTick,
+      });
+    }
+
+    const directSignedUrl = getBundleSignedUrl(payload);
     if (directSignedUrl) {
       return {
         signedUrl: directSignedUrl,
@@ -1648,9 +1708,7 @@
       };
     }
 
-    const err = new Error('unsupported bundle response');
-    err.code = 'failed';
-    throw err;
+    throw createCodedError('failed', 'unsupported bundle response');
   }
 
   async function requestLegacyBagBundles({ token, selections, filesByLookup = null, entryMetaByLookup = null, onTick }) {
@@ -2363,13 +2421,15 @@
 
       state.busy = 'download';
       state.error = '';
-      state.status = 'Preparing secure bundle…';
+      state.status = 'Resolving selected files…';
       render();
 
       try {
         await resolveLookupFiles();
         await resolveLookupEntryMeta();
         const selections = collectSelectionsPayload();
+        state.status = 'Requesting secure bundle…';
+        render();
         try {
           const payload = await requestBagBundle({
             token: state.auth.token,
@@ -2384,32 +2444,49 @@
           const delivery = toText(payload?.delivery).toLowerCase();
 
           if (delivery === 'sync') {
-            const signedUrl = toText(payload?.signedUrl || payload?.url).trim();
+            const signedUrl = getBundleSignedUrl(payload);
             if (!signedUrl) throw new Error('missing signed url');
             openSignedUrl(signedUrl);
             state.status = 'Bundle ready. Opening download…';
           } else if (delivery === 'async') {
             const result = await pollBundleJob({
               token: state.auth.token,
-              jobId: payload?.jobId,
-              onTick: () => {
-                state.status = 'Preparing secure bundle…';
+              jobId: getBundleJobId(payload),
+              onTick: ({ attempt = 0, payload: pollPayload = null } = {}) => {
+                state.status = formatBundlePollStatus(pollPayload, Number(attempt) || 0);
                 render();
               },
             });
-            openSignedUrl(result?.signedUrl || result?.url || result?.downloadUrl);
+            openSignedUrl(getBundleSignedUrl(result));
             state.status = 'Bundle ready. Opening download…';
           } else {
-            const fallbackSigned = toText(payload?.signedUrl || payload?.url || payload?.downloadUrl).trim();
-            if (!fallbackSigned) throw new Error('unsupported response');
-            openSignedUrl(fallbackSigned);
-            state.status = 'Bundle ready. Opening download…';
+            const ready = resolveBundleReadyPayload(payload);
+            if (ready) {
+              openSignedUrl(ready.signedUrl);
+              state.status = 'Bundle ready. Opening download…';
+            } else if (getBundleJobId(payload)) {
+              const result = await pollBundleJob({
+                token: state.auth.token,
+                jobId: getBundleJobId(payload),
+                onTick: ({ attempt = 0, payload: pollPayload = null } = {}) => {
+                  state.status = formatBundlePollStatus(pollPayload, Number(attempt) || 0);
+                  render();
+                },
+              });
+              openSignedUrl(getBundleSignedUrl(result));
+              state.status = 'Bundle ready. Opening download…';
+            } else {
+              throw createCodedError('failed', 'unsupported response');
+            }
           }
         } catch (bagError) {
           const bagCode = toText(bagError?.code).toLowerCase();
-          if (bagCode !== 'not-found' && bagCode !== 'empty') throw bagError;
+          if (!shouldFallbackToLookupBundles(bagError)) throw bagError;
           if (bagCode === 'empty') {
             state.status = 'Bundle resolved zero files. Retrying via lookup bundles…';
+            render();
+          } else if (bagCode === 'timeout' || bagCode === 'stalled') {
+            state.status = 'Merged bundle is still preparing. Retrying via lookup bundles…';
             render();
           }
           const fallbackBundles = await requestLegacyBagBundles({
@@ -2417,12 +2494,13 @@
             selections,
             filesByLookup: state.filesByLookup,
             entryMetaByLookup: state.entryMetaByLookup,
-            onTick: ({ index = 0, total = 0 } = {}) => {
+            onTick: ({ stage = '', index = 0, total = 0 } = {}) => {
               const safeTotal = Number(total) > 1 ? Number(total) : 0;
               const safeIndex = Number(index) + 1;
+              const verb = stage === 'poll' ? 'Preparing' : 'Requesting';
               state.status = safeTotal
-                ? `Preparing secure bundles… (${safeIndex}/${safeTotal})`
-                : 'Preparing secure bundle…';
+                ? `${verb} secure bundles… (${safeIndex}/${safeTotal})`
+                : `${verb} secure bundle…`;
               render();
             },
           });
@@ -2450,6 +2528,8 @@
           state.error = 'No bundle route available for current selection.';
         } else if (toText(error?.code) === 'forbidden') {
           state.error = 'Access denied for current selection.';
+        } else if (toText(error?.code) === 'timeout' || toText(error?.code) === 'stalled') {
+          state.error = 'Bundle preparation timed out. Try again in a moment.';
         } else {
           state.error = 'Unable to prepare bag bundle.';
         }

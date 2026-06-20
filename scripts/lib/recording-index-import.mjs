@@ -259,12 +259,38 @@ function detectGridBucketColumns(XLSX, worksheet, range) {
   return strictGrid;
 }
 
-function parseWorksheetSegmentsGrid(XLSX, worksheet) {
+function normalizeFolderLinksOverride(folderLinks = {}) {
+  const rootFolderUrl = toText(folderLinks?.rootFolderUrl || folderLinks?.rootFolder || folderLinks?.root || '');
+  const sourceBucketUrls = folderLinks?.bucketFolderUrls && typeof folderLinks.bucketFolderUrls === 'object'
+    ? folderLinks.bucketFolderUrls
+    : {};
+  const bucketFolderUrls = {};
+  for (const bucket of ['A', 'B', 'C', 'D', 'E', 'X']) {
+    const url = toText(sourceBucketUrls[bucket] || sourceBucketUrls[bucket.toLowerCase()] || '');
+    if (url) bucketFolderUrls[bucket] = url;
+  }
+  return { rootFolderUrl, bucketFolderUrls };
+}
+
+function mergeFolderLinks(primary = {}, fallback = {}) {
+  const normalizedPrimary = normalizeFolderLinksOverride(primary);
+  const normalizedFallback = normalizeFolderLinksOverride(fallback);
+  return {
+    rootFolderUrl: normalizedPrimary.rootFolderUrl || normalizedFallback.rootFolderUrl,
+    bucketFolderUrls: {
+      ...normalizedFallback.bucketFolderUrls,
+      ...normalizedPrimary.bucketFolderUrls,
+    },
+  };
+}
+
+function parseWorksheetSegmentsGrid(XLSX, worksheet, options = {}) {
   const ref = toText(worksheet?.['!ref']);
+  const folderOverride = normalizeFolderLinksOverride(options.folderLinks);
   if (!ref) {
     return {
       segments: [],
-      folderLinks: { rootFolderUrl: '', bucketFolderUrls: {} },
+      folderLinks: folderOverride,
     };
   }
   const range = XLSX.utils.decode_range(ref);
@@ -272,14 +298,14 @@ function parseWorksheetSegmentsGrid(XLSX, worksheet) {
   if (!gridColumns.length) {
     return {
       segments: [],
-      folderLinks: { rootFolderUrl: '', bucketFolderUrls: {} },
+      folderLinks: folderOverride,
     };
   }
-  const rootFolderUrl = cellLink(worksheet.A1);
+  const rootFolderUrl = cellLink(worksheet.A1) || folderOverride.rootFolderUrl;
   const bucketFolderUrls = {};
   const activeColumns = [];
   for (const mapping of gridColumns) {
-    const folderUrl = cellLink(worksheet[mapping.folderCell]);
+    const folderUrl = cellLink(worksheet[mapping.folderCell]) || folderOverride.bucketFolderUrls[mapping.bucket] || '';
     if (!folderUrl) continue;
     bucketFolderUrls[mapping.bucket] = folderUrl;
     activeColumns.push(mapping);
@@ -446,8 +472,8 @@ function parseWorksheetSegmentsLegacy(XLSX, worksheet) {
   return segments;
 }
 
-function parseWorksheetSegments(XLSX, worksheet) {
-  const grid = parseWorksheetSegmentsGrid(XLSX, worksheet);
+function parseWorksheetSegments(XLSX, worksheet, options = {}) {
+  const grid = parseWorksheetSegmentsGrid(XLSX, worksheet, options);
   if (Array.isArray(grid.segments) && grid.segments.length > 0) {
     return grid;
   }
@@ -538,7 +564,8 @@ async function fetchSheetGridViaApi(sheetId, { keyPath } = {}) {
   return data;
 }
 
-function parseApiGridSegments(grid) {
+function parseApiGridSegments(grid, options = {}) {
+  const folderOverride = normalizeFolderLinksOverride(options.folderLinks);
   const startRow = Number(grid?.startRow || 0);
   const startCol = Number(grid?.startColumn || 0);
   const rowData = Array.isArray(grid?.rowData) ? grid.rowData : [];
@@ -561,11 +588,11 @@ function parseApiGridSegments(grid) {
     { bucket: 'X', column: 5 },
   ];
 
-  const rootFolderUrl = firstLink(cellAt(0, 0));
+  const rootFolderUrl = firstLink(cellAt(0, 0)) || folderOverride.rootFolderUrl;
   const bucketFolderUrls = {};
   const activeColumns = [];
   for (const mapping of BUCKET_COLUMNS) {
-    const folderUrl = firstLink(cellAt(1, mapping.column));
+    const folderUrl = firstLink(cellAt(1, mapping.column)) || folderOverride.bucketFolderUrls[mapping.bucket] || '';
     if (!isDriveFolderUrl(folderUrl)) continue;
     bucketFolderUrls[mapping.bucket] = folderUrl;
     activeColumns.push(mapping);
@@ -707,6 +734,8 @@ export function parseRecordingIndexSheetUrl(url) {
 export async function importRecordingIndexFromSheet({
   sheetUrl,
   fallbackXlsxPath,
+  folderLinks,
+  serviceAccountKeyPath,
   lookupNumber,
   entrySlug,
   timeoutMs = 12000,
@@ -718,6 +747,7 @@ export async function importRecordingIndexFromSheet({
   }
   const normalizedSlug = slugifyToken(entrySlug || normalizedLookup);
   const sheet = normalizeSheetUrl(sheetUrl);
+  const folderLinksOverride = normalizeFolderLinksOverride(folderLinks);
 
   let sourceMode = 'live';
   let sourceLabel = sheet.xlsxExportUrl;
@@ -726,10 +756,10 @@ export async function importRecordingIndexFromSheet({
 
   // Preferred path: Sheets API v4 captures every per-cell text-run hyperlink, so the
   // audio (e.g. "ste") and video (e.g. "4K"/"1080p") renditions all become files.
-  if (hasServiceAccount()) {
+  if (hasServiceAccount(serviceAccountKeyPath)) {
     try {
-      const grid = await fetchSheetGridViaApi(sheet.sheetId);
-      const apiParsed = parseApiGridSegments(grid);
+      const grid = await fetchSheetGridViaApi(sheet.sheetId, { keyPath: serviceAccountKeyPath });
+      const apiParsed = parseApiGridSegments(grid, { folderLinks: folderLinksOverride });
       if (Array.isArray(apiParsed.segments) && apiParsed.segments.length) {
         parsed = apiParsed;
         sourceMode = 'sheets-api';
@@ -773,22 +803,25 @@ export async function importRecordingIndexFromSheet({
       throw new Error('Recording index workbook has no sheets.');
     }
     const worksheet = workbook.Sheets[firstSheetName];
-    parsed = parseWorksheetSegments(XLSX, worksheet);
+    parsed = parseWorksheetSegments(XLSX, worksheet, { folderLinks: folderLinksOverride });
   }
 
   const parsedSegments = Array.isArray(parsed.segments) ? parsed.segments : [];
-  const folderLinks = parsed.folderLinks && typeof parsed.folderLinks === 'object'
-    ? parsed.folderLinks
-    : { rootFolderUrl: '', bucketFolderUrls: {} };
+  const resolvedFolderLinks = mergeFolderLinks(
+    parsed.folderLinks && typeof parsed.folderLinks === 'object'
+      ? parsed.folderLinks
+      : {},
+    folderLinksOverride,
+  );
   if (!parsedSegments.length) {
     throw new Error('No per-file segment links were found in recording index sheet.');
   }
-  if (!toText(folderLinks.rootFolderUrl)) {
+  if (!toText(resolvedFolderLinks.rootFolderUrl)) {
     throw new Error('Recording index root folder link is missing at A1.');
   }
   const usedBuckets = Array.from(new Set(parsedSegments.map((segment) => segment.bucket)));
   for (const bucket of usedBuckets) {
-    const folderUrl = toText(folderLinks.bucketFolderUrls?.[bucket]);
+    const folderUrl = toText(resolvedFolderLinks.bucketFolderUrls?.[bucket]);
     if (!folderUrl) {
       throw new Error(`Recording index bucket folder link is missing at ${bucket === 'X' ? 'F2' : `${bucket}2`} for bucket ${bucket}.`);
     }
@@ -840,8 +873,8 @@ export async function importRecordingIndexFromSheet({
   return {
     sheet: {
       ...sheet,
-      rootFolderUrl: toText(folderLinks.rootFolderUrl),
-      bucketFolderUrls: folderLinks.bucketFolderUrls || {},
+      rootFolderUrl: toText(resolvedFolderLinks.rootFolderUrl),
+      bucketFolderUrls: resolvedFolderLinks.bucketFolderUrls || {},
     },
     source: {
       mode: sourceMode,

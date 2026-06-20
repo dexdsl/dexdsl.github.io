@@ -1,8 +1,8 @@
 {
   "audio": {
     "A": {
-      "mp3": "",
-      "wav": ""
+      "mp3": "bundle:lookup:E.Noi. Mu AV2023 S1:A:audio",
+      "wav": "bundle:lookup:E.Noi. Mu AV2023 S1:A:audio"
     },
     "B": {
       "mp3": "",
@@ -27,12 +27,12 @@
   },
   "video": {
     "A": {
-      "1080p": "",
-      "4K": ""
+      "1080p": "bundle:lookup:E.Noi. Mu AV2023 S1:A:video",
+      "4K": "bundle:lookup:E.Noi. Mu AV2023 S1:A:video"
     },
     "B": {
-      "1080p": "",
-      "4K": ""
+      "1080p": "bundle:lookup:E.Noi. Mu AV2023 S1:B:video",
+      "4K": "bundle:lookup:E.Noi. Mu AV2023 S1:B:video"
     },
     "C": {
       "1080p": "",

@@ -1,0 +1,287 @@
+{
+  "version": "recording-index-sources-v1",
+  "updatedAt": "2026-06-20T01:58:34.886Z",
+  "seasons": {
+    "S1": {
+      "sourceMode": "drive-tree",
+      "importMode": "drive-files",
+      "driveRootFolderId": "1ta8gWjbaNdUgEVuzcjj2PypAeRAa_a0w",
+      "driveRootFolderUrl": "https://drive.google.com/drive/folders/1ta8gWjbaNdUgEVuzcjj2PypAeRAa_a0w"
+    }
+  },
+  "entries": {
+    "electric-guitar-pedals-ethan-bailey-gould": {
+      "slug": "electric-guitar-pedals-ethan-bailey-gould",
+      "season": "S1",
+      "lookupNumber": "E.Gtr. Ba AV2023 S1",
+      "sheetId": "1Dpr0rokJanJJ8_7UiQ90RBl6n8DoTId_Q-gfJBBRNh8",
+      "sheetUrl": "https://docs.google.com/spreadsheets/d/1Dpr0rokJanJJ8_7UiQ90RBl6n8DoTId_Q-gfJBBRNh8/edit?gid=0#gid=0",
+      "driveRootFolderId": "1K436lrkluQh6geeuyWTNRwl2W47cAHiS",
+      "driveRootFolderUrl": "https://drive.google.com/drive/folders/1K436lrkluQh6geeuyWTNRwl2W47cAHiS",
+      "bucketFolderIds": {
+        "A": "1Uq_gaJJtt59TNJ3-0jZJrFBip5WIC0NO",
+        "B": "1bSG0-26BknrQ2r0tqcy4lezcloBFjl-7"
+      },
+      "bucketFolderUrls": {
+        "A": "https://drive.google.com/drive/folders/1Uq_gaJJtt59TNJ3-0jZJrFBip5WIC0NO",
+        "B": "https://drive.google.com/drive/folders/1bSG0-26BknrQ2r0tqcy4lezcloBFjl-7"
+      },
+      "sourceMode": "drive-tree",
+      "confidence": 252,
+      "discoveredNames": [
+        "Recording Index (E.Gtr. Ba AV2023 S1)",
+        "E.Gtr. Ba AV2023 S1 - Electric Guitar + Pedals, Ethan Bailey-Gould",
+        "dex Season 1 (2023 S1)"
+      ],
+      "discoveredAt": "2026-06-20T01:58:34.879Z"
+    },
+    "amplified-knives-tyler-jordan": {
+      "slug": "amplified-knives-tyler-jordan",
+      "season": "S1",
+      "lookupNumber": "E.Kni. Jo AV2023 S1",
+      "sheetId": "1egkj32jcWJO8Np1SdaopJRtLAdX6atDdLGbNq6e4pDc",
+      "sheetUrl": "https://docs.google.com/spreadsheets/d/1egkj32jcWJO8Np1SdaopJRtLAdX6atDdLGbNq6e4pDc/edit?gid=0#gid=0",
+      "driveRootFolderId": "1WEHApgJmHAMUl7e_OlQ5JaCODR5cR8KW",
+      "driveRootFolderUrl": "https://drive.google.com/drive/folders/1WEHApgJmHAMUl7e_OlQ5JaCODR5cR8KW",
+      "bucketFolderIds": {
+        "A": "1C7a4mZFeFP2aA8k5WsW_9JNdOkx-pXKb",
+        "B": "1Emml5tcJNx3kdiFkfnC78CF_Yxli5iSU"
+      },
+      "bucketFolderUrls": {
+        "A": "https://drive.google.com/drive/folders/1C7a4mZFeFP2aA8k5WsW_9JNdOkx-pXKb",
+        "B": "https://drive.google.com/drive/folders/1Emml5tcJNx3kdiFkfnC78CF_Yxli5iSU"
+      },
+      "sourceMode": "drive-tree",
+      "confidence": 246,
+      "discoveredNames": [
+        "Recording Index (E.Kni. Jo AV2023 S1)",
+        "E.Kni. Jo AV2023 S1 - Amplified Knives, Tyler Jordan",
+        "dex Season 1 (2023 S1)"
+      ],
+      "discoveredAt": "2026-06-20T01:58:34.879Z"
+    },
+    "no-input-mixer-jared-murphy": {
+      "slug": "no-input-mixer-jared-murphy",
+      "season": "S1",
+      "lookupNumber": "E.Noi. Mu AV2023 S1",
+      "sheetId": "13CSt_I1EYHwKFHmZwhJ1l8cfQvohClg7bwS1VZ132k4",
+      "sheetUrl": "https://docs.google.com/spreadsheets/d/13CSt_I1EYHwKFHmZwhJ1l8cfQvohClg7bwS1VZ132k4/edit?gid=0#gid=0",
+      "driveRootFolderId": "1kP3_DAT5_IrfJYEFrMCgBZI71waMJBRZ",
+      "driveRootFolderUrl": "https://drive.google.com/drive/folders/1kP3_DAT5_IrfJYEFrMCgBZI71waMJBRZ",
+      "bucketFolderIds": {
+        "A": "1_rn_Pvgpe3ApWT5_4wiNsvS_hQf4n5YH",
+        "B": "1S_8uJuYeuKM_ByUvHIiXRM5A9l4METvu"
+      },
+      "bucketFolderUrls": {
+        "A": "https://drive.google.com/drive/folders/1_rn_Pvgpe3ApWT5_4wiNsvS_hQf4n5YH",
+        "B": "https://drive.google.com/drive/folders/1S_8uJuYeuKM_ByUvHIiXRM5A9l4METvu"
+      },
+      "sourceMode": "drive-tree",
+      "confidence": 173,
+      "discoveredNames": [
+        "Recording Index (E.Noi. Mu AV2023 S1)",
+        "E.Noi. Mu AV2023 S1 - No Input Mixer, Jared Murphy",
+        "dex Season 1 (2023 S1)"
+      ],
+      "discoveredAt": "2026-06-20T01:58:34.879Z"
+    },
+    "prepared-harpsichord-suarez-solis": {
+      "slug": "prepared-harpsichord-suarez-solis",
+      "season": "S1",
+      "lookupNumber": "K.Hps. Su AV2023 S1",
+      "sheetId": "1SYil4lH1p0jj3DRlgroRb_hWYAGipa1jLrsPez9IL_U",
+      "sheetUrl": "https://docs.google.com/spreadsheets/d/1SYil4lH1p0jj3DRlgroRb_hWYAGipa1jLrsPez9IL_U/edit?gid=0#gid=0",
+      "driveRootFolderId": "1SEvIhMf2mkVv4PvzSX3RuejmWhJTX43D",
+      "driveRootFolderUrl": "https://drive.google.com/drive/folders/1SEvIhMf2mkVv4PvzSX3RuejmWhJTX43D",
+      "bucketFolderIds": {
+        "A": "1Im9ZFGvJc82WVSvcGPrV9mp1voFuidSV",
+        "B": "1Vr4lVxv9VpbYSFhNcLeK1IeaK5SiRLSE"
+      },
+      "bucketFolderUrls": {
+        "A": "https://drive.google.com/drive/folders/1Im9ZFGvJc82WVSvcGPrV9mp1voFuidSV",
+        "B": "https://drive.google.com/drive/folders/1Vr4lVxv9VpbYSFhNcLeK1IeaK5SiRLSE"
+      },
+      "sourceMode": "drive-tree",
+      "confidence": 195,
+      "discoveredNames": [
+        "Recording Index (K.Hps. Su AV2023 S1)",
+        "K.Hps. Su AV2023 S1 - Prepared Harpsichord, Sebastian Suarez-Solis",
+        "dex Season 1 (2023 S1)"
+      ],
+      "discoveredAt": "2026-06-20T01:58:34.879Z"
+    },
+    "2-organs-midori-ataka": {
+      "slug": "2-organs-midori-ataka",
+      "season": "S1",
+      "lookupNumber": "K.Org. At AV2023 S1",
+      "sheetId": "1AHjmoqS4r6DnI2KY3GsqBlrYbP0xAPAJMYS0E6MSQAE",
+      "sheetUrl": "https://docs.google.com/spreadsheets/d/1AHjmoqS4r6DnI2KY3GsqBlrYbP0xAPAJMYS0E6MSQAE/edit?gid=0#gid=0",
+      "driveRootFolderId": "1Iu0ZEydixW7tpN7EezFd5qh5TX_w5dXE",
+      "driveRootFolderUrl": "https://drive.google.com/drive/folders/1Iu0ZEydixW7tpN7EezFd5qh5TX_w5dXE",
+      "bucketFolderIds": {
+        "A": "1RR-RdzBLRU6VuVPAGip8fESOUtzshYD2",
+        "B": "1JgFnHHW3qiolEBkUZFnTo9xRKTJMgmoN"
+      },
+      "bucketFolderUrls": {
+        "A": "https://drive.google.com/drive/folders/1RR-RdzBLRU6VuVPAGip8fESOUtzshYD2",
+        "B": "https://drive.google.com/drive/folders/1JgFnHHW3qiolEBkUZFnTo9xRKTJMgmoN"
+      },
+      "sourceMode": "drive-tree",
+      "confidence": 66,
+      "discoveredNames": [
+        "Recording Index (K.Org. At AV2023 S1)",
+        "K.Org. At AV2023 S1 - Organ, Midori Ataka",
+        "dex Season 1 (2023 S1)"
+      ],
+      "discoveredAt": "2026-06-20T01:58:34.879Z"
+    },
+    "hammered-dulcimer-cameron-church": {
+      "slug": "hammered-dulcimer-cameron-church",
+      "season": "S1",
+      "lookupNumber": "P.Hdl. Ch AV2023 S1",
+      "sheetId": "1pKp5oly0BwxNhKcm4mX51YZOXX-Fq3WlnDeeVteg5ys",
+      "sheetUrl": "https://docs.google.com/spreadsheets/d/1pKp5oly0BwxNhKcm4mX51YZOXX-Fq3WlnDeeVteg5ys/edit?gid=0#gid=0",
+      "driveRootFolderId": "1CbG3MKx0IhU51RsAwz-uFuFuVyysOcn4",
+      "driveRootFolderUrl": "https://drive.google.com/drive/folders/1CbG3MKx0IhU51RsAwz-uFuFuVyysOcn4",
+      "bucketFolderIds": {
+        "A": "11wqo47uexmOenDklZM6aqcRKjS-61_UJ",
+        "B": "11m1Mmz-fFZhH42MTq0sZ9rB5ESH5Xd26"
+      },
+      "bucketFolderUrls": {
+        "A": "https://drive.google.com/drive/folders/11wqo47uexmOenDklZM6aqcRKjS-61_UJ",
+        "B": "https://drive.google.com/drive/folders/11m1Mmz-fFZhH42MTq0sZ9rB5ESH5Xd26"
+      },
+      "sourceMode": "drive-tree",
+      "confidence": 78,
+      "discoveredNames": [
+        "Recording Index (P.Hdl. Ch AV2023 S1)",
+        "P.Hdl. Ch AV2023 S1 - Prepared Hammered Dulcimer and Digital Signal Processor, Cameron Church",
+        "dex Season 1 (2023 S1)"
+      ],
+      "discoveredAt": "2026-06-20T01:58:34.879Z"
+    },
+    "prepared-bass-viol-suarez-solis": {
+      "slug": "prepared-bass-viol-suarez-solis",
+      "season": "S1",
+      "lookupNumber": "S.VdG. Su AV2023 S1",
+      "sheetId": "1_D1YUEMfFaLKw4PbjS5NdjpF5CxY1K0Kj2hO_EpPqjY",
+      "sheetUrl": "https://docs.google.com/spreadsheets/d/1_D1YUEMfFaLKw4PbjS5NdjpF5CxY1K0Kj2hO_EpPqjY/edit?gid=0#gid=0",
+      "driveRootFolderId": "1vSMV46BBWADVatHFgywLqngmOSvERE3s",
+      "driveRootFolderUrl": "https://drive.google.com/drive/folders/1vSMV46BBWADVatHFgywLqngmOSvERE3s",
+      "bucketFolderIds": {
+        "A": "1KKGzAqM3yD-SAsOMATrMsok-zqrah1Ck",
+        "B": "1R061CvIbCmdh-IlhQ9wFbCQ23CMwnp5a"
+      },
+      "bucketFolderUrls": {
+        "A": "https://drive.google.com/drive/folders/1KKGzAqM3yD-SAsOMATrMsok-zqrah1Ck",
+        "B": "https://drive.google.com/drive/folders/1R061CvIbCmdh-IlhQ9wFbCQ23CMwnp5a"
+      },
+      "sourceMode": "drive-tree",
+      "confidence": 104,
+      "discoveredNames": [
+        "Recording Index (S.VdG. Su AV2023 S1)",
+        "S.VdG. Su AV2023 S1 - Viola da Gamba, Sebastian Suarez-Solis",
+        "dex Season 1 (2023 S1)"
+      ],
+      "discoveredAt": "2026-06-20T01:58:34.879Z"
+    },
+    "cello-emmanuel-losa": {
+      "slug": "cello-emmanuel-losa",
+      "season": "S1",
+      "lookupNumber": "S.Vlc. Lo AV2023 S1",
+      "sheetId": "1-ZsNlXLIdfAzLgUJakHb9k9rPVn2wFBH_8JLmELA6nA",
+      "sheetUrl": "https://docs.google.com/spreadsheets/d/1-ZsNlXLIdfAzLgUJakHb9k9rPVn2wFBH_8JLmELA6nA/edit?gid=0#gid=0",
+      "driveRootFolderId": "1sPQGdx_lhEt1teXCEn1eWbH-nH0F6whh",
+      "driveRootFolderUrl": "https://drive.google.com/drive/folders/1sPQGdx_lhEt1teXCEn1eWbH-nH0F6whh",
+      "bucketFolderIds": {
+        "A": "12EPq8Zxhw1xaPRAVYbvyWjYwz31xWHy3",
+        "B": "1eC7vFj0jcWfW8Lo2V3b7iHUNpeTTSuMQ",
+        "C": "11xwNWgfoXzD-WwvMmGTrdzfu_dRWWpRf"
+      },
+      "bucketFolderUrls": {
+        "A": "https://drive.google.com/drive/folders/12EPq8Zxhw1xaPRAVYbvyWjYwz31xWHy3",
+        "B": "https://drive.google.com/drive/folders/1eC7vFj0jcWfW8Lo2V3b7iHUNpeTTSuMQ",
+        "C": "https://drive.google.com/drive/folders/11xwNWgfoXzD-WwvMmGTrdzfu_dRWWpRf"
+      },
+      "sourceMode": "drive-tree",
+      "confidence": 192,
+      "discoveredNames": [
+        "Recording Index (S.Vlc. Lo AV2023 S1)",
+        "S.Vlc. Lo AV2023 S1 - Cello, Emmanuel Losa",
+        "dex Season 1 (2023 S1)"
+      ],
+      "discoveredAt": "2026-06-20T01:58:34.879Z"
+    },
+    "voice-everyday-object-manipulation-levi-lu": {
+      "slug": "voice-everyday-object-manipulation-levi-lu",
+      "season": "S1",
+      "lookupNumber": "V.Obj. Lu A2023 S1",
+      "sheetId": "1H9jV7dRqbxiWfjEHSNtgbe_rQUbFIxSvTviFEptuHX8",
+      "sheetUrl": "https://docs.google.com/spreadsheets/d/1H9jV7dRqbxiWfjEHSNtgbe_rQUbFIxSvTviFEptuHX8/edit?gid=0#gid=0",
+      "driveRootFolderId": "1HW7VSeR7uTfhbKoZTqvYwFigbzCTPxIL",
+      "driveRootFolderUrl": "https://drive.google.com/drive/folders/1HW7VSeR7uTfhbKoZTqvYwFigbzCTPxIL",
+      "bucketFolderIds": {
+        "A": "1v_EkF-HCqyDF4r5GseBYCZYxqT9aepRd",
+        "B": "1rjENX6ivAehYhFlVQwVDidvWRG5bYIwk"
+      },
+      "bucketFolderUrls": {
+        "A": "https://drive.google.com/drive/folders/1v_EkF-HCqyDF4r5GseBYCZYxqT9aepRd",
+        "B": "https://drive.google.com/drive/folders/1rjENX6ivAehYhFlVQwVDidvWRG5bYIwk"
+      },
+      "sourceMode": "drive-tree",
+      "confidence": 78,
+      "discoveredNames": [
+        "Recording Index (V.Obj. Lu A2023 S1)",
+        "V.Obj. Lu A2023 S1 - Voice with Everyday Object Manipulation, Qiujiang Levi Lu",
+        "dex Season 1 (2023 S1)"
+      ],
+      "discoveredAt": "2026-06-20T01:58:34.879Z"
+    },
+    "cybernetic-scat-paul-hermansen": {
+      "slug": "cybernetic-scat-paul-hermansen",
+      "season": "S1",
+      "lookupNumber": "V.Sc. He A2023 S1",
+      "sheetId": "1xZ93Hr4hV1_u4CZlNlx0huRQ2_CrAi4Ul1XQ5us2Ybw",
+      "sheetUrl": "https://docs.google.com/spreadsheets/d/1xZ93Hr4hV1_u4CZlNlx0huRQ2_CrAi4Ul1XQ5us2Ybw/edit?gid=0#gid=0",
+      "driveRootFolderId": "1GAdJnRsv55rrxqP72VJpRmfsXMNhBUGv",
+      "driveRootFolderUrl": "https://drive.google.com/drive/folders/1GAdJnRsv55rrxqP72VJpRmfsXMNhBUGv",
+      "bucketFolderIds": {
+        "B": "1NbqLuRjTo96bRPHP2ETyx7yBV-QSXOqv"
+      },
+      "bucketFolderUrls": {
+        "B": "https://drive.google.com/drive/folders/1NbqLuRjTo96bRPHP2ETyx7yBV-QSXOqv"
+      },
+      "sourceMode": "drive-tree",
+      "confidence": 103,
+      "discoveredNames": [
+        "Recording Index (V.Sc. He A2023 S1)",
+        "V.Sc. He A2023 S1 - Cybernetic Scat, Paul Sternchen Hermansen",
+        "dex Season 1 (2023 S1)"
+      ],
+      "discoveredAt": "2026-06-20T01:58:34.879Z"
+    },
+    "amplified-tv-sam-pluta": {
+      "slug": "amplified-tv-sam-pluta",
+      "season": "S1",
+      "lookupNumber": "X.Tlv. Pl AV2023 S1",
+      "sheetId": "1MWEHmhya6BWV_hGWqGgBHAgi1aYrOo_Ayz9bZ5fVOzs",
+      "sheetUrl": "https://docs.google.com/spreadsheets/d/1MWEHmhya6BWV_hGWqGgBHAgi1aYrOo_Ayz9bZ5fVOzs/edit?gid=0#gid=0",
+      "driveRootFolderId": "1IQSEp2Tr_6MPvB3W7IWVxWVMXjPL48WW",
+      "driveRootFolderUrl": "https://drive.google.com/drive/folders/1IQSEp2Tr_6MPvB3W7IWVxWVMXjPL48WW",
+      "bucketFolderIds": {
+        "A": "15eIU2v-NcpUBBkz5miUKAau9OJ9GYjIB"
+      },
+      "bucketFolderUrls": {
+        "A": "https://drive.google.com/drive/folders/15eIU2v-NcpUBBkz5miUKAau9OJ9GYjIB"
+      },
+      "sourceMode": "drive-tree",
+      "confidence": 84,
+      "discoveredNames": [
+        "Recording Index (X.Tlv. Pl AV2023 S1)",
+        "X.Tlv. Pl AV2023 S1 - Feedback Televisions, Sam Pluta",
+        "dex Season 1 (2023 S1)"
+      ],
+      "discoveredAt": "2026-06-20T01:58:34.879Z"
+    }
+  }
+}

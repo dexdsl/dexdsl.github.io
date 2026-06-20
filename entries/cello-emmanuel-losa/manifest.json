@@ -1,12 +1,12 @@
 {
   "audio": {
     "A": {
-      "mp3": "",
-      "wav": ""
+      "mp3": "bundle:lookup:S.Vlc. Lo AV2023 S1:A:audio",
+      "wav": "bundle:lookup:S.Vlc. Lo AV2023 S1:A:audio"
     },
     "B": {
-      "mp3": "",
-      "wav": ""
+      "mp3": "bundle:lookup:S.Vlc. Lo AV2023 S1:B:audio",
+      "wav": "bundle:lookup:S.Vlc. Lo AV2023 S1:B:audio"
     },
     "C": {
       "mp3": "",
@@ -27,16 +27,16 @@
   },
   "video": {
     "A": {
-      "1080p": "",
-      "4K": ""
+      "1080p": "bundle:lookup:S.Vlc. Lo AV2023 S1:A:video",
+      "4K": "bundle:lookup:S.Vlc. Lo AV2023 S1:A:video"
     },
     "B": {
-      "1080p": "",
-      "4K": ""
+      "1080p": "bundle:lookup:S.Vlc. Lo AV2023 S1:B:video",
+      "4K": "bundle:lookup:S.Vlc. Lo AV2023 S1:B:video"
     },
     "C": {
-      "1080p": "",
-      "4K": ""
+      "1080p": "bundle:lookup:S.Vlc. Lo AV2023 S1:C:video",
+      "4K": "bundle:lookup:S.Vlc. Lo AV2023 S1:C:video"
     },
     "D": {
       "1080p": "",

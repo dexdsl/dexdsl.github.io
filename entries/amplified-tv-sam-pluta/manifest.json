@@ -1,8 +1,8 @@
 {
   "audio": {
     "A": {
-      "mp3": "",
-      "wav": ""
+      "mp3": "bundle:lookup:X.Tlv. Pl AV2023 S1:A:audio",
+      "wav": "bundle:lookup:X.Tlv. Pl AV2023 S1:A:audio"
     },
     "B": {
       "mp3": "",
@@ -27,8 +27,8 @@
   },
   "video": {
     "A": {
-      "1080p": "",
-      "4K": ""
+      "1080p": "bundle:lookup:X.Tlv. Pl AV2023 S1:A:video",
+      "4K": "bundle:lookup:X.Tlv. Pl AV2023 S1:A:video"
     },
     "B": {
       "1080p": "",

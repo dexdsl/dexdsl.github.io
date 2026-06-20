@@ -1,12 +1,12 @@
 {
   "audio": {
     "A": {
-      "mp3": "",
-      "wav": ""
+      "mp3": "bundle:lookup:V.Obj. Lu A2023 S1:A:audio",
+      "wav": "bundle:lookup:V.Obj. Lu A2023 S1:A:audio"
     },
     "B": {
-      "mp3": "",
-      "wav": ""
+      "mp3": "bundle:lookup:V.Obj. Lu A2023 S1:B:audio",
+      "wav": "bundle:lookup:V.Obj. Lu A2023 S1:B:audio"
     },
     "C": {
       "mp3": "",
