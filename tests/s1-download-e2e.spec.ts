@@ -91,6 +91,10 @@ const restoreAuthenticatedViewer = async (page: Page) => page.evaluate(({ sub })
 test('S1 entry files can be added to the bag and downloaded as a secure bundle', async ({ page }) => {
   const protectedLookup = await readProtectedLookup();
   expect(protectedLookup.files).toHaveLength(51);
+  expect(protectedLookup.files.filter((file) => {
+    const type = String((file as { type?: unknown }).type || '').toLowerCase();
+    return type === 'audio' || type === 'video';
+  })).toHaveLength(50);
 
   const apiCalls: string[] = [];
   const bundleBodies: unknown[] = [];
@@ -111,7 +115,7 @@ test('S1 entry files can be added to the bag and downloaded as a secure bundle',
       bundleBodies.push(body);
       await fulfillJson(route, {
         delivery: 'sync',
-        fileCount: 50,
+        fileCount: 51,
         signedUrl: 'https://downloads.example.test/s1-cello.zip',
       });
       return;
@@ -150,7 +154,6 @@ test('S1 entry files can be added to the bag and downloaded as a secure bundle',
   ]));
 
   await expect(page.locator('.dx-bag-card')).toContainText(LOOKUP);
-  await expect(page.locator('.dx-bag-count')).toContainText('50 files in download');
 
   await page.getByRole('button', { name: 'DOWNLOAD BAG' }).click();
 
@@ -163,6 +166,7 @@ test('S1 entry files can be added to the bag and downloaded as a secure bundle',
   ).toContain('https://downloads.example.test/s1-cello.zip');
 
   await expect(page.locator('.dx-bag-status')).toContainText('Bundle ready. Opening download');
+  await expect(page.locator('.dx-bag-count')).toContainText('51 files in download');
   expect(apiCalls).toContain(`GET /me/assets/${LOOKUP}`);
   expect(apiCalls).toContain('POST /me/assets/bag/bundle');
 

@@ -9,6 +9,8 @@
   const PROFILE_SHOW_MESH_ROUTE_CLASS = 'dx-route-show-mesh';
   const DEFAULT_API_BASE = 'https://dex-api.spring-fog-8edd.workers.dev';
   const FETCH_TIMEOUT_MS = 9000;
+  const BUNDLE_REQUEST_TIMEOUT_MS = 45000;
+  const BUNDLE_POLL_TIMEOUT_MS = 18000;
   const BUNDLE_JOB_MAX_POLLS = 14;
   const BUNDLE_JOB_MAX_WAIT_MS = 1800;
   const RESUME_KEY = 'dex:bag:resume:v1';
@@ -426,12 +428,14 @@
     const method = String(options.method || 'GET').toUpperCase();
     const token = toText(options.token);
     const body = options.body;
+    const timeoutMs = Number(options.timeoutMs);
+    const safeTimeoutMs = Number.isFinite(timeoutMs) && timeoutMs > 0 ? timeoutMs : FETCH_TIMEOUT_MS;
     const headers = { accept: 'application/json' };
     if (token) headers.authorization = `Bearer ${token}`;
     if (body !== undefined) headers['content-type'] = 'application/json';
 
     const ctrl = new AbortController();
-    const timer = window.setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
+    const timer = window.setTimeout(() => ctrl.abort(), safeTimeoutMs);
     try {
       const response = await fetch(`${getApiBase()}${pathname}`, {
         method,
@@ -1427,6 +1431,7 @@
     return requestJson('/me/assets/bag/bundle', {
       method: 'POST',
       token,
+      timeoutMs: BUNDLE_REQUEST_TIMEOUT_MS,
       body: {
         source: 'entry-bag',
         dedupe: true,
@@ -1476,7 +1481,10 @@
     const safeJobId = encodeURIComponent(getBundleJobId({ jobId }));
     if (!safeJobId) throw createCodedError('failed', 'missing job id');
     for (let attempt = 0; attempt < BUNDLE_JOB_MAX_POLLS; attempt += 1) {
-      const payload = await requestJson(`/me/assets/bundle/${safeJobId}`, { token });
+      const payload = await requestJson(`/me/assets/bundle/${safeJobId}`, {
+        token,
+        timeoutMs: BUNDLE_POLL_TIMEOUT_MS,
+      });
       const ready = resolveBundleReadyPayload(payload);
       if (ready) return { ...payload, ...ready };
       const waitMs = Number(payload?.pollAfterMs || 1100);
@@ -1663,6 +1671,7 @@
     const payload = await requestJson(`/me/assets/${encodeURIComponent(safeLookup)}/bundle`, {
       method: 'POST',
       token,
+      timeoutMs: BUNDLE_REQUEST_TIMEOUT_MS,
       body: {
         tokens: Array.isArray(tokens) ? tokens : [],
         source: 'entry-bag',
