@@ -964,6 +964,7 @@
     const safeLookup = normalizeLookup(lookup);
     const normalizedRows = Array.isArray(rows) ? rows.slice() : [];
     const safeFiles = Array.isArray(files) ? files : [];
+    const hasResolvedFiles = safeFiles.length > 0;
     const out = [];
     const byText = new Map();
 
@@ -1011,18 +1012,18 @@
       const bucket = normalizeBucket(row?.bucket);
       const rowKey = toText(row?.key).trim();
       if (kind === 'collection') {
-        const count = sumAllBucketStats(bucketFileStats) || safeFiles.length;
+        const count = hasResolvedFiles ? safeFiles.length : sumAllBucketStats(bucketFileStats);
         pushLine(`${safeLookup} ALL BUCKETS`, count, rowKey);
         return;
       }
       if (kind === 'bucket') {
-        const count = sumBucketStats(bucketFileStats, bucket) || countFilesBy({ bucket });
+        const count = hasResolvedFiles ? countFilesBy({ bucket }) : sumBucketStats(bucketFileStats, bucket);
         pushLine(`${safeLookup} ${bucket}`, count, rowKey);
         return;
       }
       if (kind === 'type') {
         const mediaType = normalizeMediaType(row?.mediaType);
-        const count = sumBucketStats(bucketFileStats, bucket, mediaType) || countFilesBy({ bucket, mediaType });
+        const count = hasResolvedFiles ? countFilesBy({ bucket, mediaType }) : sumBucketStats(bucketFileStats, bucket, mediaType);
         pushLine(`${safeLookup} ${bucket} [${mediaType.toUpperCase()}]`, count, rowKey);
         return;
       }
@@ -1439,10 +1440,13 @@
       if (selectedByType) continue;
       const exact = selectedFiles.find((row) => row.bucket === file.bucket && fileIdMatchesSelection(file.fileId, row.fileId));
       if (!exact) continue;
-      const mediaTypes = exact.mediaTypes.length
-        ? exact.mediaTypes.filter((mediaType) => file.availableTypes.includes(mediaType))
-        : file.availableTypes.slice();
-      addFile(file, mediaTypes.length ? mediaTypes : file.availableTypes.slice());
+      if (exact.mediaTypes.length) {
+        const mediaTypes = exact.mediaTypes.filter((mediaType) => file.availableTypes.includes(mediaType));
+        if (!mediaTypes.length) continue;
+        addFile(file, mediaTypes);
+        continue;
+      }
+      addFile(file, file.availableTypes.slice());
     }
 
     const deduped = new Map();
@@ -2102,19 +2106,20 @@
       const files = state.filesByLookup.get(lookup) || [];
       const entryMeta = state.entryMetaByLookup.get(lookup) || null;
       const expandedFiles = expandSelectionsForLookup(rows, files);
+      const hasResolvedLookupFiles = files.length > 0;
       const estimatedBytesFromFiles = expandedFiles.reduce((sum, file) => sum + parseFiniteSizeBytes(file?.sizeBytes), 0);
-      const estimatedBytesFromStats = estimateBytesFromBucketStats(rows, entryMeta?.bucketFileStats || null);
       const estimatedBytesFromFileTypes = estimateBytesFromLookupFiles(expandedFiles);
+      const estimatedBytesFromStats = hasResolvedLookupFiles ? 0 : estimateBytesFromBucketStats(rows, entryMeta?.bucketFileStats || null);
       const estimatedBytesFromRows = estimateBytesFromSelectionRows(rows);
       const estimatedBytes = estimatedBytesFromFiles
-        || estimatedBytesFromStats
         || estimatedBytesFromFileTypes
+        || estimatedBytesFromStats
         || estimatedBytesFromRows;
       const receiptLines = buildReceiptLines(lookup, rows, files, entryMeta?.bucketFileStats || null);
       const latestRow = getLatestRow(rows);
-      const bucketStatsCount = countFilesFromBucketStats(rows, entryMeta?.bucketFileStats || null);
+      const bucketStatsCount = hasResolvedLookupFiles ? 0 : countFilesFromBucketStats(rows, entryMeta?.bucketFileStats || null);
       const selectedRowsCount = countFilesFromSelectionRows(rows);
-      const resolvedCount = Math.max(expandedFiles.length, bucketStatsCount, selectedRowsCount);
+      const resolvedCount = expandedFiles.length || bucketStatsCount || selectedRowsCount;
       const entryHref = normalizePath(
         latestRow?.entryHref
         || entryMeta?.canonicalHref
