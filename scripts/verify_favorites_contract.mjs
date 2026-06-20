@@ -111,7 +111,8 @@ function verifyFavoritesPageContract() {
     'data-tab="entries"',
     'data-tab="buckets"',
     'data-tab="files"',
-    'Lookup #',
+    'dx-fav-row',
+    'row.lookupNumber',
     'favoritesApi.list',
     'favoritesApi.toggle',
   ]);

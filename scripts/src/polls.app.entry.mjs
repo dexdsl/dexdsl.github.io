@@ -403,14 +403,20 @@
       .dx-polls-title{margin:0;font-family:var(--font-heading);text-transform:uppercase;font-size:clamp(1.6rem,4vw,2.5rem);letter-spacing:.01em;line-height:1}
       .dx-polls-subtitle{margin:8px 0 0 0;font-family:var(--font-body);font-size:.82rem;letter-spacing:.01em;color:var(--dx-polls-muted)}
       .dx-polls-tabs{display:flex;gap:clamp(14px,2vw,26px);flex-wrap:wrap;align-items:center}
+      /* Tabs mirror the header nav: gradient underline that wipes in on hover/active.
+         White text stays legible over the saturated mesh that shows through the flat head. */
       .dx-polls-tab{
-        appearance:none;background:none;border:0;cursor:pointer;padding:0 0 6px;
+        appearance:none;background:none;border:0;cursor:pointer;padding:0 0 7px;position:relative;
         font-family:var(--font-body);font-size:.72rem;text-transform:uppercase;letter-spacing:.16em;
-        color:var(--dx-polls-faint);border-bottom:1px solid transparent;
-        transition:color .25s ease,border-color .25s ease;
+        color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.32);
+        transition:transform .2s ease;
       }
-      .dx-polls-tab:hover{color:var(--dx-polls-ink)}
-      .dx-polls-tab.is-active{color:var(--dx-polls-ink);border-bottom-color:var(--dx-polls-ink)}
+      .dx-polls-tab::after{
+        content:"";position:absolute;left:0;bottom:0;width:100%;height:2px;
+        background:linear-gradient(90deg,var(--dx-accent-grad-start,#ff1910),var(--dx-accent-grad-end,#ff6a00));
+        transform:scaleX(0);transform-origin:right;transition:transform .3s ease;
+      }
+      .dx-polls-tab:hover::after,.dx-polls-tab.is-active::after{transform:scaleX(1);transform-origin:left}
 
       /* Scrolling body — the only region that scrolls; ends stay fixed against head/footer */
       .dx-polls-body{
@@ -439,12 +445,12 @@
       }
       .dx-poll-card:first-child{border-top:0}
       .dx-poll-card.is-locked{opacity:.72}
-      .dx-poll-card:hover .dx-poll-question{color:var(--dx-polls-accent)}
+      .dx-poll-card:hover .dx-poll-question{color:#fff;mix-blend-mode:difference}
       .dx-poll-card-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
       .dx-poll-chip{font-family:var(--font-body);font-size:.62rem;text-transform:uppercase;letter-spacing:.14em;color:var(--dx-polls-muted)}
       .dx-poll-chip.is-accent{color:var(--dx-polls-accent)}
       .dx-poll-chip.is-members{color:var(--dx-polls-ink)}
-      .dx-poll-question{margin:0;font-family:var(--font-heading);font-size:clamp(1rem,1.3vw,1.18rem);line-height:1.16;letter-spacing:.01em;transition:color .2s ease}
+      .dx-poll-question{margin:0;font-family:var(--font-heading);font-size:clamp(1rem,1.3vw,1.18rem);line-height:1.16;letter-spacing:.01em;text-transform:uppercase;transition:color .15s ease}
       .dx-poll-meta{margin:0;font-family:var(--font-body);font-size:.76rem;color:var(--dx-polls-muted)}
       .dx-poll-actions{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-top:2px}
       .dx-poll-action,

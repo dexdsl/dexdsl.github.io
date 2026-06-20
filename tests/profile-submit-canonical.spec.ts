@@ -22,7 +22,7 @@ const FLAT_SURFACE_ROUTES = new Set<string>(['/entry/favorites/']);
 
 const CARD_SELECTORS: Record<string, string[]> = {
   '/entry/submit/': ['#dex-submit .dx-submit-main'],
-  '/entry/favorites/': ['#dex-favorites .panel', '#dex-favorites .dex-sidebar'],
+  '/entry/favorites/': ['#dex-favorites .dx-fav-shell'],
   '/entry/messages/': ['#dex-msg .dx-msg-shell'],
   '/entry/pressroom/': ['#dex-press .dx-press-main'],
   '/entry/settings/': ['#dex-settings .card', '#dex-settings .hdr', '#dxMembershipV3Root .dx-memv3-card'],

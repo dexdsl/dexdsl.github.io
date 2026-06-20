@@ -1,6 +1,6 @@
 :root {
   --dx-color-bg: var(--color-005, rgb(255 255 255));
-  --dx-color-surface: var(--color-008, rgb(252 252 252));
+  --dx-color-surface: var(--color-024, rgb(252 252 252));
   --dx-color-surface-strong: var(--color-005, rgb(255 255 255));
   --dx-color-text: var(--color-001, rgb(35 35 35));
   --dx-color-text-muted: var(--color-013, rgb(85 85 85));

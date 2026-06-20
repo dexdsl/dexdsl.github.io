@@ -177,13 +177,13 @@ test('test-9 supports entry, bucket, and file favorites and favorites page looku
   await page.goto('/entry/favorites/', { waitUntil: 'domcontentloaded' });
   await waitForFavoritesPageReady(page);
 
-  await expect(page.locator('th', { hasText: 'Lookup #' })).toBeVisible();
+  await expect(page.locator('.dx-fav-row').first()).toBeVisible();
   await expect(page.locator('code', { hasText: TEST_ENTRY_LOOKUP })).toBeVisible();
 
-  await page.getByRole('button', { name: /Buckets/i }).click();
+  await page.getByRole('tab', { name: /Buckets/i }).click();
   await expect(page.locator('code', { hasText: `${TEST_ENTRY_LOOKUP} C` })).toBeVisible();
 
-  await page.getByRole('button', { name: /Files/i }).click();
+  await page.getByRole('tab', { name: /Files/i }).click();
   await expect(page.locator(`code:has-text("${fileLookup}")`)).toBeVisible();
 });
 
@@ -199,14 +199,14 @@ test('favorites page live-syncs when toggled from test-9 route', async ({ page }
 
   await watchPage.goto('/entry/favorites/', { waitUntil: 'domcontentloaded' });
   await waitForFavoritesPageReady(watchPage);
-  await expect(watchPage.locator('.empty')).toContainText('No favorites yet.');
+  await expect(watchPage.locator('.dx-fav-empty')).toContainText('No favorites yet.');
 
   const entryToggle = page.locator('.dx-fav-entry-toggle');
   await entryToggle.click();
   await expect(watchPage.locator('code', { hasText: TEST_ENTRY_LOOKUP })).toBeVisible();
 
   await entryToggle.click();
-  await expect(watchPage.locator('.empty')).toContainText('No favorites yet.');
+  await expect(watchPage.locator('.dx-fav-empty')).toContainText('No favorites yet.');
 
   await watchPage.close();
 });

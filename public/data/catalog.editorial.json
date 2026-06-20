@@ -108,7 +108,7 @@
       "title_raw": "CELLO",
       "lookup_number": "S.Vlc. Lo AV2023 S1",
       "season": "S1",
-      "performer": "losa, em‎‏‏‎manuel",
+      "performer": "losa, emmanuel",
       "instrument": "CELLO",
       "status": "draft"
     },
@@ -128,7 +128,7 @@
       "title_raw": "ELECTRIC GUITAR",
       "lookup_number": "E.Gtr. Ma A2024 S2",
       "season": "S2",
-      "performer": "man‎‏n, chris",
+      "performer": "mann, chris",
       "instrument": "DHOLAK AND ELECTRONICS",
       "status": "draft"
     },
@@ -169,7 +169,7 @@
       "lookup_number": "P.Mpc. Gi AV2024 S2",
       "season": "S2",
       "performer": "Ben Giroux",
-      "instrument": "MULTIPLE PERCUS‏‏‎SION",
+      "instrument": "MULTIPLE PERCUSSION",
       "status": "active"
     },
     {
@@ -188,7 +188,7 @@
       "title_raw": "PREPARED BASS VIOL",
       "lookup_number": "S.VdG. Su AV2023 S1",
       "season": "S1",
-      "performer": "sebastian suarez-solis",
+      "performer": "suarez-solis, sebastian",
       "instrument": "PREPARED BASS VIOL",
       "status": "draft"
     },
@@ -198,7 +198,7 @@
       "title_raw": "PREPARED HARPSICHORD",
       "lookup_number": "K.Hps. Su AV2023 S1",
       "season": "S1",
-      "performer": "sebastian suarez-solis",
+      "performer": "suarez-solis, sebastian",
       "instrument": "PREPARED HARPSICHORD",
       "status": "draft"
     },

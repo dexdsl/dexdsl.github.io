@@ -1765,6 +1765,13 @@ body.dx-route-show-mesh #gooey-mesh-wrapper {
   pointer-events: none !important;
 }
 
+/* Show-mesh routes that are NOT slot-relocated (e.g. /entry/bag) must still paint
+   their page content above the gooey mesh background instead of behind it. */
+body.dx-route-show-mesh:not(.dx-route-profile-protected) main#page {
+  position: relative !important;
+  z-index: calc(var(--dx-layer-foreground) + 1) !important;
+}
+
 /* Unconditional settings host reset (independent of :has support). */
 body.dx-route-profile-protected [data-dx-settings-host-section="true"] {
   min-height: 0 !important;

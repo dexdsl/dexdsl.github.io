@@ -11,6 +11,7 @@ import {
 import { normalizeCatalogEditorialFile } from './lib/catalog-editorial-schema.mjs';
 import { buildHomeFeaturedSnapshot } from './lib/home-featured-store.mjs';
 import { normalizeHomeFeaturedFile } from './lib/home-featured-schema.mjs';
+import { deepStripInvisibleMarks, removeExcludedEntries, applyPerformerAliases } from './lib/catalog-sanitize.mjs';
 
 const ROOT = process.cwd();
 const SOURCE_PATH = path.join(ROOT, 'docs', 'catalog', 'index.html');
@@ -352,6 +353,13 @@ async function main() {
   model = await enrichGuideAndSymbols(model);
   const editorial = readCatalogEditorialIfExists();
   model = applyCatalogEditorialToModel(model, editorial);
+
+  // Hygiene: strip invisible directional marks scraped from the live catalog (they pollute
+  // performer names / identity grouping), normalize known performer names, and drop dev-stub
+  // placeholder entries. Runs before payloads are built so every output (data, entries,
+  // search, curation, featured) is clean.
+  model = removeExcludedEntries(applyPerformerAliases(deepStripInvisibleMarks(model)));
+
   model.stats = model.stats || {};
   model.stats.protected_char_count = countProtectedChars(model);
 

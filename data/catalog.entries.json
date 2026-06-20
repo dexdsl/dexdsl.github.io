@@ -7,7 +7,7 @@
     "lookup": "#dex-lookup"
   },
   "stats": {
-    "entries_count": 26,
+    "entries_count": 24,
     "lookup_count": 24,
     "seasons": [
       "S2",
@@ -17,7 +17,7 @@
       "ELECTRONICS",
       "KEYBOARD",
       "OTHER",
-      "PERCUS‏‏‎‎SION",
+      "PERCUSSION",
       "STRINGS",
       "VOICE",
       "WINDS"
@@ -62,7 +62,7 @@
       "title_raw": "AMPLIFIED PRINTER",
       "performer_raw": "church, cameron",
       "instrument_family": [
-        "PERCUS‏‏‎‎SION",
+        "PERCUSSION",
         "OTHER"
       ],
       "instrument_labels": [
@@ -106,9 +106,9 @@
     {
       "id": "tim-feeney",
       "title_raw": "PREPARED FLOOR TOM",
-      "performer_raw": "fe‏‏‎‏‏‎eney, tim",
+      "performer_raw": "feeney, tim",
       "instrument_family": [
-        "PERCUS‏‏‎‎SION"
+        "PERCUSSION"
       ],
       "instrument_labels": [
         "PREPARED FLOOR TOM"
@@ -121,7 +121,7 @@
       "featured": false,
       "sort_key": "S2::P.Pto. Fe AV2024 S2",
       "title_norm": "prepared floor tom",
-      "performer_norm": "fe‏‏‎‏‏‎eney, tim",
+      "performer_norm": "feeney, tim",
       "lookup_norm": "p.pto. fe av2024 s2",
       "instrument_norm": "prepared floor tom"
     },
@@ -130,10 +130,10 @@
       "title_raw": "MULTIPLE PERCUSSION",
       "performer_raw": "giroux, ben",
       "instrument_family": [
-        "PERCUS‏‏‎‎SION"
+        "PERCUSSION"
       ],
       "instrument_labels": [
-        "MULTIPLE PERCUS‏‏‎SION"
+        "MULTIPLE PERCUSSION"
       ],
       "lookup_raw": "P.Mpc. Gi AV2024 S2",
       "season": "S2",
@@ -145,7 +145,7 @@
       "title_norm": "multiple percussion",
       "performer_norm": "giroux, ben",
       "lookup_norm": "p.mpc. gi av2024 s2",
-      "instrument_norm": "multiple percus‏‏‎sion"
+      "instrument_norm": "multiple percussion"
     },
     {
       "id": "jakob-heinemann",
@@ -175,7 +175,7 @@
       "performer_raw": "jáquez, sofí & yorke, paul",
       "instrument_family": [
         "ELECTRONICS",
-        "PERCUS‏‏‎‎SION",
+        "PERCUSSION",
         "OTHER"
       ],
       "instrument_labels": [
@@ -242,13 +242,12 @@
     {
       "id": "electric-guitar-chris-mann",
       "title_raw": "ELECTRIC GUITAR",
-      "performer_raw": "man‎‏n, chris",
+      "performer_raw": "mann, chris",
       "instrument_family": [
         "ELECTRONICS",
         "STRINGS"
       ],
       "instrument_labels": [
-        "DHOLAK AND ELECTRONICS",
         "ELECTRIC GUITAR"
       ],
       "lookup_raw": "E.Gtr. Ma A2024 S2",
@@ -259,9 +258,9 @@
       "featured": false,
       "sort_key": "S2::E.Gtr. Ma A2024 S2",
       "title_norm": "electric guitar",
-      "performer_norm": "man‎‏n, chris",
+      "performer_norm": "mann, chris",
       "lookup_norm": "e.gtr. ma a2024 s2",
-      "instrument_norm": "dholak and electronics electric guitar"
+      "instrument_norm": "electric guitar"
     },
     {
       "id": "anant-shah",
@@ -269,7 +268,7 @@
       "performer_raw": "shah, anant",
       "instrument_family": [
         "ELECTRONICS",
-        "PERCUS‏‏‎‎SION"
+        "PERCUSSION"
       ],
       "instrument_labels": [
         "ant shah",
@@ -383,7 +382,7 @@
       "performer_raw": "church, cameron",
       "instrument_family": [
         "ELECTRONICS",
-        "PERCUS‏‏‎‎SION",
+        "PERCUSSION",
         "STRINGS"
       ],
       "instrument_labels": [
@@ -451,7 +450,7 @@
     {
       "id": "cello-emmanuel-losa",
       "title_raw": "CELLO",
-      "performer_raw": "losa, em‎‏‏‎manuel",
+      "performer_raw": "losa, emmanuel",
       "instrument_family": [
         "STRINGS"
       ],
@@ -466,7 +465,7 @@
       "featured": false,
       "sort_key": "S1::S.Vlc. Lo AV2023 S1",
       "title_norm": "cello",
-      "performer_norm": "losa, em‎‏‏‎manuel",
+      "performer_norm": "losa, emmanuel",
       "lookup_norm": "s.vlc. lo av2023 s1",
       "instrument_norm": "cello"
     },
@@ -541,7 +540,7 @@
     {
       "id": "prepared-bass-viol-suarez-solis",
       "title_raw": "PREPARED BASS VIOL",
-      "performer_raw": "sebastian suarez-solis",
+      "performer_raw": "suarez-solis, sebastian",
       "instrument_family": [
         "KEYBOARD",
         "STRINGS"
@@ -557,14 +556,14 @@
       "featured": false,
       "sort_key": "S1::S.VdG. Su AV2023 S1",
       "title_norm": "prepared bass viol",
-      "performer_norm": "sebastian suarez-solis",
+      "performer_norm": "suarez-solis, sebastian",
       "lookup_norm": "s.vdg. su av2023 s1",
       "instrument_norm": "prepared bass viol"
     },
     {
       "id": "prepared-harpsichord-suarez-solis",
       "title_raw": "PREPARED HARPSICHORD",
-      "performer_raw": "sebastian suarez-solis",
+      "performer_raw": "suarez-solis, sebastian",
       "instrument_family": [
         "KEYBOARD"
       ],
@@ -579,49 +578,9 @@
       "featured": false,
       "sort_key": "S1::K.Hps. Su AV2023 S1",
       "title_norm": "prepared harpsichord",
-      "performer_norm": "sebastian suarez-solis",
+      "performer_norm": "suarez-solis, sebastian",
       "lookup_norm": "k.hps. su av2023 s1",
       "instrument_norm": "prepared harpsichord"
-    },
-    {
-      "id": "splinterings-jakob-heinemann",
-      "title_raw": "SPLINTERINGS - DOUBLE BASS",
-      "performer_raw": "heineman‏‏‎‏‏‎n, jakob",
-      "instrument_family": [
-        "STRINGS"
-      ],
-      "instrument_labels": [
-        "SPLINTERINGS for DOUBLE BASS"
-      ],
-      "lookup_raw": "",
-      "season": "",
-      "entry_href": "/entry/splinterings-jakob-heinemann/",
-      "image_src": "https://images.squarespace-cdn.com/content/v1/63956a55e99f9772a8cd1742/1eb0fb76-8325-4624-957e-02079fd75d44/headshot.jpg",
-      "image_alt_raw": "",
-      "featured": false,
-      "sort_key": "S0::SPLINTERINGS - DOUBLE BASS",
-      "title_norm": "splinterings - double bass",
-      "performer_norm": "heineman‏‏‎‏‏‎n, jakob",
-      "lookup_norm": "",
-      "instrument_norm": "splinterings for double bass"
-    },
-    {
-      "id": "sebastian-suarez-solis",
-      "title_raw": "PREPARED HARPSICHORD, PREPARED VIOLA DA GAMBA",
-      "performer_raw": "suarez-solis, sebastian",
-      "instrument_family": [],
-      "instrument_labels": [],
-      "lookup_raw": "",
-      "season": "",
-      "entry_href": "/entry/sebastian-suarez-solis/",
-      "image_src": "https://images.squarespace-cdn.com/content/v1/63956a55e99f9772a8cd1742/7fd8fa14-d16d-4f75-84c7-44959aa578e0/Screen%2BShot%2B2023-04-05%2Bat%2B10.13.57%2BPM.jpg",
-      "image_alt_raw": "",
-      "featured": false,
-      "sort_key": "S0::PREPARED HARPSICHORD, PREPARED VIOLA DA GAMBA",
-      "title_norm": "prepared harpsichord, prepared viola da gamba",
-      "performer_norm": "suarez-solis, sebastian",
-      "lookup_norm": "",
-      "instrument_norm": ""
     }
   ]
 }

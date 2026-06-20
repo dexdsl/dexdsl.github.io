@@ -27,14 +27,14 @@
       "performer_raw": "church, cameron",
       "lookup_raw": "X.Prt. Ch AV2024 S2",
       "instrument_family": [
-        "PERCUS‏‏‎‎SION",
+        "PERCUSSION",
         "OTHER"
       ],
       "title_norm": "amplified printer",
       "performer_norm": "church, cameron",
       "lookup_norm": "x.prt. ch av2024 s2",
-      "instrument_norm": "percus‏‏‎‎sion other",
-      "search_blob": "amplified printer church, cameron x.prt. ch av2024 s2 percus‏‏‎‎sion other amplified printer"
+      "instrument_norm": "percussion other",
+      "search_blob": "amplified printer church, cameron x.prt. ch av2024 s2 percussion other amplified printer"
     },
     {
       "id": "bassoon-and-electronics",
@@ -58,16 +58,16 @@
       "entry_href": "/entry/tim-feeney/",
       "season": "S2",
       "title_raw": "PREPARED FLOOR TOM",
-      "performer_raw": "fe‏‏‎‏‏‎eney, tim",
+      "performer_raw": "feeney, tim",
       "lookup_raw": "P.Pto. Fe AV2024 S2",
       "instrument_family": [
-        "PERCUS‏‏‎‎SION"
+        "PERCUSSION"
       ],
       "title_norm": "prepared floor tom",
-      "performer_norm": "fe‏‏‎‏‏‎eney, tim",
+      "performer_norm": "feeney, tim",
       "lookup_norm": "p.pto. fe av2024 s2",
-      "instrument_norm": "percus‏‏‎‎sion",
-      "search_blob": "prepared floor tom fe‏‏‎‏‏‎eney, tim p.pto. fe av2024 s2 percus‏‏‎‎sion prepared floor tom"
+      "instrument_norm": "percussion",
+      "search_blob": "prepared floor tom feeney, tim p.pto. fe av2024 s2 percussion prepared floor tom"
     },
     {
       "id": "multiperc",
@@ -77,13 +77,13 @@
       "performer_raw": "giroux, ben",
       "lookup_raw": "P.Mpc. Gi AV2024 S2",
       "instrument_family": [
-        "PERCUS‏‏‎‎SION"
+        "PERCUSSION"
       ],
       "title_norm": "multiple percussion",
       "performer_norm": "giroux, ben",
       "lookup_norm": "p.mpc. gi av2024 s2",
-      "instrument_norm": "percus‏‏‎‎sion",
-      "search_blob": "multiple percussion giroux, ben p.mpc. gi av2024 s2 percus‏‏‎‎sion multiple percus‏‏‎sion"
+      "instrument_norm": "percussion",
+      "search_blob": "multiple percussion giroux, ben p.mpc. gi av2024 s2 percussion multiple percussion"
     },
     {
       "id": "jakob-heinemann",
@@ -110,14 +110,14 @@
       "lookup_raw": "P.Ens. JaYo AV2024 S2",
       "instrument_family": [
         "ELECTRONICS",
-        "PERCUS‏‏‎‎SION",
+        "PERCUSSION",
         "OTHER"
       ],
       "title_norm": "as though i’m slipping - mixed ensemble",
       "performer_norm": "jáquez, sofí & yorke, paul",
       "lookup_norm": "p.ens. jayo av2024 s2",
-      "instrument_norm": "electronics percus‏‏‎‎sion other",
-      "search_blob": "as though i’m slipping - mixed ensemble jáquez, sofí & yorke, paul p.ens. jayo av2024 s2 electronics percus‏‏‎‎sion other as though i’m slipping"
+      "instrument_norm": "electronics percussion other",
+      "search_blob": "as though i’m slipping - mixed ensemble jáquez, sofí & yorke, paul p.ens. jayo av2024 s2 electronics percussion other as though i’m slipping"
     },
     {
       "id": "this-is-a-tangible-space",
@@ -157,17 +157,20 @@
       "entry_href": "/entry/electric-guitar-chris-mann/",
       "season": "S2",
       "title_raw": "ELECTRIC GUITAR",
-      "performer_raw": "man‎‏n, chris",
+      "performer_raw": "mann, chris",
       "lookup_raw": "E.Gtr. Ma A2024 S2",
       "instrument_family": [
         "ELECTRONICS",
         "STRINGS"
       ],
       "title_norm": "electric guitar",
-      "performer_norm": "man‎‏n, chris",
+      "performer_norm": "mann, chris",
       "lookup_norm": "e.gtr. ma a2024 s2",
-      "instrument_norm": "electronics strings",
-      "search_blob": "electric guitar man‎‏n, chris e.gtr. ma a2024 s2 electronics strings dholak and electronics electric guitar"
+      "instrument_norm": "electric guitar",
+      "search_blob": "electric guitar mann, chris e.gtr. ma a2024 s2 electronics strings electric guitar",
+      "instrument_labels": [
+        "ELECTRIC GUITAR"
+      ]
     },
     {
       "id": "anant-shah",
@@ -178,13 +181,13 @@
       "lookup_raw": "P.Dho. Sh AV2024 S2",
       "instrument_family": [
         "ELECTRONICS",
-        "PERCUS‏‏‎‎SION"
+        "PERCUSSION"
       ],
       "title_norm": "dholak and electronics",
       "performer_norm": "shah, anant",
       "lookup_norm": "p.dho. sh av2024 s2",
-      "instrument_norm": "electronics percus‏‏‎‎sion",
-      "search_blob": "dholak and electronics shah, anant p.dho. sh av2024 s2 electronics percus‏‏‎‎sion ant shah dholak and electronics"
+      "instrument_norm": "electronics percussion",
+      "search_blob": "dholak and electronics shah, anant p.dho. sh av2024 s2 electronics percussion ant shah dholak and electronics"
     },
     {
       "id": "aidan-yeats",
@@ -261,14 +264,14 @@
       "lookup_raw": "P.Hdl. Ch AV2023 S1",
       "instrument_family": [
         "ELECTRONICS",
-        "PERCUS‏‏‎‎SION",
+        "PERCUSSION",
         "STRINGS"
       ],
       "title_norm": "prepared hammered dulcimer + digital signal processor",
       "performer_norm": "church, cameron",
       "lookup_norm": "p.hdl. ch av2023 s1",
-      "instrument_norm": "electronics percus‏‏‎‎sion strings",
-      "search_blob": "prepared hammered dulcimer + digital signal processor church, cameron p.hdl. ch av2023 s1 electronics percus‏‏‎‎sion strings prepared hammered dulcimer + digital signal processor prepared hammered dulcimer"
+      "instrument_norm": "electronics percussion strings",
+      "search_blob": "prepared hammered dulcimer + digital signal processor church, cameron p.hdl. ch av2023 s1 electronics percussion strings prepared hammered dulcimer + digital signal processor prepared hammered dulcimer"
     },
     {
       "id": "cybernetic-scat-paul-hermansen",
@@ -309,16 +312,16 @@
       "entry_href": "/entry/cello-emmanuel-losa/",
       "season": "S1",
       "title_raw": "CELLO",
-      "performer_raw": "losa, em‎‏‏‎manuel",
+      "performer_raw": "losa, emmanuel",
       "lookup_raw": "S.Vlc. Lo AV2023 S1",
       "instrument_family": [
         "STRINGS"
       ],
       "title_norm": "cello",
-      "performer_norm": "losa, em‎‏‏‎manuel",
+      "performer_norm": "losa, emmanuel",
       "lookup_norm": "s.vlc. lo av2023 s1",
       "instrument_norm": "strings",
-      "search_blob": "cello losa, em‎‏‏‎manuel s.vlc. lo av2023 s1 strings cello"
+      "search_blob": "cello losa, emmanuel s.vlc. lo av2023 s1 strings cello"
     },
     {
       "id": "voice-everyday-object-manipulation-levi-lu",
@@ -375,63 +378,33 @@
       "entry_href": "/entry/prepared-bass-viol-suarez-solis/",
       "season": "S1",
       "title_raw": "PREPARED BASS VIOL",
-      "performer_raw": "sebastian suarez-solis",
+      "performer_raw": "suarez-solis, sebastian",
       "lookup_raw": "S.VdG. Su AV2023 S1",
       "instrument_family": [
         "KEYBOARD",
         "STRINGS"
       ],
       "title_norm": "prepared bass viol",
-      "performer_norm": "sebastian suarez-solis",
+      "performer_norm": "suarez-solis, sebastian",
       "lookup_norm": "s.vdg. su av2023 s1",
       "instrument_norm": "keyboard strings",
-      "search_blob": "prepared bass viol sebastian suarez-solis s.vdg. su av2023 s1 keyboard strings prepared bass viol"
+      "search_blob": "prepared bass viol suarez-solis, sebastian s.vdg. su av2023 s1 keyboard strings prepared bass viol"
     },
     {
       "id": "prepared-harpsichord-suarez-solis",
       "entry_href": "/entry/prepared-harpsichord-suarez-solis/",
       "season": "S1",
       "title_raw": "PREPARED HARPSICHORD",
-      "performer_raw": "sebastian suarez-solis",
+      "performer_raw": "suarez-solis, sebastian",
       "lookup_raw": "K.Hps. Su AV2023 S1",
       "instrument_family": [
         "KEYBOARD"
       ],
       "title_norm": "prepared harpsichord",
-      "performer_norm": "sebastian suarez-solis",
+      "performer_norm": "suarez-solis, sebastian",
       "lookup_norm": "k.hps. su av2023 s1",
       "instrument_norm": "keyboard",
-      "search_blob": "prepared harpsichord sebastian suarez-solis k.hps. su av2023 s1 keyboard prepared harpsichord"
-    },
-    {
-      "id": "splinterings-jakob-heinemann",
-      "entry_href": "/entry/splinterings-jakob-heinemann/",
-      "season": "",
-      "title_raw": "SPLINTERINGS - DOUBLE BASS",
-      "performer_raw": "heineman‏‏‎‏‏‎n, jakob",
-      "lookup_raw": "",
-      "instrument_family": [
-        "STRINGS"
-      ],
-      "title_norm": "splinterings - double bass",
-      "performer_norm": "heineman‏‏‎‏‏‎n, jakob",
-      "lookup_norm": "",
-      "instrument_norm": "strings",
-      "search_blob": "splinterings - double bass heineman‏‏‎‏‏‎n, jakob strings splinterings for double bass"
-    },
-    {
-      "id": "sebastian-suarez-solis",
-      "entry_href": "/entry/sebastian-suarez-solis/",
-      "season": "",
-      "title_raw": "PREPARED HARPSICHORD, PREPARED VIOLA DA GAMBA",
-      "performer_raw": "suarez-solis, sebastian",
-      "lookup_raw": "",
-      "instrument_family": [],
-      "title_norm": "prepared harpsichord, prepared viola da gamba",
-      "performer_norm": "suarez-solis, sebastian",
-      "lookup_norm": "",
-      "instrument_norm": "",
-      "search_blob": "prepared harpsichord, prepared viola da gamba suarez-solis, sebastian"
+      "search_blob": "prepared harpsichord suarez-solis, sebastian k.hps. su av2023 s1 keyboard prepared harpsichord"
     }
   ]
 }
