@@ -95,6 +95,9 @@ function verifyRuntimeMarkers() {
     '/trend?bucket=day&window=90d',
     'data-dx-polls-tab="open"',
     'buildPollsHref',
+    'mix-blend-mode:exclusion',
+    '.dx-polls-detail > .dx-polls-section-label',
+    '.dx-polls-detail > .dx-polls-empty',
   ];
   for (const marker of required) {
     if (!source.includes(marker)) {

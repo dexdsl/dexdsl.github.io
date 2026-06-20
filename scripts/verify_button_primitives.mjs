@@ -13,6 +13,7 @@ const TARGETED_FILES = [
   'docs/entry/pressroom/index.html',
   'docs/messages.html',
 ];
+const CONTROL_CSS_PATH = 'public/css/components/dx-controls.css';
 
 const PRIMARY_ALIASES = new Set(['cta-btn', 'cta', 'dex-btn']);
 const SECONDARY_ALIASES = new Set(['ghost', 'ghost-btn']);
@@ -121,6 +122,33 @@ function validateNoLocalSkinOverrides(filePath, fileContent, failures) {
   }
 }
 
+function validatePrimaryButtonChrome(filePath, fileContent, failures) {
+  if (!fileContent.includes('--dx-btn-primary-border: transparent;')) {
+    failures.push({
+      kind: 'primary-chrome',
+      filePath,
+      line: lineNumberAt(fileContent, Math.max(0, fileContent.indexOf('--dx-btn-primary-border'))),
+      detail: 'primary button token must not draw a visible stroke',
+    });
+  }
+  if (/--dx-btn-primary-shadow\s*:[^;]*\binset\b/i.test(fileContent)) {
+    failures.push({
+      kind: 'primary-chrome',
+      filePath,
+      line: lineNumberAt(fileContent, fileContent.search(/--dx-btn-primary-shadow\s*:/i)),
+      detail: 'primary button shadow must not include an inset stroke',
+    });
+  }
+  if (/\.dx-button-element--primary,[\s\S]*?\.dex-btn\s*\{[\s\S]*?border\s*:\s*1px\s+solid/i.test(fileContent)) {
+    failures.push({
+      kind: 'primary-chrome',
+      filePath,
+      line: lineNumberAt(fileContent, fileContent.search(/\.dx-button-element--primary,/i)),
+      detail: 'canonical primary button rule must use the tokenized fill without a real border',
+    });
+  }
+}
+
 async function main() {
   const failures = [];
   const trackedHtmlFiles = listTrackedHtmlFiles();
@@ -144,6 +172,18 @@ async function main() {
         detail: 'targeted file missing',
       });
     }
+  }
+
+  try {
+    const controlCss = await fs.readFile(path.join(ROOT, CONTROL_CSS_PATH), 'utf8');
+    validatePrimaryButtonChrome(CONTROL_CSS_PATH, controlCss, failures);
+  } catch {
+    failures.push({
+      kind: 'primary-chrome',
+      filePath: CONTROL_CSS_PATH,
+      line: 1,
+      detail: 'control CSS file missing',
+    });
   }
 
   if (failures.length > 0) {

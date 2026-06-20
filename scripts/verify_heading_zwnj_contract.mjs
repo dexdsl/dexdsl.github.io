@@ -5,7 +5,6 @@ import path from 'node:path';
 const ROOT = process.cwd();
 const FAILURES = [];
 
-const AUTHORED_ZWNJ_PATTERN = /&zwnj;|\u200c/i;
 const SCAN_ROOTS = [
   'docs',
   'content',
@@ -45,27 +44,106 @@ function walkFiles(absPath, out) {
   }
 }
 
-function verifyNoAuthoredZwnj() {
-  const files = [];
-  for (const relRoot of SCAN_ROOTS) {
-    const absRoot = path.join(ROOT, relRoot);
-    if (!fs.existsSync(absRoot)) continue;
-    walkFiles(absRoot, files);
-  }
-
-  for (const absPath of files) {
-    const relPath = path.relative(ROOT, absPath);
-    const text = fs.readFileSync(absPath, 'utf8');
-    if (AUTHORED_ZWNJ_PATTERN.test(text)) {
-      FAILURES.push(`authored ZWNJ token found in ${relPath}`);
-    }
-  }
-}
-
 function assertIncludes(relPath, text, markers) {
   for (const marker of markers) {
     if (!text.includes(marker)) {
       FAILURES.push(`${relPath} missing marker: ${marker}`);
+    }
+  }
+}
+
+function assertNotIncludes(relPath, text, markers) {
+  for (const marker of markers) {
+    if (text.includes(marker)) {
+      FAILURES.push(`${relPath} still contains marker: ${marker}`);
+    }
+  }
+}
+
+function readJson(relPath) {
+  const text = readText(relPath);
+  try {
+    return JSON.parse(text);
+  } catch {
+    FAILURES.push(`${relPath} is not valid JSON`);
+    return null;
+  }
+}
+
+function stripHeadingSeparators(value) {
+  return String(value || '').replace(/[\u200C\u200D]/g, '');
+}
+
+function collectJsonStrings(value, out = []) {
+  if (typeof value === 'string') out.push(value);
+  else if (Array.isArray(value)) value.forEach((item) => collectJsonStrings(item, out));
+  else if (value && typeof value === 'object') Object.values(value).forEach((item) => collectJsonStrings(item, out));
+  return out;
+}
+
+function verifyCatalogStaticCopySeparators() {
+  const z = '\u200C';
+  const requiredSeparatedCopy = [
+    `VIEW COL${z}LECTION`,
+    `PREPARED FLO${z}OR TOM`,
+    `BAS${z}SO${z}ON + ELECTRONICS WITH GENERATIVE VIDEO`,
+    `CEL${z}LO`,
+    `MULTIPLE PERCUS${z}SION`,
+    `PREPARED BAS${z}S VIOL`,
+    `PREPARED HAM${z}MERED DULCIMER + DIGITAL SIGNAL PROCES${z}SOR`,
+    `SPLINTERINGS for DOUBLE BAS${z}S`,
+    `AS THOUGH I’M SLIP${z}PING - MIXED ENSEMBLE`,
+    `FE${z}EDBACK TELEVISIONS`,
+  ];
+  const forbiddenVisibleCopy = [
+    'ARTIST SPOOTLIGHT:',
+    'List of Syymbols',
+    'VIEW COLLECTION',
+    'PREPARED FLOOR TOM',
+    'BASSOON + ELECTRONICS WITH GENERATIVE VIDEO',
+    'CELLO',
+    'MULTIPLE PERCUSSION',
+    'PREPARED BASS VIOL',
+    'PREPARED HAMMERED DULCIMER + DIGITAL SIGNAL PROCESSOR',
+    'SPLINTERINGS for DOUBLE BASS',
+    'AS THOUGH I’M SLIPPING - MIXED ENSEMBLE',
+    'FEEDBACK TELEVISIONS',
+  ];
+  const catalogRels = [
+    'data/catalog.editorial.json',
+    'data/catalog.entries.json',
+    'data/catalog.data.json',
+    'data/catalog.search.json',
+    'data/catalog.symbols.json',
+    'data/catalog.curation.snapshot.json',
+    'public/data/catalog.editorial.json',
+    'public/data/catalog.entries.json',
+    'public/data/catalog.data.json',
+    'public/data/catalog.search.json',
+    'public/data/catalog.symbols.json',
+    'public/data/catalog.curation.snapshot.json',
+    'docs/data/catalog.editorial.json',
+    'docs/data/catalog.entries.json',
+    'docs/data/catalog.data.json',
+    'docs/data/catalog.search.json',
+    'docs/data/catalog.symbols.json',
+    'docs/data/catalog.curation.snapshot.json',
+  ];
+
+  const joinedCatalogText = catalogRels.map(readText).join('\n');
+  assertIncludes('catalog static copy', joinedCatalogText, [
+    'ARTIST SPOTLIGHT',
+    'List of Symbols',
+    ...requiredSeparatedCopy,
+  ]);
+  assertNotIncludes('catalog static copy', joinedCatalogText, forbiddenVisibleCopy);
+
+  const entriesPayload = readJson('data/catalog.entries.json');
+  const entryStrings = collectJsonStrings(entriesPayload);
+  for (const value of requiredSeparatedCopy) {
+    const canonical = stripHeadingSeparators(value);
+    if (!entryStrings.some((candidate) => stripHeadingSeparators(candidate) === canonical && candidate.includes(z))) {
+      FAILURES.push(`data/catalog.entries.json missing separated display copy for ${canonical}`);
     }
   }
 }
@@ -195,7 +273,7 @@ function verifySupportErrorHeadingHooks() {
 }
 
 function main() {
-  verifyNoAuthoredZwnj();
+  verifyCatalogStaticCopySeparators();
   verifyHeadingRuntime();
   verifySidebarHeadingSeparatorPolicy();
   verifyNoInlineHeadingRandomizers();

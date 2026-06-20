@@ -20,6 +20,7 @@ import {
 
 const ROOT = process.cwd();
 const CATALOG_ENTRIES_PATH = path.join(ROOT, 'data', 'catalog.entries.json');
+const DEFAULT_SPOTLIGHT_CTA_LABEL = 'VIEW COL\u200cLECTION';
 const PROD_CONFIRMATION_PHRASE = 'PUBLISH PROD';
 
 function toText(value) {
@@ -177,7 +178,7 @@ export function CatalogManager({ onExit, width = 100, height = 24 }) {
     if (!data || !selected || busy) return;
     const next = setCatalogSpotlight(data, {
       entry_id: selected.entry_id,
-      cta_label_raw: toText(data?.spotlight?.cta_label_raw || 'VIEW COLLECTION'),
+      cta_label_raw: toText(data?.spotlight?.cta_label_raw || DEFAULT_SPOTLIGHT_CTA_LABEL),
       headline_raw: toText(data?.spotlight?.headline_raw || 'ARTIST SPOTLIGHT'),
     });
     await persist(next, `Spotlight set to ${selected.entry_id}`, selected.entry_id);
@@ -389,7 +390,7 @@ export function CatalogManager({ onExit, width = 100, height = 24 }) {
           React.createElement(Text, { color: '#8f98a8' }, 'Spotlight'),
           React.createElement(Text, {}, `Entry: ${toText(data?.spotlight?.entry_id) || '-'}`),
           React.createElement(Text, {}, `Headline: ${toText(data?.spotlight?.headline_raw) || 'ARTIST SPOTLIGHT'}`),
-          React.createElement(Text, {}, `CTA: ${toText(data?.spotlight?.cta_label_raw) || 'VIEW COLLECTION'}`),
+          React.createElement(Text, {}, `CTA: ${toText(data?.spotlight?.cta_label_raw) || DEFAULT_SPOTLIGHT_CTA_LABEL}`),
         ),
       ),
     ),

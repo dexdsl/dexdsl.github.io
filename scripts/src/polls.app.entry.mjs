@@ -403,12 +403,11 @@
       .dx-polls-title{margin:0;font-family:var(--font-heading);text-transform:uppercase;font-size:clamp(1.6rem,4vw,2.5rem);letter-spacing:.01em;line-height:1}
       .dx-polls-subtitle{margin:8px 0 0 0;font-family:var(--font-body);font-size:.82rem;letter-spacing:.01em;color:var(--dx-polls-muted)}
       .dx-polls-tabs{display:flex;gap:clamp(14px,2vw,26px);flex-wrap:wrap;align-items:center}
-      /* Tabs mirror the header nav: gradient underline that wipes in on hover/active.
-         White text stays legible over the saturated mesh that shows through the flat head. */
+      /* Tabs mirror the header nav: gradient underline that wipes in on hover/active. */
       .dx-polls-tab{
         appearance:none;background:none;border:0;cursor:pointer;padding:0 0 7px;position:relative;
         font-family:var(--font-body);font-size:.72rem;text-transform:uppercase;letter-spacing:.16em;
-        color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.32);
+        color:#fff;mix-blend-mode:exclusion;isolation:auto;text-shadow:none;
         transition:transform .2s ease;
       }
       .dx-polls-tab::after{
@@ -437,20 +436,23 @@
 
       .dx-polls-section + .dx-polls-section{margin-top:28px}
       .dx-polls-section-label{margin:0 0 4px;font-family:var(--font-body);font-size:.66rem;text-transform:uppercase;letter-spacing:.16em;color:var(--dx-polls-muted)}
+      .dx-polls-detail > .dx-polls-section-label,
+      .dx-polls-detail > .dx-polls-empty{color:#fff;mix-blend-mode:exclusion;isolation:auto;text-shadow:none}
 
       .dx-polls-list{display:grid;gap:0}
       .dx-poll-card{
+        position:relative;isolation:auto;background:transparent;
         display:grid;gap:7px;padding:15px 0;
         border-top:1px solid var(--dx-polls-line);
       }
       .dx-poll-card:first-child{border-top:0}
       .dx-poll-card.is-locked{opacity:.72}
-      .dx-poll-card:hover .dx-poll-question{color:#fff;mix-blend-mode:difference}
+      .dx-poll-card:hover .dx-poll-question{color:#fff;mix-blend-mode:exclusion;isolation:auto}
       .dx-poll-card-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
       .dx-poll-chip{font-family:var(--font-body);font-size:.62rem;text-transform:uppercase;letter-spacing:.14em;color:var(--dx-polls-muted)}
       .dx-poll-chip.is-accent{color:var(--dx-polls-accent)}
       .dx-poll-chip.is-members{color:var(--dx-polls-ink)}
-      .dx-poll-question{margin:0;font-family:var(--font-heading);font-size:clamp(1rem,1.3vw,1.18rem);line-height:1.16;letter-spacing:.01em;text-transform:uppercase;transition:color .15s ease}
+      .dx-poll-question{position:relative;margin:0;font-family:var(--font-heading);font-size:clamp(1rem,1.3vw,1.18rem);line-height:1.16;letter-spacing:.01em;text-transform:uppercase;transition:color .15s ease}
       .dx-poll-meta{margin:0;font-family:var(--font-body);font-size:.76rem;color:var(--dx-polls-muted)}
       .dx-poll-actions{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-top:2px}
       .dx-poll-action,

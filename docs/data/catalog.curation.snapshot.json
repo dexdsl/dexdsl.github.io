@@ -28,7 +28,7 @@
       "lookup_number": "W.Bsn. CoTo AV2024 S2",
       "season": "S2",
       "performer": "Arlo Tomecek, Max Coleman",
-      "instrument": "BASSOON + ELECTRONICS WITH GENERATIVE VIDEO",
+      "instrument": "BAS‌SO‌ON + ELECTRONICS WITH GENERATIVE VIDEO",
       "status": "active",
       "updated_at": "2026-03-25T20:37:04.437Z"
     },
@@ -38,7 +38,7 @@
       "lookup_number": "P.Pto. Fe AV2024 S2",
       "season": "S2",
       "performer": "Tim Feeney",
-      "instrument": "PREPARED FLOOR TOM",
+      "instrument": "PREPARED FLO‌OR TOM",
       "status": "active",
       "updated_at": "2026-03-25T20:37:04.437Z"
     },
@@ -48,7 +48,7 @@
       "lookup_number": "P.Mpc. Gi AV2024 S2",
       "season": "S2",
       "performer": "Ben Giroux",
-      "instrument": "MULTIPLE PERCUS‏‏‎SION",
+      "instrument": "MULTIPLE PERCUS‌SION",
       "status": "active",
       "updated_at": "2026-03-25T20:37:04.437Z"
     },
@@ -58,7 +58,7 @@
       "lookup_number": "S.Pdb. He AV2024 S2",
       "season": "S2",
       "performer": "Jakob Heinemann",
-      "instrument": "SPLINTERINGS for DOUBLE BASS",
+      "instrument": "SPLINTERINGS for DOUBLE BAS‌S",
       "status": "active",
       "updated_at": "2026-03-25T20:37:04.437Z"
     },
@@ -68,7 +68,7 @@
       "lookup_number": "P.Ens. JaYo AV2024 S2",
       "season": "S2",
       "performer": "Paul Yorke, Sofi Jacquez",
-      "instrument": "AS THOUGH I’M SLIPPING",
+      "instrument": "AS THOUGH I’M SLIP‌PING",
       "status": "active",
       "updated_at": "2026-03-25T20:37:04.437Z"
     },
@@ -97,7 +97,7 @@
       "entry_href": "/entry/electric-guitar-chris-mann/",
       "lookup_number": "E.Gtr. Ma A2024 S2",
       "season": "S2",
-      "performer": "man‎‏n, chris",
+      "performer": "mann, chris",
       "instrument": "DHOLAK AND ELECTRONICS",
       "status": "draft",
       "updated_at": "2026-03-25T20:37:04.437Z"
@@ -158,7 +158,7 @@
       "lookup_number": "P.Hdl. Ch AV2023 S1",
       "season": "S1",
       "performer": "church, cameron",
-      "instrument": "PREPARED HAMMERED DULCIMER + DIGITAL SIGNAL PROCESSOR",
+      "instrument": "PREPARED HAM‌MERED DULCIMER + DIGITAL SIGNAL PROCES‌SOR",
       "status": "draft",
       "updated_at": "2026-03-25T20:37:04.437Z"
     },
@@ -187,8 +187,8 @@
       "entry_href": "/entry/cello-emmanuel-losa/",
       "lookup_number": "S.Vlc. Lo AV2023 S1",
       "season": "S1",
-      "performer": "losa, em‎‏‏‎manuel",
-      "instrument": "CELLO",
+      "performer": "losa, emmanuel",
+      "instrument": "CEL‌LO",
       "status": "draft",
       "updated_at": "2026-03-25T20:37:04.437Z"
     },
@@ -218,7 +218,7 @@
       "lookup_number": "X.Tlv. Pl AV2023 S1",
       "season": "S1",
       "performer": "pluta, sam",
-      "instrument": "FEEDBACK TELEVISIONS",
+      "instrument": "FE‌EDBACK TELEVISIONS",
       "status": "draft",
       "updated_at": "2026-03-25T20:37:04.437Z"
     },
@@ -227,8 +227,8 @@
       "entry_href": "/entry/prepared-bass-viol-suarez-solis/",
       "lookup_number": "S.VdG. Su AV2023 S1",
       "season": "S1",
-      "performer": "sebastian suarez-solis",
-      "instrument": "PREPARED BASS VIOL",
+      "performer": "suarez-solis, sebastian",
+      "instrument": "PREPARED BAS‌S VIOL",
       "status": "draft",
       "updated_at": "2026-03-25T20:37:04.437Z"
     },
@@ -237,29 +237,9 @@
       "entry_href": "/entry/prepared-harpsichord-suarez-solis/",
       "lookup_number": "K.Hps. Su AV2023 S1",
       "season": "S1",
-      "performer": "sebastian suarez-solis",
+      "performer": "suarez-solis, sebastian",
       "instrument": "PREPARED HARPSICHORD",
       "status": "draft",
-      "updated_at": "2026-03-25T20:37:04.437Z"
-    },
-    {
-      "entry_id": "splinterings-jakob-heinemann",
-      "entry_href": "/entry/splinterings-jakob-heinemann/",
-      "lookup_number": "",
-      "season": "",
-      "performer": "heineman‏‏‎‏‏‎n, jakob",
-      "instrument": "STRINGS",
-      "status": "active",
-      "updated_at": "2026-03-25T20:37:04.437Z"
-    },
-    {
-      "entry_id": "sebastian-suarez-solis",
-      "entry_href": "/entry/sebastian-suarez-solis/",
-      "lookup_number": "",
-      "season": "",
-      "performer": "suarez-solis, sebastian",
-      "instrument": "",
-      "status": "active",
       "updated_at": "2026-03-25T20:37:04.437Z"
     },
     {
@@ -286,9 +266,9 @@
   "spotlight": {
     "entry_id": "tim-feeney",
     "headline_raw": "ARTIST SPOTLIGHT",
-    "cta_label_raw": "VIEW COLLECTION",
+    "cta_label_raw": "VIEW COL‌LECTION",
     "cta_href": "/entry/tim-feeney/",
-    "subhead_raw": "PREPARED FLOOR TOM",
+    "subhead_raw": "PREPARED FLO‌OR TOM",
     "body_raw": "Tim Feeney",
     "image_src": ""
   }

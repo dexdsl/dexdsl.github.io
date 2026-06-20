@@ -70,6 +70,22 @@ function verifyCatalogContract() {
     '/assets/js/catalog.index.js',
   ]);
 
+  const homeRel = 'docs/index.html';
+  const homeText = readText(homeRel);
+  assertIncludes(homeRel, homeText, [
+    '/assets/js/dx-favorites.js',
+    '/assets/js/header-slot.js',
+  ]);
+
+  const catalogCssRel = 'public/css/components/dx-catalog-index.css';
+  const catalogCssText = readText(catalogCssRel);
+  assertIncludes(catalogCssRel, catalogCssText, [
+    '.dx-catalog-index-row-open',
+    'border: 0 !important;',
+    'background: none !important;',
+    'box-shadow: none !important;',
+  ]);
+
   for (const relPath of [
     'public/assets/js/catalog.index.js',
     'assets/js/catalog.index.js',

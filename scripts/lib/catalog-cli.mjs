@@ -28,6 +28,7 @@ import {
 
 const ROOT = process.cwd();
 const CATALOG_ENTRIES_PATH = path.join(ROOT, 'data', 'catalog.entries.json');
+const DEFAULT_SPOTLIGHT_CTA_LABEL = 'VIEW COL\u200cLECTION';
 
 function parseArgs(rest = []) {
   const [subcommand = '', ...rawArgs] = rest;
@@ -295,7 +296,7 @@ async function commandSpotlight(rest = [], filePath) {
   const next = setCatalogSpotlight(data, {
     entry_id: entryId,
     headline_raw: toText(flags.get('--headline') || data?.spotlight?.headline_raw || 'ARTIST SPOTLIGHT'),
-    cta_label_raw: toText(flags.get('--cta-label') || data?.spotlight?.cta_label_raw || 'VIEW COLLECTION'),
+    cta_label_raw: toText(flags.get('--cta-label') || data?.spotlight?.cta_label_raw || DEFAULT_SPOTLIGHT_CTA_LABEL),
     body_raw: toText(flags.get('--body') || data?.spotlight?.body_raw || resolved?.performer_raw || ''),
     subhead_raw: toText(flags.get('--subhead') || data?.spotlight?.subhead_raw || resolved?.title_raw || ''),
     image_src: toText(flags.get('--image') || data?.spotlight?.image_src || resolved?.image_src || ''),

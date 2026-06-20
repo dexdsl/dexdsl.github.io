@@ -243,6 +243,12 @@ function main() {
   if (!indexRuntimeSource.includes('/data/catalog.seasons.json')) {
     failures.push('catalog index runtime missing catalog.seasons fetch source');
   }
+  if (!indexRuntimeSource.includes("openCta('/catalog/how/#dex-how', 'Lookup guide', 'secondary')")) {
+    failures.push('catalog index runtime must render Lookup guide as a secondary CTA');
+  }
+  if (!indexRuntimeSource.includes("dx-button-element dx-button-size--sm dx-button-element--secondary', 'Random entry'")) {
+    failures.push('catalog index runtime must render Random entry as a secondary CTA button');
+  }
 
   if (failures.length > 0) {
     console.error(`catalog:verify failed with ${failures.length} issue(s):`);

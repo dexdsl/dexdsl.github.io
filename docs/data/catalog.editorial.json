@@ -1,6 +1,6 @@
 {
   "version": "catalog-editorial-v1",
-  "updatedAt": "2026-03-25T21:26:37.805Z",
+  "updatedAt": "2026-06-08T21:53:05.986Z",
   "manifest": [
     {
       "entry_id": "2-organs-midori-ataka",
@@ -8,9 +8,9 @@
       "title_raw": "“2 ORGANS”: PIPE ORGAN (“GRISWOLD”), PORTATIVE ORGAN",
       "lookup_number": "K.Org. At AV2023 S1",
       "season": "S1",
-      "performer": "ataka, midori",
+      "performer": "midori ataka",
       "instrument": "TWO ORGANS",
-      "status": "draft"
+      "status": "active"
     },
     {
       "entry_id": "aidan-yeats",
@@ -28,9 +28,9 @@
       "title_raw": "AMPLIFIED KNIVES",
       "lookup_number": "E.Kni. Jo AV2023 S1",
       "season": "S1",
-      "performer": "jordan, tyler",
+      "performer": "tyler jordan",
       "instrument": "AMPLIFIED KNIVES",
-      "status": "draft"
+      "status": "active"
     },
     {
       "entry_id": "amplified-printer",
@@ -48,9 +48,9 @@
       "title_raw": "AMPLIFIED TV SETS",
       "lookup_number": "X.Tlv. Pl AV2023 S1",
       "season": "S1",
-      "performer": "pluta, sam",
-      "instrument": "FEEDBACK TELEVISIONS",
-      "status": "draft"
+      "performer": "sam pluta",
+      "instrument": "FE‌EDBACK TELEVISIONS",
+      "status": "active"
     },
     {
       "entry_id": "anant-shah",
@@ -75,21 +75,21 @@
     {
       "entry_id": "as-though-im-slipping",
       "entry_href": "/entry/as-though-im-slipping/",
-      "title_raw": "AS THOUGH I’M SLIPPING - MIXED ENSEMBLE",
+      "title_raw": "AS THOUGH I’M SLIP‌PING - MIXED ENSEMBLE",
       "lookup_number": "P.Ens. JaYo AV2024 S2",
       "season": "S2",
       "performer": "Paul Yorke, Sofi Jacquez",
-      "instrument": "AS THOUGH I’M SLIPPING",
+      "instrument": "AS THOUGH I’M SLIP‌PING",
       "status": "active"
     },
     {
       "entry_id": "bassoon-and-electronics",
       "entry_href": "/entry/bassoon-and-electronics/",
-      "title_raw": "BASSOON + ELECTRONICS WITH GENERATIVE VIDEO",
+      "title_raw": "BAS‌SO‌ON + ELECTRONICS WITH GENERATIVE VIDEO",
       "lookup_number": "W.Bsn. CoTo AV2024 S2",
       "season": "S2",
       "performer": "Arlo Tomecek, Max Coleman",
-      "instrument": "BASSOON + ELECTRONICS WITH GENERATIVE VIDEO",
+      "instrument": "BAS‌SO‌ON + ELECTRONICS WITH GENERATIVE VIDEO",
       "status": "active"
     },
     {
@@ -105,12 +105,12 @@
     {
       "entry_id": "cello-emmanuel-losa",
       "entry_href": "/entry/cello-emmanuel-losa/",
-      "title_raw": "CELLO",
+      "title_raw": "CEL‌LO",
       "lookup_number": "S.Vlc. Lo AV2023 S1",
       "season": "S1",
-      "performer": "losa, em‎‏‏‎manuel",
-      "instrument": "CELLO",
-      "status": "draft"
+      "performer": "emmanuel losa",
+      "instrument": "CEL‌LO",
+      "status": "active"
     },
     {
       "entry_id": "cybernetic-scat-paul-hermansen",
@@ -118,9 +118,9 @@
       "title_raw": "CYBERNETIC SCAT",
       "lookup_number": "V.Sc. He A2023 S1",
       "season": "S1",
-      "performer": "hermansen, paul*",
+      "performer": "paul* hermansen",
       "instrument": "CYBERNETIC SCAT",
-      "status": "draft"
+      "status": "active"
     },
     {
       "entry_id": "electric-guitar-chris-mann",
@@ -128,7 +128,7 @@
       "title_raw": "ELECTRIC GUITAR",
       "lookup_number": "E.Gtr. Ma A2024 S2",
       "season": "S2",
-      "performer": "man‎‏n, chris",
+      "performer": "mann, chris",
       "instrument": "DHOLAK AND ELECTRONICS",
       "status": "draft"
     },
@@ -138,38 +138,38 @@
       "title_raw": "ELECTRIC GUITAR + PEDALS",
       "lookup_number": "E.Gtr. Ba AV2023 S1",
       "season": "S1",
-      "performer": "bailey-gould, ethan",
+      "performer": "ethan bailey-gould",
       "instrument": "ELECTRIC GUITAR + pedals",
-      "status": "draft"
+      "status": "active"
     },
     {
       "entry_id": "hammered-dulcimer-cameron-church",
       "entry_href": "/entry/hammered-dulcimer-cameron-church/",
-      "title_raw": "PREPARED HAMMERED DULCIMER + DIGITAL SIGNAL PROCESSOR",
+      "title_raw": "PREPARED HAM‌MERED DULCIMER + DIGITAL SIGNAL PROCES‌SOR",
       "lookup_number": "P.Hdl. Ch AV2023 S1",
       "season": "S1",
-      "performer": "church, cameron",
-      "instrument": "PREPARED HAMMERED DULCIMER + DIGITAL SIGNAL PROCESSOR",
-      "status": "draft"
+      "performer": "cameron church",
+      "instrument": "PREPARED HAM‌MERED DULCIMER + DIGITAL SIGNAL PROCES‌SOR",
+      "status": "active"
     },
     {
       "entry_id": "jakob-heinemann",
       "entry_href": "/entry/jakob-heinemann/",
-      "title_raw": "SPLINTERINGS for DOUBLE BASS",
+      "title_raw": "SPLINTERINGS for DOUBLE BAS‌S",
       "lookup_number": "S.Pdb. He AV2024 S2",
       "season": "S2",
       "performer": "Jakob Heinemann",
-      "instrument": "SPLINTERINGS for DOUBLE BASS",
+      "instrument": "SPLINTERINGS for DOUBLE BAS‌S",
       "status": "active"
     },
     {
       "entry_id": "multiperc",
       "entry_href": "/entry/multiperc/",
-      "title_raw": "MULTIPLE PERCUSSION",
+      "title_raw": "MULTIPLE PERCUS‌SION",
       "lookup_number": "P.Mpc. Gi AV2024 S2",
       "season": "S2",
       "performer": "Ben Giroux",
-      "instrument": "MULTIPLE PERCUS‏‏‎SION",
+      "instrument": "MULTIPLE PERCUS‌SION",
       "status": "active"
     },
     {
@@ -178,19 +178,19 @@
       "title_raw": "NO INPUT MIXER SET",
       "lookup_number": "E.Noi. Mu AV2023 S1",
       "season": "S1",
-      "performer": "murphy, jared",
+      "performer": "jared murphy",
       "instrument": "NO IMPUT MIXING BOARD",
-      "status": "draft"
+      "status": "active"
     },
     {
       "entry_id": "prepared-bass-viol-suarez-solis",
       "entry_href": "/entry/prepared-bass-viol-suarez-solis/",
-      "title_raw": "PREPARED BASS VIOL",
+      "title_raw": "PREPARED BAS‌S VIOL",
       "lookup_number": "S.VdG. Su AV2023 S1",
       "season": "S1",
-      "performer": "sebastian suarez-solis",
-      "instrument": "PREPARED BASS VIOL",
-      "status": "draft"
+      "performer": "suarez-solis, sebastian",
+      "instrument": "PREPARED BAS‌S VIOL",
+      "status": "active"
     },
     {
       "entry_id": "prepared-harpsichord-suarez-solis",
@@ -198,9 +198,9 @@
       "title_raw": "PREPARED HARPSICHORD",
       "lookup_number": "K.Hps. Su AV2023 S1",
       "season": "S1",
-      "performer": "sebastian suarez-solis",
+      "performer": "suarez-solis, sebastian",
       "instrument": "PREPARED HARPSICHORD",
-      "status": "draft"
+      "status": "active"
     },
     {
       "entry_id": "prepared-oboe-sky-macklay",
@@ -245,11 +245,11 @@
     {
       "entry_id": "tim-feeney",
       "entry_href": "/entry/tim-feeney/",
-      "title_raw": "PREPARED FLOOR TOM",
+      "title_raw": "PREPARED FLO‌OR TOM",
       "lookup_number": "P.Pto. Fe AV2024 S2",
       "season": "S2",
       "performer": "Tim Feeney",
-      "instrument": "PREPARED FLOOR TOM",
+      "instrument": "Prepared Floor Tom",
       "status": "active"
     },
     {
@@ -258,9 +258,9 @@
       "title_raw": "VOICE W/ EVERYDAY OBJECT MANIPULATION",
       "lookup_number": "V.Obj. Lu A2023 S1",
       "season": "S1",
-      "performer": "lu, qiujiang levi",
+      "performer": "qiujiang levi lu",
       "instrument": "VOICE W/ EVERYDAY OBJECT MANIPULATION",
-      "status": "draft"
+      "status": "active"
     }
   ],
   "spotlight": {
@@ -268,7 +268,7 @@
     "headline_raw": "ARTIST SPOTLIGHT",
     "subhead_raw": "",
     "body_raw": "",
-    "cta_label_raw": "VIEW COLLECTION",
+    "cta_label_raw": "VIEW COL‌LECTION",
     "image_src": ""
   }
 }

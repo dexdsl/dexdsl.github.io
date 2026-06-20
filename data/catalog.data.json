@@ -24,7 +24,7 @@
       "VOICE",
       "WINDS"
     ],
-    "protected_char_count": 9
+    "protected_char_count": 33
   },
   "entries": [
     {
@@ -75,14 +75,14 @@
     },
     {
       "id": "bassoon-and-electronics",
-      "title_raw": "BASSOON + ELECTRONICS WITH GENERATIVE VIDEO",
+      "title_raw": "BAS‌SO‌ON + ELECTRONICS WITH GENERATIVE VIDEO",
       "performer_raw": "coleman, max & tomecek, arlo",
       "instrument_family": [
         "ELECTRONICS",
         "WINDS"
       ],
       "instrument_labels": [
-        "BASSOON + ELECTRONICS WITH GENERATIVE VIDEO"
+        "BAS‌SO‌ON + ELECTRONICS WITH GENERATIVE VIDEO"
       ],
       "lookup_raw": "W.Bsn. CoTo AV2024 S2",
       "season": "S2",
@@ -98,13 +98,13 @@
     },
     {
       "id": "tim-feeney",
-      "title_raw": "PREPARED FLOOR TOM",
+      "title_raw": "PREPARED FLO‌OR TOM",
       "performer_raw": "feeney, tim",
       "instrument_family": [
         "PERCUSSION"
       ],
       "instrument_labels": [
-        "PREPARED FLOOR TOM"
+        "PREPARED FLO‌OR TOM"
       ],
       "lookup_raw": "P.Pto. Fe AV2024 S2",
       "season": "S2",
@@ -120,13 +120,13 @@
     },
     {
       "id": "multiperc",
-      "title_raw": "MULTIPLE PERCUSSION",
+      "title_raw": "MULTIPLE PERCUS‌SION",
       "performer_raw": "giroux, ben",
       "instrument_family": [
         "PERCUSSION"
       ],
       "instrument_labels": [
-        "MULTIPLE PERCUSSION"
+        "MULTIPLE PERCUS‌SION"
       ],
       "lookup_raw": "P.Mpc. Gi AV2024 S2",
       "season": "S2",
@@ -142,13 +142,13 @@
     },
     {
       "id": "jakob-heinemann",
-      "title_raw": "SPLINTERINGS for DOUBLE BASS",
+      "title_raw": "SPLINTERINGS for DOUBLE BAS‌S",
       "performer_raw": "jakob heinemann",
       "instrument_family": [
         "ELECTRONICS"
       ],
       "instrument_labels": [
-        "SPLINTERINGS for DOUBLE BASS"
+        "SPLINTERINGS for DOUBLE BAS‌S"
       ],
       "lookup_raw": "S.Pdb. He AV2024 S2",
       "season": "S2",
@@ -164,7 +164,7 @@
     },
     {
       "id": "as-though-im-slipping",
-      "title_raw": "AS THOUGH I’M SLIPPING - MIXED ENSEMBLE",
+      "title_raw": "AS THOUGH I’M SLIP‌PING - MIXED ENSEMBLE",
       "performer_raw": "jáquez, sofí & yorke, paul",
       "instrument_family": [
         "ELECTRONICS",
@@ -172,7 +172,7 @@
         "OTHER"
       ],
       "instrument_labels": [
-        "AS THOUGH I’M SLIPPING"
+        "AS THOUGH I’M SLIP‌PING"
       ],
       "lookup_raw": "P.Ens. JaYo AV2024 S2",
       "season": "S2",
@@ -371,7 +371,7 @@
     },
     {
       "id": "hammered-dulcimer-cameron-church",
-      "title_raw": "PREPARED HAMMERED DULCIMER + DIGITAL SIGNAL PROCESSOR",
+      "title_raw": "PREPARED HAM‌MERED DULCIMER + DIGITAL SIGNAL PROCES‌SOR",
       "performer_raw": "church, cameron",
       "instrument_family": [
         "ELECTRONICS",
@@ -379,8 +379,8 @@
         "STRINGS"
       ],
       "instrument_labels": [
-        "PREPARED HAMMERED DULCIMER + DIGITAL SIGNAL PROCESSOR",
-        "PREPARED HAMMERED DULCIMER"
+        "PREPARED HAM‌MERED DULCIMER + DIGITAL SIGNAL PROCES‌SOR",
+        "PREPARED HAM‌MERED DULCIMER"
       ],
       "lookup_raw": "P.Hdl. Ch AV2023 S1",
       "season": "S1",
@@ -442,13 +442,13 @@
     },
     {
       "id": "cello-emmanuel-losa",
-      "title_raw": "CELLO",
+      "title_raw": "CEL‌LO",
       "performer_raw": "losa, emmanuel",
       "instrument_family": [
         "STRINGS"
       ],
       "instrument_labels": [
-        "CELLO"
+        "CEL‌LO"
       ],
       "lookup_raw": "S.Vlc. Lo AV2023 S1",
       "season": "S1",
@@ -516,7 +516,7 @@
         "OTHER"
       ],
       "instrument_labels": [
-        "FEEDBACK TELEVISIONS"
+        "FE‌EDBACK TELEVISIONS"
       ],
       "lookup_raw": "X.Tlv. Pl AV2023 S1",
       "season": "S1",
@@ -532,14 +532,14 @@
     },
     {
       "id": "prepared-bass-viol-suarez-solis",
-      "title_raw": "PREPARED BASS VIOL",
+      "title_raw": "PREPARED BAS‌S VIOL",
       "performer_raw": "suarez-solis, sebastian",
       "instrument_family": [
         "KEYBOARD",
         "STRINGS"
       ],
       "instrument_labels": [
-        "PREPARED BASS VIOL"
+        "PREPARED BAS‌S VIOL"
       ],
       "lookup_raw": "S.VdG. Su AV2023 S1",
       "season": "S1",
@@ -578,10 +578,10 @@
   ],
   "spotlight": {
     "entry_id": "tim-feeney",
-    "headline_raw": "ARTIST SPOOTLIGHT:",
-    "subhead_raw": "PREPARED FLOOR TOM",
+    "headline_raw": "ARTIST SPOTLIGHT:",
+    "subhead_raw": "PREPARED FLO‌OR TOM",
     "body_raw": "Tim Feeney's live performance on prepared floor tom is the latest edition to our ever-expanding catalogue. Check out our newest live recording from dexFest!",
-    "cta_label_raw": "VIEW COLLECTION",
+    "cta_label_raw": "VIEW COL‌LECTION",
     "cta_href": "/entry/tim-feeney/",
     "image_src": "https://images.squarespace-cdn.com/content/v1/63956a55e99f9772a8cd1742/64271dc1-2992-4097-9cb7-0403625eb551/Feeney+shot.jpg"
   },
@@ -621,7 +621,7 @@
     ]
   },
   "symbols": {
-    "heading_raw": "List of Syymbols",
+    "heading_raw": "List of Symbols",
     "instrument": [
       {
         "key_raw": "V",

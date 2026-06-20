@@ -1725,7 +1725,7 @@
     entryPageTitleSeparatorObserver = observer;
   };
   const addZeroWidthJoiners = (value) => {
-    const cleaned = String(value == null ? '' : value).replace(/[\u200C\u200D]/g, '');
+    const cleaned = String(value == null ? '' : value).replace(/\u200C/g, '');
     let output = '';
     for (let i = 0; i < cleaned.length; i += 1) {
       const current = cleaned.charAt(i);

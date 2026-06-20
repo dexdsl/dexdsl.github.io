@@ -9,6 +9,7 @@ import {
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(SCRIPT_DIR, '..', '..');
 const DEFAULT_CATALOG_EDITORIAL_PATH = path.join(ROOT, 'data', 'catalog.editorial.json');
+const DEFAULT_SPOTLIGHT_CTA_LABEL = 'VIEW COL\u200cLECTION';
 
 function toText(value) {
   return String(value || '').trim();
@@ -296,7 +297,7 @@ export function applyCatalogEditorialToModel(model, editorialData) {
       cta_href: entry ? normalizeHref(entry.entry_href) : normalizeHref(editorial.spotlight.entry_href || nextModel.spotlight.cta_href),
       subhead_raw: toText(editorial.spotlight.subhead_raw || entry?.title_raw || nextModel.spotlight.subhead_raw),
       body_raw: toText(editorial.spotlight.body_raw || entry?.performer_raw || nextModel.spotlight.body_raw),
-      cta_label_raw: toText(editorial.spotlight.cta_label_raw || nextModel.spotlight.cta_label_raw || 'VIEW COLLECTION'),
+      cta_label_raw: toText(editorial.spotlight.cta_label_raw || nextModel.spotlight.cta_label_raw || DEFAULT_SPOTLIGHT_CTA_LABEL),
     };
   }
 

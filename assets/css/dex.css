@@ -1745,6 +1745,31 @@ body.dx-route-profile-protected :is(
   padding: clamp(14px, 1.8vw, 22px) !important;
 }
 
+/* Polls/favorites are flat type surfaces; leave the mesh available to blended glyphs. */
+body.dx-route-profile-protected :is(
+  #dex-console[data-dx-polls-app],
+  #dex-favorites
+),
+body.dx-route-profile-protected :is(
+  #dex-console[data-dx-polls-app] .dx-polls-route-shell,
+  #dex-console[data-dx-polls-app] .dx-polls-shell,
+  #dex-console[data-dx-polls-app] .dx-polls-head,
+  #dex-console[data-dx-polls-app] .dx-polls-body,
+  #dex-console[data-dx-polls-app] .dx-poll-card,
+  #dex-favorites .dx-fav-shell,
+  #dex-favorites .dx-fav-head,
+  #dex-favorites .dx-fav-toolbar,
+  #dex-favorites .dx-fav-body,
+  #dex-favorites .dx-fav-row
+) {
+  background: transparent !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  filter: none !important;
+  isolation: auto !important;
+}
+
 body.dx-route-profile-protected #gooey-mesh-wrapper {
   display: block !important;
   visibility: visible !important;

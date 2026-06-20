@@ -153,7 +153,7 @@ function buildHead({ title, description, canonicalPath, imageSrc }) {
     <!-- dexdsl -->
 <meta charset="utf-8" />
 <title>${escapedTitle}</title>
-<meta http-equiv="Accept-CH" content="Sec-CH-UA-Platform-Version, Sec-CH-UA-Model" /><link rel="icon" type="image/x-icon" href="/assets/img/54952c48d15771b9cb2a.ico"/>
+<meta http-equiv="Accept-CH" content="Sec-CH-UA-Platform-Version, Sec-CH-UA-Model" /><link rel="icon" type="image/png" href="/assets/img/dex-favicon.png"/>
 <link rel="canonical" href="${escapeAttr(canonical)}"/>
 <meta property="og:site_name" content="dex digital sample library"/>
 <meta property="og:title" content="${escapedTitle}"/>

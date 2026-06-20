@@ -1,6 +1,7 @@
 import { load } from 'cheerio';
 
 const PROTECTED_CHAR_RE = /[\u00A0\u200B\u200C\u200D]/g;
+const DEFAULT_SPOTLIGHT_CTA_LABEL = 'VIEW COL\u200cLECTION';
 
 export function cleanText(value) {
   return String(value ?? '')
@@ -240,7 +241,7 @@ function buildSpotlight($, entries) {
         headline_raw: 'ARTIST SPOTLIGHT',
         subhead_raw: '',
         body_raw: '',
-        cta_label_raw: 'VIEW COLLECTION',
+        cta_label_raw: DEFAULT_SPOTLIGHT_CTA_LABEL,
         cta_href: '/catalog/#dex-performer',
         image_src: '',
       };
@@ -250,7 +251,7 @@ function buildSpotlight($, entries) {
       headline_raw: 'ARTIST SPOTLIGHT',
       subhead_raw: fallback.title_raw,
       body_raw: fallback.performer_raw,
-      cta_label_raw: 'VIEW COLLECTION',
+      cta_label_raw: DEFAULT_SPOTLIGHT_CTA_LABEL,
       cta_href: fallback.entry_href,
       image_src: fallback.image_src,
     };
@@ -265,7 +266,7 @@ function buildSpotlight($, entries) {
 
   const ctaAnchor = section.find('a.dx-block-button-element, a.dx-button-element--primary, a[href*="/entry/"]').first();
   const ctaHref = canonicalizeInternalHref(ctaAnchor.attr('href') || '');
-  const ctaLabelRaw = cleanText(ctaAnchor.text()) || 'VIEW COLLECTION';
+  const ctaLabelRaw = cleanText(ctaAnchor.text()) || DEFAULT_SPOTLIGHT_CTA_LABEL;
 
   const linkedImage = ctaHref
     ? section
@@ -300,7 +301,7 @@ function normalizeSpotlight(spotlightRaw, entries) {
     headline_raw: cleanText(spotlightRaw?.headline_raw || 'ARTIST SPOTLIGHT'),
     subhead_raw: cleanText(spotlightRaw?.subhead_raw || ''),
     body_raw: cleanText(spotlightRaw?.body_raw || ''),
-    cta_label_raw: cleanText(spotlightRaw?.cta_label_raw || 'VIEW COLLECTION'),
+    cta_label_raw: cleanText(spotlightRaw?.cta_label_raw || DEFAULT_SPOTLIGHT_CTA_LABEL),
     cta_href: canonicalizeInternalHref(spotlightRaw?.cta_href || '/catalog/#dex-performer'),
     image_src: normalizeImageSrc(spotlightRaw?.image_src || ''),
   };

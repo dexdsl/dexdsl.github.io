@@ -696,6 +696,25 @@ select.dx-catalog-index-select {
   line-height: 1.42;
 }
 
+/* Static flat base for the favorite heart so it never flashes the boxed
+   dx-button-element--secondary skin before catalog.index.js injects the heart style. */
+.dx-catalog-index-row-favorite {
+  justify-self: start;
+  min-width: 2.05rem;
+  width: 2.05rem;
+  min-height: 2.05rem;
+  height: 2.05rem;
+  padding: 0 !important;
+  border: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  border-radius: 999px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
 .dx-catalog-index-row-open {
   justify-self: start;
   min-width: 2.05rem;
@@ -703,6 +722,9 @@ select.dx-catalog-index-select {
   min-height: 2.05rem;
   height: 2.05rem;
   padding: 0 !important;
+  border: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
   border-radius: 999px !important;
   display: inline-flex;
   align-items: center;

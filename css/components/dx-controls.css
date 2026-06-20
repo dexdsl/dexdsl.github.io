@@ -10,13 +10,13 @@
   --dx-btn-min-h-sm: 2rem;
   --dx-btn-primary-weight: 800;
   --dx-btn-secondary-weight: 700;
-  --dx-btn-primary-border: rgba(0, 0, 0, 0.15);
+  --dx-btn-primary-border: transparent;
   --dx-btn-secondary-border: rgba(32, 32, 32, 0.22);
   --dx-btn-primary-bg: linear-gradient(130deg, var(--dex-accent, #ff1910), #ff9810);
   --dx-btn-secondary-bg: linear-gradient(145deg, rgba(255, 255, 255, 0.78), rgba(245, 249, 255, 0.52));
-  --dx-btn-primary-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35) inset, 0 10px 30px rgba(255, 0, 80, 0.25);
+  --dx-btn-primary-shadow: 0 10px 30px rgba(255, 0, 80, 0.25);
   --dx-btn-primary-shadow-hover: 0 12px 36px rgba(255, 0, 80, 0.28);
-  --dx-btn-primary-shadow-focus: 0 0 0 2px rgba(255, 255, 255, 0.35) inset, 0 0 0 4px rgba(255, 25, 16, 0.25), 0 10px 30px rgba(255, 0, 80, 0.25);
+  --dx-btn-primary-shadow-focus: 0 0 0 4px rgba(255, 25, 16, 0.25), 0 10px 30px rgba(255, 0, 80, 0.25);
   --dx-btn-glint: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.75) 50%, transparent 70%);
   --dx-btn-hover-lift: -2px;
   --dx-btn-hover-scale: var(--dx-motion-scale-hover, 1.015);
@@ -86,7 +86,7 @@ button,
 .cta-btn,
 .cta,
 .dex-btn {
-  border-color: var(--dx-btn-primary-border);
+  border: 0;
   background: var(--dx-btn-primary-bg);
   color: #fff;
   box-shadow: var(--dx-btn-primary-shadow);
@@ -117,7 +117,7 @@ button,
 #btn-call.dx-button-element--primary,
 .join-button.dx-button-element--primary,
 .dex-btn.dx-button-element--primary {
-  border-color: var(--dx-btn-primary-border) !important;
+  border: 0 !important;
   background: var(--dx-btn-primary-bg) !important;
   color: #fff !important;
   box-shadow: var(--dx-btn-primary-shadow) !important;

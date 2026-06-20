@@ -10,7 +10,7 @@
 <!-- dexdsl -->
 <meta charset="utf-8" />
 <title>Settings &mdash; dex digital sample library</title>
-<meta http-equiv="Accept-CH" content="Sec-CH-UA-Platform-Version, Sec-CH-UA-Model" /><link rel="icon" type="image/x-icon" href="/assets/img/54952c48d15771b9cb2a.ico"/>
+<meta http-equiv="Accept-CH" content="Sec-CH-UA-Platform-Version, Sec-CH-UA-Model" /><link rel="icon" type="image/png" href="/assets/img/dex-favicon.png"/>
 <link rel="canonical" href="https://dexdsl.org/entry/settings"/>
 <meta property="og:site_name" content="dex digital sample library"/>
 <meta property="og:title" content="Settings &mdash; dex digital sample library"/>
@@ -53,6 +53,8 @@
 <script defer src="/assets/js/header-slot.js?v=20260528a"></script>
 <script defer src="/assets/js/dx-scroll-dot.js"></script>
 <script defer src="/assets/js/interactive-hover.js"></script>
+<script defer src="/assets/js/dx-favorites.js"></script>
+<script defer src="/assets/js/header-slot.js"></script>
 </head>
 
   <body
@@ -2646,8 +2648,271 @@
 .dx-block:has(#dex-settings){ padding-left:0 !important; padding-right:0 !important; }
 .page-section:has(#dex-settings) .content{ padding-left:0 !important; padding-right:0 !important; }
 
-/* Component itself: keep vertical breathing room, remove side padding only */
-#dex-settings{ padding-inline:0; } /* overrides earlier padding without !important */
+/* === Settings route consolidation: borrow the flat polls/favorites surface === */
+#dex-settings{
+  --pad: clamp(14px, 1.6vw, 22px);
+  --pad-2: clamp(14px, 1.8vw, 24px);
+  --gap: clamp(16px, 2vw, 28px);
+  --radius: 4px;
+  --radius-sm: 4px;
+  --glass-bg: transparent;
+  --glass-brd: rgba(0,0,0,.14);
+  --shadow-1: none;
+  --shadow-2: none;
+  --muted: rgba(0,0,0,.62);
+  width:min(100%, var(--dx-header-frame-width, 100%));
+  max-width:var(--dx-header-frame-width, 100%);
+  padding:clamp(14px, 2vw, 26px) 0;
+  isolation:auto;
+}
+#dex-settings .hdr{
+  position:relative;
+  top:auto;
+  padding:0 0 clamp(14px, 1.8vw, 22px);
+  border:0;
+  border-bottom:1px solid rgba(0,0,0,.16);
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
+}
+#dex-settings .hdr h1{
+  font-size:clamp(2.45rem, 5.7vw, 4.75rem);
+  line-height:.86;
+  color:#191a20;
+}
+#dex-settings .hdr .sub{
+  margin:.72rem 0 0;
+  font:600 .86rem/1.35 var(--font-body, system-ui);
+  color:var(--muted);
+}
+#dex-settings .tabsbar{
+  position:sticky;
+  top:0;
+  margin:0;
+  padding:12px 48px;
+  border:0;
+  border-bottom:1px solid rgba(0,0,0,.14);
+  border-radius:0;
+  background:rgba(255,255,255,.7);
+  box-shadow:none;
+  -webkit-backdrop-filter:blur(16px) saturate(116%);
+  backdrop-filter:blur(16px) saturate(116%);
+}
+#dex-settings .pills{
+  gap:8px;
+}
+#dex-settings .pill{
+  min-height:38px;
+  padding:.48rem .72rem;
+  border-color:rgba(0,0,0,.16);
+  background:rgba(255,255,255,.48);
+  box-shadow:none;
+  color:#101218;
+}
+#dex-settings .pill[aria-selected="true"]{
+  border:0;
+  background:linear-gradient(130deg, var(--accent), orange);
+  box-shadow:none;
+  color:#fff;
+}
+#dex-settings .nav{
+  border:0;
+  background:transparent;
+  box-shadow:none;
+}
+#dex-settings .grid{
+  gap:clamp(20px, 2.4vw, 38px);
+  margin-top:clamp(18px, 2vw, 28px);
+}
+#dex-settings .card{
+  border:0;
+  border-top:1px solid rgba(0,0,0,.14);
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
+  padding:clamp(18px, 2vw, 28px) 0;
+}
+#dex-settings .profile-col-left .card:first-child,
+#dex-settings .profile-col-right .card:first-child,
+#dex-settings #pane-membership > .card:first-child,
+#dex-settings #pane-notifs > .card:first-child{
+  border-top:0;
+  padding-top:0;
+}
+#dex-settings .card-head{
+  align-items:flex-start;
+  border-bottom:1px solid rgba(0,0,0,.12);
+  margin-bottom:12px;
+  padding-bottom:10px;
+}
+#dex-settings .card h2{
+  margin:0;
+  font-size:clamp(1.18rem, 2.4vw, 1.75rem);
+  line-height:.95;
+  color:#1a1b20;
+}
+#dex-settings #pane-profile .twocol{
+  gap:clamp(22px, 3vw, 52px);
+}
+@media (min-width: 980px){
+  #dex-settings #pane-profile .twocol{
+    grid-template-columns:minmax(0, 1fr) minmax(280px, 390px);
+  }
+  #dex-settings #pane-profile .profile-col-right{
+    border-left:1px solid rgba(0,0,0,.12);
+    padding-left:clamp(18px, 2.2vw, 32px);
+  }
+}
+#dex-settings #pane-profile .profile-col{
+  gap:clamp(20px, 2.4vw, 34px);
+}
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-stack{
+  gap:0;
+}
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-subcard{
+  border:0 !important;
+  border-top:1px solid rgba(0,0,0,.12) !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  padding:14px 0 !important;
+}
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-subcard:first-child{
+  border-top:0 !important;
+  padding-top:0 !important;
+}
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-kicker{
+  margin:0 0 10px !important;
+  letter-spacing:.1em !important;
+  color:rgba(0,0,0,.56) !important;
+}
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-meta-row{
+  border-bottom:1px solid rgba(0,0,0,.12) !important;
+  padding:9px 0 !important;
+}
+#dex-settings :is(.dx-profile-input, .tokens, .readonly, .suggestions, .billing-status, .dx-delete-meta, .dx-delete-phrase-shell, .dx-delete-input, .tier, .interval, .save-status, .badge, .provider-chip, .chips .chip){
+  border-color:rgba(0,0,0,.14) !important;
+  background:rgba(255,255,255,.54) !important;
+  box-shadow:none !important;
+}
+#dex-settings .item,
+#dex-settings .dx-delete-meta .item,
+#dex-settings .billing-status .item{
+  border-bottom:1px solid rgba(0,0,0,.12);
+}
+#dex-settings .btn,
+#dex-settings .ghost,
+#dex-settings .cta-primary{
+  border-color:rgba(0,0,0,.14);
+  background:rgba(255,255,255,.46);
+  box-shadow:none;
+}
+#dex-settings .btn.primary,
+#dex-settings .cta,
+#dex-settings .dx-btn-danger-solid{
+  border:0 !important;
+  box-shadow:0 10px 26px rgba(255,70,20,.16) !important;
+}
+#dex-settings .savebar{
+  border:0;
+  border-top:1px solid rgba(0,0,0,.14);
+  border-radius:0;
+  background:rgba(255,255,255,.72);
+  box-shadow:none;
+}
+#dex-settings #securityCard .list{
+  gap:0;
+}
+#dex-settings #securityCard .item{
+  min-height:42px;
+  align-items:center;
+}
+#dex-settings #securityCard .btn{
+  min-height:34px;
+  padding:8px 11px;
+}
+#dex-settings #dangerCard{
+  margin-top:clamp(10px, 1.8vw, 20px) !important;
+}
+#dex-settings #dangerCard .note{
+  max-width:34rem;
+}
+#dex-settings #asideWhy,
+#dex-settings #asideBilling,
+#dex-settings .dx-settings-membership-aside-rail,
+#dex-settings #pane-notifs #notCard .dx-newsletter-block{
+  background:transparent !important;
+  box-shadow:none !important;
+  -webkit-backdrop-filter:none !important;
+  backdrop-filter:none !important;
+}
+#dex-settings #asideWhy::before{
+  opacity:.45;
+}
+@media (max-width: 760px){
+  #dex-settings .tabsbar{
+    padding:10px 40px;
+  }
+  #dex-settings .pills{
+    width:100%;
+    grid-auto-flow:row;
+  }
+  #dex-settings .pill{
+    width:100%;
+  }
+}
+body.dx-route-profile-protected #dex-settings{
+  --pad: clamp(14px, 1.6vw, 22px) !important;
+  --gap: clamp(16px, 2vw, 28px) !important;
+  padding-top:clamp(14px, 2vw, 26px) !important;
+  padding-bottom:clamp(14px, 2vw, 26px) !important;
+}
+body.dx-route-profile-protected #dex-settings .hdr,
+body.dx-route-profile-protected #dex-settings .tabsbar,
+body.dx-route-profile-protected #dex-settings .card,
+body.dx-route-profile-protected #dex-settings .savebar{
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  -webkit-backdrop-filter:none !important;
+  backdrop-filter:none !important;
+}
+body.dx-route-profile-protected #dex-settings .hdr{
+  border:0 !important;
+  border-bottom:1px solid rgba(0,0,0,.16) !important;
+}
+body.dx-route-profile-protected #dex-settings .tabsbar{
+  border:0 !important;
+  border-bottom:1px solid rgba(0,0,0,.14) !important;
+  background:rgba(255,255,255,.72) !important;
+}
+body.dx-route-profile-protected #dex-settings .card{
+  border:0 !important;
+  border-top:1px solid rgba(0,0,0,.14) !important;
+}
+body.dx-route-profile-protected #dex-settings .profile-col-left .card:first-child,
+body.dx-route-profile-protected #dex-settings .profile-col-right .card:first-child,
+body.dx-route-profile-protected #dex-settings #pane-membership > .card:first-child,
+body.dx-route-profile-protected #dex-settings #pane-notifs > .card:first-child{
+  border-top:0 !important;
+}
+body.dx-route-profile-protected #dex-settings .savebar{
+  border:0 !important;
+  border-top:1px solid rgba(0,0,0,.14) !important;
+  background:rgba(255,255,255,.72) !important;
+}
+body.dx-route-profile-protected #dex-settings #dxMembershipV3Root :is(.dx-memv3-card, .dx-memv3-status, .dx-memv3-tier, .dx-memv3-plan-panel, .dx-memv3-tier-composer){
+  border-color:rgba(0,0,0,.14) !important;
+  border-radius:4px !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  -webkit-backdrop-filter:none !important;
+  backdrop-filter:none !important;
+}
 
   </style>
 <!-- Settings UI -->

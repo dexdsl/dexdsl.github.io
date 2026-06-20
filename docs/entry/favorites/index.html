@@ -10,7 +10,7 @@
 <!-- dexdsl -->
 <meta charset="utf-8" />
 <title>favorites &mdash; dex digital sample library</title>
-<meta http-equiv="Accept-CH" content="Sec-CH-UA-Platform-Version, Sec-CH-UA-Model" /><link rel="icon" type="image/x-icon" href="/assets/img/54952c48d15771b9cb2a.ico"/>
+<meta http-equiv="Accept-CH" content="Sec-CH-UA-Platform-Version, Sec-CH-UA-Model" /><link rel="icon" type="image/png" href="/assets/img/dex-favicon.png"/>
 <link rel="canonical" href="https://dexdsl.org/entry/favorites"/>
 <meta property="og:site_name" content="dex digital sample library"/>
 <meta property="og:title" content="favorites &mdash; dex digital sample library"/>
@@ -1800,9 +1800,11 @@
   width:100%;height:100%;
 }
 .dx-fav-shell{
-  width:100%;height:100%;min-height:0;
+  width:var(--dx-header-frame-width,100%);max-width:var(--dx-header-frame-width,100%);
+  height:100%;min-height:0;margin:0 auto;
   display:flex;flex-direction:column;
   font-family:var(--font-body,'Courier New',monospace);color:var(--dx-fav-ink);
+  background:transparent;isolation:auto;
   overflow:hidden;
 }
 
@@ -1810,18 +1812,18 @@
 .dx-fav-head{
   flex:0 0 auto;display:flex;align-items:flex-end;justify-content:space-between;
   gap:var(--dx-fav-gap);flex-wrap:wrap;
+  background:transparent;isolation:auto;
   padding-bottom:var(--dx-fav-gap);border-bottom:1px solid var(--dx-fav-line-strong);
 }
 .dx-fav-title{margin:0;font-family:var(--font-heading,'Typefesse',sans-serif);text-transform:uppercase;font-size:clamp(1.6rem,4vw,2.5rem);letter-spacing:.01em;line-height:1}
 .dx-fav-subtitle{margin:8px 0 0;font-size:.82rem;letter-spacing:.01em;color:var(--dx-fav-muted)}
 .dx-fav-tabs{display:flex;gap:clamp(14px,2vw,26px);flex-wrap:wrap;align-items:center}
-/* Tabs mirror the header nav: gradient underline that wipes in on hover/active.
-   White text stays legible over the saturated mesh that shows through the flat head. */
+/* Tabs mirror the polls nav: gradient underline that wipes in on hover/active. */
 .dx-fav-tab{
   appearance:none;background:none;border:0;cursor:pointer;padding:0 0 7px;position:relative;
   display:inline-flex;align-items:center;gap:7px;
   font-family:var(--font-body,'Courier New',monospace);font-size:.72rem;text-transform:uppercase;letter-spacing:.16em;
-  color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.32);
+  color:var(--dx-fav-ink);text-shadow:none;
 }
 .dx-fav-tab::after{
   content:"";position:absolute;left:0;bottom:0;width:100%;height:2px;
@@ -1829,12 +1831,13 @@
   transform:scaleX(0);transform-origin:right;transition:transform .3s ease;
 }
 .dx-fav-tab:hover::after,.dx-fav-tab.is-active::after{transform:scaleX(1);transform-origin:left}
-.dx-fav-count{font-size:.7rem;letter-spacing:.05em;color:#fff;opacity:.7;font-variant-numeric:tabular-nums}
+.dx-fav-count{font-size:.7rem;letter-spacing:.05em;color:var(--dx-fav-ink);opacity:.7;font-variant-numeric:tabular-nums}
 .dx-fav-tab.is-active .dx-fav-count{opacity:1}
 
 /* Fixed toolbar — underline search + clear, between head and scrolling body */
 .dx-fav-toolbar{
   flex:0 0 auto;display:flex;align-items:center;gap:var(--dx-fav-gap);
+  background:transparent;isolation:auto;
   padding:var(--dx-fav-gap) 0 12px;border-bottom:1px solid var(--dx-fav-line);
 }
 .dx-fav-search{
@@ -1855,6 +1858,7 @@
 /* Scrolling body — the only region that scrolls; ends stay fixed against head/footer */
 .dx-fav-body{
   flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;
+  background:transparent;isolation:auto;
   padding-top:var(--dx-fav-gap);
 }
 .dx-fav-body::-webkit-scrollbar{width:9px}
@@ -1862,6 +1866,7 @@
 
 .dx-fav-list{display:grid;gap:0}
 .dx-fav-row{
+  position:relative;isolation:auto;background:transparent;
   display:flex;align-items:center;gap:var(--dx-fav-gap);
   padding:15px 0;border-top:1px solid var(--dx-fav-line);cursor:pointer;
 }
@@ -1870,8 +1875,8 @@
 .dx-fav-row-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:.68rem;text-transform:uppercase;letter-spacing:.12em;color:var(--dx-fav-muted)}
 .dx-fav-row-meta code{font-family:var(--font-body,'Courier New',monospace);font-size:.72rem;letter-spacing:.02em;color:var(--dx-fav-ink);text-transform:none}
 .dx-fav-tag{color:var(--dx-fav-accent)}
-.dx-fav-row-title{margin:0;font-family:var(--font-heading,'Typefesse',sans-serif);font-size:clamp(1rem,1.3vw,1.18rem);line-height:1.16;letter-spacing:.01em;text-transform:uppercase;transition:color .15s ease}
-.dx-fav-row:hover .dx-fav-row-title{color:#fff;mix-blend-mode:difference}
+.dx-fav-row-title{position:relative;margin:0;font-family:var(--font-heading,'Typefesse',sans-serif);font-size:clamp(1rem,1.3vw,1.18rem);line-height:1.16;letter-spacing:.01em;text-transform:uppercase;transition:color .15s ease}
+.dx-fav-row:hover .dx-fav-row-title{color:#fff;mix-blend-mode:exclusion;isolation:auto}
 .dx-fav-row-actions{flex:0 0 auto;display:flex;align-items:center;gap:18px}
 .dx-fav-open,.dx-fav-remove{
   appearance:none;background:none;border:0;cursor:pointer;padding:0;

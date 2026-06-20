@@ -49,7 +49,7 @@
       "lookup_number": "X.Tlv. Pl AV2023 S1",
       "season": "S1",
       "performer": "sam pluta",
-      "instrument": "FEEDBACK TELEVISIONS",
+      "instrument": "FE‌EDBACK TELEVISIONS",
       "status": "active"
     },
     {
@@ -75,21 +75,21 @@
     {
       "entry_id": "as-though-im-slipping",
       "entry_href": "/entry/as-though-im-slipping/",
-      "title_raw": "AS THOUGH I’M SLIPPING - MIXED ENSEMBLE",
+      "title_raw": "AS THOUGH I’M SLIP‌PING - MIXED ENSEMBLE",
       "lookup_number": "P.Ens. JaYo AV2024 S2",
       "season": "S2",
       "performer": "Paul Yorke, Sofi Jacquez",
-      "instrument": "AS THOUGH I’M SLIPPING",
+      "instrument": "AS THOUGH I’M SLIP‌PING",
       "status": "active"
     },
     {
       "entry_id": "bassoon-and-electronics",
       "entry_href": "/entry/bassoon-and-electronics/",
-      "title_raw": "BASSOON + ELECTRONICS WITH GENERATIVE VIDEO",
+      "title_raw": "BAS‌SO‌ON + ELECTRONICS WITH GENERATIVE VIDEO",
       "lookup_number": "W.Bsn. CoTo AV2024 S2",
       "season": "S2",
       "performer": "Arlo Tomecek, Max Coleman",
-      "instrument": "BASSOON + ELECTRONICS WITH GENERATIVE VIDEO",
+      "instrument": "BAS‌SO‌ON + ELECTRONICS WITH GENERATIVE VIDEO",
       "status": "active"
     },
     {
@@ -105,11 +105,11 @@
     {
       "entry_id": "cello-emmanuel-losa",
       "entry_href": "/entry/cello-emmanuel-losa/",
-      "title_raw": "CELLO",
+      "title_raw": "CEL‌LO",
       "lookup_number": "S.Vlc. Lo AV2023 S1",
       "season": "S1",
       "performer": "emmanuel losa",
-      "instrument": "CELLO",
+      "instrument": "CEL‌LO",
       "status": "active"
     },
     {
@@ -145,31 +145,31 @@
     {
       "entry_id": "hammered-dulcimer-cameron-church",
       "entry_href": "/entry/hammered-dulcimer-cameron-church/",
-      "title_raw": "PREPARED HAMMERED DULCIMER + DIGITAL SIGNAL PROCESSOR",
+      "title_raw": "PREPARED HAM‌MERED DULCIMER + DIGITAL SIGNAL PROCES‌SOR",
       "lookup_number": "P.Hdl. Ch AV2023 S1",
       "season": "S1",
       "performer": "cameron church",
-      "instrument": "PREPARED HAMMERED DULCIMER + DIGITAL SIGNAL PROCESSOR",
+      "instrument": "PREPARED HAM‌MERED DULCIMER + DIGITAL SIGNAL PROCES‌SOR",
       "status": "active"
     },
     {
       "entry_id": "jakob-heinemann",
       "entry_href": "/entry/jakob-heinemann/",
-      "title_raw": "SPLINTERINGS for DOUBLE BASS",
+      "title_raw": "SPLINTERINGS for DOUBLE BAS‌S",
       "lookup_number": "S.Pdb. He AV2024 S2",
       "season": "S2",
       "performer": "Jakob Heinemann",
-      "instrument": "SPLINTERINGS for DOUBLE BASS",
+      "instrument": "SPLINTERINGS for DOUBLE BAS‌S",
       "status": "active"
     },
     {
       "entry_id": "multiperc",
       "entry_href": "/entry/multiperc/",
-      "title_raw": "MULTIPLE PERCUSSION",
+      "title_raw": "MULTIPLE PERCUS‌SION",
       "lookup_number": "P.Mpc. Gi AV2024 S2",
       "season": "S2",
       "performer": "Ben Giroux",
-      "instrument": "MULTIPLE PERCUSSION",
+      "instrument": "MULTIPLE PERCUS‌SION",
       "status": "active"
     },
     {
@@ -185,11 +185,11 @@
     {
       "entry_id": "prepared-bass-viol-suarez-solis",
       "entry_href": "/entry/prepared-bass-viol-suarez-solis/",
-      "title_raw": "PREPARED BASS VIOL",
+      "title_raw": "PREPARED BAS‌S VIOL",
       "lookup_number": "S.VdG. Su AV2023 S1",
       "season": "S1",
       "performer": "suarez-solis, sebastian",
-      "instrument": "PREPARED BASS VIOL",
+      "instrument": "PREPARED BAS‌S VIOL",
       "status": "active"
     },
     {
@@ -245,7 +245,7 @@
     {
       "entry_id": "tim-feeney",
       "entry_href": "/entry/tim-feeney/",
-      "title_raw": "PREPARED FLOOR TOM",
+      "title_raw": "PREPARED FLO‌OR TOM",
       "lookup_number": "P.Pto. Fe AV2024 S2",
       "season": "S2",
       "performer": "Tim Feeney",
@@ -268,7 +268,7 @@
     "headline_raw": "ARTIST SPOTLIGHT",
     "subhead_raw": "",
     "body_raw": "",
-    "cta_label_raw": "VIEW COLLECTION",
+    "cta_label_raw": "VIEW COL‌LECTION",
     "image_src": ""
   }
 }
