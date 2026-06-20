@@ -99,6 +99,10 @@ test('bag download keeps polling past the old merged bundle poll cap', async ({ 
       window.__dxOpenedBagUrls.push(String(url || ''));
       return { closed: false } as Window;
     };
+    // Per-file fallback downloads fire as anchor clicks; capture those too.
+    HTMLAnchorElement.prototype.click = function click(this: HTMLAnchorElement) {
+      window.__dxOpenedBagUrls.push(this.href);
+    };
     window.__dxBag.clear({ scope: user.sub });
     window.__dxBag.upsertSelection({
       kind: 'bucket',
@@ -191,6 +195,10 @@ test('bag download waits for slow lookup bundle fallback instead of timing out',
       window.__dxOpenedBagUrls.push(String(url || ''));
       return { closed: false } as Window;
     };
+    // Per-file fallback downloads fire as anchor clicks; capture those too.
+    HTMLAnchorElement.prototype.click = function click(this: HTMLAnchorElement) {
+      window.__dxOpenedBagUrls.push(this.href);
+    };
     window.__dxBag.clear({ scope: user.sub });
     window.__dxBag.upsertSelection({
       kind: 'bucket',
@@ -209,7 +217,7 @@ test('bag download waits for slow lookup bundle fallback instead of timing out',
     () => page.evaluate(() => window.__dxOpenedBagUrls),
     { timeout: 15_000 }
   ).toContain('https://downloads.example.test/slow-fallback.zip');
-  await expect(page.locator('.dx-bag-status')).toContainText('Bundle ready. Opening download');
+  await expect(page.locator('.dx-bag-status')).toContainText('Download starting');
   await expect(page.locator('.dx-bag-status')).not.toContainText('Bundle preparation timed out');
   expect(apiCalls).toContain('POST /me/assets/bag/bundle');
   expect(apiCalls).toContain('POST /me/assets/Test%20Lookup/bundle');
@@ -342,4 +350,68 @@ test('bag summary uses resolved files instead of aggregate bucket stats', async 
   await expect(page.locator('.dx-bag-receipt')).toContainText(/P\.Pto\. Fe AV2024 S2 B\.tim-feeney-b-005 \[audio\]\s*• 1 file/);
   expect(apiCalls).toContain('GET /me/assets/P.Pto.%20Fe%20AV2024%20S2');
   expect(apiCalls).toContain('POST /me/assets/bag/bundle');
+});
+
+test('bag download triggers one direct download per file for multi delivery', async ({ page }) => {
+  await page.route('https://dex-api.spring-fog-8edd.workers.dev/**', async (route) => {
+    const requestUrl = new URL(route.request().url());
+    if (requestUrl.pathname === '/me/assets/bag/bundle') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          status: 'ready',
+          delivery: 'multi',
+          fileCount: 2,
+          downloads: [
+            { name: 'tim-feeney-a-001-stereo.wav', signedUrl: 'https://dex-api.spring-fog-8edd.workers.dev/me/assets/bundle/download?t=aaa' },
+            { name: 'tim-feeney-b-001-stereo.wav', signedUrl: 'https://dex-api.spring-fog-8edd.workers.dev/me/assets/bundle/download?t=bbb' },
+          ],
+        }),
+      });
+      return;
+    }
+    await route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
+  });
+
+  await page.goto('/entry/bag/');
+  await page.waitForFunction(() => window.__dxBag && document.querySelector('[data-bag-download]'));
+  await page.evaluate(() => {
+    const user = { email: 'bag-test@example.test', sub: 'auth0|bag-test' };
+    const auth = {
+      ready: Promise.resolve({ isAuthenticated: true, user }),
+      resolve: () => Promise.resolve({ isAuthenticated: true, user }),
+      isAuthenticated: () => Promise.resolve(true),
+      getAccessToken: () => Promise.resolve('test-token'),
+      getUser: () => Promise.resolve(user),
+      signIn: () => Promise.resolve(),
+    };
+    window.DEX_AUTH = auth;
+    window.dexAuth = auth;
+    window.auth0Sub = user.sub;
+    // Per-file downloads fire as anchor clicks, not window.open — capture the hrefs and
+    // suppress real navigation.
+    (window as unknown as { __dxDownloads: string[] }).__dxDownloads = [];
+    HTMLAnchorElement.prototype.click = function click(this: HTMLAnchorElement) {
+      (window as unknown as { __dxDownloads: string[] }).__dxDownloads.push(this.href);
+    };
+    window.__dxBag.clear({ scope: user.sub });
+    window.__dxBag.upsertSelection({
+      kind: 'type',
+      lookup: 'P.Pto. Fe AV2024 S2',
+      bucket: 'A',
+      mediaType: 'audio',
+      title: 'Prepared Floor Tom, Tim Feeney',
+      entryHref: '/entries/test/',
+      source: 'test',
+    }, { scope: user.sub });
+  });
+
+  await page.getByRole('button', { name: 'DOWNLOAD BAG' }).click();
+  await page.waitForFunction(
+    () => (window as unknown as { __dxDownloads: string[] }).__dxDownloads.length >= 2,
+  );
+  const downloaded = await page.evaluate(() => (window as unknown as { __dxDownloads: string[] }).__dxDownloads);
+  expect(downloaded).toContain('https://dex-api.spring-fog-8edd.workers.dev/me/assets/bundle/download?t=aaa');
+  expect(downloaded).toContain('https://dex-api.spring-fog-8edd.workers.dev/me/assets/bundle/download?t=bbb');
 });

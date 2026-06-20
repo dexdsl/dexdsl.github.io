@@ -65,6 +65,19 @@
     ).trim();
   }
 
+  function parseBundleDownloads(payload) {
+    const list = Array.isArray(payload?.downloads) ? payload.downloads : [];
+    const out = [];
+    const seen = new Set();
+    list.forEach((item) => {
+      const href = toText(item?.signedUrl || item?.url || item?.downloadUrl).trim();
+      if (!href || seen.has(href)) return;
+      seen.add(href);
+      out.push({ name: toText(item?.name).trim(), signedUrl: href });
+    });
+    return out;
+  }
+
   function getBundleJobId(payload) {
     const nested = getNestedBundlePayload(payload);
     return toText(
@@ -1722,6 +1735,13 @@
     });
 
     const delivery = toText(payload?.delivery).toLowerCase();
+    if (delivery === 'multi') {
+      const downloads = parseBundleDownloads(payload);
+      if (!downloads.length) {
+        throw createCodedError('not-found', 'no downloads');
+      }
+      return { downloads };
+    }
     if (delivery === 'sync') {
       const signedUrl = getBundleSignedUrl(payload);
       if (!signedUrl) {
@@ -1847,19 +1867,39 @@
     }
   }
 
-  function openSignedUrls(urls = []) {
-    const list = Array.from(new Set((Array.isArray(urls) ? urls : []).map((value) => toText(value).trim()).filter(Boolean)));
-    if (!list.length) return { opened: 0, total: 0 };
-    if (list.length === 1) {
-      openSignedUrl(list[0]);
-      return { opened: 1, total: 1 };
+  // Each file downloads on its own (the worker streams one Drive file per signed URL —
+  // no merged zip, so multi-hundred-MB WAVs aren't truncated). Trigger them via anchor
+  // clicks rather than window.open so we don't spawn a tab per file, staggered so the
+  // browser doesn't drop rapid-fire downloads.
+  function triggerAnchorDownload(href, filename) {
+    try {
+      const anchor = document.createElement('a');
+      anchor.href = href;
+      const name = toText(filename).trim();
+      if (name) anchor.download = name;
+      anchor.rel = 'noopener';
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      return true;
+    } catch {
+      return false;
     }
+  }
 
-    let opened = 0;
-    list.forEach((href) => {
-      if (openSignedUrl(href)) opened += 1;
+  function openDownloadList(downloads = []) {
+    const list = (Array.isArray(downloads) ? downloads : [])
+      .map((item) => ({ name: toText(item?.name).trim(), href: toText(item?.signedUrl || item?.url || item?.downloadUrl).trim() }))
+      .filter((item) => item.href);
+    if (!list.length) return { opened: 0, total: 0 };
+    list.forEach((item, index) => {
+      if (index === 0) {
+        triggerAnchorDownload(item.href, item.name);
+        return;
+      }
+      window.setTimeout(() => triggerAnchorDownload(item.href, item.name), index * 350);
     });
-    return { opened: opened || 1, total: list.length };
+    return { opened: list.length, total: list.length };
   }
 
   function readResumeAction() {
@@ -2497,7 +2537,14 @@
           }
           const delivery = toText(payload?.delivery).toLowerCase();
 
-          if (delivery === 'sync') {
+          if (delivery === 'multi') {
+            const downloads = parseBundleDownloads(payload);
+            if (!downloads.length) throw createCodedError('empty', 'no downloads');
+            const result = openDownloadList(downloads);
+            state.status = result.total > 1
+              ? `Starting ${result.total} downloads…`
+              : 'Download starting…';
+          } else if (delivery === 'sync') {
             const signedUrl = getBundleSignedUrl(payload);
             if (!signedUrl) throw new Error('missing signed url');
             openSignedUrl(signedUrl);
@@ -2561,24 +2608,25 @@
               render();
             },
           });
-          const urls = fallbackBundles
-            .map((bundle) => toText(bundle?.signedUrl || bundle?.url || bundle?.downloadUrl).trim())
-            .filter(Boolean);
-          if (!urls.length) {
+          const downloads = [];
+          (Array.isArray(fallbackBundles) ? fallbackBundles : []).forEach((bundle) => {
+            const list = parseBundleDownloads(bundle);
+            if (list.length) {
+              downloads.push(...list);
+              return;
+            }
+            const href = toText(bundle?.signedUrl || bundle?.url || bundle?.downloadUrl).trim();
+            if (href) downloads.push({ name: '', signedUrl: href });
+          });
+          if (!downloads.length) {
             const err = new Error('not-found');
             err.code = 'not-found';
             throw err;
           }
-          const openResult = openSignedUrls(urls);
-          if (openResult.total > 1) {
-            if (openResult.opened >= openResult.total) {
-              state.status = `Prepared ${openResult.total} bundles. Opening downloads…`;
-            } else {
-              state.status = `Prepared ${openResult.total} bundles. Opened ${openResult.opened}. Allow pop-ups to open the rest.`;
-            }
-          } else {
-            state.status = 'Bundle ready. Opening download…';
-          }
+          const openResult = openDownloadList(downloads);
+          state.status = openResult.total > 1
+            ? `Starting ${openResult.total} downloads…`
+            : 'Download starting…';
         }
       } catch (error) {
         if (toText(error?.code) === 'not-found') {
