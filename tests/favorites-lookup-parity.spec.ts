@@ -1,7 +1,12 @@
 import { expect, test, type Page } from 'playwright/test';
 
 const FAVORITES_PREFIX = 'dex:favorites:';
-const FAVORITES_ANON_KEY = 'dex:favorites:v2:anon';
+// Catalog/entry favoriting is auth-gated ("Sign in to save favorites"), and the
+// favorites page lives behind the profile-protected route chrome, so these parity
+// flows must run as an authenticated user. Favorites are then stored under the
+// authenticated subject scope (not the legacy anon scope).
+const TEST_AUTH_SUB = 'auth0|favorites-parity-test';
+const FAVORITES_SCOPE_KEY = `dex:favorites:v2:${TEST_AUTH_SUB}`;
 const TEST_ENTRY_LOOKUP = 'K.Hps. Su AV2023';
 
 async function blockExternalRequests(page: Page): Promise<void> {
@@ -30,40 +35,42 @@ async function blockExternalRequests(page: Page): Promise<void> {
 }
 
 async function initCleanFavoritesScope(page: Page): Promise<void> {
-  await page.addInitScript(({ prefix }) => {
+  await page.addInitScript(({ prefix, sub }) => {
     const initKey = '__dx_favorites_test_scope_reset_done__';
     if (window.sessionStorage.getItem(initKey) === '1') return;
     const keys = Object.keys(window.localStorage);
     for (const key of keys) {
       if (key.startsWith(prefix)) window.localStorage.removeItem(key);
     }
-    window.auth0Sub = '';
-    window.AUTH0_USER = null;
+    window.auth0Sub = sub;
+    window.AUTH0_USER = { sub, email: 'parity@example.com', name: 'Parity Test' };
     window.sessionStorage.setItem(initKey, '1');
-  }, { prefix: FAVORITES_PREFIX });
+  }, { prefix: FAVORITES_PREFIX, sub: TEST_AUTH_SUB });
 }
 
 async function stubDexAuthRuntime(page: Page): Promise<void> {
   const script = `
     (() => {
+      const user = { sub: '${TEST_AUTH_SUB}', email: 'parity@example.com', name: 'Parity Test' };
       const auth = {
-        ready: Promise.resolve({ isAuthenticated: false }),
-        resolve: () => Promise.resolve({ authenticated: false }),
-        isAuthenticated: () => Promise.resolve(false),
-        getUser: () => Promise.resolve(null),
-        getAccessToken: () => Promise.resolve(''),
+        ready: Promise.resolve({ isAuthenticated: true, user }),
+        resolve: () => Promise.resolve({ authenticated: true, user }),
+        requireAuth: () => Promise.resolve({ status: 'ok', user }),
+        isAuthenticated: () => Promise.resolve(true),
+        getUser: () => Promise.resolve(user),
+        getAccessToken: () => Promise.resolve('token-favorites-parity'),
         signIn: () => Promise.resolve(),
         signOut: () => Promise.resolve(),
-        guard: () => Promise.resolve({ status: 'blocked' }),
+        guard: () => Promise.resolve({ status: 'ok', user }),
       };
       window.DEX_AUTH = auth;
       window.dexAuth = auth;
-      window.auth0 = { getUser: () => Promise.resolve(null) };
-      window.AUTH0_USER = null;
-      window.auth0Sub = '';
+      window.auth0 = { getUser: () => Promise.resolve(user) };
+      window.AUTH0_USER = user;
+      window.auth0Sub = user.sub;
       try {
         window.dispatchEvent(new CustomEvent('dex-auth:ready', {
-          detail: { isAuthenticated: false, user: null }
+          detail: { isAuthenticated: true, user }
         }));
       } catch {}
     })();
@@ -88,7 +95,7 @@ async function waitForFavoritesPageReady(page: Page): Promise<void> {
   await expect.poll(async () => root.getAttribute('data-dx-fetch-state')).toBe('ready');
 }
 
-async function readAnonFavorites(page: Page): Promise<Array<Record<string, unknown>>> {
+async function readScopedFavorites(page: Page): Promise<Array<Record<string, unknown>>> {
   return page.evaluate(({ storageKey }) => {
     try {
       const raw = window.localStorage.getItem(storageKey);
@@ -98,7 +105,7 @@ async function readAnonFavorites(page: Page): Promise<Array<Record<string, unkno
     } catch {
       return [];
     }
-  }, { storageKey: FAVORITES_ANON_KEY });
+  }, { storageKey: FAVORITES_SCOPE_KEY });
 }
 
 test.beforeEach(async ({ page }) => {
@@ -107,7 +114,7 @@ test.beforeEach(async ({ page }) => {
   await stubDexAuthRuntime(page);
 });
 
-test('catalog entry favorite persists, writes anon scope, and still navigates correctly', async ({ page }) => {
+test('catalog entry favorite persists, writes authenticated scope, and still navigates correctly', async ({ page }) => {
   await page.goto('/catalog/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('[data-catalog-index-app]')).toBeVisible();
 
@@ -121,7 +128,7 @@ test('catalog entry favorite persists, writes anon scope, and still navigates co
   await favoriteButton.click();
   await expect(favoriteButton).toHaveAttribute('aria-pressed', 'true');
 
-  let favorites = await readAnonFavorites(page);
+  let favorites = await readScopedFavorites(page);
   expect(favorites.some((row) => row.key === favoriteKey && row.kind === 'entry')).toBeTruthy();
 
   await page.reload({ waitUntil: 'domcontentloaded' });
@@ -155,7 +162,7 @@ test('test-9 supports entry, bucket, and file favorites and favorites page looku
   await entryToggle.click();
   await bucketToggle.click();
 
-  const downloadsButton = page.locator('#downloads .btn-audio');
+  const downloadsButton = page.locator('#downloads .btn-download');
   await expect(downloadsButton).toBeVisible();
   await downloadsButton.click();
 
@@ -213,6 +220,6 @@ test('legacy entry route without manifest still renders entry favorite fallback'
   await entryToggle.click();
   await expect(entryToggle).toHaveAttribute('aria-pressed', 'true');
 
-  const favorites = await readAnonFavorites(page);
+  const favorites = await readScopedFavorites(page);
   expect(favorites.some((row) => row.kind === 'entry')).toBeTruthy();
 });

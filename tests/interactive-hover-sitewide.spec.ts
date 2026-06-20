@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { expect, test, type Locator, type Page } from 'playwright/test';
 
 function parseMotionTokens(value: string | null): string[] {
@@ -50,6 +51,21 @@ async function installCoarsePointerShim(page: Page): Promise<void> {
   });
 }
 
+async function installLocalEntryHoverRuntime(page: Page): Promise<void> {
+  await page.route('https://dexdsl.github.io/assets/dex-sidebar.js', async (route) => {
+    await route.fulfill({
+      path: path.resolve(process.cwd(), 'assets/dex-sidebar.js'),
+      contentType: 'application/javascript',
+    });
+  });
+  await page.route('https://dexdsl.github.io/assets/js/interactive-hover.js', async (route) => {
+    await route.fulfill({
+      path: path.resolve(process.cwd(), 'assets/js/interactive-hover.js'),
+      contentType: 'application/javascript',
+    });
+  });
+}
+
 test('desktop: magnetic hover binds buttons + semantic links and survives soft routes', async ({ page }) => {
   await page.goto('/support/', { waitUntil: 'domcontentloaded' });
   await waitForHoverRuntime(page);
@@ -81,6 +97,20 @@ test('desktop: magnetic hover binds buttons + semantic links and survives soft r
   expect(catalogTokens.length).toBe(new Set(catalogTokens).size);
 });
 
+test('desktop: entry download buttons opt into magnetic hover', async ({ page }) => {
+  await installLocalEntryHoverRuntime(page);
+  await page.goto('/entry/cello-emmanuel-losa/', { waitUntil: 'domcontentloaded' });
+  await waitForHoverRuntime(page);
+
+  const getFilesButton = page.locator('#downloads .btn-download');
+  const recordingIndexButton = page.locator('#downloads .btn-recording-index');
+  await expect(getFilesButton).toBeVisible();
+  await expect(recordingIndexButton).toBeVisible();
+
+  await expect.poll(async () => readMotionTokens(getFilesButton)).toContain('magnetic-button');
+  await expect.poll(async () => readMotionTokens(recordingIndexButton)).toContain('magnetic-button');
+});
+
 test('coarse pointer: runtime applies press-only bindings', async ({ page }) => {
   await installCoarsePointerShim(page);
   await page.goto('/support/', { waitUntil: 'domcontentloaded' });
@@ -91,9 +121,10 @@ test('coarse pointer: runtime applies press-only bindings', async ({ page }) => 
   await expect(refreshButton).toBeVisible();
   await expect(supportCardLink).toBeVisible();
 
+  await expect.poll(async () => readMotionTokens(refreshButton)).toContain('press-only');
+  await expect.poll(async () => readMotionTokens(supportCardLink)).toContain('press-only');
   const buttonTokens = await readMotionTokens(refreshButton);
   const linkTokens = await readMotionTokens(supportCardLink);
-
   expect(buttonTokens).toContain('press-only');
   expect(buttonTokens).not.toContain('magnetic-button');
   expect(linkTokens).toContain('press-only');

@@ -6,6 +6,7 @@
   const FAVORITES_STORAGE_PREFIX = 'dex:favorites:v2:';
   const FAVORITES_RUNTIME_PATH = '/assets/js/dx-favorites.js';
   const BAG_RUNTIME_PATH = '/assets/js/dx-bag.js';
+  const INTERACTIVE_HOVER_RUNTIME_PATH = '/assets/js/interactive-hover.js';
   const BAG_ROUTE_PATH = '/entry/bag/';
   const FAVORITES_UI_STYLE_ID = 'dx-favorites-ui-style';
   const FAVORITES_TOAST_ROOT_ID = 'dx-favorites-toast-root';
@@ -29,6 +30,7 @@
   const COLLECTION_HEADING_CANONICAL = 'COL\u200CLECTION';
   const BUCKET_TOOLTIP_CACHE_PREFIX = 'dx:entry:bucket-tooltips:v1:';
   const ENTRY_RUNTIME_STYLE_ID = 'dx-entry-runtime-layout-overrides';
+  const ENTRY_BUTTON_STYLE_ID = 'dx-entry-button-primitive-overrides';
   const DOWNLOAD_TREE_STYLE_ID = 'dx-entry-download-tree-style';
   const DX_MIN_SHEEN_MS = 120;
   const DX_ENTRY_TARGET_TIMEOUT_MS = 15000;
@@ -478,6 +480,29 @@
     document.head.appendChild(script);
   };
 
+  const ensureInteractiveHoverRuntime = (origin) => {
+    if (!(document.head instanceof HTMLElement)) return;
+    const existing = Array.from(document.querySelectorAll('script[src]')).find((script) => {
+      try {
+        const parsed = new URL(script.src, window.location.href);
+        return parsed.pathname === INTERACTIVE_HOVER_RUNTIME_PATH;
+      } catch {
+        return false;
+      }
+    });
+    if (existing || window.__dxInteractiveHover) {
+      window.__dxInteractiveHover?.apply?.(document);
+      return;
+    }
+    const script = document.createElement('script');
+    script.defer = true;
+    script.src = new URL(INTERACTIVE_HOVER_RUNTIME_PATH, origin || window.location.origin).toString();
+    script.addEventListener('load', () => {
+      window.__dxInteractiveHover?.apply?.(document);
+    }, { once: true });
+    document.head.appendChild(script);
+  };
+
   const ensureEntryRuntimeLayoutOverrides = () => {
     if (!(document.head instanceof HTMLElement)) return;
     if (document.getElementById(ENTRY_RUNTIME_STYLE_ID)) return;
@@ -665,6 +690,77 @@
     document.head.appendChild(style);
   };
 
+  const ensureEntryButtonPrimitiveOverrides = () => {
+    if (!(document.head instanceof HTMLElement)) return;
+    if (document.getElementById(ENTRY_BUTTON_STYLE_ID)) return;
+    const style = document.createElement('style');
+    style.id = ENTRY_BUTTON_STYLE_ID;
+    style.textContent = `
+      body.dx-entry-page .dex-sidebar .dex-license-controls .copy-btn,
+      body.dx-entry-page .dex-sidebar .dex-license-controls .usage-btn,
+      body.dx-entry-page .dex-sidebar #downloads .btn-audio,
+      body.dx-entry-page .dex-sidebar #downloads .btn-video,
+      body.dx-entry-page .dex-sidebar #downloads .btn-download {
+        position: relative !important;
+        overflow: hidden !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: var(--space-2, 0.5rem) !important;
+        border: 0 !important;
+        border-radius: var(--dx-btn-radius, 4px) !important;
+        background: var(--dx-btn-primary-bg, linear-gradient(130deg, var(--dex-accent, #ff1910), #ff9810)) !important;
+        color: #fff !important;
+        box-shadow: var(--dx-btn-primary-shadow, 0 0 0 1px rgba(255, 255, 255, 0.35) inset, 0 10px 30px rgba(255, 0, 80, 0.25)) !important;
+        font-family: var(--font-heading, "Stretch Pro", sans-serif) !important;
+        font-size: var(--dx-btn-font-size-md, clamp(12px, 1.05vw, 13px)) !important;
+        font-weight: var(--dx-btn-primary-weight, 800) !important;
+        line-height: 1.05 !important;
+        letter-spacing: 0 !important;
+        text-transform: none !important;
+      }
+
+      body.dx-entry-page .dex-sidebar #downloads .btn-recording-index {
+        position: relative !important;
+        overflow: hidden !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: var(--space-2, 0.5rem) !important;
+        border: 0 !important;
+        border-radius: var(--dx-btn-radius, 4px) !important;
+        background: var(--dx-btn-secondary-bg, linear-gradient(145deg, rgba(255, 255, 255, 0.78), rgba(245, 249, 255, 0.52))) !important;
+        color: #000 !important;
+        box-shadow: none !important;
+        font-family: var(--font-heading, "Stretch Pro", sans-serif) !important;
+        font-size: var(--dx-btn-font-size-md, clamp(12px, 1.05vw, 13px)) !important;
+        font-weight: var(--dx-btn-secondary-weight, 700) !important;
+        line-height: 1.05 !important;
+        letter-spacing: 0 !important;
+        text-transform: none !important;
+      }
+
+      body.dx-entry-page .dex-sidebar .dex-license-controls .copy-btn:hover,
+      body.dx-entry-page .dex-sidebar .dex-license-controls .usage-btn:hover,
+      body.dx-entry-page .dex-sidebar #downloads .btn-audio:hover,
+      body.dx-entry-page .dex-sidebar #downloads .btn-video:hover,
+      body.dx-entry-page .dex-sidebar #downloads .btn-download:hover {
+        box-shadow: var(--dx-btn-primary-shadow-hover, 0 12px 36px rgba(255, 0, 80, 0.28)) !important;
+      }
+
+      body.dx-entry-page .dex-sidebar #downloads .btn-recording-index:hover {
+        box-shadow: none !important;
+      }
+
+      body.dx-entry-page .dex-sidebar #downloads .btn-recording-index:focus-visible {
+        outline: 2px solid rgba(255, 25, 16, 0.32) !important;
+        outline-offset: 2px !important;
+        box-shadow: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+  };
+
   const ensureDownloadTreeStyles = () => {
     if (!(document.head instanceof HTMLElement)) return;
     if (document.getElementById(DOWNLOAD_TREE_STYLE_ID)) return;
@@ -681,49 +777,143 @@
       }
 
       .dex-download-modal--tree .dex-download-modal-inner {
-        grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+        grid-template-rows: auto auto minmax(0, 1fr) auto;
       }
 
-      .dx-file-tree-summary {
+      .dx-file-bucket-tabs {
+        position: relative;
+        z-index: 3;
         display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 6px;
-        min-height: 24px;
-        color: var(--dx-tree-muted);
-        font: 700 0.68rem/1.2 var(--font-body, "Courier Prime", monospace);
-        letter-spacing: 0.02em;
-        text-transform: uppercase;
+        align-items: flex-end;
+        gap: 4px;
+        overflow-x: auto;
+        scrollbar-gutter: stable;
+        padding: 4px 4px 0;
+        margin-bottom: -1px;
       }
 
-      .dx-file-tree-count-pill {
-        display: inline-flex;
+      .dx-file-folder-stack {
+        display: grid;
+        min-height: 0;
+      }
+
+      /* Folder-style tabs: the active tab shares the body fill, drops its bottom
+         border, and overlaps the body by 1px so it merges into the panel below. */
+      .dx-file-bucket-tab {
+        appearance: none;
+        position: relative;
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        grid-template-areas:
+          "letter label"
+          "letter media";
+        column-gap: 9px;
+        row-gap: 2px;
         align-items: center;
-        justify-content: center;
-        min-height: 24px;
-        padding: 3px 9px;
-        border-radius: 999px;
-        border: 1px solid rgba(255, 59, 36, 0.42);
-        background: linear-gradient(130deg, rgba(255, 59, 36, 0.94), rgba(255, 152, 22, 0.94));
-        color: #fff;
-        box-shadow: 0 8px 20px rgba(255, 59, 36, 0.18);
+        min-width: 132px;
+        min-height: 38px;
+        padding: 6px 11px 8px 10px;
+        border: 1px solid transparent;
+        border-bottom: 0;
+        border-radius: 8px 8px 0 0;
+        background: rgba(232, 233, 236, 0.72);
+        color: var(--dx-tree-muted);
+        cursor: pointer;
+        text-align: left;
+        transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
+      }
+
+      .dx-file-bucket-tab:hover,
+      .dx-file-bucket-tab:focus-visible {
+        background: rgba(255, 255, 255, 0.7);
+        color: var(--dx-tree-ink);
+        outline: 0;
+      }
+
+      .dx-file-bucket-tab[aria-selected="true"] {
+        z-index: 4;
+        min-height: 42px;
+        border-color: var(--dx-tree-rim);
+        border-bottom: 0;
+        background: rgba(255, 255, 255, 0.92);
+        color: var(--dx-tree-ink);
+        box-shadow: inset 0 2px 0 0 var(--dx-tree-hot);
+      }
+
+      .dx-file-bucket-tab[data-dx-bucket-selection="full"]:not([aria-selected="true"]) {
+        color: var(--dx-tree-ink);
+        box-shadow: inset 0 2px 0 0 rgba(255, 59, 36, 0.55);
+      }
+
+      .dx-file-bucket-tab[data-dx-bucket-selection="partial"]:not([aria-selected="true"]) {
+        color: var(--dx-tree-ink);
+        box-shadow: inset 0 2px 0 0 rgba(255, 152, 22, 0.5);
+      }
+
+      .dx-file-bucket-tab-letter {
+        grid-area: letter;
+        color: rgba(18, 21, 28, 0.96);
+        font: 900 0.9rem/1 "Stretch Pro", var(--font-heading, sans-serif);
+      }
+
+      .dx-file-bucket-tab-label {
+        grid-area: label;
+        min-width: 0;
+        color: rgba(18, 21, 28, 0.84);
+        font: 800 0.54rem/1.1 "Stretch Pro", var(--font-heading, sans-serif);
+        letter-spacing: 0;
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .dx-file-bucket-tab-media {
+        grid-area: media;
+        min-width: 0;
+        color: var(--dx-tree-muted);
+        font: 700 0.56rem/1.1 var(--font-body, "Courier Prime", monospace);
+        letter-spacing: 0;
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 150ms ease;
+      }
+
+      .dx-file-bucket-tab[aria-selected="true"] .dx-file-bucket-tab-media {
+        opacity: 0.72;
+        visibility: visible;
       }
 
       .dx-file-tree-tools {
-        position: sticky;
+        position: relative;
         top: 0;
-        z-index: 4;
-        padding-bottom: 8px;
-        background: linear-gradient(180deg, rgba(255,255,255,0.99), rgba(255,255,255,0.88));
+        z-index: 2;
+        padding: 12px 12px 8px;
+        border: 1px solid var(--dx-tree-rim);
+        border-bottom: 0;
+        border-radius: 0 8px 0 0;
+        background: rgba(255, 255, 255, 0.92);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
+      }
+
+      .dx-file-tree-panel {
+        position: relative;
+        display: grid;
+        min-height: 0;
+        z-index: 2;
       }
 
       .dx-file-tree-wrap {
         align-content: start;
         border: 1px solid var(--dx-tree-rim);
-        border-radius: 8px;
-        background: rgba(255, 255, 255, 0.56);
+        border-top-color: rgba(0, 0, 0, 0.08);
+        border-radius: 0 0 8px 8px;
+        background: rgba(255, 255, 255, 0.58);
         box-shadow: inset 0 1px 0 rgba(255,255,255,0.72);
         padding: 8px;
         scrollbar-gutter: stable;
@@ -736,7 +926,6 @@
 
       .dx-file-tree-row {
         display: grid;
-        grid-template-columns: 24px 24px minmax(0, 1fr);
         gap: 8px;
         align-items: center;
         min-height: 36px;
@@ -769,20 +958,21 @@
       .dx-file-tree-toggle {
         display: grid;
         place-items: center;
-        width: 24px;
-        height: 24px;
+        width: 22px;
+        height: 22px;
         padding: 0;
-        border: 1px solid var(--dx-tree-rim);
-        border-radius: 6px;
-        background: rgba(255,255,255,0.72);
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
         color: var(--dx-tree-ink);
-        font: 900 0.72rem/1 var(--font-body, "Courier Prime", monospace);
+        font: 900 0.82rem/1 var(--font-body, "Courier Prime", monospace);
         cursor: pointer;
       }
 
-      .dx-file-tree-toggle[aria-hidden="true"] {
-        opacity: 0;
-        pointer-events: none;
+      .dx-file-tree-toggle:hover,
+      .dx-file-tree-toggle:focus-visible {
+        background: rgba(18, 21, 28, 0.07);
+        outline: 0;
       }
 
       .dx-file-tree-checkbox {
@@ -795,17 +985,16 @@
 
       .dx-file-tree-copy {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        gap: 10px;
+        grid-template-columns: minmax(0, 1fr);
         align-items: center;
         min-width: 0;
       }
 
       .dx-file-tree-label {
         min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        overflow: visible;
+        text-overflow: clip;
+        white-space: normal;
         font: 800 0.79rem/1.08 var(--font-heading, "Typefesse", sans-serif);
         letter-spacing: 0.01em;
         text-transform: uppercase;
@@ -814,35 +1003,7 @@
       .dx-file-tree-node--file .dx-file-tree-label {
         font: 700 0.75rem/1.2 var(--font-body, "Courier Prime", monospace);
         text-transform: none;
-      }
-
-      .dx-file-tree-meta {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        max-width: 180px;
-        min-height: 20px;
-        padding: 2px 7px;
-        border-radius: 999px;
-        border: 1px solid var(--dx-tree-rim);
-        background: rgba(255,255,255,0.64);
-        color: var(--dx-tree-muted);
-        font: 700 0.62rem/1 var(--font-body, "Courier Prime", monospace);
-        letter-spacing: 0.015em;
-        text-transform: uppercase;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .dx-file-tree-node--audio > .dx-file-tree-row .dx-file-tree-meta {
-        border-color: rgba(26, 117, 255, 0.25);
-        color: rgba(9, 78, 170, 0.78);
-      }
-
-      .dx-file-tree-node--video > .dx-file-tree-row .dx-file-tree-meta {
-        border-color: rgba(255, 72, 32, 0.28);
-        color: rgba(177, 52, 18, 0.82);
+        word-break: break-word;
       }
 
       .dx-file-tree-children {
@@ -854,13 +1015,9 @@
       }
 
       .dx-file-tree-actions {
-        position: sticky;
-        bottom: 0;
-        z-index: 5;
+        position: static;
         padding-top: 8px;
-        background: linear-gradient(0deg, rgba(255,255,255,0.99), rgba(255,255,255,0.84));
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
+        background: transparent;
       }
 
       @media (max-width: 680px) {
@@ -871,16 +1028,45 @@
 
         .dx-file-tree-tools {
           grid-template-columns: minmax(0, 1fr) !important;
+          padding: 12px 10px 8px;
+        }
+
+        .dx-file-bucket-tabs {
+          padding-top: 4px;
+        }
+
+        .dx-file-bucket-tab {
+          min-width: 113px;
+          min-height: 39px;
+          padding: 7px 9px 8px;
+          column-gap: 6px;
+        }
+
+        .dx-file-bucket-tab[aria-selected="true"] {
+          min-height: 43px;
+        }
+
+        .dx-file-bucket-tab-letter {
+          font-size: 0.78rem;
+        }
+
+        .dx-file-bucket-tab-label {
+          font-size: 0.46rem;
+          overflow: visible;
+          text-overflow: clip;
+          white-space: normal;
+        }
+
+        .dx-file-bucket-tab-media {
+          font-size: 0.5rem;
+        }
+
+        .dx-file-tree-wrap {
+          max-height: min(40vh, 340px) !important;
         }
 
         .dx-file-tree-copy {
-          grid-template-columns: minmax(0, 1fr);
-          gap: 3px;
-        }
-
-        .dx-file-tree-meta {
-          justify-self: start;
-          max-width: 100%;
+          grid-template-columns: minmax(0, 1fr) !important;
         }
       }
     `;
@@ -3583,7 +3769,9 @@
         let downloadTree = embeddedTree || fallbackTree;
         const selectedLeafKeys = new Set();
         const expandedNodeKeys = new Set();
+        const modalId = `dx-file-modal-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
         let filterQuery = '';
+        let activeBucketKey = '';
 
         const modal = document.createElement('div');
         modal.className = 'dex-download-modal dex-download-modal--tree';
@@ -3686,9 +3874,13 @@
           statusBanner.textContent = text;
         };
 
-        const selectionSummary = document.createElement('div');
-        selectionSummary.className = 'dx-file-tree-summary';
-        selectionSummary.setAttribute('aria-live', 'polite');
+        const bucketTabs = document.createElement('div');
+        bucketTabs.className = 'dx-file-bucket-tabs';
+        bucketTabs.setAttribute('role', 'tablist');
+        bucketTabs.setAttribute('aria-label', 'Available buckets');
+
+        const folderStack = document.createElement('div');
+        folderStack.className = 'dx-file-folder-stack';
 
         const treeTools = document.createElement('div');
         treeTools.className = 'dx-file-tree-tools';
@@ -3741,10 +3933,10 @@
           return control;
         };
 
-        const selectAllButton = makeSecondaryControl('SELECT AL\u200CL');
+        const selectAllButton = makeSecondaryControl('Select');
         const clearButton = makeSecondaryControl('Clear');
-        const expandAllButton = makeSecondaryControl('EXPAND AL\u200CL');
-        const collapseAllButton = makeSecondaryControl('COL\u200CLAPSE AL\u200CL');
+        const expandAllButton = makeSecondaryControl('Expand');
+        const collapseAllButton = makeSecondaryControl('Collapse');
         quickControls.appendChild(selectAllButton);
         quickControls.appendChild(clearButton);
         quickControls.appendChild(expandAllButton);
@@ -3752,6 +3944,11 @@
 
         treeTools.appendChild(filterInput);
         treeTools.appendChild(quickControls);
+
+        const treePanel = document.createElement('div');
+        treePanel.className = 'dx-file-tree-panel';
+        treePanel.id = `${modalId}-panel`;
+        treePanel.setAttribute('role', 'tabpanel');
 
         const treeWrap = document.createElement('div');
         treeWrap.className = 'dx-file-tree-wrap';
@@ -3763,6 +3960,7 @@
         treeWrap.style.overflowY = 'auto';
         treeWrap.style.paddingRight = '0.12rem';
         treeWrap.style.paddingBottom = '0.08rem';
+        treePanel.appendChild(treeWrap);
 
         const controls = document.createElement('div');
         controls.className = 'dx-file-tree-actions';
@@ -3904,6 +4102,30 @@
           leafAncestorNodeIds: new Map(),
         };
 
+        const getBucketRows = () => (Array.isArray(treeState.tree?.buckets) ? treeState.tree.buckets : []);
+        const getBucketRow = (bucketKey = activeBucketKey) => {
+          const safeBucket = String(bucketKey || '').trim().toUpperCase();
+          if (!safeBucket) return null;
+          return getBucketRows().find((bucketRow) => String(bucketRow?.bucket || '').trim().toUpperCase() === safeBucket) || null;
+        };
+        const getBucketKeys = () => getBucketRows()
+          .map((bucketRow) => String(bucketRow?.bucket || '').trim().toUpperCase())
+          .filter(Boolean);
+        const ensureActiveBucketKey = () => {
+          const bucketKeys = getBucketKeys();
+          if (!bucketKeys.length) {
+            activeBucketKey = '';
+            return '';
+          }
+          if (activeBucketKey && bucketKeys.includes(activeBucketKey)) return activeBucketKey;
+          activeBucketKey = bucketKeys.includes('A') ? 'A' : bucketKeys[0];
+          return activeBucketKey;
+        };
+        const getBucketLeafKeys = (bucketKey = activeBucketKey) => (
+          treeState.leafKeysByBucket.get(String(bucketKey || '').trim().toUpperCase()) || []
+        );
+        const getActiveBucketLeafKeys = () => getBucketLeafKeys(ensureActiveBucketKey()).slice();
+
         const setLeaves = () => {
           treeState.leaves = [];
           treeState.leafByKey = new Map();
@@ -4018,6 +4240,7 @@
           selectedLeafKeys.forEach((leafKey) => {
             if (!treeState.leafByKey.has(leafKey)) selectedLeafKeys.delete(leafKey);
           });
+          ensureActiveBucketKey();
           if (!expandedNodeKeys.size) {
             expandedNodeKeys.add(`collection|${lookup}`);
             const buckets = Array.isArray(treeState.tree?.buckets) ? treeState.tree.buckets : [];
@@ -4149,18 +4372,37 @@
           return raw;
         };
 
+        const updateActiveBucketControls = () => {
+          const bucket = ensureActiveBucketKey();
+          const suffix = bucket || '';
+          const hasBucket = Boolean(bucket && getActiveBucketLeafKeys().length);
+          filterInput.placeholder = bucket ? `Filter bucket ${bucket}` : 'Filter files';
+          selectAllButton.textContent = suffix ? `SELECT ${suffix}` : 'SELECT';
+          clearButton.textContent = suffix ? `CLEAR ${suffix}` : 'CLEAR';
+          expandAllButton.textContent = suffix ? `EXPAND ${suffix}` : 'EXPAND';
+          collapseAllButton.textContent = suffix ? `COL\u200CLAPSE ${suffix}` : 'COL\u200CLAPSE';
+          selectAllButton.setAttribute('aria-label', bucket ? `Select all files in bucket ${bucket}` : 'Select all files');
+          clearButton.setAttribute('aria-label', bucket ? `Clear selected files in bucket ${bucket}` : 'Clear selected files');
+          expandAllButton.setAttribute('aria-label', bucket ? `Expand bucket ${bucket}` : 'Expand files');
+          collapseAllButton.setAttribute('aria-label', bucket ? `Collapse bucket ${bucket}` : 'Collapse files');
+          selectAllButton.disabled = !hasBucket;
+          clearButton.disabled = !hasBucket;
+          expandAllButton.disabled = !hasBucket;
+          collapseAllButton.disabled = !hasBucket;
+          treePanel.setAttribute('aria-label', bucket ? `Bucket ${bucket} files` : 'Download files');
+          if (bucket) treePanel.setAttribute('aria-labelledby', `${modalId}-bucket-${bucket}`);
+          else treePanel.removeAttribute('aria-labelledby');
+          treeWrap.setAttribute('aria-label', bucket ? `Bucket ${bucket} download file tree` : 'Download file tree');
+        };
+
         const updateActionState = () => {
           const selectedCount = selectedLeafKeys.size;
-          const totalCount = treeState.allLeafKeys.length;
+          ensureActiveBucketKey();
+          updateActiveBucketControls();
           addToBagButton.disabled = selectedCount === 0;
           downloadNowButton.disabled = selectedCount === 0;
           addToBagButton.textContent = selectedCount > 0 ? `${addToBagBaseLabel} (${selectedCount})` : addToBagBaseLabel;
-          if (selectionSummary instanceof HTMLElement) {
-            const countText = selectedCount > 0
-              ? `${selectedCount} of ${totalCount} selected`
-              : `${totalCount} available file${totalCount === 1 ? '' : 's'}`;
-            selectionSummary.innerHTML = `<span class="dx-file-tree-count-pill">${escapeHtml(countText)}</span><span>Public manifest loaded locally. Sign-in is only required when downloading.</span>`;
-          }
+          if (typeof renderBucketTabs === 'function') renderBucketTabs();
         };
 
         const extractBucketOrdinal = (bucket, fileRow = {}) => {
@@ -4242,6 +4484,43 @@
           return `${lookup} ${ordinal}.${extension}`;
         };
 
+        const BUCKET_TAB_LABELS = {
+          A: 'WHOLE FILES',
+          B: 'CHUNKS',
+          C: 'PHRASES',
+          D: 'MOMENTS',
+          E: 'IMPULSES',
+          X: 'EXTRAS',
+        };
+        const BUCKET_EXTENSION_ORDER = ['wav', 'mp3', 'aif', 'aiff', 'flac', 'm4a', 'mov', 'mp4', 'm4v', 'mxf', 'mkv', 'webm'];
+        const bucketSemanticLabel = (bucket) => BUCKET_TAB_LABELS[String(bucket || '').trim().toUpperCase()] || `BUCKET ${String(bucket || '').trim().toUpperCase()}`;
+        const sortedDisplayExtensions = (extensions) => Array.from(extensions || [])
+          .map(canonicalDisplayExtension)
+          .filter(Boolean)
+          .sort((a, b) => {
+            const ai = BUCKET_EXTENSION_ORDER.indexOf(a);
+            const bi = BUCKET_EXTENSION_ORDER.indexOf(b);
+            if (ai >= 0 && bi >= 0) return ai - bi;
+            if (ai >= 0) return -1;
+            if (bi >= 0) return 1;
+            return a.localeCompare(b);
+          });
+        const bucketDisplayExtensions = (bucketRow = {}) => {
+          const extensions = new Set();
+          (Array.isArray(bucketRow?.types) ? bucketRow.types : []).forEach((typeRow) => {
+            const mediaType = String(typeRow?.mediaType || '').trim().toLowerCase();
+            (Array.isArray(typeRow?.files) ? typeRow.files : []).forEach((fileRow) => {
+              extensions.add(fileExtensionForMediaType(mediaType, fileRow));
+            });
+            (Array.isArray(typeRow?.variants) ? typeRow.variants : []).forEach((variantRow) => {
+              (Array.isArray(variantRow?.files) ? variantRow.files : []).forEach((fileRow) => {
+                extensions.add(fileExtensionForMediaType(mediaType, fileRow));
+              });
+            });
+          });
+          return sortedDisplayExtensions(extensions);
+        };
+
         const fileCountLabel = (count) => {
           const safeCount = Number(count);
           const total = Number.isFinite(safeCount) && safeCount > 0 ? Math.round(safeCount) : 0;
@@ -4255,38 +4534,127 @@
           return safeType || 'Files';
         };
 
+        const renderBucketTabs = () => {
+          const bucketRows = getBucketRows();
+          ensureActiveBucketKey();
+          bucketTabs.replaceChildren();
+          if (!bucketRows.length) {
+            bucketTabs.hidden = true;
+            return;
+          }
+          bucketTabs.hidden = false;
+          const activeIndex = bucketRows.findIndex((bucketRow) => String(bucketRow?.bucket || '').toUpperCase() === activeBucketKey);
+          const activateBucket = (bucketKey, focusTab = false) => {
+            const safeBucket = String(bucketKey || '').trim().toUpperCase();
+            if (!safeBucket || safeBucket === activeBucketKey) return;
+            activeBucketKey = safeBucket;
+            renderBucketTabs();
+            renderTree();
+            if (focusTab) {
+              const nextTab = bucketTabs.querySelector(`[data-dx-bucket-tab="${safeBucket}"]`);
+              if (nextTab instanceof HTMLElement) nextTab.focus();
+            }
+          };
+
+          bucketRows.forEach((bucketRow, index) => {
+            const bucket = String(bucketRow?.bucket || '').trim().toUpperCase();
+            if (!bucket) return;
+            const bucketLeafKeys = getBucketLeafKeys(bucket);
+            const selectionState = getSelectionState(bucketLeafKeys);
+            const selectedState = selectionState.checked
+              ? 'full'
+              : (selectionState.indeterminate ? 'partial' : 'none');
+            const semanticLabel = bucketSemanticLabel(bucket);
+            const fileTypes = bucketDisplayExtensions(bucketRow);
+            const fileTypesLabel = fileTypes.length ? fileTypes.join(' ') : 'files';
+            const isActive = bucket === activeBucketKey;
+            const tab = document.createElement('button');
+            tab.type = 'button';
+            tab.className = 'dx-file-bucket-tab';
+            tab.id = `${modalId}-bucket-${bucket}`;
+            tab.setAttribute('role', 'tab');
+            tab.setAttribute('aria-selected', String(isActive));
+            tab.setAttribute('aria-controls', treePanel.id);
+            tab.setAttribute('tabindex', isActive ? '0' : '-1');
+            tab.setAttribute('data-dx-bucket-tab', bucket);
+            tab.setAttribute('data-dx-bucket-selection', selectedState);
+            tab.setAttribute('aria-label', `Bucket ${bucket}, ${semanticLabel}, ${fileCountLabel(bucketLeafKeys.length)}, ${fileTypesLabel}`);
+
+            const letter = document.createElement('span');
+            letter.className = 'dx-file-bucket-tab-letter';
+            letter.textContent = bucket;
+
+            const label = document.createElement('span');
+            label.className = 'dx-file-bucket-tab-label';
+            label.textContent = semanticLabel;
+
+            const media = document.createElement('span');
+            media.className = 'dx-file-bucket-tab-media';
+            media.textContent = fileTypesLabel;
+
+            tab.appendChild(letter);
+            tab.appendChild(label);
+            tab.appendChild(media);
+            tab.addEventListener('click', () => {
+              activateBucket(bucket);
+            });
+            tab.addEventListener('keydown', (event) => {
+              const lastIndex = bucketRows.length - 1;
+              let nextIndex = -1;
+              if (event.key === 'ArrowRight') nextIndex = index >= lastIndex ? 0 : index + 1;
+              else if (event.key === 'ArrowLeft') nextIndex = index <= 0 ? lastIndex : index - 1;
+              else if (event.key === 'Home') nextIndex = 0;
+              else if (event.key === 'End') nextIndex = lastIndex;
+              if (nextIndex < 0) return;
+              event.preventDefault();
+              const nextBucket = String(bucketRows[nextIndex]?.bucket || '').trim().toUpperCase();
+              activateBucket(nextBucket, true);
+            });
+            bucketTabs.appendChild(tab);
+          });
+          if (activeIndex < 0) ensureActiveBucketKey();
+          updateActiveBucketControls();
+        };
+
+        const isDefaultVariant = (variantKey = '', variantLabel = '', mediaType = '') => {
+          const key = String(variantKey || '').trim().toLowerCase();
+          const label = String(variantLabel || '').trim().toLowerCase();
+          const type = String(mediaType || '').trim().toLowerCase();
+          return key === `default-${type}`
+            || key === 'default'
+            || label === 'default'
+            || label === `default ${type}`
+            || label === `default-${type}`;
+        };
+
         const buildTreeModel = () => {
           const rootNode = {
             id: `collection|${lookup}`,
             kind: 'collection',
             label: `entry/${lookup}`,
-            meta: fileCountLabel(treeState.allLeafKeys.length),
             leafKeys: treeState.allLeafKeys.slice(),
             children: [],
           };
-          treeState.tree.buckets.forEach((bucketRow) => {
-            const bucketLeafKeys = (treeState.leafKeysByBucket.get(bucketRow.bucket) || []).slice();
-            const bucketNode = {
-              id: `bucket|${lookup}|${bucketRow.bucket}`,
-              kind: 'bucket',
-              label: `Bucket ${bucketRow.bucket}`,
-              meta: fileCountLabel(bucketLeafKeys.length),
-              leafKeys: bucketLeafKeys,
-              children: [],
-            };
-            bucketRow.types.forEach((typeRow) => {
-              const typeFilesCount = Array.isArray(typeRow.files) && typeRow.files.length
-                ? typeRow.files.length
-                : (Array.isArray(typeRow.variants)
-                  ? typeRow.variants.reduce((sum, variant) => sum + (Array.isArray(variant?.files) ? variant.files.length : 0), 0)
-                  : 0);
+          const bucketRow = getBucketRow(ensureActiveBucketKey());
+          if (!bucketRow) return rootNode;
+          bucketRow.types.forEach((typeRow) => {
               const typeNode = {
                 id: `type|${lookup}|${bucketRow.bucket}|${typeRow.mediaType}`,
                 kind: String(typeRow.mediaType || '').trim().toLowerCase() || 'type',
                 label: mediaTypeLabel(typeRow.mediaType),
-                meta: fileCountLabel(typeFilesCount || 0),
                 leafKeys: (treeState.leafKeysByType.get(`${bucketRow.bucket}|${typeRow.mediaType}`) || []).slice(),
                 children: [],
+              };
+              const appendFileNode = (parentNode, variantKey, variantLabel, fileRow) => {
+                const leafKey = `file|${lookup}|${bucketRow.bucket}|${typeRow.mediaType}|${variantKey}|${fileRow.fileId}`;
+                const displayName = buildDisplayFilename(bucketRow.bucket, typeRow.mediaType, variantKey, fileRow);
+                parentNode.children.push({
+                  id: `file-node|${lookup}|${bucketRow.bucket}|${typeRow.mediaType}|${variantKey}|${fileRow.fileId}`,
+                  kind: 'file',
+                  label: displayName,
+                  leafKeys: [leafKey],
+                  children: [],
+                });
               };
               const variantRows = Array.isArray(typeRow.variants) ? typeRow.variants : [];
               if (variantRows.length) {
@@ -4294,48 +4662,31 @@
                   const variantKey = String(variantRow?.variantKey || '').trim() || `default-${typeRow.mediaType}`;
                   const variantLabel = String(variantRow?.label || variantKey).trim();
                   const variantMapKey = `${bucketRow.bucket}|${typeRow.mediaType}|${variantKey}`;
+                  const variantFiles = Array.isArray(variantRow?.files) ? variantRow.files : [];
+                  if (isDefaultVariant(variantKey, variantLabel, typeRow.mediaType)) {
+                    variantFiles.forEach((fileRow) => appendFileNode(typeNode, variantKey, variantLabel, fileRow));
+                    return;
+                  }
                   const variantNode = {
                     id: `variant|${lookup}|${bucketRow.bucket}|${typeRow.mediaType}|${variantKey}`,
                     kind: 'variant',
                     label: variantLabel,
-                    meta: fileCountLabel((treeState.leafKeysByVariant.get(variantMapKey) || []).length),
                     leafKeys: (treeState.leafKeysByVariant.get(variantMapKey) || []).slice(),
                     children: [],
                   };
-                  const variantFiles = Array.isArray(variantRow?.files) ? variantRow.files : [];
                   variantFiles.forEach((fileRow) => {
-                    const leafKey = `file|${lookup}|${bucketRow.bucket}|${typeRow.mediaType}|${variantKey}|${fileRow.fileId}`;
-                    const displayName = buildDisplayFilename(bucketRow.bucket, typeRow.mediaType, variantKey, fileRow);
-                    variantNode.children.push({
-                      id: `file-node|${lookup}|${bucketRow.bucket}|${typeRow.mediaType}|${variantKey}|${fileRow.fileId}`,
-                      kind: 'file',
-                      label: displayName,
-                      meta: `${extractBucketOrdinal(bucketRow.bucket, fileRow)} [${typeRow.mediaType}${variantLabel ? ` ${String(variantLabel).toLowerCase()}` : ''}]`,
-                      leafKeys: [leafKey],
-                      children: [],
-                    });
+                    appendFileNode(variantNode, variantKey, variantLabel, fileRow);
                   });
                   typeNode.children.push(variantNode);
                 });
               } else if (Array.isArray(typeRow.files) && typeRow.files.length) {
                 typeRow.files.forEach((fileRow) => {
                   const variantKey = String(fileRow?.variantKey || '').trim() || `default-${typeRow.mediaType}`;
-                  const leafKey = `file|${lookup}|${bucketRow.bucket}|${typeRow.mediaType}|${variantKey}|${fileRow.fileId}`;
-                  const displayName = buildDisplayFilename(bucketRow.bucket, typeRow.mediaType, variantKey, fileRow);
-                  typeNode.children.push({
-                    id: `file-node|${lookup}|${bucketRow.bucket}|${typeRow.mediaType}|${variantKey}|${fileRow.fileId}`,
-                    kind: 'file',
-                    label: displayName,
-                    meta: `${extractBucketOrdinal(bucketRow.bucket, fileRow)} [${typeRow.mediaType}]`,
-                    leafKeys: [leafKey],
-                    children: [],
-                  });
+                  appendFileNode(typeNode, variantKey, String(fileRow?.variantLabel || variantKey).trim(), fileRow);
                 });
               }
-              bucketNode.children.push(typeNode);
+              rootNode.children.push(typeNode);
             });
-            rootNode.children.push(bucketNode);
-          });
           return rootNode;
         };
 
@@ -4353,7 +4704,7 @@
             ? node.children.map((child) => pruneTreeByFilter(child)).filter(Boolean)
             : [];
           const needle = `${String(node.label || '')} ${String(node.meta || '')}`.toLowerCase();
-          const selfMatches = needle.includes(query);
+          const selfMatches = node.kind !== 'collection' && needle.includes(query);
           if (!selfMatches && !children.length) return null;
           return {
             ...node,
@@ -4384,11 +4735,12 @@
           updateActionState();
         };
         const refreshExpandedStates = () => {
-          expandBindings.forEach(({ nodeId, toggle, childrenWrap, row }) => {
+          expandBindings.forEach(({ nodeId, toggle, childrenWrap, row, label: nodeLabel }) => {
             const isExpanded = expandedNodeKeys.has(nodeId);
             if (toggle instanceof HTMLElement) {
-              toggle.textContent = isExpanded ? '−' : '+';
+              toggle.textContent = isExpanded ? 'v' : '>';
               toggle.setAttribute('aria-expanded', String(isExpanded));
+              toggle.setAttribute('aria-label', `${isExpanded ? 'Collapse' : 'Expand'} ${nodeLabel || 'group'}`);
             }
             if (row instanceof HTMLElement) {
               row.setAttribute('aria-expanded', String(isExpanded));
@@ -4417,27 +4769,27 @@
           row.setAttribute('data-dx-tree-kind', String(node.kind || 'node'));
           if (hasChildren) row.setAttribute('aria-expanded', String(isExpanded));
           row.style.display = 'grid';
-          row.style.gridTemplateColumns = '24px 24px minmax(0,1fr)';
+          row.style.gridTemplateColumns = hasChildren ? '22px 24px minmax(0,1fr)' : '24px minmax(0,1fr)';
           row.style.gap = '0.5rem';
           row.style.alignItems = 'center';
           row.style.position = 'relative';
 
-          const toggle = document.createElement('button');
-          toggle.type = 'button';
-          toggle.className = 'dx-file-tree-toggle';
-          toggle.setAttribute('aria-label', `${isExpanded ? 'Collapse' : 'Expand'} ${node.label}`);
-          toggle.setAttribute('aria-expanded', String(isExpanded));
-          toggle.style.width = '24px';
-          toggle.style.height = '24px';
-          toggle.style.display = 'grid';
-          toggle.style.placeItems = 'center';
-          toggle.style.padding = '0';
-          toggle.style.cursor = hasChildren ? 'pointer' : 'default';
-          toggle.style.lineHeight = '1';
-          toggle.textContent = hasChildren ? (isExpanded ? '−' : '+') : '';
+          let toggle = null;
           let childrenWrap = null;
-          if (!hasChildren) {
-            toggle.setAttribute('aria-hidden', 'true');
+          if (hasChildren) {
+            toggle = document.createElement('button');
+            toggle.type = 'button';
+            toggle.className = 'dx-file-tree-toggle';
+            toggle.setAttribute('aria-label', `${isExpanded ? 'Collapse' : 'Expand'} ${node.label}`);
+            toggle.setAttribute('aria-expanded', String(isExpanded));
+            toggle.style.width = '22px';
+            toggle.style.height = '22px';
+            toggle.style.display = 'grid';
+            toggle.style.placeItems = 'center';
+            toggle.style.padding = '0';
+            toggle.style.cursor = 'pointer';
+            toggle.style.lineHeight = '1';
+            toggle.textContent = isExpanded ? 'v' : '>';
           }
 
           const checkbox = document.createElement('input');
@@ -4458,9 +4810,8 @@
           const copy = document.createElement('div');
           copy.className = 'dx-file-tree-copy';
           copy.style.display = 'grid';
-          copy.style.gridTemplateColumns = 'minmax(0,1fr) auto';
+          copy.style.gridTemplateColumns = 'minmax(0,1fr)';
           copy.style.alignItems = 'center';
-          copy.style.gap = '0.62rem';
 
           const label = document.createElement('span');
           label.className = 'dx-file-tree-label';
@@ -4470,19 +4821,39 @@
           label.style.letterSpacing = '0.01em';
           label.style.textTransform = node.kind === 'file' ? 'none' : 'uppercase';
 
-          const meta = document.createElement('span');
-          meta.className = 'dx-file-tree-meta';
-          meta.textContent = node.meta || '';
-          meta.style.fontSize = '0.67rem';
-          meta.style.opacity = '0.72';
-          meta.style.whiteSpace = 'nowrap';
-
           copy.appendChild(label);
-          if (node.meta) copy.appendChild(meta);
 
-          row.appendChild(toggle);
+          let favButton = null;
+          if (node.kind === 'file' && Array.isArray(node.leafKeys) && node.leafKeys.length === 1) {
+            const leaf = treeState.leafByKey.get(node.leafKeys[0]);
+            const favoritesApi = context?.favoritesApi || getFavoritesApi();
+            if (leaf && leaf.fileId && favoritesApi) {
+              favButton = document.createElement('button');
+              favButton.type = 'button';
+              favButton.className = 'dx-button-element--secondary dx-fav-toggle dx-fav-file-toggle';
+              favButton.style.justifySelf = 'end';
+              const record = buildFileFavoriteRecord({
+                lookup: leaf.lookup,
+                entryHref: context?.entryHref,
+                bucket: leaf.bucket,
+                format: { key: leaf.variantKey, label: leaf.variantLabel },
+                fileId: leaf.fileId,
+                type: leaf.mediaType,
+              });
+              bindFavoriteToggle(favButton, favoritesApi, record, {
+                active: 'Favorited file',
+                inactive: 'Favorite file',
+              });
+            }
+          }
+
+          if (toggle) row.appendChild(toggle);
           row.appendChild(checkbox);
           row.appendChild(copy);
+          if (favButton) {
+            row.style.gridTemplateColumns = hasChildren ? '22px 24px minmax(0,1fr) auto' : '24px minmax(0,1fr) auto';
+            row.appendChild(favButton);
+          }
           shell.appendChild(row);
 
           if (hasChildren) {
@@ -4490,7 +4861,7 @@
             childrenWrap.className = 'dx-file-tree-children';
             childrenWrap.setAttribute('role', 'group');
             childrenWrap.style.display = isExpanded ? 'grid' : 'none';
-            expandBindings.push({ nodeId: node.id, toggle, childrenWrap, row });
+            expandBindings.push({ nodeId: node.id, toggle, childrenWrap, row, label: node.label });
             shell.appendChild(childrenWrap);
             if (isExpanded) {
               node.children.forEach((child) => renderTreeNode(child, childrenWrap, depth + 1));
@@ -4540,16 +4911,19 @@
           expandBindings.length = 0;
           const treeRoot = buildTreeModel();
           const filteredRoot = pruneTreeByFilter(treeRoot);
-          if (!filteredRoot) {
+          const visibleNodes = Array.isArray(filteredRoot?.children) ? filteredRoot.children : [];
+          if (!visibleNodes.length) {
             const empty = document.createElement('p');
             empty.style.margin = '0';
             empty.style.opacity = '0.75';
-            empty.textContent = 'No matching files for this filter.';
+            empty.textContent = filterQuery
+              ? `No matching files in bucket ${activeBucketKey || ''}.`
+              : `No files available in bucket ${activeBucketKey || ''}.`;
             treeWrap.appendChild(empty);
             updateActionState();
             return;
           }
-          renderTreeNode(filteredRoot, treeWrap, 0);
+          visibleNodes.forEach((child) => renderTreeNode(child, treeWrap, 0));
           refreshExpandedStates();
           refreshCheckboxStates();
         };
@@ -4690,11 +5064,11 @@
           renderTree();
         });
         selectAllButton.addEventListener('click', () => {
-          setLeafSet(treeState.allLeafKeys, true);
+          setLeafSet(getActiveBucketLeafKeys(), true);
           refreshCheckboxStates();
         });
         clearButton.addEventListener('click', () => {
-          selectedLeafKeys.clear();
+          setLeafSet(getActiveBucketLeafKeys(), false);
           refreshCheckboxStates();
         });
         expandAllButton.addEventListener('click', () => {
@@ -4703,9 +5077,9 @@
           renderTree();
         });
         collapseAllButton.addEventListener('click', () => {
-          expandedNodeKeys.clear();
-          expandedNodeKeys.add(`collection|${lookup}`);
-          refreshExpandedStates();
+          const allExpandableIds = collectExpandableNodeIds(buildTreeModel(), []);
+          allExpandableIds.forEach((nodeId) => expandedNodeKeys.delete(nodeId));
+          renderTree();
         });
 
         controls.appendChild(addToBagButton);
@@ -4713,9 +5087,11 @@
 
         inner.appendChild(titleRow);
         inner.appendChild(statusBanner);
-        inner.appendChild(selectionSummary);
-        inner.appendChild(treeTools);
-        inner.appendChild(treeWrap);
+        folderStack.appendChild(bucketTabs);
+        folderStack.appendChild(treeTools);
+        folderStack.appendChild(treePanel);
+
+        inner.appendChild(folderStack);
         inner.appendChild(controls);
         modal.appendChild(inner);
         document.body.appendChild(modal);
@@ -5182,7 +5558,9 @@
 
       const origin = getSidebarAssetOrigin();
       ensureProfileChromeRuntime(origin);
+      ensureInteractiveHoverRuntime(origin);
       ensureEntryRuntimeLayoutOverrides();
+      ensureEntryButtonPrimitiveOverrides();
       let favoritesApi = activateFavoritesApi(getFavoritesApi());
       const favoritesHydrationPromise = favoritesApi
         ? Promise.resolve(favoritesApi)

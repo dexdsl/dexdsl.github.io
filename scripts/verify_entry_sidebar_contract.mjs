@@ -70,6 +70,8 @@ function ensureRuntimeMarkers(runtimeJs) {
     'buildEntryTooltipMarkup',
     'dx-submit-tooltip-status',
     'class="btn-download dx-button-element--primary"',
+    'INTERACTIVE_HOVER_RUNTIME_PATH',
+    'ensureInteractiveHoverRuntime(origin)',
     'attachUnifiedDownload(cfg, \'#downloads .btn-download\'',
     'data-dx-download-kind="recording-index-pdf"',
     'resolveDownloadAuthState',
@@ -91,8 +93,13 @@ function ensureRuntimeMarkers(runtimeJs) {
     "record.key !== 'layout'",
     'entryTargetAlreadyReady',
     'DOWNLOAD_TREE_STYLE_ID',
-    'dx-file-tree-summary',
     'dx-file-tree-wrap',
+    'dx-file-folder-stack',
+    'dx-file-bucket-tabs',
+    'dx-file-bucket-tab-label',
+    'data-dx-bucket-tab',
+    'dx-file-tree-panel',
+    'WHOLE FILES',
   ];
   for (const marker of required) {
     if (!runtimeJs.includes(marker)) {

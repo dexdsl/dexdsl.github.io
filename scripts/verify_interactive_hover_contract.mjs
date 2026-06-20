@@ -35,6 +35,8 @@ function verifyMotionRuntimeSurface() {
     'semantic-link',
     'magnetic-button',
     'press-only',
+    '.btn-download',
+    '.btn-recording-index',
   ]);
 }
 
@@ -59,6 +61,8 @@ function verifyInstallerRuntime() {
     'dx:slotready',
     'dx:route-transition-out:start',
     '__DX_INTERACTIVE_MOTION',
+    '.btn-download',
+    '.btn-recording-index',
   ]);
 }
 

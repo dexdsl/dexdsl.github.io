@@ -16,6 +16,10 @@ const PROFILE_ROUTES = [
   '/entry/achievements/',
 ] as const;
 
+// Favorites intentionally uses a flat, typographic surface (no inset glass cards),
+// so it is exempt from the canonical glass-card skin assertions below.
+const FLAT_SURFACE_ROUTES = new Set<string>(['/entry/favorites/']);
+
 const CARD_SELECTORS: Record<string, string[]> = {
   '/entry/submit/': ['#dex-submit .dx-submit-main'],
   '/entry/favorites/': ['#dex-favorites .panel', '#dex-favorites .dex-sidebar'],
@@ -241,22 +245,24 @@ test('profile routes inherit /submit canonical shell geometry and glass', async 
         expect(routeMetrics.rootOverflow).toBe(baseline.rootOverflow);
         expect(routeMetrics.rootChildOverflow).toBe(baseline.rootChildOverflow);
       }
-      expect(Math.abs(routeMetrics.cardRadiusPx - baseline.cardRadiusPx)).toBeLessThanOrEqual(2);
-      expect(
-        hasCanonicalBackdrop(routeMetrics.cardBackdrop),
-        `non-canonical backdrop at ${breakpoint.label} ${routePath}: ${routeMetrics.cardBackdrop}`,
-      ).toBeTruthy();
+      if (!FLAT_SURFACE_ROUTES.has(routePath)) {
+        expect(Math.abs(routeMetrics.cardRadiusPx - baseline.cardRadiusPx)).toBeLessThanOrEqual(2);
+        expect(
+          hasCanonicalBackdrop(routeMetrics.cardBackdrop),
+          `non-canonical backdrop at ${breakpoint.label} ${routePath}: ${routeMetrics.cardBackdrop}`,
+        ).toBeTruthy();
 
-      const baselineBgAlpha = parseAlpha(baseline.cardBackground);
-      const routeBgAlpha = parseAlpha(routeMetrics.cardBackground);
-      if (Number.isFinite(baselineBgAlpha) && Number.isFinite(routeBgAlpha)) {
-        expect(Math.abs(routeBgAlpha - baselineBgAlpha)).toBeLessThanOrEqual(0.08);
-      }
+        const baselineBgAlpha = parseAlpha(baseline.cardBackground);
+        const routeBgAlpha = parseAlpha(routeMetrics.cardBackground);
+        if (Number.isFinite(baselineBgAlpha) && Number.isFinite(routeBgAlpha)) {
+          expect(Math.abs(routeBgAlpha - baselineBgAlpha)).toBeLessThanOrEqual(0.08);
+        }
 
-      const baselineBorderAlpha = parseAlpha(baseline.cardBorderColor);
-      const routeBorderAlpha = parseAlpha(routeMetrics.cardBorderColor);
-      if (Number.isFinite(baselineBorderAlpha) && Number.isFinite(routeBorderAlpha)) {
-        expect(Math.abs(routeBorderAlpha - baselineBorderAlpha)).toBeLessThanOrEqual(0.1);
+        const baselineBorderAlpha = parseAlpha(baseline.cardBorderColor);
+        const routeBorderAlpha = parseAlpha(routeMetrics.cardBorderColor);
+        if (Number.isFinite(baselineBorderAlpha) && Number.isFinite(routeBorderAlpha)) {
+          expect(Math.abs(routeBorderAlpha - baselineBorderAlpha)).toBeLessThanOrEqual(0.1);
+        }
       }
     }
   }

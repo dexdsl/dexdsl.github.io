@@ -24,41 +24,28 @@
   const TOKEN_TIMEOUT_MS = 2600;
   const API_TIMEOUT_MS = 9000;
   const HISTORY_PAGE_SIZE = 40;
+  const BADGES_PER_PAGE = 8;
   const FOCUS_BADGE_PARAM = 'badge';
 
   const DEFAULT_API_BASE = 'https://dex-api.spring-fog-8edd.workers.dev';
 
-  const GLYPH_PATHS = {
-    submission:
-      'M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m6.75 12-3-3m0 0-3 3m3-3v6',
-    'submission-stack':
-      'M4.5 6.75h15m-15 5.25h15m-15 5.25h15M6 4.5h12a1.5 1.5 0 0 1 1.5 1.5v12A1.5 1.5 0 0 1 18 19.5H6A1.5 1.5 0 0 1 4.5 18V6A1.5 1.5 0 0 1 6 4.5Z',
-    release:
-      'm14.25 9-2.25 2.25m0 0L9.75 9m2.25 2.25V3m8.25 10.5v4.125c0 .621-.504 1.125-1.125 1.125H4.875A1.125 1.125 0 0 1 3.75 17.625V13.5',
-    license:
-      'M9 12.75 11.25 15 15 9.75m4.5 2.25a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
-    joint:
-      'M8.25 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm7.5 6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-9 3.75h10.5',
-    poll:
-      'M8.25 6h12m-12 6h12m-12 6h12M3.75 4.5h.008v.008H3.75V4.5Zm0 6h.008v.008H3.75v-.008Zm0 6h.008v.008H3.75v-.008Z',
-    streak:
-      'm13.5 3 1.934 3.92 4.326.63-3.13 3.052.739 4.31L13.5 12.86l-3.869 2.052.739-4.31-3.13-3.052 4.326-.63L13.5 3Z',
-    call:
-      'M2.25 12s3.75-6 9.75-6 9.75 6 9.75 6-3.75 6-9.75 6-9.75-6-9.75-6Zm9.75 2.25a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5Z',
-    lane:
-      'M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5',
-    favorite:
-      'm11.995 4.529 2.52-2.52a3 3 0 1 1 4.243 4.243l-6.763 6.763-6.763-6.763a3 3 0 0 1 4.243-4.243l2.52 2.52Z',
-    profile:
-      'M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 20.118a7.5 7.5 0 0 1 15 0',
-    secret:
-      'M12 7.5V6a3 3 0 1 1 6 0v1.5M6 10.5h12a1.5 1.5 0 0 1 1.5 1.5v6A1.5 1.5 0 0 1 18 19.5H6A1.5 1.5 0 0 1 4.5 18v-6A1.5 1.5 0 0 1 6 10.5Z',
-    'secret-license':
-      'M9 12.75 11.25 15 15 9.75m3.75.75V18a1.5 1.5 0 0 1-1.5 1.5h-10.5A1.5 1.5 0 0 1 5.25 18v-7.5m13.5 0-6.75-6.75m0 0L5.25 10.5m6.75-6.75V15',
-    'secret-release':
-      'M3.75 18h16.5m-15-3.75h13.5M6.75 6h10.5l1.5 2.25-1.5 2.25H6.75l-1.5-2.25L6.75 6Z',
-    vault:
-      'M6 4.5h12A1.5 1.5 0 0 1 19.5 6v12A1.5 1.5 0 0 1 18 19.5H6A1.5 1.5 0 0 1 4.5 18V6A1.5 1.5 0 0 1 6 4.5Zm6 5.25a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5Z',
+  const HEROICON_BASE_PATH = '/assets/vendor/heroicons/24/outline/';
+  const HEROICON_FILES = {
+    submission: 'document-arrow-up.svg',
+    'submission-stack': 'rectangle-stack.svg',
+    release: 'arrow-down-tray.svg',
+    license: 'check-circle.svg',
+    joint: 'share.svg',
+    poll: 'list-bullet.svg',
+    streak: 'star.svg',
+    call: 'eye.svg',
+    lane: 'bars-3.svg',
+    favorite: 'heart.svg',
+    profile: 'user-circle.svg',
+    secret: 'lock-closed.svg',
+    'secret-license': 'shield-check.svg',
+    'secret-release': 'archive-box-arrow-down.svg',
+    vault: 'key.svg',
   };
 
   function toText(value, fallback = '') {
@@ -235,9 +222,10 @@
 
   function badgeGlyphSvg(glyphKey, { silhouette = false } = {}) {
     const key = toText(glyphKey, 'secret').toLowerCase();
-    const path = GLYPH_PATHS[key] || GLYPH_PATHS.secret;
+    const fileName = HEROICON_FILES[key] || HEROICON_FILES.secret;
+    const src = `${HEROICON_BASE_PATH}${fileName}`;
     const className = silhouette ? 'dx-achievement-glyph-svg is-silhouette' : 'dx-achievement-glyph-svg';
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke="currentColor" class="${className}" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="${path}" /></svg>`;
+    return `<img src="${htmlEscape(src)}" class="${className}" alt="" loading="lazy" decoding="async" aria-hidden="true">`;
   }
 
   function progressStroke(value, threshold) {
@@ -303,12 +291,8 @@
           <span class="dx-achievement-tier">${htmlEscape(badge.tier.toUpperCase())}</span>
           ${badge.newly ? '<span class="dx-achievement-new">NEW</span>' : ''}
         </div>
-        <div class="dx-achievement-glyph-wrap">
+        <div class="dx-achievement-glyph-wrap" style="--dx-achievement-progress: ${ring.pct}%;">
           ${badgeGlyphSvg(badge.glyph, { silhouette: badge.secret && !badge.unlocked })}
-          <svg class="dx-achievement-progress-ring" viewBox="0 0 44 44" aria-hidden="true">
-            <circle cx="22" cy="22" r="18" pathLength="1"></circle>
-            <circle cx="22" cy="22" r="18" pathLength="1" style="stroke-dasharray:${ring.dash} ${Math.max(0, ring.c - ring.dash)}"></circle>
-          </svg>
         </div>
         <h3 class="dx-achievement-title">${htmlEscape(title)}</h3>
         <p class="dx-achievement-desc">${htmlEscape(description)}</p>
@@ -318,6 +302,38 @@
         </div>
         ${claimButton}
       </article>
+    `;
+  }
+
+  function getPaginatedBadgeRows(state, page, cards) {
+    const totalPages = Math.max(1, Math.ceil(cards.length / BADGES_PER_PAGE));
+    const current = clamp(0, totalPages - 1, Number(state.badgePages[page]) || 0);
+    state.badgePages[page] = current;
+    const start = current * BADGES_PER_PAGE;
+    return {
+      totalPages,
+      current,
+      visible: cards.slice(start, start + BADGES_PER_PAGE),
+    };
+  }
+
+  function renderBadgeSideControls(page, totalPages, current) {
+    if (totalPages <= 1) return '';
+    const prevDisabled = current <= 0 ? ' disabled aria-disabled="true"' : '';
+    const nextDisabled = current >= totalPages - 1 ? ' disabled aria-disabled="true"' : '';
+    return `
+      <button type="button" class="carousel-nav prev" data-dx-achievements-badge-page-prev="${htmlEscape(page)}" aria-label="Previous achievements page"${prevDisabled}></button>
+      <button type="button" class="carousel-nav next" data-dx-achievements-badge-page-next="${htmlEscape(page)}" aria-label="Next achievements page"${nextDisabled}></button>
+    `;
+  }
+
+  function renderBadgeGridPage(state, page, cards) {
+    const rows = getPaginatedBadgeRows(state, page, cards);
+    return `
+      <div class="dx-achievements-carousel-frame" data-dx-achievements-pager="${htmlEscape(page)}" data-dx-achievements-pager-index="${rows.current}" data-dx-achievements-pager-total="${rows.totalPages}">
+        ${renderBadgeSideControls(page, rows.totalPages, rows.current)}
+        <div class="dx-achievements-grid" data-dx-achievements-grid-page="${htmlEscape(page)}">${rows.visible.map(renderBadgeCard).join('')}</div>
+      </div>
     `;
   }
 
@@ -450,7 +466,7 @@
       overview.innerHTML = '<p class="dx-achievements-empty-text">No public achievements found.</p>';
       return;
     }
-    overview.innerHTML = `<div class="dx-achievements-grid">${cards.map(renderBadgeCard).join('')}</div>`;
+    overview.innerHTML = renderBadgeGridPage(state, PAGE_OVERVIEW, cards);
   }
 
   function renderSecretVault(state) {
@@ -461,10 +477,7 @@
       vault.innerHTML = '<p class="dx-achievements-empty-text">Secret vault is empty.</p>';
       return;
     }
-    vault.innerHTML = `
-      <p class="dx-achievements-vault-note">SECRET VAULT: locked cards only reveal growlix clues until unlocked.</p>
-      <div class="dx-achievements-grid">${cards.map(renderBadgeCard).join('')}</div>
-    `;
+    vault.innerHTML = renderBadgeGridPage(state, PAGE_SECRET, cards);
   }
 
   function renderHistory(state) {
@@ -674,8 +687,16 @@
       const target = state.badges.find((badge) => badge.id === badgeIdFromQuery);
       if (target) {
         if (target.secret) {
+          const secretCards = state.badges.filter((badge) => badge.secret);
+          const secretIndex = secretCards.findIndex((badge) => badge.id === badgeIdFromQuery);
+          state.badgePages[PAGE_SECRET] = Math.max(0, Math.floor(secretIndex / BADGES_PER_PAGE));
+          renderSecretVault(state);
           switchPage(state, PAGE_SECRET);
         } else {
+          const publicCards = state.badges.filter((badge) => !badge.secret);
+          const publicIndex = publicCards.findIndex((badge) => badge.id === badgeIdFromQuery);
+          state.badgePages[PAGE_OVERVIEW] = Math.max(0, Math.floor(publicIndex / BADGES_PER_PAGE));
+          renderOverview(state);
           switchPage(state, PAGE_OVERVIEW);
         }
         focusBadgeCard(state, badgeIdFromQuery);
@@ -747,6 +768,31 @@
         void loadHistory(state, { append: true }).finally(() => {
           loadMore.disabled = false;
         });
+        return;
+      }
+      const pagerButton = target.closest('[data-dx-achievements-badge-page-index]');
+      if (pagerButton instanceof HTMLButtonElement) {
+        const page = toText(pagerButton.getAttribute('data-dx-achievements-badge-page'), PAGE_OVERVIEW);
+        const index = Number(pagerButton.getAttribute('data-dx-achievements-badge-page-index')) || 0;
+        state.badgePages[page] = index;
+        if (page === PAGE_SECRET) renderSecretVault(state);
+        else renderOverview(state);
+        return;
+      }
+      const prevButton = target.closest('[data-dx-achievements-badge-page-prev]');
+      if (prevButton instanceof HTMLButtonElement) {
+        const page = toText(prevButton.getAttribute('data-dx-achievements-badge-page-prev'), PAGE_OVERVIEW);
+        state.badgePages[page] = Math.max(0, (Number(state.badgePages[page]) || 0) - 1);
+        if (page === PAGE_SECRET) renderSecretVault(state);
+        else renderOverview(state);
+        return;
+      }
+      const nextButton = target.closest('[data-dx-achievements-badge-page-next]');
+      if (nextButton instanceof HTMLButtonElement) {
+        const page = toText(nextButton.getAttribute('data-dx-achievements-badge-page-next'), PAGE_OVERVIEW);
+        state.badgePages[page] = (Number(state.badgePages[page]) || 0) + 1;
+        if (page === PAGE_SECRET) renderSecretVault(state);
+        else renderOverview(state);
       }
     });
   }
@@ -762,7 +808,7 @@
         </div>
       </div>
       <div class="dex-sidebar dx-achievements-shell" data-dx-achievements-app="v2" data-dx-achievements-state="loading" data-dx-achievements-page="overview">
-        <section class="slide panel dx-achievements-panel" data-dx-achievements-body>
+        <div class="dx-achievements-panel" data-dx-achievements-body>
           <header class="dx-achievements-header">
             <div>
               <p class="dx-achievements-kicker">PROFILE</p>
@@ -781,10 +827,10 @@
             <button type="button" class="dx-button-element dx-button-element--secondary dx-button-size--sm" aria-pressed="false" data-dx-achievements-page="secret-vault" data-dx-motion-include="true">Secret Vault</button>
             <button type="button" class="dx-button-element dx-button-element--secondary dx-button-size--sm" aria-pressed="false" data-dx-achievements-page="history" data-dx-motion-include="true">History</button>
           </nav>
-          <section class="dx-achievements-page" data-dx-achievements-page-panel="overview"></section>
-          <section class="dx-achievements-page" data-dx-achievements-page-panel="secret-vault" hidden></section>
-          <section class="dx-achievements-page" data-dx-achievements-page-panel="history" hidden></section>
-        </section>
+          <div class="dx-achievements-page" data-dx-achievements-page-panel="overview"></div>
+          <div class="dx-achievements-page" data-dx-achievements-page-panel="secret-vault" hidden></div>
+          <div class="dx-achievements-page" data-dx-achievements-page-panel="history" hidden></div>
+        </div>
         <div class="dx-achievements-toast-stack" data-dx-achievements-toasts></div>
       </div>
     `;
@@ -808,6 +854,10 @@
       historyNextCursor: '',
       historyLoaded: false,
       historyLoading: false,
+      badgePages: {
+        [PAGE_OVERVIEW]: 0,
+        [PAGE_SECRET]: 0,
+      },
       newlyUnlockedSet: new Set(),
       emittedUnlocked: new Set(),
       authSnapshot: {

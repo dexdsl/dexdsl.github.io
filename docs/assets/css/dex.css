@@ -1518,8 +1518,8 @@ body.dx-route-profile-protected :is(
 }
 
 /* Profile routes: normalize remaining inner white fills to the same translucent glass opacity. */
+/* Favorites is intentionally excluded — it uses a flat, typographic surface (no inset cards). */
 body.dx-route-profile-protected :is(
-  #dex-favorites,
   #dex-msg,
   #dex-submit,
   #dex-press,
@@ -1730,7 +1730,6 @@ body.dx-route-profile-protected #dex-console > .dex-sidebar::after {
 }
 
 body.dx-route-profile-protected :is(
-  #dex-favorites .panel,
   #dex-msg .details,
   #dex-submit .slide,
   #dex-press .slide,
@@ -5384,4 +5383,53 @@ body main.dx-dexnotes-page .dx-dexnotes-filter-actions .dx-button-element:focus-
 .btn--border.theme-btn--primary-inverse,
 .dx-button-element--primary.btn--border.theme-btn--primary-inverse {
   border: 0 !important;
+}
+
+/* Entry download buttons: keep legacy hooks on the shared primary/secondary skins. */
+body.dx-entry-page .dex-sidebar .dex-license-controls .copy-btn,
+body.dx-entry-page .dex-sidebar .dex-license-controls .usage-btn,
+body.dx-entry-page .dex-sidebar #downloads .btn-audio,
+body.dx-entry-page .dex-sidebar #downloads .btn-video,
+body.dx-entry-page .dex-sidebar #downloads .btn-download {
+  border: 0 !important;
+  background: var(--dx-btn-primary-bg, linear-gradient(130deg, var(--dex-accent, #ff1910), #ff9810)) !important;
+  color: #fff !important;
+  box-shadow: var(--dx-btn-primary-shadow, 0 0 0 1px rgba(255, 255, 255, 0.35) inset, 0 10px 30px rgba(255, 0, 80, 0.25)) !important;
+  font-family: var(--font-heading, "Stretch Pro", sans-serif) !important;
+  font-size: var(--dx-btn-font-size-md, clamp(12px, 1.05vw, 13px)) !important;
+  font-weight: var(--dx-btn-primary-weight, 800) !important;
+  line-height: 1.05 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+body.dx-entry-page .dex-sidebar #downloads .btn-recording-index {
+  border: 0 !important;
+  background: var(--dx-btn-secondary-bg, linear-gradient(145deg, rgba(255, 255, 255, 0.78), rgba(245, 249, 255, 0.52))) !important;
+  color: #000 !important;
+  box-shadow: none !important;
+  font-family: var(--font-heading, "Stretch Pro", sans-serif) !important;
+  font-size: var(--dx-btn-font-size-md, clamp(12px, 1.05vw, 13px)) !important;
+  font-weight: var(--dx-btn-secondary-weight, 700) !important;
+  line-height: 1.05 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+body.dx-entry-page .dex-sidebar .dex-license-controls .copy-btn:hover,
+body.dx-entry-page .dex-sidebar .dex-license-controls .usage-btn:hover,
+body.dx-entry-page .dex-sidebar #downloads .btn-audio:hover,
+body.dx-entry-page .dex-sidebar #downloads .btn-video:hover,
+body.dx-entry-page .dex-sidebar #downloads .btn-download:hover {
+  box-shadow: var(--dx-btn-primary-shadow-hover, 0 12px 36px rgba(255, 0, 80, 0.28)) !important;
+}
+
+body.dx-entry-page .dex-sidebar #downloads .btn-recording-index:hover {
+  box-shadow: none !important;
+}
+
+body.dx-entry-page .dex-sidebar #downloads .btn-recording-index:focus-visible {
+  outline: 2px solid rgba(255, 25, 16, 0.32) !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
 }

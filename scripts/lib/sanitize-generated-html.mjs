@@ -1310,8 +1310,8 @@ body.dx-entry-page .dex-collections .overview-item--favorite-collection .dx-fav-
   gap: 0.5rem;
   padding: 0.6rem 0.85rem !important;
   border-radius: 4px !important;
-  border: 1px solid rgba(0, 0, 0, 0.15) !important;
-  background: linear-gradient(130deg, var(--dex-accent, #ff1910), orange) !important;
+  border: 0 !important;
+  background: var(--dx-btn-primary-bg, linear-gradient(130deg, var(--dex-accent, #ff1910), #ff9810)) !important;
   color: #fff !important;
   text-decoration: none !important;
   text-transform: uppercase !important;

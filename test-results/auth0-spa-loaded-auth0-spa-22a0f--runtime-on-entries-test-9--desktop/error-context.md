@@ -1,0 +1,134 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner:
+    - generic [ref=e2]:
+      - link "Skip to Content" [ref=e3] [cursor=pointer]:
+        - /url: index.html#page
+      - generic [ref=e5]:
+        - generic [ref=e7]:
+          - link "YouTube" [ref=e8] [cursor=pointer]:
+            - /url: https://www.youtube.com/channel/UCo5B4ztNwaErXhQlGyNhMDQ
+            - img [ref=e9]
+          - link "Instagram" [ref=e11] [cursor=pointer]:
+            - /url: http://instagram.com/dexdsl
+            - img [ref=e12]
+          - link "TikTok" [ref=e14] [cursor=pointer]:
+            - /url: https://www.tiktok.com/@dexdsl
+            - img [ref=e15]
+          - link "Twitter" [ref=e17] [cursor=pointer]:
+            - /url: https://twitter.com/dexdsl
+            - img [ref=e18]
+        - generic [ref=e20]:
+          - link "dex digital sample library" [ref=e23] [cursor=pointer]:
+            - /url: /
+            - img "dex digital sample library" [ref=e24]
+          - navigation [ref=e25]:
+            - link "CATALOG" [ref=e27] [cursor=pointer]:
+              - /url: /catalog/
+            - link "IN DEX" [ref=e29] [cursor=pointer]:
+              - /url: /call/
+            - link "DEX NOTES" [ref=e31] [cursor=pointer]:
+              - /url: /dexnotes/
+            - link "ABOUT" [ref=e33] [cursor=pointer]:
+              - /url: /about/
+        - link "DONATE" [ref=e36] [cursor=pointer]:
+          - /url: /donate/
+  - generic [ref=e38]:
+    - main [ref=e39]:
+      - article [ref=e40]:
+        - heading "test-9 Favorites Lookup Parity" [level=1] [ref=e41]
+        - paragraph [ref=e42]: This public regression route is used by Playwright to validate entry, bucket, and file favorites against canonical lookup numbers.
+        - paragraph [ref=e43]:
+          - strong [ref=e44]: "Lookup #:"
+          - text: K.Hps. Su AV2023
+        - paragraph [ref=e45]: Use the sidebar controls to favorite the collection, bucket buttons, and specific downloadable file formats.
+      - complementary "Entry sidebar" [ref=e46]:
+        - generic [ref=e47]:
+          - generic [ref=e48]:
+            - text: "#K.Hps. Su AV2023"
+            - paragraph [ref=e49]: "Lookup #"
+          - generic [ref=e50]:
+            - img "Series" [ref=e51]
+            - paragraph [ref=e52]: Series
+        - generic [ref=e53]:
+          - heading "LICENSE" [level=3] [ref=e54]
+          - link "Creative Commons Attribution 4.0" [ref=e55] [cursor=pointer]:
+            - /url: https://creativecommons.org/licenses/by/4.0/
+            - img "Creative Commons Attribution 4.0" [ref=e56]
+          - paragraph [ref=e57]: This work contains samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Sebastian Suarez Solis
+          - generic [ref=e58]:
+            - button "COPY" [ref=e59]
+            - button "USAGE NOTES" [ref=e60]
+        - generic [ref=e61]:
+          - heading "CREDITS" [level=3] [ref=e62]
+          - generic [ref=e63]:
+            - generic [ref=e64]:
+              - text: Artist
+              - generic [ref=e65]: Sebastian Suarez Solis
+            - generic [ref=e66]: Alias Prepared harpsichord and amplified objects
+            - generic [ref=e67]:
+              - text: Instrument
+              - generic [ref=e68]: Prepared harpsichord, objects
+            - generic [ref=e69]:
+              - generic [ref=e70]: Video
+              - generic [ref=e71]:
+                - text: Dir
+                - generic [ref=e72]: Dex Test Route
+              - generic [ref=e73]:
+                - text: Cin
+                - generic [ref=e74]: Dex Test Route
+              - generic [ref=e75]:
+                - text: Edit
+                - generic [ref=e76]: Dex Test Route
+            - generic [ref=e77]:
+              - generic [ref=e78]: Audio
+              - generic [ref=e79]:
+                - text: Rec
+                - generic [ref=e80]: Dex Test Route
+              - generic [ref=e81]:
+                - text: Mix
+                - generic [ref=e82]: Dex Test Route
+              - generic [ref=e83]:
+                - text: Master
+                - generic [ref=e84]: Dex Test Route
+          - generic [ref=e85]: S2 2026 Dex Studio
+        - generic [ref=e86]:
+          - heading "DOWNLOAD" [level=3] [ref=e87]
+          - tabpanel [ref=e89]:
+            - button "Get Files" [ref=e90]: GET FILES
+            - generic [ref=e91]:
+              - button "Recording Index" [disabled] [ref=e92]: RECORDING INDEX
+              - generic [ref=e93]: Recording index bundle unavailable.
+    - contentinfo [ref=e94]:
+      - generic [ref=e95]:
+        - img "Dex Footer Logo (black)" [ref=e98]
+        - generic [ref=e99]:
+          - text: © 2023–2026 DEX CO-OP CORP (EIN 92-3509152)
+          - text: dba Dex Digital Sample Library. All rights reserved.
+        - link "View Dex Digital Sample Library's Candid (GuideStar) profile" [ref=e101] [cursor=pointer]:
+          - /url: https://app.candid.org/profile/15083758/dex-digital-sample-library-92-3509152
+          - img "Candid (GuideStar) Transparency Seal" [ref=e102]
+        - generic [ref=e103]:
+          - generic [ref=e104]:
+            - link "YouTube" [ref=e105] [cursor=pointer]:
+              - /url: https://www.youtube.com/dexdsl
+              - img [ref=e106]
+            - link "Instagram" [ref=e108] [cursor=pointer]:
+              - /url: https://instagram.com/dexdsl
+              - img [ref=e109]
+            - link "TikTok" [ref=e111] [cursor=pointer]:
+              - /url: https://www.tiktok.com/@dexdsl
+              - img [ref=e112]
+            - link "Twitter" [ref=e114] [cursor=pointer]:
+              - /url: https://twitter.com/dexdsl
+              - img [ref=e115]
+          - navigation [ref=e117]:
+            - link "Privacy" [ref=e118] [cursor=pointer]:
+              - /url: /privacy
+            - link "Contact" [ref=e119] [cursor=pointer]:
+              - /url: /contact
+            - link "Copyright" [ref=e120] [cursor=pointer]:
+              - /url: /copyright
+```

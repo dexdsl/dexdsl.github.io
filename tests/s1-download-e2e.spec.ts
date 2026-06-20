@@ -18,6 +18,17 @@ const fulfillJson = (route: Route, payload: unknown, status = 200) => route.fulf
   body: JSON.stringify(payload),
 });
 
+const installLocalSidebarRuntime = async (page: Page) => {
+  const sidebarRuntime = await readFile(path.resolve(process.cwd(), 'assets/dex-sidebar.js'), 'utf8');
+  await page.route('https://dexdsl.github.io/assets/dex-sidebar.js', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/javascript',
+      body: sidebarRuntime,
+    });
+  });
+};
+
 const readProtectedLookup = async () => {
   const raw = await readFile(path.resolve(process.cwd(), 'data/protected.assets.json'), 'utf8');
   const parsed = JSON.parse(raw) as { lookups?: ProtectedLookup[] };
@@ -124,6 +135,7 @@ test('S1 entry files can be added to the bag and downloaded as a secure bundle',
     await fulfillJson(route, { message: 'Unexpected test API route' }, 404);
   });
 
+  await installLocalSidebarRuntime(page);
   await installAuthenticatedViewer(page);
 
   await page.goto(ENTRY_PATH);
@@ -131,10 +143,43 @@ test('S1 entry files can be added to the bag and downloaded as a secure bundle',
   await page.locator('#downloads .btn-download').click();
 
   await expect(page.locator('.dex-download-modal--tree')).toBeVisible();
-  await expect(page.locator('.dx-file-tree-summary')).toContainText('50 available files');
+  const modal = page.locator('.dex-download-modal--tree');
+  await expect(modal.locator('.dx-file-tree-summary')).toHaveCount(0);
+  await expect(modal.locator('.dx-file-folder-stack')).toBeVisible();
+  await expect(modal.locator('.dx-file-bucket-tabs[role="tablist"]')).toBeVisible();
+  await expect(modal.locator('[data-dx-bucket-tab]')).toHaveCount(3);
+  await expect(modal.locator('[data-dx-bucket-tab="A"] .dx-file-bucket-tab-label')).toHaveText('WHOLE FILES');
+  await expect(modal.locator('[data-dx-bucket-tab="B"] .dx-file-bucket-tab-label')).toHaveText('CHUNKS');
+  await expect(modal.locator('[data-dx-bucket-tab="C"] .dx-file-bucket-tab-label')).toHaveText('PHRASES');
+  await expect(modal.locator('[data-dx-bucket-tab="A"]')).toHaveAttribute('aria-selected', 'true');
+  await expect(modal.locator('[data-dx-bucket-tab="A"] .dx-file-bucket-tab-media')).toContainText(/wav|mov/);
+  await expect(modal.locator('[data-dx-bucket-tab="B"] .dx-file-bucket-tab-media')).toBeHidden();
+  await expect(modal.locator('.dx-file-tree-panel[role="tabpanel"]')).toBeVisible();
+  await expect(modal.locator('.dx-file-tree-row[data-dx-tree-kind="collection"]')).toHaveCount(0);
+  await expect(modal.locator('.dx-file-tree-row[data-dx-tree-kind="bucket"]')).toHaveCount(0);
+  await expect(modal.locator('.dx-file-tree-meta')).toHaveCount(0);
+  await expect(modal.locator('.dx-file-tree-row[data-dx-tree-kind="audio"]')).toBeVisible();
 
-  await page.locator('.dx-file-tree-tools button').first().click();
-  await expect(page.locator('.dx-file-tree-summary')).toContainText('50 of 50 selected');
+  await page.getByRole('button', { name: 'Select all files in bucket A' }).click();
+  await expect(modal.locator('.dx-file-tree-actions .dx-button-element--primary')).toContainText('(3)');
+  await expect(modal.locator('[data-dx-bucket-tab="A"]')).toHaveAttribute('data-dx-bucket-selection', 'full');
+
+  await modal.locator('[data-dx-bucket-tab="B"]').click();
+  await expect(modal.locator('[data-dx-bucket-tab="B"]')).toHaveAttribute('aria-selected', 'true');
+  await expect(modal.locator('[data-dx-bucket-tab="B"] .dx-file-bucket-tab-media')).toContainText(/wav|mov/);
+  await expect(modal.locator('input[placeholder="Filter bucket B"]')).toBeVisible();
+  await expect(modal.locator('.dx-file-tree-row[data-dx-tree-kind="bucket"]')).toHaveCount(0);
+  await expect(modal.getByText('DEFAULT AUDIO')).toHaveCount(0);
+  await expect(modal.getByText('000-stereo.wav')).toBeVisible();
+  await page.getByRole('button', { name: 'Select all files in bucket B' }).click();
+  await expect(modal.locator('.dx-file-tree-actions .dx-button-element--primary')).toContainText('(30)');
+  await expect(modal.locator('[data-dx-bucket-tab="A"]')).toHaveAttribute('data-dx-bucket-selection', 'full');
+  await expect(modal.locator('[data-dx-bucket-tab="B"]')).toHaveAttribute('data-dx-bucket-selection', 'full');
+
+  await modal.locator('[data-dx-bucket-tab="C"]').click();
+  await expect(modal.locator('[data-dx-bucket-tab="C"]')).toHaveAttribute('aria-selected', 'true');
+  await page.getByRole('button', { name: 'Select all files in bucket C' }).click();
+  await expect(modal.locator('.dx-file-tree-actions .dx-button-element--primary')).toContainText('(50)');
 
   await Promise.all([
     page.waitForURL('**/entry/bag/'),
@@ -165,8 +210,8 @@ test('S1 entry files can be added to the bag and downloaded as a secure bundle',
     { timeout: 12_000 }
   ).toContain('https://downloads.example.test/s1-cello.zip');
 
-  await expect(page.locator('.dx-bag-status')).toContainText('Bundle ready. Opening download');
-  await expect(page.locator('.dx-bag-count')).toContainText('51 files in download');
+  await expect(page.locator('.dx-bag-card')).toHaveCount(0);
+  await expect(page.locator('[data-bag-stat="files"]')).toHaveText('0');
   expect(apiCalls).toContain(`GET /me/assets/${LOOKUP}`);
   expect(apiCalls).toContain('POST /me/assets/bag/bundle');
 

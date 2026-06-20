@@ -31,7 +31,15 @@ test('sidebar runtime and css expose download + credits contracts', async ({ pag
   expect(runtime).toContain('data-dx-entry-rail-mode');
   expect(runtime).toContain('attachUnifiedDownload');
   expect(runtime).toContain('btn-download');
+  expect(runtime).toContain('INTERACTIVE_HOVER_RUNTIME_PATH');
+  expect(runtime).toContain('ensureInteractiveHoverRuntime(origin)');
   expect(runtime).toContain('ADD\\u200C TO BAG');
+  expect(runtime).toContain('data-dx-bucket-tab');
+  expect(runtime).toContain('dx-file-folder-stack');
+  expect(runtime).toContain('dx-file-bucket-tabs');
+  expect(runtime).toContain('dx-file-bucket-tab-label');
+  expect(runtime).toContain('dx-file-tree-panel');
+  expect(runtime).toContain('WHOLE FILES');
   expect(runtime).toContain("const BAG_ROUTE_PATH = '/entry/bag/'");
   expect(runtime).toContain('data-dx-download-kind="recording-index-pdf"');
   expect(runtime).toContain('[data-person-linkable="true"][data-person]');
@@ -43,6 +51,8 @@ test('sidebar runtime and css expose download + credits contracts', async ({ pag
   expect(css).toContain('.dx-bucket-tile');
   expect(css).toContain('data-dx-entry-rail-mode');
   expect(css).toContain('.dex-sidebar #downloads .btn-recording-index');
+  expect(css).toContain('body.dx-entry-page .dex-sidebar #downloads .btn-download');
+  expect(css).toContain('body.dx-entry-page .dex-sidebar #downloads .btn-recording-index');
   const primaryBlock = css.match(/\.dex-sidebar\s+\.dex-license-controls\s+\.copy-btn,[\s\S]*?\.dex-sidebar\s+#downloads\s+\.btn-video\s*\{[\s\S]*?\}/i)?.[0] || '';
   expect(primaryBlock).not.toContain('btn-recording-index');
 });

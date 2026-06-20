@@ -15,6 +15,12 @@ const BUTTON_INTERACTIVE_SELECTOR = [
   '.ghost-btn',
   '.theme-btn--primary',
   '.btn--border.theme-btn--primary-inverse',
+  '.license-btn.copy-btn',
+  '.license-btn.usage-btn',
+  '.btn-audio',
+  '.btn-video',
+  '.btn-download',
+  '.btn-recording-index',
 ].join(', ');
 
 const SEMANTIC_LINK_SELECTOR = [

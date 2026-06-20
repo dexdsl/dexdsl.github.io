@@ -1788,117 +1788,157 @@
 :root{
   --space-1:0.25rem;--space-2:0.5rem;--space-3:1rem;--space-4:1.5rem;--space-5:2rem;
   --radius-sm:0.25rem;--radius-md:0.5rem;
-  --shadow-light:0 4px 12px rgba(0,0,0,0.08);--shadow-md:0 8px 24px rgba(0,0,0,0.12);
   --font-heading:'Typefesse',sans-serif;--font-body:'Courier New',monospace;
-  --dex-bg:rgba(255,255,255,0.15);--dex-text:#282828;--dex-accent:#ff1910;
-  --ease:0.3s ease-out;--liquid-blur:28px;--liquid-bg:rgba(255,255,255,0.18);
-  --liquid-border:rgba(255,255,255,0.35);
+  --dex-text:#1a1a1a;--dex-muted:#7a7a7a;--dex-faint:#a8a8a8;--dex-accent:#ff1910;
+  --dex-line:rgba(0,0,0,0.12);--dex-line-strong:rgba(0,0,0,0.24);
+  --ease:0.25s ease;
 }
 
 #dex-favorites{width:100%;height:100%;}
 #dex-favorites>.dex-sidebar{width:100%;height:100%;margin:0;box-sizing:border-box;}
 
+/* Outer shell — flat & typographic, no card chrome */
 .dex-sidebar{
-  position:relative;display:flex;flex-direction:column;gap:var(--space-4);
-  padding:var(--space-4);background:var(--liquid-bg);border:1px solid var(--liquid-border);
-  backdrop-filter:blur(var(--liquid-blur)) saturate(180%) contrast(1.12) brightness(1.06);
-  -webkit-backdrop-filter:blur(var(--liquid-blur)) saturate(180%) contrast(1.12) brightness(1.06);
-  border-radius:var(--radius-md);box-shadow:var(--shadow-md);
+  position:relative;display:flex;flex-direction:column;gap:var(--space-5);
+  padding:clamp(1.25rem,3.5vw,2.5rem);
+  background:transparent;border:none;border-radius:0;box-shadow:none;
+  -webkit-backdrop-filter:none;backdrop-filter:none;
   font-family:var(--font-body);color:var(--dex-text);overflow:hidden;
 }
-.dex-sidebar::before{
-  content:"";position:absolute;inset:0;
-  background-image:url('https://www.transparenttextures.com/patterns/45-degree-fabric-light.png');
-  opacity:0.15;pointer-events:none;border-radius:inherit;z-index:-1;
-}
+.dex-sidebar::before{content:none;}
 
-/* Header */
+/* Header — no inset card, just a baseline rule */
 .dex-header{
-  display:flex;justify-content:space-between;align-items:center;
-  background:rgba(255,255,255,0.6);backdrop-filter:blur(6px);
-  padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);
-  box-shadow:var(--shadow-light);
+  display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-3);
+  background:none;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;
+  padding:0 0 var(--space-3);border-bottom:1px solid var(--dex-line-strong);
 }
 .dex-header h1{
   margin:0;font-family:var(--font-heading);
-  font-size:clamp(1.5rem,4vw,2rem);text-transform:uppercase;
+  font-size:clamp(1.75rem,5vw,2.75rem);text-transform:uppercase;
+  letter-spacing:0.01em;line-height:1;
 }
 .nav-btn{
-  background:none;border:none;padding:var(--space-1);
-  cursor:pointer;opacity:0;transition:opacity var(--ease);
+  background:none;border:none;padding:var(--space-1);margin-right:var(--space-2);
+  cursor:pointer;opacity:0;font-size:1.1rem;color:var(--dex-muted);
+  transition:opacity var(--ease),color var(--ease);
 }
 .dex-header:hover .nav-btn{opacity:1;}
+.nav-btn:hover{color:var(--dex-text);}
+.header-actions{display:flex;gap:var(--space-3);align-items:center;}
 
-.header-actions{display:flex;gap:var(--space-2);align-items:center;}
-/* Buttons */
-/* Body */
-.dex-body{flex:1;display:flex;flex-direction:column;gap:var(--space-3);overflow:hidden;}
-/* Inner card */
+/* Body — no nested card */
+.dex-body{flex:1;display:flex;flex-direction:column;gap:var(--space-4);overflow:hidden;}
 .panel{
-  flex:1;overflow:hidden;display:flex;flex-direction:column;gap:var(--space-3);
-  background:var(--liquid-bg);border:1px solid var(--liquid-border);
-  backdrop-filter:blur(var(--liquid-blur)) saturate(180%) contrast(1.12) brightness(1.06);
-  -webkit-backdrop-filter:blur(var(--liquid-blur)) saturate(180%) contrast(1.12) brightness(1.06);
-  border-radius:var(--radius-md);padding:var(--space-4);
+  flex:1;overflow:hidden;display:flex;flex-direction:column;gap:var(--space-4);
+  background:none;border:none;border-radius:0;box-shadow:none;padding:0;
+  -webkit-backdrop-filter:none;backdrop-filter:none;
 }
+
+/* Toolbar — tabs + search on a shared baseline */
 .toolbar{
-  display:flex;flex-wrap:wrap;gap:var(--space-2);align-items:center;justify-content:space-between;
+  display:flex;flex-wrap:wrap;gap:var(--space-4);align-items:flex-end;justify-content:space-between;
+  padding-bottom:var(--space-3);border-bottom:1px solid var(--dex-line);
 }
-.pills{display:flex;gap:var(--space-2);flex-wrap:wrap;align-items:center;}
+
+/* Tabs — minimal text, underline marks the active one */
+.pills{display:flex;gap:var(--space-4);flex-wrap:wrap;align-items:center;}
 .pill{
-  background:rgba(0,0,0,0.55);color:#fff;border:none;border-radius:var(--radius-sm);
-  padding:var(--space-1) var(--space-2);
-  cursor:pointer;font-family:var(--font-body);
+  display:inline-flex;align-items:center;gap:var(--space-2);
+  background:none;border:none;border-bottom:1px solid transparent;
+  padding:0 0 var(--space-1);cursor:pointer;
+  font-family:var(--font-body);font-size:.72rem;text-transform:uppercase;
+  letter-spacing:.16em;color:var(--dex-faint);
+  transition:color var(--ease),border-color var(--ease);
 }
-.pill.active{background:var(--dex-accent);}
+.pill:hover{color:var(--dex-text);}
+.pill.active{color:var(--dex-text);border-bottom-color:var(--dex-text);}
 .count-badge{
-  display:inline-block;background:var(--dex-accent);color:#fff;
-  padding:var(--space-1) var(--space-2);border-radius:var(--radius-sm);font-size:.8rem;
+  font-size:.7rem;letter-spacing:.05em;color:var(--dex-faint);
+  font-variant-numeric:tabular-nums;
 }
+.pill.active .count-badge{color:var(--dex-accent);}
 
-/* Search */
-.search-wrap{position:relative;flex:1;min-width:220px;max-width:420px;}
+/* Search — underline field */
+.search-wrap{position:relative;flex:1;min-width:200px;max-width:360px;}
 .dex-search-input{
-  width:100%;
-  padding:var(--space-2) var(--space-3);
-  font-family:var(--font-body);
-  color:var(--dex-text);
-  background:var(--liquid-bg);
-  border:1px solid var(--liquid-border);
-  border-radius:var(--radius-sm);
-  box-shadow:var(--shadow-light);
-  backdrop-filter:blur(var(--liquid-blur)) saturate(180%) contrast(1.1);
-  -webkit-backdrop-filter:blur(var(--liquid-blur)) saturate(180%) contrast(1.1);
-  box-sizing:border-box;
+  width:100%;padding:var(--space-1) 0 var(--space-2);box-sizing:border-box;
+  font-family:var(--font-body);font-size:.85rem;color:var(--dex-text);
+  background:none;border:none;border-bottom:1px solid var(--dex-line);
+  border-radius:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;
+  transition:border-color var(--ease);
 }
+.dex-search-input::placeholder{color:var(--dex-faint);letter-spacing:.04em;}
+.dex-search-input:focus{outline:none;border-bottom-color:var(--dex-text);}
 
-/* Table */
+/* Table — pure typography, hairline rows */
 .table{position:relative;flex:1;overflow:auto;}
-.table table{width:100%;border-collapse:collapse;font-size:.9rem}
-.table th,.table td{padding:var(--space-2);border-bottom:1px solid var(--liquid-border);vertical-align:top}
+.table table{width:100%;border-collapse:collapse;font-size:.88rem;}
+.table th,.table td{
+  padding:var(--space-3) var(--space-2);border-bottom:1px solid var(--dex-line);
+  vertical-align:middle;text-align:left;
+}
 .table th{
-  font-family:var(--font-heading);text-transform:uppercase;font-size:.85rem;
-  letter-spacing:.02em;opacity:0.9;
+  font-family:var(--font-body);text-transform:uppercase;font-size:.68rem;
+  letter-spacing:.16em;color:var(--dex-muted);font-weight:400;padding-top:0;
 }
-tr.clickable{cursor:pointer}
-.muted{opacity:0.75}
-.row-actions{display:flex;gap:var(--space-2);justify-content:flex-end;flex-wrap:wrap}
+.table td{color:var(--dex-text);}
+.table tbody tr:last-child td{border-bottom:none;}
+.table tbody tr.clickable{transition:background var(--ease);}
+.table tbody tr.clickable:hover{background:rgba(0,0,0,0.025);}
+.table code{
+  font-family:var(--font-body);font-size:.85rem;color:var(--dex-text);
+  background:none;padding:0;letter-spacing:.02em;
+}
+tr.clickable{cursor:pointer;}
+.muted{color:var(--dex-muted);}
 
-/* Empty state */
-.empty{
-  padding:var(--space-4);
-  background:rgba(255,255,255,0.35);
-  border:1px solid var(--liquid-border);
-  border-radius:var(--radius-md);
+/* Type tag — slim outlined chip */
+.type-tag{
+  display:inline-block;font-size:.62rem;text-transform:uppercase;letter-spacing:.14em;
+  color:var(--dex-muted);border:1px solid var(--dex-line-strong);border-radius:999px;
+  padding:.2rem .55rem;line-height:1;
 }
-.empty p{margin:0 0 var(--space-3);line-height:1.4}
+
+/* Row actions */
+.row-actions{display:flex;gap:var(--space-4);justify-content:flex-end;align-items:center;flex-wrap:wrap;}
+
+/* Buttons — boutique minimal (intentionally outside the gradient primitive system) */
+.fav-open,.fav-remove,.fav-clear,.fav-cta{
+  font-family:var(--font-body);font-size:.68rem;text-transform:uppercase;
+  letter-spacing:.16em;cursor:pointer;background:none;line-height:1;
+  transition:color var(--ease),background var(--ease),border-color var(--ease);
+}
+.fav-open{
+  border:1px solid var(--dex-text);border-radius:999px;
+  padding:.45rem .95rem;color:var(--dex-text);
+}
+.fav-open:hover{background:var(--dex-text);color:#fff;}
+.fav-remove,.fav-clear{border:none;padding:.25rem 0;color:var(--dex-faint);}
+.fav-remove:hover,.fav-clear:hover{color:var(--dex-accent);}
+.fav-cta{
+  display:inline-block;margin-top:var(--space-2);font-size:.7rem;
+  border:1px solid var(--dex-text);border-radius:999px;padding:.55rem 1.3rem;color:var(--dex-text);
+}
+.fav-cta:hover{background:var(--dex-text);color:#fff;}
+.fav-open:focus-visible,.fav-remove:focus-visible,.fav-clear:focus-visible,
+.fav-cta:focus-visible,.pill:focus-visible{
+  outline:2px solid var(--dex-accent);outline-offset:3px;
+}
+
+/* Empty state — flat */
+.empty{
+  padding:var(--space-5) 0;background:none;border:none;border-radius:0;
+  box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;text-align:center;
+}
+.empty p{margin:0 0 var(--space-3);line-height:1.5;}
 
 /* Mobile */
 @media (max-width:570px){
-  .panel{padding:var(--space-3);}
-  .toolbar{gap:var(--space-3);}
+  .toolbar{gap:var(--space-3);align-items:flex-start;flex-direction:column;}
+  .search-wrap{max-width:none;width:100%;}
   .row-actions{justify-content:flex-start;}
-  .table th:nth-child(3), .table td:nth-child(3){display:none;} /* hide "Added" on small screens */
+  .table th:nth-child(4), .table td:nth-child(4){display:none;} /* hide "Added" on small screens */
 }
 </style>
 
@@ -1983,7 +2023,7 @@ tr.clickable{cursor:pointer}
     <button class="nav-btn" aria-label="Back" title="Back" onclick="history.back()">←</button>
     <h1>Favorites</h1>
     <div class="header-actions">
-      <button class="ghost-btn sm dx-button-element dx-button-element--secondary dx-button-size--sm" id="dex-clear" type="button" style="display:none;">Clear</button>
+      <button class="fav-clear" id="dex-clear" type="button" style="display:none;">Clear</button>
     </div>
   `;
   panel.append(head);
@@ -2105,7 +2145,7 @@ tr.clickable{cursor:pointer}
           <p><strong>No favorites yet.</strong></p>
           <p class="muted">Favorite entries, buckets, or files from the catalog and entry pages to see them here.</p>
           <p class="muted">Scope: <strong>${esc(scope)}</strong></p>
-          <button class="cta-btn dx-button-element dx-button-element--primary dx-button-size--md" type="button" onclick="location.href='/catalog'">Browse Catalog</button>
+          <button class="fav-cta" type="button" onclick="location.href='/catalog'">Browse Catalog</button>
         </div>
       `;
       return;
@@ -2140,21 +2180,21 @@ tr.clickable{cursor:pointer}
       const tr = document.createElement('tr');
       tr.className = 'clickable';
       tr.innerHTML = `
-        <td><span class="count-badge">${esc(kindLabel(row.kind))}</span></td>
+        <td><span class="type-tag">${esc(kindLabel(row.kind))}</span></td>
         <td><code>${esc(row.lookupNumber || '')}</code></td>
         <td>${esc(rowTitle(row))}</td>
         <td class="muted">${esc(toDate(row.addedAt))}</td>
         <td>
           <div class="row-actions">
-            <button class="cta-btn sm dx-button-element dx-button-element--primary dx-button-size--sm" type="button">Open</button>
-            <button class="ghost-btn sm dx-button-element dx-button-element--secondary dx-button-size--sm" type="button">Remove</button>
+            <button class="fav-open" type="button">Open</button>
+            <button class="fav-remove" type="button">Remove</button>
           </div>
         </td>
       `;
       tbody.append(tr);
 
-      const openBtn = tr.querySelector('.cta-btn.sm');
-      const removeBtn = tr.querySelector('.ghost-btn.sm');
+      const openBtn = tr.querySelector('.fav-open');
+      const removeBtn = tr.querySelector('.fav-remove');
       const openUrl = rowOpenUrl(row);
 
       openBtn.addEventListener('click', (event) => {

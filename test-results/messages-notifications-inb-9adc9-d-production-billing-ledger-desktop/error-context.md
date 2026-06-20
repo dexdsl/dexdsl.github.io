@@ -1,0 +1,158 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner:
+    - generic [ref=e2]:
+      - link "Skip to Content" [ref=e3] [cursor=pointer]:
+        - /url: index.html#page
+      - generic [ref=e5]:
+        - generic [ref=e7]:
+          - link "YouTube" [ref=e8] [cursor=pointer]:
+            - /url: https://www.youtube.com/channel/UCo5B4ztNwaErXhQlGyNhMDQ
+            - img [ref=e9]
+          - link "Instagram" [ref=e11] [cursor=pointer]:
+            - /url: http://instagram.com/dexdsl
+            - img [ref=e12]
+          - link "TikTok" [ref=e14] [cursor=pointer]:
+            - /url: https://www.tiktok.com/@dexdsl
+            - img [ref=e15]
+          - link "Twitter" [ref=e17] [cursor=pointer]:
+            - /url: https://twitter.com/dexdsl
+            - img [ref=e18]
+        - generic [ref=e20]:
+          - link "dex digital sample library" [ref=e23] [cursor=pointer]:
+            - /url: /
+            - img "dex digital sample library" [ref=e24]
+          - navigation [ref=e25]:
+            - link "CATALOG" [ref=e27] [cursor=pointer]:
+              - /url: /catalog/
+            - link "IN DEX" [ref=e29] [cursor=pointer]:
+              - /url: /call/
+            - link "DEX NOTES" [ref=e31] [cursor=pointer]:
+              - /url: /dexnotes/
+            - link "ABOUT" [ref=e33] [cursor=pointer]:
+              - /url: /about/
+        - link "D‍DONATE" [ref=e36] [cursor=pointer]:
+          - /url: /donate/
+  - generic [ref=e39]:
+    - main [ref=e40]:
+      - article [ref=e41]:
+        - generic [ref=e51]:
+          - generic "Account settings" [ref=e52]:
+            - heading "Settings" [level=1] [ref=e53]
+            - paragraph [ref=e54]: Manage your profile, membership, and notifications.
+          - generic [ref=e55]:
+            - button "Previous tab" [ref=e56] [cursor=pointer]:
+              - img
+            - tablist "Settings sections" [ref=e57]:
+              - tab "PROFILE" [ref=e58] [cursor=pointer]
+              - tab "MEMBERSHIP" [selected] [ref=e59] [cursor=pointer]
+              - tab "NOTIFICATIONS" [ref=e60] [cursor=pointer]
+            - button "Next tab" [ref=e61] [cursor=pointer]:
+              - img
+          - generic [ref=e62]:
+            - main [ref=e63]:
+              - tabpanel "MEMBERSHIP" [ref=e64]:
+                - generic [ref=e65]:
+                  - article [ref=e66]:
+                    - generic [ref=e67]:
+                      - generic [ref=e68]:
+                        - heading "Membership & billing" [level=2] [ref=e69]
+                        - paragraph [ref=e70]: Support Dex with a membership and keep the CC-BY archive open for everyone.
+                      - generic [ref=e71]: No active plan
+                    - generic [ref=e73]:
+                      - generic [ref=e75]:
+                        - generic [ref=e76]:
+                          - generic [ref=e77]: Plan
+                          - strong [ref=e78]: No active plan
+                        - generic [ref=e79]:
+                          - generic [ref=e80]: Renews
+                          - strong [ref=e81]: —
+                        - generic [ref=e82]:
+                          - generic [ref=e83]: Payment method
+                          - strong [ref=e84]: None on file
+                        - generic [ref=e85]:
+                          - generic [ref=e86]: Cancellation
+                          - strong [ref=e87]: None scheduled
+                      - generic [ref=e88]:
+                        - heading "Want to support?" [level=3] [ref=e89]
+                        - button "View membership" [ref=e91] [cursor=pointer]
+                  - article [ref=e92]:
+                    - generic [ref=e93]:
+                      - heading "Billing histo‍ory" [level=2] [ref=e94]
+                      - paragraph [ref=e95]: Recent invoices and receipts for this account.
+                    - table [ref=e97]:
+                      - rowgroup [ref=e98]:
+                        - row "Date Invoice Status Amount Receipt" [ref=e99]:
+                          - columnheader "Date" [ref=e100]
+                          - columnheader "Invoice" [ref=e101]
+                          - columnheader "Status" [ref=e102]
+                          - columnheader "Amount" [ref=e103]
+                          - columnheader "Receipt" [ref=e104]
+                      - rowgroup
+                    - paragraph [ref=e105]: No invoices yet.
+                    - button "View all invoices in Customer Portal" [ref=e107] [cursor=pointer]
+            - complementary "Context" [ref=e108]:
+              - generic [ref=e110]:
+                - generic [ref=e112]:
+                  - paragraph [ref=e113]: Membership impact
+                  - heading "Why membe‍ership matters" [level=2] [ref=e114]
+                  - paragraph [ref=e115]: Fund new recording ses‌sions and ke‌ep every release open ac‌ces‌s for everyone.
+                  - list [ref=e116]:
+                    - listitem [ref=e117]:
+                      - img [ref=e119]
+                      - generic [ref=e121]:
+                        - strong [ref=e122]: Ke‌ep it open
+                        - generic [ref=e123]: Membership of‌fsets hosting and bandwidth for the C‌C-BY archive.
+                    - listitem [ref=e124]:
+                      - img [ref=e126]
+                      - generic [ref=e128]:
+                        - strong [ref=e129]: More ses‌sions
+                        - generic [ref=e130]: Your plan directly funds new artist captures and faster publishing.
+                    - listitem [ref=e131]:
+                      - img [ref=e133]
+                      - generic [ref=e135]:
+                        - strong [ref=e136]: Member signal
+                        - generic [ref=e137]: Show sup‌port in achievements and priority member-only update lanes.
+                  - status [ref=e138]:
+                    - generic [ref=e139]: Personal focus
+                    - generic [ref=e140]: Sup‌port artists like your favorites.
+                    - generic [ref=e141]: Your patronage is part of what helps us record more artist-led ses‌sions season after season.
+                  - link "Sup‌port with membership" [ref=e142] [cursor=pointer]:
+                    - /url: /entry/settings#membership
+                - generic [ref=e143]:
+                  - heading "Billing & privacy" [level=2] [ref=e144]
+                  - paragraph [ref=e145]: Stripe handles payments securely. Manage cards, plans, and invoices in Customer Portal.
+    - contentinfo
+  - contentinfo [ref=e148]:
+    - generic [ref=e149]:
+      - img "Dex Footer Logo (black)" [ref=e152]
+      - generic [ref=e153]:
+        - text: © 2023–2026 DEX CO-OP CORP (EIN 92-3509152)
+        - text: dba Dex Digital Sample Library. All rights reserved.
+      - link "View Dex Digital Sample Library's Candid (GuideStar) profile" [ref=e155] [cursor=pointer]:
+        - /url: https://app.candid.org/profile/15083758/dex-digital-sample-library-92-3509152
+        - img "Candid (GuideStar) Transparency Seal" [ref=e156]
+      - generic [ref=e157]:
+        - generic [ref=e158]:
+          - link "YouTube" [ref=e159] [cursor=pointer]:
+            - /url: https://www.youtube.com/dexdsl
+            - img [ref=e160]
+          - link "Instagram" [ref=e162] [cursor=pointer]:
+            - /url: https://instagram.com/dexdsl
+            - img [ref=e163]
+          - link "TikTok" [ref=e165] [cursor=pointer]:
+            - /url: https://www.tiktok.com/@dexdsl
+            - img [ref=e166]
+          - link "Twitter" [ref=e168] [cursor=pointer]:
+            - /url: https://twitter.com/dexdsl
+            - img [ref=e169]
+        - navigation [ref=e171]:
+          - link "Privacy" [ref=e172] [cursor=pointer]:
+            - /url: /privacy
+          - link "Contact" [ref=e173] [cursor=pointer]:
+            - /url: /contact
+          - link "Copyright" [ref=e174] [cursor=pointer]:
+            - /url: /copyright
+```

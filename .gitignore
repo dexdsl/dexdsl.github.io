@@ -1,3 +1,4 @@
 
 # Local service-account keys (never commit)
 .secrets/
+artifacts/style-inventory.raw.json

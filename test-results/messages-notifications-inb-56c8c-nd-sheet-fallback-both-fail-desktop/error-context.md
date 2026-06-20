@@ -1,0 +1,87 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner:
+    - generic [ref=e2]:
+      - link "Skip to Content" [ref=e3] [cursor=pointer]:
+        - /url: index.html#page
+      - generic [ref=e5]:
+        - generic [ref=e7]:
+          - link "YouTube" [ref=e8] [cursor=pointer]:
+            - /url: https://www.youtube.com/channel/UCo5B4ztNwaErXhQlGyNhMDQ
+            - img [ref=e9]
+          - link "Instagram" [ref=e11] [cursor=pointer]:
+            - /url: http://instagram.com/dexdsl
+            - img [ref=e12]
+          - link "TikTok" [ref=e14] [cursor=pointer]:
+            - /url: https://www.tiktok.com/@dexdsl
+            - img [ref=e15]
+          - link "Twitter" [ref=e17] [cursor=pointer]:
+            - /url: https://twitter.com/dexdsl
+            - img [ref=e18]
+        - generic [ref=e20]:
+          - link "dex digital sample library" [ref=e23] [cursor=pointer]:
+            - /url: /
+            - img "dex digital sample library" [ref=e24]
+          - navigation [ref=e25]:
+            - link "CATALOG" [ref=e27] [cursor=pointer]:
+              - /url: /catalog/
+            - link "IN DEX" [ref=e29] [cursor=pointer]:
+              - /url: /call/
+            - link "DEX NOTES" [ref=e31] [cursor=pointer]:
+              - /url: /dexnotes/
+            - link "ABOUT" [ref=e33] [cursor=pointer]:
+              - /url: /about/
+        - link "DONATE" [ref=e36] [cursor=pointer]:
+          - /url: /donate/
+  - main [ref=e39]:
+    - complementary [ref=e41]:
+      - generic [ref=e42]:
+        - generic [ref=e43]:
+          - heading "Inbox" [level=1] [ref=e44]
+          - paragraph [ref=e45]: Submission, Pressroom, and account messages in one place.
+        - generic [ref=e46]:
+          - button "All" [ref=e47] [cursor=pointer]
+          - button "Submissions" [ref=e48] [cursor=pointer]
+          - button "Pressroom" [ref=e49] [cursor=pointer]
+          - button "System" [ref=e50] [cursor=pointer]
+          - generic [ref=e51]:
+            - checkbox "Show archived" [ref=e52]
+            - text: Show archived
+          - button "Mark visible unread as read" [ref=e53] [cursor=pointer]
+          - generic [ref=e54]: "0"
+      - paragraph [ref=e55]: Submissions are temporarily unavailable.
+      - paragraph [ref=e56]: Pressroom requests are temporarily unavailable.
+      - paragraph [ref=e58]: No messages for this filter yet.
+  - contentinfo [ref=e60]:
+    - generic [ref=e61]:
+      - img "Dex Footer Logo (black)" [ref=e64]
+      - generic [ref=e65]:
+        - text: © 2023–2026 DEX CO-OP CORP (EIN 92-3509152)
+        - text: dba Dex Digital Sample Library. All rights reserved.
+      - link "View Dex Digital Sample Library's Candid (GuideStar) profile" [ref=e67] [cursor=pointer]:
+        - /url: https://app.candid.org/profile/15083758/dex-digital-sample-library-92-3509152
+        - img "Candid (GuideStar) Transparency Seal" [ref=e68]
+      - generic [ref=e69]:
+        - generic [ref=e70]:
+          - link "YouTube" [ref=e71] [cursor=pointer]:
+            - /url: https://www.youtube.com/dexdsl
+            - img [ref=e72]
+          - link "Instagram" [ref=e74] [cursor=pointer]:
+            - /url: https://instagram.com/dexdsl
+            - img [ref=e75]
+          - link "TikTok" [ref=e77] [cursor=pointer]:
+            - /url: https://www.tiktok.com/@dexdsl
+            - img [ref=e78]
+          - link "Twitter" [ref=e80] [cursor=pointer]:
+            - /url: https://twitter.com/dexdsl
+            - img [ref=e81]
+        - navigation [ref=e83]:
+          - link "Privacy" [ref=e84] [cursor=pointer]:
+            - /url: /privacy
+          - link "Contact" [ref=e85] [cursor=pointer]:
+            - /url: /contact
+          - link "Copyright" [ref=e86] [cursor=pointer]:
+            - /url: /copyright
+```
