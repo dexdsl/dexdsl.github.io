@@ -391,6 +391,10 @@ function parseTopLevelMode(argv) {
     const idx = args.indexOf(firstNonFlag);
     return { mode: 'direct-command', paletteOpen: false, command: 'links', rest: args.slice(idx + 1) };
   }
+  if (firstNonFlag === 'profiles') {
+    const idx = args.indexOf(firstNonFlag);
+    return { mode: 'direct-command', paletteOpen: false, command: 'profiles', rest: args.slice(idx + 1) };
+  }
   return { mode: 'legacy', paletteOpen: false, command: null, rest: args };
 }
 
@@ -1018,6 +1022,123 @@ async function runLinksCommand(rest = []) {
       console.log(`- ${link.label}: ${link.url}`);
     }
   }
+}
+
+function printProfilesUsage() {
+  console.log('Usage: dex profiles <claims|approve|reject|map> [args]');
+  console.log('  dex profiles claims [--env test|prod] [--status pending|approved|rejected|all] [--limit 50] [--json]');
+  console.log('  dex profiles approve <claimId> [--env test|prod] [--role "Performer"]');
+  console.log('  dex profiles reject <claimId> [--env test|prod]');
+  console.log('  dex profiles map sync [--env test|prod] [--out data/public-profiles.json] [--no-mirror] [--json]');
+}
+
+function formatClaimRow(row = {}) {
+  const id = String(row.claim_id || '').padEnd(36);
+  const status = String(row.status || '-').padEnd(9);
+  const handle = String(row.handle || '-').padEnd(24);
+  const dexId = String(row.dex_id || '-').padEnd(11);
+  const lookup = String(row.entry_lookup || '-').padEnd(28);
+  const name = String(row.credit_name || '-');
+  return `${id} ${status} ${handle} ${dexId} ${lookup} ${name}`;
+}
+
+async function runProfilesCommand(rest = []) {
+  const parsed = parsePollsCommandArgs(rest);
+  const { subcommand, flags, values } = parsed;
+  const action = String(subcommand || '').trim().toLowerCase();
+  if (!action || action === 'help' || action === '--help' || action === '-h') {
+    printProfilesUsage();
+    return;
+  }
+
+  const env = flags.get('--env') || flags.get('--target') || 'test';
+  const apiBase = flags.get('--api-base') || '';
+  const adminToken = flags.get('--token') || '';
+  const asJson = flags.has('--json');
+  const {
+    approveProfileClaim,
+    getPublicProfilesMap,
+    listProfileClaims,
+    rejectProfileClaim,
+    updateProfileClaim,
+    writePublicProfilesMap,
+  } = await import('./lib/profile-admin-api.mjs');
+
+  if (action === 'claims') {
+    const status = flags.get('--status') || values[0] || 'pending';
+    const limit = Number(flags.get('--limit') || 50) || 50;
+    const { payload, apiBase: resolvedBase } = await listProfileClaims({ env, status, limit, apiBase, adminToken });
+    if (asJson) {
+      console.log(JSON.stringify(payload, null, 2));
+      return;
+    }
+    const rows = Array.isArray(payload?.claims) ? payload.claims : [];
+    console.log(`profiles:claims (${env}) status=${payload?.status || status} count=${rows.length} via ${resolvedBase}`);
+    if (!rows.length) {
+      console.log('  no claims returned.');
+      return;
+    }
+    console.log(formatClaimRow({
+      claim_id: 'CLAIM',
+      status: 'STATUS',
+      handle: 'HANDLE',
+      dex_id: 'DEX ID',
+      entry_lookup: 'ENTRY LOOKUP',
+      credit_name: 'CREDIT NAME',
+    }));
+    rows.forEach((row) => console.log(formatClaimRow(row)));
+    return;
+  }
+
+  if (action === 'approve' || action === 'reject') {
+    const claimId = values[0] || flags.get('--claim') || flags.get('--id');
+    if (!claimId) throw new Error(`profiles:${action} requires a claim id`);
+    const result = action === 'approve'
+      ? await approveProfileClaim({ env, claimId, role: flags.get('--role'), apiBase, adminToken })
+      : await rejectProfileClaim({ env, claimId, apiBase, adminToken });
+    if (asJson) {
+      console.log(JSON.stringify(result.payload, null, 2));
+      return;
+    }
+    const claim = result.payload?.claim || {};
+    console.log(`profiles:${action} (${env}) ${claim.claim_id || claimId} -> ${claim.status || action} via ${result.apiBase}`);
+    console.log(`  ${claim.entry_lookup || '-'}  ${claim.handle || '-'}  ${claim.dex_id || '-'}  ${claim.credit_name || '-'}`);
+    return;
+  }
+
+  if (action === 'set-status') {
+    const claimId = values[0] || flags.get('--claim') || flags.get('--id');
+    const status = flags.get('--status') || values[1];
+    if (!claimId || !status) throw new Error('profiles:set-status requires <claimId> --status <pending|approved|rejected|withdrawn>');
+    const result = await updateProfileClaim({ env, claimId, status, role: flags.get('--role'), apiBase, adminToken });
+    if (asJson) {
+      console.log(JSON.stringify(result.payload, null, 2));
+      return;
+    }
+    const claim = result.payload?.claim || {};
+    console.log(`profiles:set-status (${env}) ${claim.claim_id || claimId} -> ${claim.status || status} via ${result.apiBase}`);
+    return;
+  }
+
+  if (action === 'map') {
+    const mapAction = String(values[0] || 'sync').trim().toLowerCase();
+    if (mapAction !== 'sync') throw new Error(`Unknown profiles map command: ${mapAction}`);
+    const result = await getPublicProfilesMap({ env, apiBase, adminToken });
+    const written = await writePublicProfilesMap(result.payload, {
+      out: flags.get('--out') || 'data/public-profiles.json',
+      mirror: !flags.has('--no-mirror'),
+      rootDir: PROJECT_ROOT,
+    });
+    if (asJson) {
+      console.log(JSON.stringify({ ...result.payload, written }, null, 2));
+      return;
+    }
+    console.log(`profiles:map sync (${env}) entries=${written.entries} profiles=${written.profiles} via ${result.apiBase}`);
+    written.targets.forEach((target) => console.log(`  wrote ${path.relative(PROJECT_ROOT, target)}`));
+    return;
+  }
+
+  throw new Error(`Unknown profiles command: ${action}`);
 }
 
 function parseBooleanFlag(value, fallback = false) {

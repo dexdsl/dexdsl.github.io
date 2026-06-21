@@ -7,6 +7,7 @@
   const FAVORITES_RUNTIME_PATH = '/assets/js/dx-favorites.js';
   const BAG_RUNTIME_PATH = '/assets/js/dx-bag.js';
   const INTERACTIVE_HOVER_RUNTIME_PATH = '/assets/js/interactive-hover.js';
+  const PUBLIC_PROFILES_URL = '/data/public-profiles.json';
   const BAG_ROUTE_PATH = '/entry/bag/';
   const FAVORITES_UI_STYLE_ID = 'dx-favorites-ui-style';
   const FAVORITES_TOAST_ROOT_ID = 'dx-favorites-toast-root';
@@ -66,6 +67,7 @@
   let overviewLookupResizeObserver = null;
   let activeEntryTooltipMetricsObserver = null;
   let entryPageTitleSeparatorObserver = null;
+  let publicProfileMapPromise = null;
 
   const normalizeBuckets = (pageBuckets) => (Array.isArray(pageBuckets) ? pageBuckets : []);
 
@@ -1493,11 +1495,169 @@
     }
   };
 
+  const normalizePublicProfileKey = (value) => String(value || '')
+    .replace(/[\u200b-\u200f\u202a-\u202e\u2060-\u206f]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+
+  const normalizePublicProfilePath = (value) => {
+    const raw = String(value || '').trim();
+    if (!raw) return '';
+    try {
+      const parsed = new URL(raw, window.location.href);
+      return normalizeLocationPath(parsed.pathname || '/');
+    } catch {
+      return normalizeLocationPath(raw);
+    }
+  };
+
+  const normalizePublicProfileRecord = (record) => {
+    if (!record || typeof record !== 'object') return null;
+    const handle = String(record.handle || '').replace(/^@+/, '').trim();
+    const dexId = String(record.dex_id || record.dexId || '').trim();
+    const creditName = String(record.credit_name || record.creditName || record.name || '').replace(/\s+/g, ' ').trim();
+    if (!handle && !dexId) return null;
+    const href = handle ? `/u/${encodeURIComponent(handle)}/` : '';
+    return {
+      handle,
+      dex_id: dexId,
+      credit_name: creditName,
+      href,
+    };
+  };
+
+  const publicProfileRecordsFromValue = (value) => {
+    const source = Array.isArray(value) ? value : [value];
+    return source.map(normalizePublicProfileRecord).filter(Boolean);
+  };
+
+  const loadPublicProfileMap = () => {
+    if (publicProfileMapPromise) return publicProfileMapPromise;
+    publicProfileMapPromise = fetch(PUBLIC_PROFILES_URL, { cache: 'no-store', credentials: 'same-origin' })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload) => {
+        const entries = payload && typeof payload === 'object' && payload.entries && typeof payload.entries === 'object'
+          ? payload.entries
+          : {};
+        const direct = new Map();
+        const folded = new Map();
+        Object.entries(entries).forEach(([key, value]) => {
+          const records = publicProfileRecordsFromValue(value);
+          if (!records.length) return;
+          const directKey = String(key || '').trim();
+          const foldedKey = normalizePublicProfileKey(directKey);
+          if (directKey) direct.set(directKey, records);
+          if (foldedKey) folded.set(foldedKey, records);
+        });
+        return { direct, folded };
+      })
+      .catch(() => ({ direct: new Map(), folded: new Map() }));
+    return publicProfileMapPromise;
+  };
+
+  const getPublicProfileCandidates = (map, page, lookup, entryHref) => {
+    const keys = [
+      lookup,
+      page?.lookup,
+      page?.lookupNumber,
+      page?.slug,
+      page?.entry_slug,
+      page?.entrySlug,
+      page?.entry_id,
+      page?.entryId,
+      page?.href,
+      page?.url,
+      entryHref,
+      normalizePublicProfilePath(entryHref),
+      String(window.location.pathname || ''),
+      normalizePublicProfilePath(window.location.pathname || ''),
+    ]
+      .map((value) => String(value || '').trim())
+      .filter(Boolean);
+    const seenKeys = new Set();
+    const records = [];
+    const seenProfiles = new Set();
+    const addRecords = (items) => {
+      publicProfileRecordsFromValue(items).forEach((record) => {
+        const key = `${record.handle}|${record.dex_id}|${record.credit_name}`;
+        if (seenProfiles.has(key)) return;
+        seenProfiles.add(key);
+        records.push(record);
+      });
+    };
+    keys.forEach((key) => {
+      if (seenKeys.has(key)) return;
+      seenKeys.add(key);
+      addRecords(map.direct.get(key));
+      addRecords(map.folded.get(normalizePublicProfileKey(key)));
+    });
+    return records;
+  };
+
+  const readPersonLinks = (holder) => {
+    try {
+      const parsed = JSON.parse(holder.getAttribute('data-links') || '[]');
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const writePersonLinks = (holder, links) => {
+    if (!(holder instanceof HTMLElement)) return;
+    holder.setAttribute('data-links', JSON.stringify(links || []));
+  };
+
+  const enhancePublicProfileAttribution = async ({ page, lookup, entryHref } = {}) => {
+    const map = await loadPublicProfileMap();
+    const records = getPublicProfileCandidates(map, page, lookup, entryHref);
+    if (!records.length) return;
+    const recordsByName = new Map();
+    records.forEach((record) => {
+      const key = normalizePublicProfileKey(record.credit_name);
+      if (key && !recordsByName.has(key)) recordsByName.set(key, record);
+    });
+    if (!recordsByName.size) return;
+
+    document.querySelectorAll('.dex-credits [data-person], .dex-credits [data-person-linkable="false"]').forEach((holder) => {
+      if (!(holder instanceof HTMLElement)) return;
+      const personName = String(holder.getAttribute('data-person') || holder.textContent || '').replace(/\s+/g, ' ').trim();
+      const record = recordsByName.get(normalizePublicProfileKey(personName));
+      if (!record || !record.href) return;
+      holder.classList.add('dx-public-profile-linked');
+      holder.setAttribute('data-dx-public-profile-href', record.href);
+
+      if (holder.getAttribute('data-person-linkable') === 'true') {
+        const links = readPersonLinks(holder)
+          .map((link) => ({
+            label: String(link?.label || '').trim(),
+            href: String(link?.href || '').trim(),
+          }))
+          .filter((link) => link.label && link.href);
+        if (!links.some((link) => link.href === record.href)) {
+          links.unshift({ label: 'Dex profile', href: record.href });
+          writePersonLinks(holder, links);
+        }
+        return;
+      }
+
+      if (holder.dataset.dxPublicProfileLinked === '1') return;
+      holder.dataset.dxPublicProfileLinked = '1';
+      const anchor = document.createElement('a');
+      anchor.className = 'person-text dx-public-profile-link';
+      anchor.setAttribute('data-dx-public-profile-link', 'true');
+      anchor.href = record.href;
+      anchor.textContent = holder.textContent || personName;
+      holder.replaceWith(anchor);
+    });
+  };
+
   const pin = (person) => {
     if (!person || typeof person === 'string') return person || '';
     const name = person.name || '';
     const links = Array.isArray(person.links) ? person.links : [];
-    if (!links.length) return `<span class="person-text" data-person-linkable="false">${escapeHtml(name)}</span>`;
+    if (!links.length) return `<span class="person-text" data-person="${escapeHtml(name)}" data-person-linkable="false">${escapeHtml(name)}</span>`;
     return `<span class="person-link" data-person="${escapeHtml(name)}" data-links='${escapeHtml(JSON.stringify(links))}' data-person-linkable="true" role="button" tabindex="0" aria-haspopup="dialog" aria-expanded="false">${escapeHtml(name)}<span class="person-pin" aria-hidden="true"></span></span>`;
   };
 
@@ -5739,6 +5899,7 @@
           <span class="badge">${cfg.credits.location || ''}</span>
         </div>
       `);
+      void enhancePublicProfileAttribution({ page, lookup, entryHref });
 
       render('#downloads', 'Download', `<button type="button" class="btn-download dx-button-element--primary" aria-label="Get Files"><span>${filesLabel}</span></button><div class="dx-download-inline" data-dx-recording-index-row="1" data-dx-download-kind="recording-index-pdf" data-dx-download-state="idle"><button type="button" class="btn-recording-index dx-button-element--secondary" aria-label="Recording Index" data-dx-download-kind="recording-index-pdf"><span>${recordingIndexLabel}</span></button><span data-dx-download-status="1" hidden></span></div>`, true);
       const downloadsEl = document.querySelector('#downloads');

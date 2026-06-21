@@ -54,6 +54,11 @@
   };
   const CATEGORY_ALLOWLIST = new Set(['', 'V', 'K', 'B', 'E', 'S', 'W', 'P', 'X']);
   const SUBMISSIONS_LIMIT = 60;
+  const PUBLIC_PROFILE_LINK_MAX = 6;
+  const PUBLIC_PROFILE_FEATURED_MAX = 24;
+  const PUBLIC_PROFILE_FAVORITES_MAX = 24;
+  const PUBLIC_PROFILE_SAVE_DEBOUNCE_MS = 520;
+  const HANDLE_CHECK_DEBOUNCE_MS = 360;
 
   const state = {
     me: null,
@@ -66,6 +71,20 @@
     submissionInsights: null,
     profile: null,
     serverState: null,
+    publicProfile: null,
+    publicServerState: null,
+    publicSaveTimer: 0,
+    publicQueuedPayload: null,
+    publicInFlight: false,
+    publicInFlightPromise: null,
+    publicLastSuccessfulHash: '',
+    publicLastFailedPayload: null,
+    publicStatusResetTimer: 0,
+    publicFavoritesRetryTimer: 0,
+    publicFavoritesRetryCount: 0,
+    handleCheckTimer: 0,
+    handleCheckValue: '',
+    claimableContributions: null,
     saveDebounceMs: 450,
     pendingSaveTimer: 0,
     queuedPayload: null,
@@ -178,8 +197,100 @@
     };
   }
 
+  function normalizeBoolean(value, fallback = false) {
+    if (typeof value === 'boolean') return value;
+    if (value === 1 || value === '1') return true;
+    if (value === 0 || value === '0') return false;
+    if (value == null || value === '') return !!fallback;
+    const normalized = text(value).toLowerCase();
+    if (['true', 'yes', 'on'].includes(normalized)) return true;
+    if (['false', 'no', 'off'].includes(normalized)) return false;
+    return !!fallback;
+  }
+
+  function normalizePublicLinks(value, fallback = []) {
+    const input = Array.isArray(value) ? value : (Array.isArray(fallback) ? fallback : []);
+    const out = [];
+    for (const item of input) {
+      if (out.length >= PUBLIC_PROFILE_LINK_MAX) break;
+      if (!item || typeof item !== 'object') continue;
+      const url = text(item.url);
+      if (!url || !/^https?:\/\//i.test(url)) continue;
+      const label = text(item.label, url.replace(/^https?:\/\/(?:www\.)?/i, '').split('/')[0]).slice(0, 40);
+      out.push({ label, url: url.slice(0, 300) });
+    }
+    return out;
+  }
+
+  function normalizePublicRefArray(value, fallback = [], max = PUBLIC_PROFILE_FEATURED_MAX) {
+    const input = Array.isArray(value) ? value : (Array.isArray(fallback) ? fallback : []);
+    const seen = new Set();
+    const out = [];
+    for (const item of input) {
+      const normalized = text(item);
+      if (!normalized) continue;
+      const key = normalized.toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(normalized);
+      if (out.length >= max) break;
+    }
+    return out;
+  }
+
+  function normalizePublicProfilePayload(raw = {}, fallback = {}) {
+    const source = raw && typeof raw === 'object' ? raw : {};
+    const base = fallback && typeof fallback === 'object' ? fallback : {};
+    return {
+      dex_id: text(source.dex_id, text(base.dex_id, '')),
+      handle: text(source.handle, text(base.handle, '')),
+      profile_public: normalizeBoolean(
+        source.profile_public !== undefined ? source.profile_public : source.public,
+        normalizeBoolean(base.profile_public, false),
+      ),
+      bio: text(source.bio, text(base.bio, '')).slice(0, 500),
+      links: normalizePublicLinks(source.links !== undefined ? source.links : base.links, base.links),
+      location: text(source.location, text(base.location, '')).slice(0, 80),
+      pronouns: text(source.pronouns, text(base.pronouns, '')).slice(0, 40),
+      featured: normalizePublicRefArray(
+        source.featured !== undefined ? source.featured : base.featured,
+        base.featured,
+        PUBLIC_PROFILE_FEATURED_MAX,
+      ),
+      favorites_public: normalizeBoolean(source.favorites_public, normalizeBoolean(base.favorites_public, false)),
+      favorites_public_refs: normalizePublicRefArray(
+        source.favorites_public_refs !== undefined
+          ? source.favorites_public_refs
+          : (source.favorites !== undefined ? source.favorites : base.favorites_public_refs),
+        base.favorites_public_refs,
+        PUBLIC_PROFILE_FAVORITES_MAX,
+      ),
+      profile_url: text(source.profile_url, text(base.profile_url, '')),
+      updated_at: toTimestamp(source.updated_at) || toTimestamp(base.updated_at) || null,
+    };
+  }
+
   function payloadHash(payload) {
     return JSON.stringify(payload || {});
+  }
+
+  function publicWritablePayload(payload = {}) {
+    const normalized = normalizePublicProfilePayload(payload, {});
+    return {
+      profile_public: normalized.profile_public,
+      handle: normalized.handle,
+      bio: normalized.bio,
+      links: normalized.links,
+      location: normalized.location,
+      pronouns: normalized.pronouns,
+      featured: normalized.featured,
+      favorites_public: normalized.favorites_public,
+      favorites_public_refs: normalized.favorites_public_refs,
+    };
+  }
+
+  function publicWritableHash(payload = {}) {
+    return payloadHash(publicWritablePayload(payload));
   }
 
   function providerNameFromSub(sub) {
@@ -355,6 +466,51 @@
     }
     if (actionsNode) actionsNode.hidden = false;
     if (retryNode) retryNode.hidden = false;
+  }
+
+  function setPublicSaveState(mode, message = '') {
+    const statusNode = getNode('publicProfileStatus');
+    const errorNode = getNode('publicProfileError');
+
+    if (state.publicStatusResetTimer) {
+      window.clearTimeout(state.publicStatusResetTimer);
+      state.publicStatusResetTimer = 0;
+    }
+
+    if (mode === 'idle') {
+      if (statusNode) {
+        statusNode.hidden = true;
+        statusNode.textContent = 'Saved';
+      }
+      if (errorNode) {
+        errorNode.hidden = true;
+        errorNode.textContent = '';
+      }
+      return;
+    }
+
+    if (statusNode) {
+      statusNode.hidden = false;
+      statusNode.textContent = mode === 'saving' ? 'Saving public profile...' : mode === 'error' ? 'Public save failed' : 'Public profile saved';
+    }
+
+    if (mode === 'saving' || mode === 'saved') {
+      if (errorNode) {
+        errorNode.hidden = true;
+        errorNode.textContent = '';
+      }
+      if (mode === 'saved') {
+        state.publicStatusResetTimer = window.setTimeout(() => {
+          setPublicSaveState('idle');
+        }, 1400);
+      }
+      return;
+    }
+
+    if (errorNode) {
+      errorNode.hidden = false;
+      errorNode.textContent = text(message, 'Could not save public profile changes right now.');
+    }
   }
 
   function setIdentitySyncState(textValue, hidden = false) {
@@ -618,6 +774,295 @@
     setSaveState('idle');
   }
 
+  function publicProfileUrl(profile = state.publicProfile) {
+    const handle = text(profile?.handle || getNode('profileHandleInput')?.value);
+    if (!handle) return '';
+    return `/u/${handle}/`;
+  }
+
+  function setPublicText(id, value, fallback = '—') {
+    const node = getNode(id);
+    if (node) node.textContent = text(value, fallback);
+  }
+
+  function selectedFeaturedRefs() {
+    const wrap = getNode('profileFeaturedTokens');
+    if (!wrap) return [];
+    return Array.from(wrap.querySelectorAll('.tok span:first-child'))
+      .map((node) => text(node.textContent))
+      .filter(Boolean);
+  }
+
+  function renderPublicTokenList(values) {
+    const wrap = getNode('profileFeaturedTokens');
+    const input = getNode('profileFeaturedInput');
+    if (!wrap || !input) return;
+    wrap.querySelectorAll('.tok').forEach((token) => token.remove());
+    normalizePublicRefArray(values, [], PUBLIC_PROFILE_FEATURED_MAX).forEach((value) => {
+      const token = document.createElement('span');
+      token.className = 'tok';
+      token.innerHTML = `<span>${value}</span><button type="button" aria-label="Remove">×</button>`;
+      token.querySelector('button')?.addEventListener('click', async () => {
+        token.remove();
+        try {
+          await apiFetch(`/me/contributions/claims/${encodeURIComponent(value)}`, {
+            method: 'DELETE',
+            timeoutMs: 10000,
+          });
+        } catch {}
+        schedulePublicSave();
+      });
+      input.before(token);
+    });
+  }
+
+  function selectedPublicLinks() {
+    const rows = getNode('profileLinksRows');
+    if (!rows) return [];
+    return Array.from(rows.querySelectorAll('.dx-profile-link-row'))
+      .map((row) => ({
+        label: text(row.querySelector('[data-dx-link-label]')?.value),
+        url: text(row.querySelector('[data-dx-link-url]')?.value),
+      }))
+      .filter((link) => link.url);
+  }
+
+  function renderPublicLinks(links) {
+    const rows = getNode('profileLinksRows');
+    if (!rows) return;
+    rows.innerHTML = '';
+    const normalized = normalizePublicLinks(links);
+    if (!normalized.length) {
+      const empty = document.createElement('p');
+      empty.className = 'note';
+      empty.textContent = 'No public links yet.';
+      rows.appendChild(empty);
+      return;
+    }
+    normalized.forEach((link) => addPublicLinkRow(link));
+  }
+
+  function addPublicLinkRow(link = {}) {
+    const rows = getNode('profileLinksRows');
+    if (!rows) return;
+    const empty = rows.querySelector('.note');
+    if (empty) empty.remove();
+    const row = document.createElement('div');
+    row.className = 'dx-profile-link-row';
+    row.innerHTML = `
+      <input class="dx-profile-input" data-dx-link-label type="text" maxlength="40" placeholder="Label" value="">
+      <input class="dx-profile-input" data-dx-link-url type="url" maxlength="300" placeholder="https://example.com" value="">
+      <button class="btn" type="button">Remove</button>
+    `;
+    const label = row.querySelector('[data-dx-link-label]');
+    const url = row.querySelector('[data-dx-link-url]');
+    if (label) label.value = text(link.label);
+    if (url) url.value = text(link.url);
+    row.querySelector('button')?.addEventListener('click', () => {
+      row.remove();
+      if (!rows.querySelector('.dx-profile-link-row')) renderPublicLinks([]);
+      schedulePublicSave();
+    });
+    row.querySelectorAll('input').forEach((input) => {
+      input.addEventListener('input', () => schedulePublicSave());
+    });
+    rows.appendChild(row);
+  }
+
+  function schedulePublicFavoritesRetry() {
+    if (state.publicFavoritesRetryTimer || (window.__dxFavorites && typeof window.__dxFavorites.list === 'function')) return;
+    if (state.publicFavoritesRetryCount >= 30) return;
+    state.publicFavoritesRetryCount += 1;
+    state.publicFavoritesRetryTimer = window.setTimeout(() => {
+      state.publicFavoritesRetryTimer = 0;
+      if (window.__dxFavorites && typeof window.__dxFavorites.list === 'function') {
+        state.publicFavoritesRetryCount = 0;
+        renderPublicFavorites();
+        return;
+      }
+      schedulePublicFavoritesRetry();
+    }, 120);
+  }
+
+  function favoriteRecords() {
+    const api = window.__dxFavorites;
+    if (!api || typeof api.list !== 'function') {
+      schedulePublicFavoritesRetry();
+      return [];
+    }
+    const scopes = [
+      text(state.me?.sub),
+      text(window.auth0Sub),
+      'anon',
+    ].filter(Boolean);
+    const seen = new Set();
+    const out = [];
+    for (const scope of scopes) {
+      let rows = [];
+      try {
+        rows = api.list({ scope });
+      } catch {
+        rows = [];
+      }
+      if (!Array.isArray(rows)) continue;
+      for (const row of rows) {
+        const key = text(row?.key);
+        if (!key || seen.has(key)) continue;
+        seen.add(key);
+        out.push(row);
+      }
+    }
+    return out.slice(0, PUBLIC_PROFILE_FAVORITES_MAX);
+  }
+
+  function selectedPublicFavoriteRefs() {
+    const wrap = getNode('profilePublicFavoritesList');
+    if (!wrap) return [];
+    return Array.from(wrap.querySelectorAll('input[type="checkbox"]:checked'))
+      .map((input) => text(input.value))
+      .filter(Boolean)
+      .slice(0, PUBLIC_PROFILE_FAVORITES_MAX);
+  }
+
+  function favoriteLabel(record) {
+    const title = firstString(record?.title, record?.lookupNumber, record?.entryLookupNumber, record?.key, 'Favorite');
+    const kind = text(record?.kind, 'entry');
+    const bucket = text(record?.bucket);
+    return bucket ? `${title} (${kind} ${bucket})` : `${title} (${kind})`;
+  }
+
+  function renderPublicFavorites() {
+    const wrap = getNode('profilePublicFavoritesList');
+    if (!wrap) return;
+    const selected = new Set(normalizePublicRefArray(state.publicProfile?.favorites_public_refs, [], PUBLIC_PROFILE_FAVORITES_MAX));
+    const records = favoriteRecords();
+    wrap.innerHTML = '';
+    if (!records.length) {
+      const empty = document.createElement('p');
+      empty.className = 'note';
+      empty.textContent = window.__dxFavorites && typeof window.__dxFavorites.list === 'function'
+        ? 'No saved favorites found in this browser yet.'
+        : 'Loading saved favorites...';
+      wrap.appendChild(empty);
+      return;
+    }
+    records.forEach((record) => {
+      const key = text(record?.key);
+      if (!key) return;
+      const label = document.createElement('label');
+      label.className = 'dx-profile-list-row';
+      label.innerHTML = `
+        <span class="dx-profile-list-row-main">
+          <span class="dx-profile-list-row-title"></span>
+          <span class="dx-profile-list-row-meta"></span>
+        </span>
+        <input type="checkbox" value="">
+      `;
+      label.querySelector('.dx-profile-list-row-title').textContent = favoriteLabel(record);
+      label.querySelector('.dx-profile-list-row-meta').textContent = firstString(record.entryHref, record.entryLookupNumber, record.lookupNumber, key);
+      const checkbox = label.querySelector('input');
+      checkbox.value = key;
+      checkbox.checked = selected.has(key);
+      checkbox.addEventListener('change', () => schedulePublicSave());
+      wrap.appendChild(label);
+    });
+  }
+
+  function renderClaimableContributions() {
+    const wrap = getNode('profileClaimableList');
+    if (!wrap) return;
+    const candidates = Array.isArray(state.claimableContributions) ? state.claimableContributions : [];
+    wrap.innerHTML = '';
+    if (!candidates.length) {
+      const empty = document.createElement('p');
+      empty.className = 'note';
+      empty.textContent = state.claimableContributions ? 'No matching unclaimed catalog entries found.' : 'Matching catalog entries will appear here.';
+      wrap.appendChild(empty);
+      return;
+    }
+    candidates.forEach((candidate) => {
+      const lookup = text(candidate.lookup);
+      if (!lookup) return;
+      const row = document.createElement('div');
+      row.className = 'dx-profile-list-row';
+      row.innerHTML = `
+        <span class="dx-profile-list-row-main">
+          <span class="dx-profile-list-row-title"></span>
+          <span class="dx-profile-list-row-meta"></span>
+        </span>
+        <button class="btn" type="button">Claim</button>
+      `;
+      row.querySelector('.dx-profile-list-row-title').textContent = lookup;
+      row.querySelector('.dx-profile-list-row-meta').textContent = text(candidate.href || candidate.slug || 'Catalog match');
+      row.querySelector('button')?.addEventListener('click', async () => {
+        const button = row.querySelector('button');
+        if (button) button.disabled = true;
+        try {
+          const payload = await apiFetch('/me/contributions/claims', {
+            method: 'POST',
+            body: JSON.stringify({ entry_lookup: lookup }),
+            timeoutMs: 10000,
+          });
+          state.claimableContributions = candidates.filter((item) => text(item.lookup) !== lookup);
+          if (text(payload?.status) === 'approved') {
+            const mergedFeatured = normalizePublicRefArray(selectedFeaturedRefs().concat([lookup]), [], PUBLIC_PROFILE_FEATURED_MAX);
+            renderPublicTokenList(mergedFeatured);
+            schedulePublicSave();
+          }
+          renderClaimableContributions();
+          setPublicSaveState('saved');
+        } catch (error) {
+          setPublicSaveState('error', summarizeSaveError(error));
+          if (button) button.disabled = false;
+        }
+      });
+      wrap.appendChild(row);
+    });
+  }
+
+  async function hydrateClaimableContributions() {
+    try {
+      const payload = await apiFetch('/me/contributions/claimable', { timeoutMs: 10000 });
+      state.claimableContributions = Array.isArray(payload?.candidates) ? payload.candidates : [];
+    } catch {
+      state.claimableContributions = [];
+    }
+    renderClaimableContributions();
+  }
+
+  function renderPublicProfileSummary(profile) {
+    renderPublicProfileSummary(profile);
+  }
+
+  function renderPublicProfileState() {
+    const profile = normalizePublicProfilePayload(state.publicProfile || {}, state.publicServerState || {});
+    state.publicProfile = profile;
+    const publicToggle = getNode('profilePublicToggle');
+    if (publicToggle) publicToggle.checked = Boolean(profile.profile_public);
+    const handleInput = getNode('profileHandleInput');
+    if (handleInput) handleInput.value = text(profile.handle);
+    const bioInput = getNode('profileBioInput');
+    if (bioInput) bioInput.value = text(profile.bio);
+    const pronounsInput = getNode('profilePronounsInput');
+    if (pronounsInput) pronounsInput.value = text(profile.pronouns);
+    const locationInput = getNode('profileLocationInput');
+    if (locationInput) locationInput.value = text(profile.location);
+    const favoritesToggle = getNode('profileFavoritesPublicToggle');
+    if (favoritesToggle) favoritesToggle.checked = Boolean(profile.favorites_public);
+
+    const url = text(profile.profile_url, publicProfileUrl(profile));
+    setPublicText('publicDexId', profile.dex_id);
+    setPublicText('publicProfileUrl', url);
+    setPublicText('publicProfileUrlText', url || '/u/handle/', '/u/handle/');
+    const handleStatus = getNode('profileHandleStatus');
+    if (handleStatus) handleStatus.textContent = profile.handle ? 'Handle saved.' : 'Choose a public URL handle.';
+    renderPublicLinks(profile.links);
+    renderPublicTokenList(profile.featured);
+    renderClaimableContributions();
+    renderPublicFavorites();
+    setPublicSaveState('idle');
+  }
+
   function buildPayloadFromUi() {
     const base = state.serverState || {};
     return normalizeProfilePayload(
@@ -638,6 +1083,24 @@
     );
   }
 
+  function buildPublicPayloadFromUi() {
+    const base = state.publicServerState || {};
+    return normalizePublicProfilePayload(
+      {
+        profile_public: Boolean(getNode('profilePublicToggle')?.checked),
+        handle: text(getNode('profileHandleInput')?.value),
+        bio: text(getNode('profileBioInput')?.value),
+        location: text(getNode('profileLocationInput')?.value),
+        pronouns: text(getNode('profilePronounsInput')?.value),
+        links: selectedPublicLinks(),
+        featured: selectedFeaturedRefs(),
+        favorites_public: Boolean(getNode('profileFavoritesPublicToggle')?.checked),
+        favorites_public_refs: selectedPublicFavoriteRefs(),
+      },
+      base,
+    );
+  }
+
   function emitProfileUpdated(payload, updatedAt) {
     try {
       window.dispatchEvent(new CustomEvent('dx:profile:updated', {
@@ -650,6 +1113,20 @@
           instrument_primary: payload.instrument_primary,
           submit_defaults: payload.submit_defaults,
           updated_at: updatedAt,
+        },
+      }));
+    } catch {}
+  }
+
+  function emitPublicProfileUpdated(payload) {
+    try {
+      window.dispatchEvent(new CustomEvent('dx:public-profile:updated', {
+        detail: {
+          dex_id: payload.dex_id,
+          handle: payload.handle,
+          profile_public: payload.profile_public,
+          profile_url: payload.profile_url || publicProfileUrl(payload),
+          updated_at: payload.updated_at,
         },
       }));
     } catch {}
@@ -679,6 +1156,12 @@
     const normalized = normalizeProfilePayload(payload || buildPayloadFromUi(), state.serverState || {});
     state.queuedPayload = normalized;
     void flushSaveQueue();
+  }
+
+  function queuePublicSave(payload) {
+    const normalized = normalizePublicProfilePayload(payload || buildPublicPayloadFromUi(), state.publicServerState || {});
+    state.publicQueuedPayload = normalized;
+    void flushPublicSaveQueue();
   }
 
   async function flushSaveQueue() {
@@ -739,6 +1222,76 @@
     return state.inFlightPromise;
   }
 
+  async function flushPublicSaveQueue() {
+    if (state.publicInFlight) return state.publicInFlightPromise;
+
+    state.publicInFlight = true;
+    state.publicInFlightPromise = (async () => {
+      while (state.publicQueuedPayload) {
+        const next = state.publicQueuedPayload;
+        state.publicQueuedPayload = null;
+        const hash = payloadHash(next);
+        if (hash === state.publicLastSuccessfulHash) continue;
+
+        setPublicSaveState('saving');
+        try {
+          const response = await apiFetch('/me/profile/public', {
+            method: 'PATCH',
+            body: JSON.stringify({
+              profile_public: next.profile_public,
+              handle: next.handle || null,
+              bio: next.bio,
+              links: next.links,
+              location: next.location,
+              pronouns: next.pronouns,
+              featured: next.featured,
+              favorites_public: next.favorites_public,
+              favorites_public_refs: next.favorites_public_refs,
+            }),
+            timeoutMs: 10000,
+          });
+          const merged = normalizePublicProfilePayload(response && typeof response === 'object' ? response : next, next);
+          const uiPayload = buildPublicPayloadFromUi();
+          const uiWritableHash = publicWritableHash(uiPayload);
+          const mergedWritableHash = publicWritableHash(merged);
+          const hasPendingUi = Boolean(state.publicQueuedPayload || state.publicSaveTimer || uiWritableHash !== mergedWritableHash);
+          state.publicServerState = JSON.parse(JSON.stringify(merged));
+          state.publicLastSuccessfulHash = payloadHash(merged);
+          state.publicLastFailedPayload = null;
+          if (hasPendingUi) {
+            state.publicProfile = normalizePublicProfilePayload({
+              ...merged,
+              ...uiPayload,
+              dex_id: merged.dex_id,
+              profile_url: publicProfileUrl(uiPayload) || merged.profile_url,
+              updated_at: merged.updated_at,
+            }, merged);
+            if (!state.publicQueuedPayload && !state.publicSaveTimer && uiWritableHash !== mergedWritableHash) {
+              state.publicQueuedPayload = normalizePublicProfilePayload(uiPayload, state.publicServerState || {});
+            }
+            renderPublicProfileSummary(state.publicProfile);
+            setPublicSaveState(state.publicQueuedPayload || state.publicSaveTimer ? 'saving' : 'saved');
+          } else {
+            state.publicProfile = merged;
+            renderPublicProfileState();
+            setPublicSaveState('saved');
+          }
+          emitPublicProfileUpdated(state.publicProfile);
+        } catch (error) {
+          state.publicLastFailedPayload = JSON.parse(JSON.stringify(next));
+          setPublicSaveState('error', summarizeSaveError(error));
+          break;
+        }
+      }
+    })()
+      .finally(() => {
+        state.publicInFlight = false;
+        state.publicInFlightPromise = null;
+      });
+
+    return state.publicInFlightPromise;
+  }
+
   function scheduleSave() {
     if (state.pendingSaveTimer) {
       window.clearTimeout(state.pendingSaveTimer);
@@ -748,6 +1301,44 @@
       state.pendingSaveTimer = 0;
       queueSave(buildPayloadFromUi());
     }, state.saveDebounceMs);
+  }
+
+  function schedulePublicSave() {
+    if (state.publicSaveTimer) {
+      window.clearTimeout(state.publicSaveTimer);
+      state.publicSaveTimer = 0;
+    }
+    state.publicSaveTimer = window.setTimeout(() => {
+      state.publicSaveTimer = 0;
+      queuePublicSave(buildPublicPayloadFromUi());
+    }, PUBLIC_PROFILE_SAVE_DEBOUNCE_MS);
+  }
+
+  function scheduleHandleAvailabilityCheck() {
+    const input = getNode('profileHandleInput');
+    const status = getNode('profileHandleStatus');
+    const handle = text(input?.value).toLowerCase();
+    if (status) status.textContent = handle ? 'Checking handle...' : 'Choose a public URL handle.';
+    if (state.handleCheckTimer) {
+      window.clearTimeout(state.handleCheckTimer);
+      state.handleCheckTimer = 0;
+    }
+    if (!handle) return;
+    state.handleCheckTimer = window.setTimeout(async () => {
+      state.handleCheckTimer = 0;
+      state.handleCheckValue = handle;
+      try {
+        const payload = await apiFetch(`/me/profile/handle-available?handle=${encodeURIComponent(handle)}`, { timeoutMs: 8000 });
+        if (text(getNode('profileHandleInput')?.value).toLowerCase() !== handle) return;
+        if (status) {
+          status.textContent = payload?.available
+            ? `${payload.handle || handle} is available.`
+            : text(payload?.reason, 'Handle is not available.');
+        }
+      } catch (error) {
+        if (status) status.textContent = summarizeSaveError(error);
+      }
+    }, HANDLE_CHECK_DEBOUNCE_MS);
   }
 
   function addTokenFromInput({ containerId, inputId, maxLen, onChange }) {
@@ -1003,6 +1594,67 @@
     getNode('submitDefaultCreator')?.addEventListener('input', () => scheduleSave());
     getNode('submitDefaultCategory')?.addEventListener('change', () => scheduleSave());
     getNode('submitDefaultInstrument')?.addEventListener('input', () => scheduleSave());
+    getNode('profilePublicToggle')?.addEventListener('change', () => schedulePublicSave());
+    getNode('profileBioInput')?.addEventListener('input', () => schedulePublicSave());
+    getNode('profilePronounsInput')?.addEventListener('input', () => schedulePublicSave());
+    getNode('profileLocationInput')?.addEventListener('input', () => schedulePublicSave());
+    getNode('profileFavoritesPublicToggle')?.addEventListener('change', () => schedulePublicSave());
+    window.addEventListener('dx:favorites:changed', () => renderPublicFavorites());
+
+    getNode('profileHandleInput')?.addEventListener('input', (event) => {
+      const input = event.target;
+      if (input && typeof input.value === 'string') {
+        input.value = input.value.toLowerCase().replace(/[^a-z0-9-]/g, '').replace(/--+/g, '-').slice(0, 30);
+      }
+      const url = publicProfileUrl({ handle: text(input?.value) });
+      setPublicText('publicProfileUrl', url);
+      setPublicText('publicProfileUrlText', url || '/u/handle/', '/u/handle/');
+      scheduleHandleAvailabilityCheck();
+      schedulePublicSave();
+    });
+
+    getNode('profileFeaturedInput')?.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' && event.key !== ',' && event.key !== 'Tab') return;
+      const input = getNode('profileFeaturedInput');
+      const value = text(input?.value);
+      if (value) {
+        renderPublicTokenList(selectedFeaturedRefs().concat([value]));
+        if (input) input.value = '';
+        schedulePublicSave();
+      }
+      if (event.key !== 'Tab') event.preventDefault();
+    });
+
+    getNode('profileAddLink')?.addEventListener('click', () => {
+      addPublicLinkRow({ label: '', url: 'https://' });
+    });
+
+    getNode('refreshClaimableContribs')?.addEventListener('click', async () => {
+      const button = getNode('refreshClaimableContribs');
+      if (button) button.disabled = true;
+      await hydrateClaimableContributions();
+      if (button) button.disabled = false;
+    });
+
+    getNode('refreshPublicFavorites')?.addEventListener('click', () => {
+      renderPublicFavorites();
+    });
+
+    getNode('copyPublicDexId')?.addEventListener('click', () => {
+      const value = text(state.publicProfile?.dex_id || getNode('publicDexId')?.textContent);
+      if (value && value !== '—') navigator.clipboard?.writeText(value).catch(() => {});
+    });
+
+    getNode('copyPublicProfileUrl')?.addEventListener('click', () => {
+      const path = text(state.publicProfile?.profile_url || publicProfileUrl());
+      if (!path) return;
+      const value = new URL(path, window.location.origin).toString();
+      navigator.clipboard?.writeText(value).catch(() => {});
+    });
+
+    window.addEventListener('dx:favorites:changed', () => {
+      renderPublicFavorites();
+    });
 
     getNode('creditAliasInput')?.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ',' || event.key === 'Tab') {
@@ -1236,6 +1888,11 @@
 
     renderIdentity(state.me);
     renderContributionState();
+    state.publicProfile = normalizePublicProfilePayload(identity.public_profile || {}, state.publicServerState || {});
+    state.publicServerState = JSON.parse(JSON.stringify(state.publicProfile));
+    state.publicLastSuccessfulHash = payloadHash(state.publicProfile);
+    state.publicLastFailedPayload = null;
+    renderPublicProfileState();
     setUndoVisibility(false);
     emitProfileUpdated(profile, toTimestamp(identity.updated_at) || null);
 
@@ -1243,6 +1900,7 @@
       try {
         state.helpers.markSettingsCardReady('idCard');
         state.helpers.markSettingsCardReady('creditsCard');
+        state.helpers.markSettingsCardReady('publicProfileCard');
       } catch {}
     }
   }
@@ -1262,6 +1920,8 @@
       await loadTaxonomy();
       if (state.profile) renderContributionState();
       await hydrateSubmissionInsights();
+      await hydrateClaimableContributions();
+      renderPublicFavorites();
     }
 
     if (state.pendingHydrate) {

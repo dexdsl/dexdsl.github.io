@@ -2932,6 +2932,67 @@ body.dx-route-profile-protected #dex-settings :is(h1,h2,h3,h4,p,label,span,stron
   color:var(--dx-blackglass-ink, #f3f3f4) !important;
 }
 
+    /* ===== Unified single black-glass surface =====
+       The per-card glass (including dex.css !important rules) made settings read
+       as a pile of separate panels with the gooey mesh bleeding through the gaps
+       between them. Make #dex-settings itself the one black-glass sheet, pin the
+       header + tabs, scroll the body inside it, and flatten every structural
+       container down to thin dividers — same model as the favorites /
+       achievements routes. */
+    body.dx-route-profile-protected #dex-settings{
+      display:flex !important;
+      flex-direction:column !important;
+      overflow:hidden !important;
+      background: var(--glass-bg) !important;
+      border:1px solid var(--glass-brd) !important;
+      border-radius: var(--radius) !important;
+      box-shadow: var(--shadow-1) !important;
+      -webkit-backdrop-filter: var(--settings-glass-backdrop) !important;
+      backdrop-filter: var(--settings-glass-backdrop) !important;
+    }
+    /* Header + tabs are pinned by flex (no sticky overlap); body scrolls inside. */
+    body.dx-route-profile-protected #dex-settings > .hdr,
+    body.dx-route-profile-protected #dex-settings > .tabsbar{
+      position:static !important;
+      flex:0 0 auto !important;
+    }
+    body.dx-route-profile-protected #dex-settings > .grid{
+      flex:1 1 auto !important;
+      min-height:0 !important;
+      overflow-y:auto !important;
+      overflow-x:hidden !important;
+    }
+    /* Flatten the structural containers so the panel is one continuous sheet. */
+    body.dx-route-profile-protected #dex-settings :is(.hdr,.tabsbar,.card){
+      background:transparent !important;
+      border:0 !important;
+      border-radius:0 !important;
+      box-shadow:none !important;
+      -webkit-backdrop-filter:none !important;
+      backdrop-filter:none !important;
+    }
+    /* Keep thin dividers between sections (like the favorites rows). */
+    body.dx-route-profile-protected #dex-settings .hdr{
+      border-bottom:1px solid var(--glass-brd) !important;
+      padding-bottom:var(--pad) !important;
+    }
+    body.dx-route-profile-protected #dex-settings .tabsbar{
+      border-bottom:1px solid var(--glass-brd) !important;
+    }
+    body.dx-route-profile-protected #dex-settings .card{
+      border-top:1px solid var(--glass-brd) !important;
+    }
+    body.dx-route-profile-protected #dex-settings .profile-col-left .card:first-child,
+    body.dx-route-profile-protected #dex-settings .profile-col-right .card:first-child,
+    body.dx-route-profile-protected #dex-settings #pane-membership > .card:first-child,
+    body.dx-route-profile-protected #dex-settings #pane-notifs > .card:first-child{
+      border-top:0 !important;
+    }
+    /* Loader overlay sits above the unified sheet while [data-dx-fetch-state="loading"]. */
+    body.dx-route-profile-protected #dex-settings #dx-settings-loading-shell{
+      z-index:60 !important;
+    }
+
   </style>
 <!-- Settings UI -->
   <!-- Header (no chips / no manage button) -->
@@ -3042,6 +3103,88 @@ body.dx-route-profile-protected #dex-settings :is(h1,h2,h3,h4,p,label,span,stron
                     </div>
                     <p class="note">Use aliases only when you publish under multiple names.</p>
                   </div>
+                </section>
+
+                <section class="dx-profile-subcard" data-dx-profile-panel="public-profile" data-dx-public-profile-card="true">
+                  <div class="dx-profile-public-head">
+                    <div>
+                      <p class="dx-profile-kicker">Public profile</p>
+                      <p class="note">Opt in to a member page at <span id="publicProfileUrlText">/u/handle/</span>.</p>
+                    </div>
+                    <label class="dx-profile-switch" for="profilePublicToggle">
+                      <input id="profilePublicToggle" type="checkbox">
+                      <span>Visible</span>
+                    </label>
+                  </div>
+                  <div class="dx-profile-default-grid dx-profile-public-grid">
+                    <div class="field">
+                      <label class="label" for="profileHandleInput">Handle</label>
+                      <input id="profileHandleInput" class="dx-profile-input" type="text" maxlength="30" autocomplete="off" spellcheck="false" placeholder="andrew-chanover">
+                      <p id="profileHandleStatus" class="note" aria-live="polite">Choose a public URL handle.</p>
+                    </div>
+                    <div class="field">
+                      <label class="label">Dex ID</label>
+                      <div class="readonly dx-profile-copy-row">
+                        <span id="publicDexId">—</span>
+                        <button id="copyPublicDexId" class="linklike" type="button">Copy</button>
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label class="label">Profile URL</label>
+                      <div class="readonly dx-profile-copy-row">
+                        <span id="publicProfileUrl">—</span>
+                        <button id="copyPublicProfileUrl" class="linklike" type="button">Copy</button>
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label class="label" for="profilePronounsInput">Pronouns</label>
+                      <input id="profilePronounsInput" class="dx-profile-input" type="text" maxlength="40" placeholder="they/them">
+                    </div>
+                    <div class="field">
+                      <label class="label" for="profileLocationInput">Location</label>
+                      <input id="profileLocationInput" class="dx-profile-input" type="text" maxlength="80" placeholder="Los Angeles, CA">
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label" for="profileBioInput">Bio</label>
+                    <textarea id="profileBioInput" class="dx-profile-input dx-profile-textarea" maxlength="500" rows="4" placeholder="A short public bio for your Dex member page."></textarea>
+                  </div>
+                  <div class="field">
+                    <div class="dx-profile-row-head">
+                      <label class="label">External links</label>
+                      <button id="profileAddLink" class="btn" type="button">Add link</button>
+                    </div>
+                    <div id="profileLinksRows" class="dx-profile-list" aria-label="Public profile links"></div>
+                  </div>
+                  <div class="field">
+                    <label class="label" for="profileFeaturedInput">Featured contribution lookups</label>
+                    <div id="profileFeaturedTokens" class="tokens" role="listbox" aria-label="Featured contributions">
+                      <input id="profileFeaturedInput" type="text" autocomplete="off" placeholder="Add lookup and press Enter">
+                    </div>
+                  </div>
+                  <div class="field">
+                    <div class="dx-profile-row-head">
+                      <label class="label">Claim matching entries</label>
+                      <button id="refreshClaimableContribs" class="btn" type="button">Refresh</button>
+                    </div>
+                    <div id="profileClaimableList" class="dx-profile-list" aria-live="polite">
+                      <p class="note">Matching catalog entries will appear here.</p>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <div class="dx-profile-row-head">
+                      <label class="dx-profile-switch" for="profileFavoritesPublicToggle">
+                        <input id="profileFavoritesPublicToggle" type="checkbox">
+                        <span>Show selected favorites</span>
+                      </label>
+                      <button id="refreshPublicFavorites" class="btn" type="button">Refresh</button>
+                    </div>
+                    <div id="profilePublicFavoritesList" class="dx-profile-list" aria-live="polite">
+                      <p class="note">Save favorites from entry pages, then choose which ones are public.</p>
+                    </div>
+                  </div>
+                  <p id="publicProfileStatus" class="save-status" aria-live="polite" hidden>Saved</p>
+                  <p id="publicProfileError" class="mem-inline-error" role="status" aria-live="polite" hidden></p>
                 </section>
 
                 <section class="dx-profile-subcard" data-dx-profile-panel="roles">

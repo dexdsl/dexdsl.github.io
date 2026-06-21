@@ -1785,6 +1785,24 @@
 
 <style>
 /* Favorites — black-glass fixed shell, matching the account route surface. */
+/* The black glass is translucent, so any surface behind it bleeds through.
+   Achievements sits on the page gradient; this favorites widget is embedded in a
+   Squarespace "white" section, so strip the white section/block fills behind it
+   so the glass reads as dark glass over the gooey gradient (no white-behind). */
+.page-section:has(#dex-favorites),
+.page-section:has(#dex-favorites) .section-background,
+.fe-block:has(#dex-favorites),
+.fe-block:has(#dex-favorites) .dx-block,
+.dx-block-content:has(#dex-favorites),
+.dx-code-container:has(#dex-favorites),
+.sqs-block-content:has(#dex-favorites){
+  background:transparent !important;
+  background-color:transparent !important;
+  background-image:none !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
 #dex-favorites{
   --dx-fav-gap: clamp(14px,1.6vw,20px);
   --dx-fav-glass-bg: linear-gradient(145deg, rgba(15,16,21,.68) 0%, rgba(9,10,14,.54) 100%);
@@ -1818,7 +1836,7 @@
   background:transparent;isolation:auto;
   padding-bottom:var(--dx-fav-gap);border-bottom:1px solid var(--dx-fav-line-strong);
 }
-.dx-fav-title{margin:0;font-family:var(--font-heading,'Typefesse',sans-serif);text-transform:uppercase;font-size:clamp(1.6rem,4vw,2.5rem);letter-spacing:.01em;line-height:1;color:var(--dx-fav-ink) !important}
+.dx-fav-title{margin:0;font-family:var(--font-heading,'Typefesse',sans-serif);text-transform:uppercase;font-size:clamp(1.6rem,4vw,2.5rem);letter-spacing:0;line-height:1;color:var(--dx-fav-ink) !important}
 .dx-fav-subtitle{margin:8px 0 0;font-size:.82rem;letter-spacing:.01em;color:var(--dx-fav-muted)}
 .dx-fav-tabs{display:flex;gap:clamp(14px,2vw,26px);flex-wrap:wrap;align-items:center}
 /* Tabs mirror the polls nav: gradient underline that wipes in on hover/active. */
@@ -1981,7 +1999,12 @@
   const scope = favoritesApi.resolveScope();
   try { favoritesApi.migrateLegacy({ scope }); } catch {}
 
+  // Keep the route loader in the DOM (overlay) until we flip to 'ready', so it
+  // is actually shown during load — mirrors the achievements route. Wiping the
+  // whole root here previously destroyed the loader before it could paint.
+  const existingLoader = root.querySelector('.dx-route-loader');
   root.innerHTML = '';
+  if (existingLoader) root.append(existingLoader);
   const shell = document.createElement('section');
   shell.className = 'dx-fav-shell';
   shell.innerHTML = `

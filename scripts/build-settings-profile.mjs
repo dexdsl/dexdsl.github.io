@@ -14,6 +14,11 @@ const BUILD_TARGET = {
     path.join(ROOT, 'assets', 'js', 'settings.profile.js'),
     path.join(ROOT, 'docs', 'assets', 'js', 'settings.profile.js'),
   ],
+  cssSource: path.join(ROOT, 'css', 'components', 'dx-settings-profile.css'),
+  cssMirrors: [
+    path.join(ROOT, 'public', 'css', 'components', 'dx-settings-profile.css'),
+    path.join(ROOT, 'docs', 'css', 'components', 'dx-settings-profile.css'),
+  ],
 };
 
 async function ensureDir(filePath) {
@@ -42,9 +47,15 @@ async function main() {
   for (const mirror of BUILD_TARGET.mirrors) {
     await copyFile(BUILD_TARGET.publicOut, mirror);
   }
+  for (const mirror of BUILD_TARGET.cssMirrors) {
+    await copyFile(BUILD_TARGET.cssSource, mirror);
+  }
 
   console.log(`settings:profile:build wrote ${path.relative(ROOT, BUILD_TARGET.publicOut)}`);
   for (const mirror of BUILD_TARGET.mirrors) {
+    console.log(`settings:profile:build wrote ${path.relative(ROOT, mirror)}`);
+  }
+  for (const mirror of BUILD_TARGET.cssMirrors) {
     console.log(`settings:profile:build wrote ${path.relative(ROOT, mirror)}`);
   }
 }

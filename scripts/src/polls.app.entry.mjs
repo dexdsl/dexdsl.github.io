@@ -366,6 +366,20 @@
     }
   }
 
+  // Route loader overlay markup. Kept inside every render so it is never wiped
+  // out of the DOM while [data-dx-fetch-state='loading']; CSS shows it during
+  // loading and hides it on ready/error (mirrors the achievements route).
+  const ROUTE_LOADER_HTML = `
+      <div class="dx-route-loader" data-dx-route-loader role="status" aria-live="polite">
+        <div class="dx-route-loader-inner">
+          <div class="dx-route-loader-meta">
+            <span class="dx-route-loader-phase">Loading</span>
+            <span class="dx-route-loader-detail">Loading polls…</span>
+          </div>
+          <div class="dx-route-loader-track"><span class="dx-route-loader-fill"></span></div>
+        </div>
+      </div>`;
+
   function ensureStyles() {
     if (document.getElementById(STYLE_ID)) return;
     const style = document.createElement('style');
@@ -401,7 +415,7 @@
         padding-bottom:var(--dx-polls-gap);
         border-bottom:1px solid var(--dx-polls-line-strong);
       }
-      .dx-polls-title{margin:0;font-family:var(--font-heading);text-transform:uppercase;font-size:clamp(1.6rem,4vw,2.5rem);letter-spacing:.01em;line-height:1;color:var(--dx-polls-ink)!important}
+      .dx-polls-title{margin:0;font-family:var(--font-heading);text-transform:uppercase;font-size:clamp(1.6rem,4vw,2.5rem);letter-spacing:0;line-height:1;color:var(--dx-polls-ink)!important}
       .dx-polls-subtitle{margin:8px 0 0 0;font-family:var(--font-body);font-size:.82rem;letter-spacing:.01em;color:var(--dx-polls-muted)}
       .dx-polls-tabs{display:flex;gap:clamp(14px,2vw,26px);flex-wrap:wrap;align-items:center}
       /* Tabs mirror the header nav: gradient underline that wipes in on hover/active. */
@@ -542,6 +556,7 @@
 
   function renderError(root, message) {
     root.innerHTML = `
+      ${ROUTE_LOADER_HTML}
       <section class="dx-polls-shell">
         <header class="dx-polls-head">
           <h1 class="dx-polls-title">Polls</h1>
@@ -741,6 +756,7 @@
         `;
 
     root.innerHTML = `
+      ${ROUTE_LOADER_HTML}
       <section class="dx-polls-shell${state.loading ? ' dx-polls-loading' : ''}">
         <header class="dx-polls-head">
           <div>

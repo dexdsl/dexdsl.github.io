@@ -79,6 +79,108 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-public-head,
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-row-head {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-public-head {
+  margin-bottom: 12px;
+}
+
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-public-head .note {
+  margin: 4px 0 0;
+}
+
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-public-grid {
+  margin-bottom: 10px;
+}
+
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-switch {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 8px;
+  min-height: 34px;
+  user-select: none;
+  white-space: nowrap;
+}
+
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-switch input {
+  accent-color: var(--accent, #ff4a18);
+}
+
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-copy-row {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  min-height: 40px;
+}
+
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-copy-row span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-list-row {
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: var(--radius-sm, 10px);
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 8px;
+}
+
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-list-row-main {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-list-row-title {
+  font: 700 12px var(--font-body, 'Courier Prime', monospace);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-list-row-meta {
+  color: rgba(0, 0, 0, 0.62);
+  font: 600 11px var(--font-body, 'Courier Prime', monospace);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-link-row {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 0.62fr) minmax(0, 1fr) auto;
+}
+
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-link-row .btn,
+#dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-list-row .btn {
+  min-height: 34px;
+}
+
 #dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .chips .chip {
   border: 0;
 }
@@ -110,6 +212,17 @@
 @media (max-width: 760px) {
   #dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-default-grid {
     grid-template-columns: 1fr;
+  }
+
+  #dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-link-row,
+  #dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-list-row {
+    grid-template-columns: 1fr;
+  }
+
+  #dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-public-head,
+  #dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-row-head {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 

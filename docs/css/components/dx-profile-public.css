@@ -1,0 +1,220 @@
+/* Public member profile page (/u/<handle>). A single frosted-glass card on the
+   page gradient, dark text — consistent with the public site surfaces. */
+#dex-profile {
+  --dx-prof-frame: var(--dx-header-frame-width, min(calc(100% - clamp(16px, 3vw, 40px)), 1380px));
+  --dx-prof-radius: var(--dx-header-glass-radius, var(--dx-radius-md, 12px));
+  --dx-prof-ink: #1d1d1f;
+  --dx-prof-muted: rgba(16, 20, 28, 0.66);
+  --dx-prof-faint: rgba(16, 20, 28, 0.42);
+  --dx-prof-line: rgba(17, 23, 33, 0.14);
+  --dx-prof-accent: var(--dx-accent-solid, #ff2d13);
+  width: 100%;
+}
+
+#dex-profile .dx-prof-shell {
+  width: var(--dx-prof-frame);
+  max-width: var(--dx-prof-frame);
+  margin: 0 auto;
+  box-sizing: border-box;
+  color: var(--dx-prof-ink);
+  font-family: var(--font-body, "Courier Prime", monospace);
+  border-radius: var(--dx-prof-radius);
+  border: 1px solid var(--dx-header-glass-rim, rgba(255, 255, 255, 0.42));
+  background: var(--dx-header-glass-bg);
+  box-shadow: var(--dx-header-glass-shadow);
+  -webkit-backdrop-filter: var(--dx-header-glass-backdrop);
+  backdrop-filter: var(--dx-header-glass-backdrop);
+  padding: clamp(20px, 3vw, 40px);
+  display: grid;
+  gap: clamp(18px, 2.4vw, 30px);
+}
+
+/* Identity header */
+#dex-profile .dx-prof-head {
+  display: flex;
+  gap: clamp(16px, 2.4vw, 28px);
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding-bottom: clamp(16px, 2.2vw, 26px);
+  border-bottom: 1px solid var(--dx-prof-line);
+}
+#dex-profile .dx-prof-avatar {
+  flex: 0 0 auto;
+  width: clamp(72px, 9vw, 104px);
+  height: clamp(72px, 9vw, 104px);
+  border-radius: 999px;
+  object-fit: cover;
+  background: rgba(17, 23, 33, 0.08);
+  border: 1px solid var(--dx-prof-line);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-heading, "Stretch Pro", sans-serif);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: var(--dx-prof-ink);
+  text-transform: uppercase;
+}
+#dex-profile .dx-prof-id {
+  flex: 1 1 240px;
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+#dex-profile .dx-prof-name {
+  margin: 0;
+  font-family: var(--font-heading, "Stretch Pro", sans-serif);
+  font-size: clamp(1.8rem, 4.4vw, 3rem);
+  line-height: 0.92;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--dx-prof-ink);
+}
+#dex-profile .dx-prof-metarow {
+  display: flex;
+  gap: 10px 16px;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  color: var(--dx-prof-muted);
+}
+#dex-profile .dx-prof-dexid {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body, monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dx-prof-ink);
+  border: 1px solid var(--dx-prof-line);
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: copy;
+}
+#dex-profile .dx-prof-dexid:hover { border-color: var(--dx-prof-accent); }
+#dex-profile .dx-prof-pronouns::before { content: "· "; color: var(--dx-prof-faint); }
+
+#dex-profile .dx-prof-bio {
+  margin: 10px 0 0;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--dx-prof-ink);
+  max-width: 64ch;
+}
+#dex-profile .dx-prof-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: 12px;
+}
+#dex-profile .dx-prof-link {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dx-prof-ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--dx-prof-line);
+  padding-bottom: 2px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+#dex-profile .dx-prof-link:hover { color: var(--dx-prof-accent); border-color: var(--dx-prof-accent); }
+
+/* Chips (roles / instruments) */
+#dex-profile .dx-prof-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+#dex-profile .dx-prof-chip {
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dx-prof-muted);
+  border: 1px solid var(--dx-prof-line);
+  border-radius: 999px;
+  padding: 5px 11px;
+}
+#dex-profile .dx-prof-chip.is-primary { color: var(--dx-prof-ink); border-color: var(--dx-prof-ink); }
+
+/* Sections */
+#dex-profile .dx-prof-section { display: grid; gap: clamp(12px, 1.6vw, 18px); }
+#dex-profile .dx-prof-section-label {
+  margin: 0;
+  font-family: var(--font-body, monospace);
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dx-prof-muted);
+}
+
+/* Contribution / favorite cards */
+#dex-profile .dx-prof-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: clamp(10px, 1.4vw, 16px);
+}
+#dex-profile .dx-prof-card {
+  display: grid;
+  gap: 6px;
+  padding: clamp(12px, 1.6vw, 16px);
+  border: 1px solid var(--dx-prof-line);
+  border-radius: min(var(--dx-prof-radius), 10px);
+  background: rgba(255, 255, 255, 0.34);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+#dex-profile a.dx-prof-card:hover {
+  border-color: var(--dx-prof-accent);
+  transform: translateY(-1px);
+}
+#dex-profile .dx-prof-card.is-featured { border-color: var(--dx-prof-accent); }
+#dex-profile .dx-prof-card-lookup {
+  font-family: var(--font-body, monospace);
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  color: var(--dx-prof-muted);
+}
+#dex-profile .dx-prof-card-title {
+  margin: 0;
+  font-family: var(--font-heading, "Stretch Pro", sans-serif);
+  font-size: clamp(0.96rem, 1.3vw, 1.1rem);
+  line-height: 1.15;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  color: var(--dx-prof-ink);
+}
+#dex-profile .dx-prof-card-role {
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dx-prof-accent);
+}
+
+#dex-profile .dx-prof-empty {
+  font-size: 0.82rem;
+  color: var(--dx-prof-muted);
+  line-height: 1.5;
+}
+
+/* Not-found / error state */
+#dex-profile .dx-prof-notfound {
+  text-align: center;
+  display: grid;
+  gap: 12px;
+  padding: clamp(28px, 5vw, 64px) clamp(18px, 3vw, 40px);
+}
+#dex-profile .dx-prof-notfound h1 {
+  margin: 0;
+  font-family: var(--font-heading, "Stretch Pro", sans-serif);
+  font-size: clamp(1.6rem, 4vw, 2.6rem);
+  text-transform: uppercase;
+  letter-spacing: 0;
+  color: var(--dx-prof-ink);
+}
+
+@media (max-width: 640px) {
+  #dex-profile .dx-prof-head { flex-direction: column; }
+}
