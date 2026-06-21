@@ -1643,14 +1643,13 @@
   data-api="https://dex-api.spring-fog-8edd.workers.dev"
   data-dx-fetch-state="loading"
   aria-busy="true">
-  <div id="dx-settings-loading-shell" class="dx-fetch-shell dx-fetch-shell--card" data-dx-fetch-shell-root aria-hidden="true">
-    <div class="dx-fetch-shell-overlay" aria-hidden="true"></div>
-    <div class="dx-fetch-shell-line" style="width:42%;"></div>
-    <div class="dx-fetch-shell-line" style="width:66%;"></div>
-    <div class="dx-fetch-shell--rows">
-      <div class="dx-fetch-shell-line" style="width:100%;"></div>
-      <div class="dx-fetch-shell-line" style="width:96%;"></div>
-      <div class="dx-fetch-shell-line" style="width:84%;"></div>
+  <div id="dx-settings-loading-shell" class="dx-route-loader" data-dx-route-loader role="status" aria-live="polite">
+    <div class="dx-route-loader-inner">
+      <div class="dx-route-loader-meta">
+        <span class="dx-route-loader-phase">Loading</span>
+        <span class="dx-route-loader-detail">your account</span>
+      </div>
+      <div class="dx-route-loader-track"><span class="dx-route-loader-fill"></span></div>
     </div>
   </div>
 
@@ -2014,10 +2013,6 @@
     #dex-settings .savebar{ position: sticky; bottom:0; margin-top:var(--gap); display:none; justify-content:flex-end; gap:10px; padding:var(--pad); border:1px solid var(--glass-brd); border-radius: var(--radius); background: var(--glass-bg); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); box-shadow: var(--shadow-1); }
     #dex-settings .savebar.show{ display:flex; }
 
-    /* Skeleton */
-    #dex-settings .skeleton{ position:relative; background: rgba(255,255,255,.6); border-radius:10px; overflow:hidden; }
-    #dex-settings .skeleton::after{ content:""; position:absolute; inset:0; background: linear-gradient(90deg, transparent, rgba(0,0,0,0.06), transparent); animation: sh 1.1s infinite; }
-    @keyframes sh{ from{ transform: translateX(-100%);} to{ transform: translateX(100%);} }
   /* CTA — mirror /board exactly, scoped to settings */
 #dex-settings .cta{
   display:inline-flex; align-items:center; justify-content:center;
@@ -3268,8 +3263,7 @@ body.dx-route-profile-protected #dex-settings #dxMembershipV3Root :is(.dx-memv3-
         <div class="card" id="billingHistoryCard" style="margin-top:var(--gap);">
           <h2>Billing history</h2>
           <div id="invoices" class="list">
-            <div class="item"><span class="skeleton" style="width:40%; height:16px;"></span><span class="skeleton" style="width:20%; height:16px;"></span></div>
-            <div class="item"><span class="skeleton" style="width:40%; height:16px;"></span><span class="skeleton" style="width:20%; height:16px;"></span></div>
+            <div class="dx-route-loader-track" data-dx-route-loader-inline aria-hidden="true"><span class="dx-route-loader-fill"></span></div>
           </div>
           <div class="actions" style="margin-top:12px;"><button id="portalHistory" class="btn">View all invoices in Portal</button></div>
         </div>

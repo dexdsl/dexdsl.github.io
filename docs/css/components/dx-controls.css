@@ -27,6 +27,18 @@
   --dx-btn-ease-standard: var(--dx-motion-ease-standard, cubic-bezier(.22, .8, .24, 1));
   --dx-btn-ease-emphasis: var(--dx-motion-ease-emphasis, cubic-bezier(.2, .9, .25, 1));
   --dx-btn-ease-exit: var(--dx-motion-ease-exit, cubic-bezier(.4, 0, .2, 1));
+
+  /* The legacy Squarespace shell (#siteWrapper.site-wrapper, present on the home
+     route and retained across soft navigation) carries high-specificity button
+     rules that read these padding vars. They were never defined, so buttons
+     under that shell collapsed to zero padding (full-bleed gradient) anywhere
+     reached via soft nav. Map them to the canonical button padding. */
+  --primary-button-padding-y: var(--dx-btn-pad-y-md);
+  --primary-button-padding-x: var(--dx-btn-pad-x-md);
+  --secondary-button-padding-y: var(--dx-btn-pad-y-md);
+  --secondary-button-padding-x: var(--dx-btn-pad-x-md);
+  --tertiary-button-padding-y: var(--dx-btn-pad-y-md);
+  --tertiary-button-padding-x: var(--dx-btn-pad-x-md);
 }
 
 button,

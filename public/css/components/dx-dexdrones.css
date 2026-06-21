@@ -50,13 +50,8 @@ body[data-dx-route='dexdrones'].dx-slot-enabled #dx-slot-scroll-root {
     var(--dx-dexdrones-canvas-wash);
 }
 
-body[data-dx-route='dexdrones'] .dex-scroll-dot {
+body[data-dx-route='dexdrones'] .dex-scroll-progress-fill {
   background: linear-gradient(180deg, #2e5faa 0%, #1f4e97 52%, #163a78 100%) !important;
-  border-color: rgba(255, 255, 255, 0.58);
-  box-shadow:
-    0 0 0 1px rgba(7, 16, 32, 0.25) inset,
-    0 4px 12px rgba(8, 18, 36, 0.34),
-    0 0 12px rgba(46, 95, 170, 0.32);
 }
 
 body[data-dx-route='dexdrones'] #scroll-gradient-bg,

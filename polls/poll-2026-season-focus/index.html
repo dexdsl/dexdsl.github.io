@@ -1380,16 +1380,14 @@
       <main id="page" class="container dx-polls-page" role="main">
         <section class="dx-polls-route-shell" aria-label="Dex polls route shell">
           <div id="dex-console" data-dx-polls-app="true" data-dx-fetch-state="loading" aria-busy="true" data-dx-poll-id="poll-2026-season-focus">
-            <div class="dx-fetch-shell dx-fetch-shell--card" data-dx-fetch-shell-root>
-              <div class="dx-fetch-shell-overlay" aria-hidden="true"></div>
-              <div class="dx-fetch-shell-line" style="width:36%;"></div>
-              <div class="dx-fetch-shell-line" style="width:66%;"></div>
-              <div class="dx-fetch-shell--rows">
-                <div class="dx-fetch-shell-line" style="width:100%;"></div>
-                <div class="dx-fetch-shell-line" style="width:100%;"></div>
-                <div class="dx-fetch-shell-line" style="width:92%;"></div>
+            <div class="dx-route-loader" data-dx-route-loader role="status" aria-live="polite">
+              <div class="dx-route-loader-inner">
+                <div class="dx-route-loader-meta">
+                  <span class="dx-route-loader-phase">Loading</span>
+                  <span class="dx-route-loader-detail">Loading poll…</span>
+                </div>
+                <div class="dx-route-loader-track"><span class="dx-route-loader-fill"></span></div>
               </div>
-              <p class="dx-polls-empty">Loading poll…</p>
             </div>
           </div>
         </section>

@@ -9,16 +9,12 @@ const DOT_RUNTIME_PATH = path.join(ROOT, 'public', 'assets', 'js', 'dx-scroll-do
 const DOT_SCRIPT_NEEDLE = '/assets/js/dx-scroll-dot.js';
 
 const REQUIRED_MARKERS = [
-  '--dex-scroll-dot-size',
-  '--dex-scroll-rail-w',
-  '--dex-scroll-shift-x',
-  '--dex-scroll-dot-z',
-  '--dex-scroll-inset-top',
-  '--dex-scroll-inset-bottom',
-  '.dex-scroll-rail',
-  '.dex-scroll-dot',
-  '.dex-scroll-rail.is-visible',
-  '.dex-scroll-dot.dragging',
+  '--dex-scroll-line-w',
+  '--dex-scroll-line-track',
+  '--dex-scroll-line-z',
+  '.dex-scroll-progress',
+  '.dex-scroll-progress.is-active',
+  '.dex-scroll-progress-fill',
 ];
 
 const FORBIDDEN_INLINE_MARKERS = [

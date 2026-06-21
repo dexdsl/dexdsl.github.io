@@ -21,14 +21,34 @@ const FILES = {
 };
 
 const COVERED_ROUTES = [
-  { file: 'docs/polls/index.html', rootId: 'dex-console' },
-  { file: 'docs/entry/favorites/index.html', rootId: 'dex-favorites' },
-  { file: 'docs/entry/submit/index.html', rootId: 'dex-submit' },
-  { file: 'docs/entry/messages/index.html', rootId: 'dex-msg' },
-  { file: 'docs/entry/pressroom/index.html', rootId: 'dex-press' },
-  { file: 'docs/entry/settings/index.html', rootId: 'dex-settings' },
-  { file: 'docs/entry/achievements/index.html', rootId: 'dex-achv' },
-  { file: 'docs/messages.html', rootId: 'dex-msg' },
+  { file: 'docs/polls/index.html', rootId: 'dex-console', loader: true },
+  { file: 'docs/entry/favorites/index.html', rootId: 'dex-favorites', loader: true },
+  { file: 'docs/entry/submit/index.html', rootId: 'dex-submit', loader: true },
+  { file: 'docs/entry/messages/index.html', rootId: 'dex-msg', loader: true },
+  { file: 'docs/entry/pressroom/index.html', rootId: 'dex-press', loader: true },
+  { file: 'docs/entry/settings/index.html', rootId: 'dex-settings', loader: true },
+  { file: 'docs/entry/achievements/index.html', rootId: 'dex-achv', loader: true },
+  // Legacy redirect shell renders an empty hidden root; runtime hydrates it.
+  { file: 'docs/messages.html', rootId: 'dex-msg', loader: false },
+];
+
+// The gated account routes must use the minimal progress-style loader, not the
+// older skeleton shell. The skeleton primitives stay available for the entry
+// sidebar / bag / support routes, so they are only banned on these routes.
+const BANNED_SKELETON_MARKERS = [
+  'dx-fetch-shell',
+  'class="skeleton"',
+  "class='skeleton'",
+];
+
+const REQUIRED_ROUTE_LOADER_MARKERS = [
+  '.dx-route-loader',
+  '.dx-route-loader-track',
+  '.dx-route-loader-fill',
+  '.dx-route-loader-phase',
+  '.dx-route-loader-detail',
+  "[data-dx-fetch-state='loading'] .dx-route-loader",
+  '@keyframes dx-route-loader-indeterminate',
 ];
 
 const BANNED_SPINNER_MARKERS = [
@@ -155,6 +175,26 @@ function verifyRouteContracts(failures) {
         failures.push(`${relPath} still contains spinner marker: ${banned}`);
       }
     }
+
+    if (contract.loader) {
+      if (!html.includes('dx-route-loader')) {
+        failures.push(`${relPath} missing dx-route-loader markup`);
+      }
+      for (const banned of BANNED_SKELETON_MARKERS) {
+        if (html.includes(banned)) {
+          failures.push(`${relPath} still contains skeleton marker: ${banned}`);
+        }
+      }
+    }
+  }
+}
+
+function verifyRouteLoaderCss(failures) {
+  const css = readText(FILES.baseCss);
+  for (const marker of REQUIRED_ROUTE_LOADER_MARKERS) {
+    if (!css.includes(marker)) {
+      failures.push(`public/css/base.css missing route-loader marker ${marker}`);
+    }
   }
 }
 
@@ -216,6 +256,7 @@ function main() {
   const failures = [];
 
   verifyRouteContracts(failures);
+  verifyRouteLoaderCss(failures);
   verifyAchievementsRuntimeTimeoutContract(failures);
   verifyEntrySidebarFetchContract(failures);
   verifyCssContract(FILES.baseCss, 'public/css/base.css', failures);

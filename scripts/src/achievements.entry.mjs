@@ -799,12 +799,13 @@
 
   function renderShell(root) {
     root.innerHTML = `
-      <div class="dx-fetch-shell-overlay" aria-hidden="true">
-        <div class="dx-fetch-shell dx-fetch-shell--card">
-          <span class="dx-fetch-shell-pill"></span>
-          <span class="dx-fetch-shell-line"></span>
-          <span class="dx-fetch-shell-line"></span>
-          <span class="dx-fetch-shell-line" style="width: 68%;"></span>
+      <div class="dx-route-loader" data-dx-route-loader role="status" aria-live="polite">
+        <div class="dx-route-loader-inner">
+          <div class="dx-route-loader-meta">
+            <span class="dx-route-loader-phase">Loading</span>
+            <span class="dx-route-loader-detail">your achievements</span>
+          </div>
+          <div class="dx-route-loader-track"><span class="dx-route-loader-fill"></span></div>
         </div>
       </div>
       <div class="dex-sidebar dx-achievements-shell" data-dx-achievements-app="v2" data-dx-achievements-state="loading" data-dx-achievements-page="overview">

@@ -2855,6 +2855,16 @@
     return pathname.startsWith('/css/') || pathname.startsWith('/assets/css/');
   }
 
+  // Upper bound on how long a soft navigation will wait for a newly injected
+  // route stylesheet to load before revealing the new content. Prevents an
+  // unstyled flash (FOUC) when route-specific CSS lands after the swap, while
+  // still guaranteeing navigation never stalls on a slow/failed sheet.
+  const ROUTE_STYLE_LOAD_TIMEOUT_MS = 2000;
+
+  // Injects any stylesheets the destination route declares that are not already
+  // present. Returns a promise that resolves once every newly added sheet has
+  // loaded (or errored, or the timeout elapses) so callers can await it before
+  // swapping in the new content.
   function syncRouteStyles(sourceDocument, baseUrl) {
     const existing = new Set(
       Array.from(document.querySelectorAll('link[rel~="stylesheet"][href]'))
@@ -2867,6 +2877,8 @@
       ...Array.from(sourceDocument.head ? sourceDocument.head.querySelectorAll('link[rel~="stylesheet"][href]') : []),
       ...Array.from(sourceDocument.body ? sourceDocument.body.querySelectorAll('link[rel~="stylesheet"][href]') : []),
     ];
+
+    const pending = [];
 
     for (const link of incomingLinks) {
       const rawHref = link.getAttribute('href');
@@ -2888,9 +2900,23 @@
         else nextLink.setAttribute('crossorigin', '');
       }
 
+      pending.push(new Promise((resolve) => {
+        let settled = false;
+        const done = () => {
+          if (settled) return;
+          settled = true;
+          resolve();
+        };
+        nextLink.addEventListener('load', done, { once: true });
+        nextLink.addEventListener('error', done, { once: true });
+        window.setTimeout(done, ROUTE_STYLE_LOAD_TIMEOUT_MS);
+      }));
+
       document.head.appendChild(nextLink);
       existing.add(url.href);
     }
+
+    return pending.length ? Promise.all(pending) : Promise.resolve();
   }
 
   function isRouteScriptCandidate(url) {
@@ -3362,7 +3388,10 @@
     const container = headerElement.parentElement || document.body;
     const { scrollRoot, foregroundRoot } = ensureSlotRoots(container, headerElement);
 
-    syncRouteStyles(sourceDocument, targetUrl.href);
+    // Wait for route-specific stylesheets to load before swapping in the new
+    // content, otherwise the new DOM paints with the previous route's CSS for a
+    // beat (the square/full-bleed button FOUC). Capped by ROUTE_STYLE_LOAD_TIMEOUT_MS.
+    await syncRouteStyles(sourceDocument, targetUrl.href);
     syncDocumentFromRoute(sourceDocument, targetUrl);
 
     const { fragment: nextFragment, inlineScripts } = buildForegroundFragment(sourceDocument);
