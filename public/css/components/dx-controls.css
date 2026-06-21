@@ -39,6 +39,14 @@
   --secondary-button-padding-x: var(--dx-btn-pad-x-md);
   --tertiary-button-padding-y: var(--dx-btn-pad-y-md);
   --tertiary-button-padding-x: var(--dx-btn-pad-x-md);
+
+  /* Same shell sets `border-style: solid; border-width: var(--*-button-stroke)`.
+     Undefined, the width computed to the initial `medium` (~3px) and the color
+     to currentColor (white text) — a white inset ring on first load. Canonical
+     buttons are borderless, so pin the stroke to zero. */
+  --primary-button-stroke: 0;
+  --secondary-button-stroke: 0;
+  --tertiary-button-stroke: 0;
 }
 
 button,

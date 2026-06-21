@@ -1770,6 +1770,131 @@ body.dx-route-profile-protected :is(
   isolation: auto !important;
 }
 
+/* =========================================================================
+   Black glass treatment — polls / favorites / settings / achievements.
+   These four routes get a dark translucent card with light text instead of a
+   flat or white-glass surface; messages / submit / press keep their light
+   glass. Centralised here so the per-route inline colour vars flip via
+   higher-specificity overrides rather than editing each runtime.
+   ========================================================================= */
+body.dx-route-profile-protected :is(
+  #dex-console[data-dx-polls-app],
+  #dex-favorites,
+  #dex-settings,
+  #dex-achv
+) {
+  --dx-blackglass-bg: linear-gradient(145deg, rgba(15, 16, 21, 0.66) 0%, rgba(9, 10, 14, 0.52) 100%);
+  --dx-blackglass-rim: rgba(255, 255, 255, 0.14);
+  --dx-blackglass-shadow: 0 18px 42px rgba(0, 0, 0, 0.42);
+  --dx-blackglass-backdrop: blur(22px) saturate(135%);
+  --dx-blackglass-ink: #f3f3f4;
+  --dx-blackglass-muted: rgba(255, 255, 255, 0.62);
+  --dx-blackglass-faint: rgba(255, 255, 255, 0.40);
+  --dx-blackglass-line: rgba(255, 255, 255, 0.14);
+  --dx-blackglass-line-strong: rgba(255, 255, 255, 0.26);
+}
+
+/* Polls + favorites: the shell becomes the black glass card; inner rows stay
+   transparent so it reads as a single panel. */
+body.dx-route-profile-protected #dex-console[data-dx-polls-app] .dx-polls-shell,
+body.dx-route-profile-protected #dex-favorites .dx-fav-shell {
+  background: var(--dx-blackglass-bg) !important;
+  border: 1px solid var(--dx-blackglass-rim) !important;
+  border-radius: var(--dx-header-glass-radius, 10px) !important;
+  box-shadow: var(--dx-blackglass-shadow) !important;
+  -webkit-backdrop-filter: var(--dx-blackglass-backdrop) !important;
+  backdrop-filter: var(--dx-blackglass-backdrop) !important;
+  padding: clamp(18px, 2.2vw, 30px) !important;
+  color: var(--dx-blackglass-ink) !important;
+}
+
+body.dx-route-profile-protected #dex-console[data-dx-polls-app] .dx-polls-shell {
+  --dx-polls-ink: var(--dx-blackglass-ink);
+  --dx-polls-muted: var(--dx-blackglass-muted);
+  --dx-polls-faint: var(--dx-blackglass-faint);
+  --dx-polls-line: var(--dx-blackglass-line);
+  --dx-polls-line-strong: var(--dx-blackglass-line-strong);
+}
+
+body.dx-route-profile-protected #dex-favorites .dx-fav-shell {
+  --dx-fav-ink: var(--dx-blackglass-ink);
+  --dx-fav-muted: var(--dx-blackglass-muted);
+  --dx-fav-faint: var(--dx-blackglass-faint);
+  --dx-fav-line: var(--dx-blackglass-line);
+  --dx-fav-line-strong: var(--dx-blackglass-line-strong);
+}
+
+/* Drop the over-mesh blend hacks now that text sits on a dark card. */
+body.dx-route-profile-protected #dex-console[data-dx-polls-app] :is(
+  .dx-polls-tab,
+  .dx-polls-detail > .dx-polls-section-label,
+  .dx-polls-detail > .dx-polls-empty
+),
+body.dx-route-profile-protected #dex-favorites .dx-fav-tab {
+  color: var(--dx-blackglass-ink) !important;
+  mix-blend-mode: normal !important;
+  text-shadow: none !important;
+}
+body.dx-route-profile-protected #dex-console[data-dx-polls-app] .dx-poll-card:hover .dx-poll-question {
+  color: var(--dx-polls-accent, #ff2d13) !important;
+  mix-blend-mode: normal !important;
+}
+body.dx-route-profile-protected #dex-favorites .dx-fav-row:hover .dx-fav-row-title {
+  color: var(--dx-fav-accent, #ff2d13) !important;
+  mix-blend-mode: normal !important;
+}
+
+/* Settings + achievements: flip the shared liquid/glass tokens to black glass
+   and base text to light (scoped, so messages/submit/press stay light). */
+body.dx-route-profile-protected #dex-settings,
+body.dx-route-profile-protected #dex-achv {
+  --liquid-bg: var(--dx-blackglass-bg) !important;
+  --liquid-border: var(--dx-blackglass-rim) !important;
+  --dx-profile-card-surface: var(--dx-blackglass-bg) !important;
+  --dx-profile-card-rim: var(--dx-blackglass-rim) !important;
+  --shadow-light: var(--dx-blackglass-shadow) !important;
+  --shadow-md: var(--dx-blackglass-shadow) !important;
+  color: var(--dx-blackglass-ink) !important;
+}
+
+body.dx-route-profile-protected #dex-settings {
+  --glass-bg: var(--dx-blackglass-bg) !important;
+  --glass-brd: var(--dx-blackglass-rim) !important;
+  --muted: var(--dx-blackglass-muted) !important;
+}
+
+/* Achievements: light text + dark cards (keep the state-colour borders). */
+body.dx-route-profile-protected #dex-achv :is(
+  .dx-achievements-shell,
+  .dx-achievements-panel,
+  .dx-achievements-header,
+  .dx-achievement-card,
+  .dx-achievement-card-top,
+  .dx-achievement-card-title,
+  .dx-achievement-card-body,
+  .dx-achievement-tier
+) {
+  color: var(--dx-blackglass-ink) !important;
+}
+body.dx-route-profile-protected #dex-achv .dx-achievement-card {
+  background: var(--dx-blackglass-bg) !important;
+  border-color: var(--dx-blackglass-rim) !important;
+  -webkit-backdrop-filter: var(--dx-blackglass-backdrop) !important;
+  backdrop-filter: var(--dx-blackglass-backdrop) !important;
+}
+
+/* Flip display text to light on settings + achievements. Inputs / selects /
+   textareas / buttons are deliberately left alone so form fields keep their own
+   contrast. */
+body.dx-route-profile-protected #dex-settings :is(
+  h1, h2, h3, h4, p, label, span, strong, em, small, li, dt, dd, code, .sub, .note
+),
+body.dx-route-profile-protected #dex-achv :is(
+  h1, h2, h3, h4, p, label, span, strong, em, small, li, dt, dd
+) {
+  color: var(--dx-blackglass-ink) !important;
+}
+
 body.dx-route-profile-protected #gooey-mesh-wrapper {
   display: block !important;
   visibility: visible !important;

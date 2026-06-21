@@ -1996,12 +1996,58 @@ document.addEventListener('DOMContentLoaded', function(){
 
 <div class="product-block">
   <div class="productDetails center">
-    <button class="join-button dx-button-element dx-button-element--secondary dx-button-size--md dx-button-block dx-block-button-element dx-block-button-element--secondary dx-block-button-element--large"
-      onclick="if(window.DEX_AUTH&amp;&amp;typeof window.DEX_AUTH.signUp==='function'){window.DEX_AUTH.signUp();}else{var authBtn=document.getElementById('auth-ui-signin');if(authBtn){authBtn.click();}}">
-      <div class="dx-add-to-cart-button-inner">
-        SIGN&nbsp;UP&nbsp;FREE&nbsp;↗
+    <button id="dx-hero-cta" data-dx-hero-cta data-dx-hero-cta-mode="signup"
+      class="join-button dx-button-element dx-button-element--secondary dx-button-size--md dx-button-block dx-block-button-element dx-block-button-element--secondary dx-block-button-element--large">
+      <div class="dx-add-to-cart-button-inner" data-dx-hero-cta-label>
+        SIGN&nbsp;UP&nbsp;FRE&#8204;E&nbsp;↗
       </div>
     </button>
+    <script>
+    ;(function(){
+      var SUBMIT_URL = '/entry/submit/';
+      var LABEL_SIGNUP = 'SIGN&nbsp;UP&nbsp;FRE&#8204;E&nbsp;↗';
+      var LABEL_SUBMIT = 'SUBMIT&nbsp;SAMPLES&nbsp;↗';
+
+      function applyMode(authed){
+        var btn = document.getElementById('dx-hero-cta');
+        if (!btn) return;
+        var mode = authed ? 'submit' : 'signup';
+        if (btn.getAttribute('data-dx-hero-cta-mode') === mode) return;
+        btn.setAttribute('data-dx-hero-cta-mode', mode);
+        var label = btn.querySelector('[data-dx-hero-cta-label]');
+        if (label) label.innerHTML = authed ? LABEL_SUBMIT : LABEL_SIGNUP;
+        btn.setAttribute('aria-label', authed ? 'Submit samples' : 'Sign up free');
+      }
+
+      // Window auth listeners are bound once; they re-query the live button by id
+      // so they keep working across soft navigations back to the home route.
+      if (!window.__dxHeroCtaAuthBound) {
+        window.__dxHeroCtaAuthBound = true;
+        var onAuth = function(e){ applyMode(!!(e && e.detail && e.detail.isAuthenticated)); };
+        window.addEventListener('dex-auth:state', onAuth);
+        window.addEventListener('dex-auth:ready', onAuth);
+      }
+
+      var btn = document.getElementById('dx-hero-cta');
+      if (btn && btn.dataset.dxHeroBound !== '1') {
+        btn.dataset.dxHeroBound = '1';
+        btn.addEventListener('click', function(){
+          if (btn.getAttribute('data-dx-hero-cta-mode') === 'submit') {
+            if (typeof window.dxNavigate === 'function') { window.dxNavigate(SUBMIT_URL); }
+            else { window.location.href = SUBMIT_URL; }
+            return;
+          }
+          if (window.DEX_AUTH && typeof window.DEX_AUTH.signUp === 'function') { window.DEX_AUTH.signUp(); }
+          else { var a = document.getElementById('auth-ui-signin'); if (a) { a.click(); } }
+        });
+      }
+
+      // Resolve initial state (covers auth events that fired before this ran).
+      if (window.DEX_AUTH && window.DEX_AUTH.ready && typeof window.DEX_AUTH.ready.then === 'function') {
+        window.DEX_AUTH.ready.then(function(s){ applyMode(!!(s && s.isAuthenticated)); }).catch(function(){});
+      }
+    })();
+    </script>
   </div>
 </div>
 
