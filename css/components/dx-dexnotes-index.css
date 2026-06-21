@@ -20,6 +20,10 @@
   --dx-dexnotes-control-placeholder: rgba(226, 234, 248, 0.72);
 }
 
+body:has(.dx-dexnotes-page) :is(.dex-scroll-progress-horizontal, .dx-scroll-progress-horizontal, .dex-scroll-rail--x, [data-dx-scroll-axis="x"]) {
+  display: none !important;
+}
+
 .dx-dexnotes-page {
   position: relative;
   z-index: 1;
@@ -36,14 +40,10 @@
   z-index: 1;
 }
 
-.dx-dexnotes-index-shell {
-  display: grid;
-  gap: clamp(0.92rem, 1.6vw, 1.35rem);
-}
-
+.dx-dexnotes-index-shell,
 .dx-dexnotes-index-app {
   display: grid;
-  gap: clamp(0.92rem, 1.6vw, 1.35rem);
+  gap: clamp(0.82rem, 1.35vw, 1.12rem);
 }
 
 #gooey-mesh-wrapper {
@@ -175,7 +175,7 @@
 
 .dx-dexnotes-controls {
   display: grid;
-  gap: 0.74rem;
+  gap: clamp(0.84rem, 1.45vw, 1.12rem);
 }
 
 .dx-dexnotes-controls-top {
@@ -233,6 +233,63 @@ select.dx-dexnotes-select {
 
 .dx-dexnotes-filter-toggle {
   min-width: clamp(9rem, 13vw, 12rem);
+}
+
+.dx-dexnotes-landing {
+  min-height: min(560px, calc(100svh - var(--dx-slot-content-offset, 100px) - 7rem));
+  align-content: space-between;
+}
+
+.dx-dexnotes-lead-card {
+  display: grid;
+  gap: clamp(0.9rem, 1.7vw, 1.3rem);
+  align-items: stretch;
+  border-top: 1px solid rgba(24, 30, 42, 0.16);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.58);
+  padding-block: clamp(0.98rem, 1.8vw, 1.36rem);
+}
+
+.dx-dexnotes-lead-media {
+  display: block;
+  overflow: hidden;
+  border-radius: var(--dx-dexnotes-radius);
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  background: rgba(230, 234, 243, 0.46);
+  aspect-ratio: 16 / 9;
+}
+
+.dx-dexnotes-lead-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dx-dexnotes-lead-body {
+  display: grid;
+  gap: 0.7rem;
+  align-content: center;
+}
+
+.dx-dexnotes-lead-title {
+  margin: 0;
+  font-family: var(--font-heading, "Stretch Pro", sans-serif);
+  font-size: clamp(1.24rem, 2.24vw, 2.05rem);
+  line-height: 1.08;
+}
+
+.dx-dexnotes-lead-link {
+  color: var(--dx-dexnotes-ink);
+  text-decoration: none;
+}
+
+.dx-dexnotes-lead-link:hover,
+.dx-dexnotes-lead-link:focus-visible {
+  color: var(--dex-accent, #ff1910);
+}
+
+.dx-dexnotes-lead-cta {
+  justify-self: start;
+  margin-top: 0.18rem;
 }
 
 .dx-dexnotes-filter-toggle:hover,
@@ -321,23 +378,22 @@ select.dx-dexnotes-select {
 .dx-dexnotes-card-grid {
   margin-top: 0.84rem;
   display: grid;
-  gap: clamp(1rem, 1.8vw, 1.35rem);
+  gap: 0;
 }
 
 .dx-dexnotes-card {
   display: grid;
-  gap: 0.88rem;
-  padding: clamp(0.92rem, 1.35vw, 1.1rem);
-  border: 1px solid rgba(255, 255, 255, 0.62);
-  border-radius: var(--dx-dexnotes-radius);
-  background: rgba(255, 255, 255, 0.42);
-  box-shadow: 0 12px 32px rgba(18, 25, 38, 0.12);
-  transition: background-color 220ms ease, border-color 220ms ease;
+  grid-template-columns: minmax(92px, 0.28fr) minmax(0, 1fr);
+  gap: clamp(0.78rem, 1.35vw, 1rem);
+  padding: clamp(0.82rem, 1.2vw, 1.02rem) 0;
+  border-top: 1px solid rgba(24, 30, 42, 0.16);
+  background: transparent;
+  box-shadow: none;
+  transition: border-color 220ms ease;
 }
 
 .dx-dexnotes-card:hover,
 .dx-dexnotes-card:focus-within {
-  background: linear-gradient(102deg, rgba(255, 255, 255, 0.66), rgba(234, 240, 249, 0.36));
   border-color: rgba(255, 25, 16, 0.24);
 }
 
@@ -346,7 +402,7 @@ select.dx-dexnotes-select {
   border-radius: var(--dx-dexnotes-radius);
   border: 1px solid rgba(255, 255, 255, 0.68);
   overflow: hidden;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 1 / 1;
   background: rgba(230, 234, 243, 0.46);
 }
 
@@ -404,12 +460,12 @@ select.dx-dexnotes-select {
 
 /* Guardrail: preserve Dex Notes card spacing against global reset collisions. */
 main.dx-dexnotes-page .dx-dexnotes-index-shell {
-  gap: clamp(0.92rem, 1.6vw, 1.35rem) !important;
+  gap: clamp(0.82rem, 1.35vw, 1.12rem) !important;
 }
 
 main.dx-dexnotes-page .dx-dexnotes-index-app {
   display: grid !important;
-  gap: clamp(0.92rem, 1.6vw, 1.35rem) !important;
+  gap: clamp(0.82rem, 1.35vw, 1.12rem) !important;
 }
 
 main.dx-dexnotes-page :is(.dx-dexnotes-controls, .dx-dexnotes-newsletter, .dx-dexnotes-list) {
@@ -417,12 +473,12 @@ main.dx-dexnotes-page :is(.dx-dexnotes-controls, .dx-dexnotes-newsletter, .dx-de
 }
 
 main.dx-dexnotes-page .dx-dexnotes-card-grid {
-  gap: clamp(1rem, 1.8vw, 1.35rem) !important;
+  gap: 0 !important;
 }
 
 main.dx-dexnotes-page .dx-dexnotes-card {
-  gap: 0.88rem !important;
-  padding: clamp(0.92rem, 1.35vw, 1.1rem) !important;
+  gap: clamp(0.78rem, 1.35vw, 1rem) !important;
+  padding: clamp(0.82rem, 1.2vw, 1.02rem) 0 !important;
 }
 
 main.dx-dexnotes-page .dx-dexnotes-card-body {
@@ -478,7 +534,21 @@ main.dx-dexnotes-page .dx-dexnotes-card.dx-dexnotes-reveal {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
+  .dx-dexnotes-lead-card {
+    grid-template-columns: minmax(280px, 0.42fr) minmax(0, 1fr);
+  }
+
   .dx-dexnotes-card-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .dx-dexnotes-card {
+    grid-template-columns: 1fr;
+  }
+
+  .dx-dexnotes-card-media {
+    aspect-ratio: 16 / 9;
   }
 }

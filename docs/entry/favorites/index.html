@@ -1784,16 +1784,18 @@
 </div>
 
 <style>
-/* Favorites — flat/typographic fixed shell, matching the polls refactor.
-   Uses dedicated .dx-fav-* classes so the profile-route glass "safety net"
-   (which frosts .panel/.dex-overview/etc.) never applies a card backdrop here. */
+/* Favorites — black-glass fixed shell, matching the account route surface. */
 #dex-favorites{
   --dx-fav-gap: clamp(14px,1.6vw,20px);
-  --dx-fav-line: rgba(0,0,0,.12);
-  --dx-fav-line-strong: rgba(0,0,0,.22);
-  --dx-fav-ink:#1a1a1a;
-  --dx-fav-muted:#6b6b6b;
-  --dx-fav-faint:#9a9a9a;
+  --dx-fav-glass-bg: linear-gradient(145deg, rgba(15,16,21,.68) 0%, rgba(9,10,14,.54) 100%);
+  --dx-fav-glass-rim: rgba(255,255,255,.14);
+  --dx-fav-glass-shadow: 0 18px 42px rgba(0,0,0,.42);
+  --dx-fav-glass-backdrop: blur(22px) saturate(135%);
+  --dx-fav-line: rgba(255,255,255,.14);
+  --dx-fav-line-strong: rgba(255,255,255,.26);
+  --dx-fav-ink:#f3f3f4;
+  --dx-fav-muted:rgba(255,255,255,.66);
+  --dx-fav-faint:rgba(255,255,255,.42);
   --dx-fav-accent:#ff2d13;
   width:100%;height:100%;
 }
@@ -1802,7 +1804,10 @@
   height:100%;min-height:0;margin:0 auto;
   display:flex;flex-direction:column;
   font-family:var(--font-body,'Courier New',monospace);color:var(--dx-fav-ink);
-  background:transparent;isolation:auto;
+  background:var(--dx-fav-glass-bg) !important;border:1px solid var(--dx-fav-glass-rim) !important;
+  border-radius:var(--dx-header-glass-radius,10px) !important;box-shadow:var(--dx-fav-glass-shadow) !important;
+  -webkit-backdrop-filter:var(--dx-fav-glass-backdrop) !important;backdrop-filter:var(--dx-fav-glass-backdrop) !important;
+  padding:clamp(18px,2.2vw,30px);isolation:auto;
   overflow:hidden;
 }
 
@@ -1813,7 +1818,7 @@
   background:transparent;isolation:auto;
   padding-bottom:var(--dx-fav-gap);border-bottom:1px solid var(--dx-fav-line-strong);
 }
-.dx-fav-title{margin:0;font-family:var(--font-heading,'Typefesse',sans-serif);text-transform:uppercase;font-size:clamp(1.6rem,4vw,2.5rem);letter-spacing:.01em;line-height:1}
+.dx-fav-title{margin:0;font-family:var(--font-heading,'Typefesse',sans-serif);text-transform:uppercase;font-size:clamp(1.6rem,4vw,2.5rem);letter-spacing:.01em;line-height:1;color:var(--dx-fav-ink) !important}
 .dx-fav-subtitle{margin:8px 0 0;font-size:.82rem;letter-spacing:.01em;color:var(--dx-fav-muted)}
 .dx-fav-tabs{display:flex;gap:clamp(14px,2vw,26px);flex-wrap:wrap;align-items:center}
 /* Tabs mirror the polls nav: gradient underline that wipes in on hover/active. */
@@ -1860,7 +1865,7 @@
   padding-top:var(--dx-fav-gap);
 }
 .dx-fav-body::-webkit-scrollbar{width:9px}
-.dx-fav-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.16);border-radius:9px}
+.dx-fav-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:9px}
 
 .dx-fav-list{display:grid;gap:0}
 .dx-fav-row{
@@ -1874,7 +1879,7 @@
 .dx-fav-row-meta code{font-family:var(--font-body,'Courier New',monospace);font-size:.72rem;letter-spacing:.02em;color:var(--dx-fav-ink);text-transform:none}
 .dx-fav-tag{color:var(--dx-fav-accent)}
 .dx-fav-row-title{position:relative;margin:0;font-family:var(--font-heading,'Typefesse',sans-serif);font-size:clamp(1rem,1.3vw,1.18rem);line-height:1.16;letter-spacing:.01em;text-transform:uppercase;transition:color .15s ease}
-.dx-fav-row:hover .dx-fav-row-title{color:#fff;mix-blend-mode:exclusion;isolation:auto}
+.dx-fav-row:hover .dx-fav-row-title{color:var(--dx-fav-accent);mix-blend-mode:normal;isolation:auto}
 .dx-fav-row-actions{flex:0 0 auto;display:flex;align-items:center;gap:18px}
 .dx-fav-open,.dx-fav-remove{
   appearance:none;background:none;border:0;cursor:pointer;padding:0;
@@ -1982,7 +1987,7 @@
   shell.innerHTML = `
     <header class="dx-fav-head">
       <div>
-        <h1 class="dx-fav-title">Favorites</h1>
+        <h1 class="dx-fav-title" data-dx-heading-randomize="false" data-dx-heading-preserve-canonical="1">Favorites</h1>
         <p class="dx-fav-subtitle">Saved entries, buckets, and files.</p>
       </div>
       <nav class="dx-fav-tabs" role="tablist" aria-label="Favorite type">
@@ -1998,6 +2003,18 @@
     <div class="dx-fav-body"><div class="dx-fav-list" id="dex-fav-list"></div></div>
   `;
   root.append(shell);
+
+  function decorateFavoritesTitle(){
+    const title = shell.querySelector('.dx-fav-title');
+    if (!(title instanceof HTMLElement)) return;
+    const canonical = 'FAVORITES';
+    const rendered = 'FAVO\u200dORITES';
+    title.textContent = rendered;
+    title.setAttribute('data-dx-heading-canonical', canonical);
+    title.setAttribute('data-dx-heading-rendered', rendered);
+    title.setAttribute('data-dx-heading-signature', `favorites:title|0|${canonical}`);
+  }
+  decorateFavoritesTitle();
 
   const list = shell.querySelector('#dex-fav-list');
   const clearBtn = shell.querySelector('#dex-clear');

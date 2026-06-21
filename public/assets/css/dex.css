@@ -1663,7 +1663,6 @@ body.dx-route-profile-protected :is(
   #dex-achv,
   #dex-console
 ) > .dex-sidebar,
-#dex-settings,
 #dex-settings .bgcard {
   background: transparent !important;
   border: 0 !important;
@@ -1681,7 +1680,6 @@ body.dx-route-profile-protected :is(
   #dex-achv,
   #dex-console
 ) > .dex-sidebar,
-body.dx-route-profile-protected #dex-settings,
 body.dx-route-profile-protected #dex-settings .bgcard {
   background: transparent !important;
   border: 0 !important;
@@ -1745,18 +1743,16 @@ body.dx-route-profile-protected :is(
   padding: clamp(14px, 1.8vw, 22px) !important;
 }
 
-/* Polls/favorites are flat type surfaces; leave the mesh available to blended glyphs. */
+/* Polls/favorites start transparent; their route shells carry the black glass. */
 body.dx-route-profile-protected :is(
   #dex-console[data-dx-polls-app],
   #dex-favorites
 ),
 body.dx-route-profile-protected :is(
   #dex-console[data-dx-polls-app] .dx-polls-route-shell,
-  #dex-console[data-dx-polls-app] .dx-polls-shell,
   #dex-console[data-dx-polls-app] .dx-polls-head,
   #dex-console[data-dx-polls-app] .dx-polls-body,
   #dex-console[data-dx-polls-app] .dx-poll-card,
-  #dex-favorites .dx-fav-shell,
   #dex-favorites .dx-fav-head,
   #dex-favorites .dx-fav-toolbar,
   #dex-favorites .dx-fav-body,
@@ -1884,13 +1880,22 @@ body.dx-route-profile-protected #dex-achv .dx-achievement-card {
 }
 
 /* Flip display text to light on settings + achievements. Inputs / selects /
-   textareas / buttons are deliberately left alone so form fields keep their own
-   contrast. */
+   textareas are deliberately left alone so form fields keep their own contrast. */
 body.dx-route-profile-protected #dex-settings :is(
   h1, h2, h3, h4, p, label, span, strong, em, small, li, dt, dd, code, .sub, .note
 ),
 body.dx-route-profile-protected #dex-achv :is(
   h1, h2, h3, h4, p, label, span, strong, em, small, li, dt, dd
+) {
+  color: var(--dx-blackglass-ink) !important;
+}
+
+body.dx-route-profile-protected #dex-achv :is(
+  .dx-achievements-actions .dx-button-element,
+  .dx-achievements-nav .dx-button-element,
+  .dx-achievement-claim,
+  .dx-achievements-history-actions .dx-button-element,
+  .dx-achievements-empty .dx-button-element
 ) {
   color: var(--dx-blackglass-ink) !important;
 }

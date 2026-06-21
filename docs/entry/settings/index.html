@@ -1669,13 +1669,17 @@
       --gap: var(--space-3, 14px);
       --radius: var(--radius-lg, 16px);
       --radius-sm: var(--radius-md, 10px);
-      --glass-bg: var(--liquid-bg, rgba(255,255,255,.18));
-      --glass-brd: var(--liquid-border, rgba(255,255,255,.35));
-      --shadow-1: 0 6px 20px rgba(0,0,0,.08);
-      --shadow-2: 0 10px 28px rgba(0,0,0,.12);
+      --settings-glass-bg: linear-gradient(145deg, rgba(15,16,21,.68) 0%, rgba(9,10,14,.54) 100%);
+      --settings-glass-brd: rgba(255,255,255,.14);
+      --settings-glass-shadow: 0 18px 42px rgba(0,0,0,.42);
+      --settings-glass-backdrop: blur(22px) saturate(135%);
+      --glass-bg: var(--dx-blackglass-bg, var(--settings-glass-bg));
+      --glass-brd: var(--dx-blackglass-rim, var(--settings-glass-brd));
+      --shadow-1: var(--dx-blackglass-shadow, var(--settings-glass-shadow));
+      --shadow-2: var(--dx-blackglass-shadow, var(--settings-glass-shadow));
       --accent: var(--dex-accent,#ff1910);
-      --muted: rgba(0,0,0,.7);
-      color:#000; width:100%; max-width:none; margin-inline:auto; padding:var(--pad);
+      --muted: rgba(255,255,255,.66);
+      color:#f3f3f4; width:100%; max-width:none; margin-inline:auto; padding:var(--pad);
       position: relative;
       font: 14px/1.45 var(--font-body, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif);
     }
@@ -1729,7 +1733,7 @@
       padding:.32rem .56rem; border:1px solid var(--glass-brd);
       background: var(--glass-bg); border-radius:9999px; cursor:pointer;
       font:700 clamp(11px,1vw,12px) var(--font-heading,'Typefesse',sans-serif);
-      text-transform:uppercase; letter-spacing:.02em; color:#000;
+      text-transform:uppercase; letter-spacing:.02em; color:#f3f3f4;
       transition: transform .14s cubic-bezier(.2,.7,.2,1), box-shadow .20s cubic-bezier(.2,.7,.2,1);
     }
     @media(hover:hover){ #dex-settings .pill:hover{ transform: translateY(-1px); } }
@@ -1751,7 +1755,7 @@
       border:1px solid var(--glass-brd); background: var(--glass-bg);
       display:flex; align-items:center; justify-content:center; cursor:pointer;
       box-shadow: var(--shadow-1);
-      color:#000;
+      color:#f3f3f4;
     }
     #dex-settings .nav svg{
       width:24px;
@@ -1786,7 +1790,7 @@
       box-shadow: var(--shadow-1); padding: var(--pad-2);
     }
     #dex-settings .card h2{ margin:0 0 8px 0; font:700 clamp(16px,2vw,18px) var(--font-heading,'Typefesse',sans-serif); text-transform:uppercase; }
-    #dex-settings .btn{ display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; cursor:pointer; border:1px solid var(--glass-brd); background: var(--glass-bg); color:#000; }
+    #dex-settings .btn{ display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; cursor:pointer; border:1px solid var(--glass-brd); background: var(--glass-bg); color:#f3f3f4; }
     #dex-settings .btn.primary{ background: linear-gradient(130deg, var(--accent), orange); color:#fff; border-color:transparent; box-shadow: 0 10px 30px rgba(255,0,80,.25); }
     #dex-settings .note{ color: var(--muted); font-size:12.5px; }
     #dex-settings [role="tabpanel"][hidden]{ display:none; }
@@ -2643,21 +2647,32 @@
 .dx-block:has(#dex-settings){ padding-left:0 !important; padding-right:0 !important; }
 .page-section:has(#dex-settings) .content{ padding-left:0 !important; padding-right:0 !important; }
 
-/* === Settings route consolidation: borrow the flat polls/favorites surface === */
+/* === Settings route consolidation: account-route black glass surface === */
 #dex-settings{
   --pad: clamp(14px, 1.6vw, 22px);
   --pad-2: clamp(14px, 1.8vw, 24px);
   --gap: clamp(16px, 2vw, 28px);
-  --radius: 4px;
+  --radius: var(--dx-header-glass-radius, 10px);
   --radius-sm: 4px;
-  --glass-bg: transparent;
-  --glass-brd: rgba(0,0,0,.14);
-  --shadow-1: none;
-  --shadow-2: none;
-  --muted: rgba(0,0,0,.62);
+  --settings-glass-bg: linear-gradient(145deg, rgba(15,16,21,.68) 0%, rgba(9,10,14,.54) 100%);
+  --settings-glass-brd: rgba(255,255,255,.14);
+  --settings-glass-shadow: 0 18px 42px rgba(0,0,0,.42);
+  --settings-glass-backdrop: blur(22px) saturate(135%);
+  --glass-bg: var(--dx-blackglass-bg, var(--settings-glass-bg));
+  --glass-brd: var(--dx-blackglass-rim, var(--settings-glass-brd));
+  --shadow-1: var(--dx-blackglass-shadow, var(--settings-glass-shadow));
+  --shadow-2: var(--dx-blackglass-shadow, var(--settings-glass-shadow));
+  --muted: var(--dx-blackglass-muted, rgba(255,255,255,.66));
   width:min(100%, var(--dx-header-frame-width, 100%));
   max-width:var(--dx-header-frame-width, 100%);
-  padding:clamp(14px, 2vw, 26px) 0;
+  padding:clamp(18px, 2.2vw, 30px);
+  border:1px solid var(--glass-brd) !important;
+  border-radius:var(--radius) !important;
+  background:var(--glass-bg) !important;
+  box-shadow:var(--shadow-1) !important;
+  -webkit-backdrop-filter:var(--settings-glass-backdrop) !important;
+  backdrop-filter:var(--settings-glass-backdrop) !important;
+  color:var(--dx-blackglass-ink, #f3f3f4);
   isolation:auto;
 }
 #dex-settings .hdr{
@@ -2665,7 +2680,7 @@
   top:auto;
   padding:0 0 clamp(14px, 1.8vw, 22px);
   border:0;
-  border-bottom:1px solid rgba(0,0,0,.16);
+  border-bottom:1px solid var(--glass-brd);
   border-radius:0;
   background:transparent;
   box-shadow:none;
@@ -2675,7 +2690,7 @@
 #dex-settings .hdr h1{
   font-size:clamp(2.45rem, 5.7vw, 4.75rem);
   line-height:.86;
-  color:#191a20;
+  color:var(--dx-blackglass-ink, #f3f3f4);
 }
 #dex-settings .hdr .sub{
   margin:.72rem 0 0;
@@ -2688,9 +2703,9 @@
   margin:0;
   padding:12px 48px;
   border:0;
-  border-bottom:1px solid rgba(0,0,0,.14);
+  border-bottom:1px solid var(--glass-brd);
   border-radius:0;
-  background:rgba(255,255,255,.7);
+  background:rgba(255,255,255,.08);
   box-shadow:none;
   -webkit-backdrop-filter:blur(16px) saturate(116%);
   backdrop-filter:blur(16px) saturate(116%);
@@ -2701,10 +2716,10 @@
 #dex-settings .pill{
   min-height:38px;
   padding:.48rem .72rem;
-  border-color:rgba(0,0,0,.16);
-  background:rgba(255,255,255,.48);
+  border-color:var(--glass-brd);
+  background:rgba(255,255,255,.1);
   box-shadow:none;
-  color:#101218;
+  color:var(--dx-blackglass-ink, #f3f3f4);
 }
 #dex-settings .pill[aria-selected="true"]{
   border:0;
@@ -2716,6 +2731,7 @@
   border:0;
   background:transparent;
   box-shadow:none;
+  color:var(--dx-blackglass-ink, #f3f3f4);
 }
 #dex-settings .grid{
   gap:clamp(20px, 2.4vw, 38px);
@@ -2723,7 +2739,7 @@
 }
 #dex-settings .card{
   border:0;
-  border-top:1px solid rgba(0,0,0,.14);
+  border-top:1px solid var(--glass-brd);
   border-radius:0;
   background:transparent;
   box-shadow:none;
@@ -2740,7 +2756,7 @@
 }
 #dex-settings .card-head{
   align-items:flex-start;
-  border-bottom:1px solid rgba(0,0,0,.12);
+  border-bottom:1px solid var(--glass-brd);
   margin-bottom:12px;
   padding-bottom:10px;
 }
@@ -2748,7 +2764,7 @@
   margin:0;
   font-size:clamp(1.18rem, 2.4vw, 1.75rem);
   line-height:.95;
-  color:#1a1b20;
+  color:var(--dx-blackglass-ink, #f3f3f4);
 }
 #dex-settings #pane-profile .twocol{
   gap:clamp(22px, 3vw, 52px);
@@ -2758,7 +2774,7 @@
     grid-template-columns:minmax(0, 1fr) minmax(280px, 390px);
   }
   #dex-settings #pane-profile .profile-col-right{
-    border-left:1px solid rgba(0,0,0,.12);
+    border-left:1px solid var(--glass-brd);
     padding-left:clamp(18px, 2.2vw, 32px);
   }
 }
@@ -2770,7 +2786,7 @@
 }
 #dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-subcard{
   border:0 !important;
-  border-top:1px solid rgba(0,0,0,.12) !important;
+  border-top:1px solid var(--glass-brd) !important;
   border-radius:0 !important;
   background:transparent !important;
   box-shadow:none !important;
@@ -2783,28 +2799,30 @@
 #dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-kicker{
   margin:0 0 10px !important;
   letter-spacing:.1em !important;
-  color:rgba(0,0,0,.56) !important;
+  color:var(--muted) !important;
 }
 #dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-meta-row{
-  border-bottom:1px solid rgba(0,0,0,.12) !important;
+  border-bottom:1px solid var(--glass-brd) !important;
   padding:9px 0 !important;
 }
 #dex-settings :is(.dx-profile-input, .tokens, .readonly, .suggestions, .billing-status, .dx-delete-meta, .dx-delete-phrase-shell, .dx-delete-input, .tier, .interval, .save-status, .badge, .provider-chip, .chips .chip){
-  border-color:rgba(0,0,0,.14) !important;
-  background:rgba(255,255,255,.54) !important;
+  border-color:var(--glass-brd) !important;
+  background:rgba(255,255,255,.1) !important;
   box-shadow:none !important;
+  color:var(--dx-blackglass-ink, #f3f3f4);
 }
 #dex-settings .item,
 #dex-settings .dx-delete-meta .item,
 #dex-settings .billing-status .item{
-  border-bottom:1px solid rgba(0,0,0,.12);
+  border-bottom:1px solid var(--glass-brd);
 }
 #dex-settings .btn,
 #dex-settings .ghost,
 #dex-settings .cta-primary{
-  border-color:rgba(0,0,0,.14);
-  background:rgba(255,255,255,.46);
+  border-color:var(--glass-brd);
+  background:rgba(255,255,255,.1);
   box-shadow:none;
+  color:var(--dx-blackglass-ink, #f3f3f4);
 }
 #dex-settings .btn.primary,
 #dex-settings .cta,
@@ -2814,9 +2832,9 @@
 }
 #dex-settings .savebar{
   border:0;
-  border-top:1px solid rgba(0,0,0,.14);
+  border-top:1px solid var(--glass-brd);
   border-radius:0;
-  background:rgba(255,255,255,.72);
+  background:rgba(10,12,16,.64);
   box-shadow:none;
 }
 #dex-settings #securityCard .list{
@@ -2863,31 +2881,32 @@
 body.dx-route-profile-protected #dex-settings{
   --pad: clamp(14px, 1.6vw, 22px) !important;
   --gap: clamp(16px, 2vw, 28px) !important;
+  --glass-bg: var(--dx-blackglass-bg, var(--settings-glass-bg)) !important;
+  --glass-brd: var(--dx-blackglass-rim, var(--settings-glass-brd)) !important;
+  --shadow-1: var(--dx-blackglass-shadow, var(--settings-glass-shadow)) !important;
+  --shadow-2: var(--dx-blackglass-shadow, var(--settings-glass-shadow)) !important;
+  --muted: var(--dx-blackglass-muted, rgba(255,255,255,.66)) !important;
   padding-top:clamp(14px, 2vw, 26px) !important;
   padding-bottom:clamp(14px, 2vw, 26px) !important;
-}
-body.dx-route-profile-protected #dex-settings .hdr,
-body.dx-route-profile-protected #dex-settings .tabsbar,
-body.dx-route-profile-protected #dex-settings .card,
-body.dx-route-profile-protected #dex-settings .savebar{
-  border-radius:0 !important;
-  background:transparent !important;
-  box-shadow:none !important;
-  -webkit-backdrop-filter:none !important;
-  backdrop-filter:none !important;
+  color:var(--dx-blackglass-ink, #f3f3f4) !important;
 }
 body.dx-route-profile-protected #dex-settings .hdr{
   border:0 !important;
-  border-bottom:1px solid rgba(0,0,0,.16) !important;
+  border-bottom:1px solid var(--glass-brd) !important;
+  background:transparent !important;
+  box-shadow:none !important;
 }
 body.dx-route-profile-protected #dex-settings .tabsbar{
   border:0 !important;
-  border-bottom:1px solid rgba(0,0,0,.14) !important;
-  background:rgba(255,255,255,.72) !important;
+  border-bottom:1px solid var(--glass-brd) !important;
+  background:rgba(255,255,255,.08) !important;
+  box-shadow:none !important;
 }
 body.dx-route-profile-protected #dex-settings .card{
   border:0 !important;
-  border-top:1px solid rgba(0,0,0,.14) !important;
+  border-top:1px solid var(--glass-brd) !important;
+  background:transparent !important;
+  box-shadow:none !important;
 }
 body.dx-route-profile-protected #dex-settings .profile-col-left .card:first-child,
 body.dx-route-profile-protected #dex-settings .profile-col-right .card:first-child,
@@ -2897,16 +2916,20 @@ body.dx-route-profile-protected #dex-settings #pane-notifs > .card:first-child{
 }
 body.dx-route-profile-protected #dex-settings .savebar{
   border:0 !important;
-  border-top:1px solid rgba(0,0,0,.14) !important;
-  background:rgba(255,255,255,.72) !important;
+  border-top:1px solid var(--glass-brd) !important;
+  background:rgba(10,12,16,.64) !important;
+  box-shadow:none !important;
 }
 body.dx-route-profile-protected #dex-settings #dxMembershipV3Root :is(.dx-memv3-card, .dx-memv3-status, .dx-memv3-tier, .dx-memv3-plan-panel, .dx-memv3-tier-composer){
-  border-color:rgba(0,0,0,.14) !important;
+  border-color:var(--glass-brd) !important;
   border-radius:4px !important;
-  background:transparent !important;
+  background:rgba(255,255,255,.08) !important;
   box-shadow:none !important;
   -webkit-backdrop-filter:none !important;
   backdrop-filter:none !important;
+}
+body.dx-route-profile-protected #dex-settings :is(h1,h2,h3,h4,p,label,span,strong,em,small,li,dt,dd,code,.sub,.note,.meta,.dx-profile-kicker,.dx-profile-meta-value){
+  color:var(--dx-blackglass-ink, #f3f3f4) !important;
 }
 
   </style>

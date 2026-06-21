@@ -21,6 +21,7 @@
     tab: DEFAULT_TAB,
     pollId: '',
     closedPage: 1,
+    archiveDrawerOpen: false,
     authSnapshot: {
       auth: null,
       authenticated: false,
@@ -372,11 +373,11 @@
     style.textContent = `
       .dx-polls-shell{
         --dx-polls-gap: clamp(14px,1.6vw,20px);
-        --dx-polls-line: rgba(0,0,0,.12);
-        --dx-polls-line-strong: rgba(0,0,0,.22);
-        --dx-polls-ink:#1a1a1a;
-        --dx-polls-muted:#6b6b6b;
-        --dx-polls-faint:#9a9a9a;
+        --dx-polls-line: rgba(255,255,255,.14);
+        --dx-polls-line-strong: rgba(255,255,255,.26);
+        --dx-polls-ink:#f3f3f4;
+        --dx-polls-muted:rgba(255,255,255,.66);
+        --dx-polls-faint:rgba(255,255,255,.42);
         --dx-polls-accent:#ff2d13;
         width:var(--dx-header-frame-width);
         max-width:var(--dx-header-frame-width);
@@ -400,14 +401,14 @@
         padding-bottom:var(--dx-polls-gap);
         border-bottom:1px solid var(--dx-polls-line-strong);
       }
-      .dx-polls-title{margin:0;font-family:var(--font-heading);text-transform:uppercase;font-size:clamp(1.6rem,4vw,2.5rem);letter-spacing:.01em;line-height:1}
+      .dx-polls-title{margin:0;font-family:var(--font-heading);text-transform:uppercase;font-size:clamp(1.6rem,4vw,2.5rem);letter-spacing:.01em;line-height:1;color:var(--dx-polls-ink)!important}
       .dx-polls-subtitle{margin:8px 0 0 0;font-family:var(--font-body);font-size:.82rem;letter-spacing:.01em;color:var(--dx-polls-muted)}
       .dx-polls-tabs{display:flex;gap:clamp(14px,2vw,26px);flex-wrap:wrap;align-items:center}
       /* Tabs mirror the header nav: gradient underline that wipes in on hover/active. */
       .dx-polls-tab{
         appearance:none;background:none;border:0;cursor:pointer;padding:0 0 7px;position:relative;
         font-family:var(--font-body);font-size:.72rem;text-transform:uppercase;letter-spacing:.16em;
-        color:#fff;mix-blend-mode:exclusion;isolation:auto;text-shadow:none;
+        color:var(--dx-polls-ink);mix-blend-mode:normal;isolation:auto;text-shadow:none;
         transition:transform .2s ease;
       }
       .dx-polls-tab::after{
@@ -426,7 +427,7 @@
         align-items:start;
       }
       .dx-polls-body::-webkit-scrollbar{width:9px}
-      .dx-polls-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.16);border-radius:9px}
+      .dx-polls-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:9px}
       .dx-polls-col{min-height:0}
       .dx-polls-col--detail{
         position:sticky;top:0;align-self:start;
@@ -435,9 +436,48 @@
       }
 
       .dx-polls-section + .dx-polls-section{margin-top:28px}
+      .dx-polls-section--current{display:grid;gap:10px}
+      .dx-polls-section--current .dx-polls-list{gap:4px}
+      .dx-polls-section--current .dx-poll-card{padding-block:clamp(18px,2.1vw,28px)}
+      .dx-polls-section--current .dx-poll-question{font-size:clamp(1.22rem,2vw,1.72rem)}
+      .dx-polls-archive-drawer{
+        margin-top:clamp(20px,2.2vw,28px);
+        border-top:1px solid var(--dx-polls-line);
+        border-bottom:1px solid var(--dx-polls-line);
+      }
+      .dx-polls-archive-drawer > summary{
+        min-height:48px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:14px;
+        cursor:pointer;
+        list-style:none;
+        color:var(--dx-polls-ink);
+        font-family:var(--font-body);
+        font-size:.72rem;
+        letter-spacing:.14em;
+        text-transform:uppercase;
+      }
+      .dx-polls-archive-drawer > summary::-webkit-details-marker{display:none}
+      .dx-polls-archive-drawer > summary::after{
+        content:"+";
+        font-family:var(--font-heading);
+        font-size:1rem;
+        line-height:1;
+        color:var(--dx-polls-accent);
+      }
+      .dx-polls-archive-drawer[open] > summary::after{content:"-"}
+      .dx-polls-archive-count{
+        color:var(--dx-polls-muted);
+        font-family:var(--font-body);
+        font-size:.68rem;
+        letter-spacing:.08em;
+      }
+      .dx-polls-archive-panel{padding:0 0 clamp(12px,1.5vw,18px)}
       .dx-polls-section-label{margin:0 0 4px;font-family:var(--font-body);font-size:.66rem;text-transform:uppercase;letter-spacing:.16em;color:var(--dx-polls-muted)}
       .dx-polls-detail > .dx-polls-section-label,
-      .dx-polls-detail > .dx-polls-empty{color:#fff;mix-blend-mode:exclusion;isolation:auto;text-shadow:none}
+      .dx-polls-detail > .dx-polls-empty{color:var(--dx-polls-muted);mix-blend-mode:normal;isolation:auto;text-shadow:none}
 
       .dx-polls-list{display:grid;gap:0}
       .dx-poll-card{
@@ -447,7 +487,7 @@
       }
       .dx-poll-card:first-child{border-top:0}
       .dx-poll-card.is-locked{opacity:.72}
-      .dx-poll-card:hover .dx-poll-question{color:#fff;mix-blend-mode:exclusion;isolation:auto}
+      .dx-poll-card:hover .dx-poll-question{color:var(--dx-polls-accent);mix-blend-mode:normal;isolation:auto}
       .dx-poll-card-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
       .dx-poll-chip{font-family:var(--font-body);font-size:.62rem;text-transform:uppercase;letter-spacing:.14em;color:var(--dx-polls-muted)}
       .dx-poll-chip.is-accent{color:var(--dx-polls-accent)}
@@ -662,14 +702,24 @@
 
     const listBody = state.tab === 'open'
       ? `
-          <div class="dx-polls-section">
-            <p class="dx-polls-section-label">Open</p>
+          <div class="dx-polls-section dx-polls-section--current">
+            <p class="dx-polls-section-label">Current polls</p>
             <div class="dx-polls-list">${openCards}</div>
           </div>
-          <div class="dx-polls-section">
-            <p class="dx-polls-section-label">Recently closed</p>
-            <div class="dx-polls-list">${archiveCards}</div>
-          </div>
+          <details class="dx-polls-archive-drawer" data-dx-polls-archive-drawer="true" ${state.archiveDrawerOpen ? 'open' : ''}>
+            <summary>
+              <span>Past polls</span>
+              <span class="dx-polls-archive-count">${state.collections.closed.total} archived</span>
+            </summary>
+            <div class="dx-polls-archive-panel">
+              <div class="dx-polls-list">${archiveCards}</div>
+              <div class="dx-polls-pager">
+                <button type="button" class="dx-poll-action" data-dx-poll-closed-prev="true" ${state.collections.closed.page <= 1 ? 'disabled' : ''}>Previous</button>
+                <span class="dx-poll-meta">Page ${state.collections.closed.page} of ${state.collections.closed.pages}</span>
+                <button type="button" class="dx-poll-action" data-dx-poll-closed-next="true" ${state.collections.closed.page >= state.collections.closed.pages ? 'disabled' : ''}>Next</button>
+              </div>
+            </div>
+          </details>
         `
       : state.tab === 'results'
         ? `
@@ -833,6 +883,13 @@
         bindActions(root);
       });
     });
+
+    const archiveDrawer = root.querySelector('[data-dx-polls-archive-drawer]');
+    if (archiveDrawer) {
+      archiveDrawer.addEventListener('toggle', () => {
+        state.archiveDrawerOpen = Boolean(archiveDrawer.open);
+      });
+    }
 
     const prev = root.querySelector('[data-dx-poll-closed-prev]');
     if (prev) {

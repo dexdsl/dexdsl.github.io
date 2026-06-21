@@ -1,7 +1,6 @@
 import { animate } from 'framer-motion/dom';
 import Fuse from 'fuse.js';
 import { bindDexButtonMotion, prefersReducedMotion, revealStagger } from './shared/dx-motion.entry.mjs';
-import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry.mjs';
 import { mountPollEmbeds } from './shared/dx-polls-embed.entry.mjs';
 
 (() => {
@@ -345,6 +344,38 @@ import { mountPollEmbeds } from './shared/dx-polls-embed.entry.mjs';
     listRoot.appendChild(list);
   }
 
+  function renderLeadStory(parent) {
+    const lead = model?.lead_story || (Array.isArray(model?.posts) ? model.posts[0] : null);
+    if (!lead) return;
+
+    const leadCard = create('article', 'dx-dexnotes-lead-card');
+    if (lead.cover_image_src) {
+      const media = create('a', 'dx-dexnotes-lead-media');
+      media.href = lead.route_path;
+      const image = create('img', 'dx-dexnotes-lead-image');
+      image.src = lead.cover_image_src;
+      image.alt = lead.cover_image_alt_raw || lead.title_raw || '';
+      image.loading = 'eager';
+      image.decoding = 'async';
+      media.appendChild(image);
+      leadCard.appendChild(media);
+    }
+
+    const body = create('div', 'dx-dexnotes-lead-body');
+    body.appendChild(buildMetaRail(lead));
+    const title = create('h2', 'dx-dexnotes-lead-title');
+    const link = create('a', 'dx-dexnotes-lead-link', lead.title_raw);
+    link.href = lead.route_path;
+    title.appendChild(link);
+    body.appendChild(title);
+    body.appendChild(create('p', 'dx-dexnotes-copy', lead.excerpt_raw || ''));
+    const read = create('a', 'dx-button-element dx-button-size--sm dx-button-element--primary dx-dexnotes-lead-cta', 'READ FEATURED');
+    read.href = lead.route_path;
+    body.appendChild(read);
+    leadCard.appendChild(body);
+    parent.appendChild(leadCard);
+  }
+
   function animateDrawer(drawer, isOpen) {
     if (prefersReducedMotion()) return;
     animate(
@@ -384,12 +415,12 @@ import { mountPollEmbeds } from './shared/dx-polls-embed.entry.mjs';
 
     clearNode(app);
 
-    const controls = create('section', 'dx-dexnotes-surface dx-dexnotes-controls dx-dexnotes-reveal');
-    controls.classList.add('dx-dexnotes-intro');
+    const controls = create('section', 'dx-dexnotes-surface dx-dexnotes-controls dx-dexnotes-landing dx-dexnotes-reveal');
     const introHead = create('div', 'dx-dexnotes-intro-head');
     introHead.appendChild(create('h1', 'dx-dexnotes-title', 'DEX NOTES'));
-    introHead.appendChild(create('p', 'dx-dexnotes-copy dx-dexnotes-intro-subtitle', 'updates • liner notes • artist pages'));
+    introHead.appendChild(create('p', 'dx-dexnotes-copy dx-dexnotes-intro-subtitle', 'stories, releases, and field notes from the Dex archive'));
     controls.appendChild(introHead);
+    renderLeadStory(controls);
 
     const controlsTop = create('div', 'dx-dexnotes-controls-top');
 
@@ -510,35 +541,8 @@ import { mountPollEmbeds } from './shared/dx-polls-embed.entry.mjs';
     controls.appendChild(drawer);
     app.appendChild(controls);
 
-    const newsletter = create('section', 'dx-dexnotes-surface dx-dexnotes-newsletter dx-dexnotes-reveal');
-    newsletter.appendChild(create('p', 'dx-dexnotes-kicker', 'Newsletter'));
-    newsletter.appendChild(create('h2', 'dx-dexnotes-list-title', 'Get new notes and releases in your inbox.'));
-    newsletter.appendChild(
-      create(
-        'p',
-        'dx-dexnotes-copy dx-dexnotes-newsletter-copy',
-        'Weekly digest with Dex Notes stories, release callouts, and upcoming opportunities.',
-      ),
-    );
-    const newsletterMount = create('div', 'dx-dexnotes-newsletter-mount');
-    newsletterMount.setAttribute('data-dx-marketing-newsletter-mount', 'dexnotes-index-page');
-    newsletter.appendChild(newsletterMount);
-    const newsletterPrivacy = create('a', 'dx-dexnotes-newsletter-privacy', 'Read privacy policy');
-    newsletterPrivacy.href = '/privacy/';
-    newsletter.appendChild(newsletterPrivacy);
-    app.appendChild(newsletter);
-    mountMarketingNewsletter(newsletterMount, {
-      source: 'dexnotes-index-page',
-      formClassName: 'dx-dexnotes-newsletter-form',
-      inputClassName: 'dx-dexnotes-newsletter-input',
-      submitClassName: 'dx-button-element dx-button-size--sm dx-button-element--secondary dx-dexnotes-newsletter-submit',
-      feedbackClassName: 'dx-dexnotes-newsletter-feedback',
-      submitLabel: 'Subscribe',
-      submitBusyLabel: 'Submitting...',
-    });
-
     const listSection = create('section', 'dx-dexnotes-surface dx-dexnotes-list dx-dexnotes-reveal');
-    listSection.appendChild(create('h2', 'dx-dexnotes-list-title', 'LATEST DEX NOTES'));
+    listSection.appendChild(create('h2', 'dx-dexnotes-list-title', state.q || state.category !== 'all' || state.tag !== 'all' || state.author !== 'all' ? 'MATCHING STORIES' : 'STORIES'));
     listSection.appendChild(create('p', 'dx-dexnotes-copy dx-dexnotes-list-subtitle', `${posts.length} stories in the archive`));
 
     const listRoot = create('div', 'dx-dexnotes-list-root');

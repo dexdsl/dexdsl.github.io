@@ -186,6 +186,10 @@ const SYNC_MAP = [
     targets: ['css/components/dx-dexnotes-entry.css', 'docs/css/components/dx-dexnotes-entry.css'],
   },
   {
+    source: 'public/css/components/dx-board.css',
+    targets: ['css/components/dx-board.css', 'docs/css/components/dx-board.css'],
+  },
+  {
     source: 'public/assets/js/catalog.index.js',
     targets: ['assets/js/catalog.index.js', 'docs/assets/js/catalog.index.js'],
   },

@@ -18,6 +18,7 @@ const FILES = {
   pressroomRuntime: path.join(ROOT, 'public', 'assets', 'js', 'pressroom.js'),
   pressroomRuntimeSource: path.join(ROOT, 'scripts', 'src', 'pressroom.entry.mjs'),
   sidebarRuntime: path.join(ROOT, 'public', 'assets', 'dex-sidebar.js'),
+  authRuntime: path.join(ROOT, 'public', 'assets', 'dex-auth.js'),
 };
 
 const COVERED_ROUTES = [
@@ -30,6 +31,16 @@ const COVERED_ROUTES = [
   { file: 'docs/entry/achievements/index.html', rootId: 'dex-achv', loader: true },
   // Legacy redirect shell renders an empty hidden root; runtime hydrates it.
   { file: 'docs/messages.html', rootId: 'dex-msg', loader: false },
+];
+
+const ACCOUNT_MENU_ROUTE_CONTRACTS = [
+  { label: 'Favorites', href: '/entry/favorites/', file: 'docs/entry/favorites/index.html', rootId: 'dex-favorites' },
+  { label: 'Polls', href: '/polls', file: 'docs/polls/index.html', rootId: 'dex-console' },
+  { label: 'Submit Samples', href: '/entry/submit/', file: 'docs/entry/submit/index.html', rootId: 'dex-submit' },
+  { label: 'Messages', href: '/entry/messages/', file: 'docs/entry/messages/index.html', rootId: 'dex-msg' },
+  { label: 'Press Room', href: '/entry/pressroom/', file: 'docs/entry/pressroom/index.html', rootId: 'dex-press' },
+  { label: 'Settings', href: '/entry/settings/', file: 'docs/entry/settings/index.html', rootId: 'dex-settings' },
+  { label: 'Achievements', href: '/entry/achievements/', file: 'docs/entry/achievements/index.html', rootId: 'dex-achv' },
 ];
 
 // The gated account routes must use the minimal progress-style loader, not the
@@ -189,6 +200,24 @@ function verifyRouteContracts(failures) {
   }
 }
 
+function verifyAccountMenuLoaderCoverage(failures) {
+  const authRuntime = readText(FILES.authRuntime);
+
+  for (const contract of ACCOUNT_MENU_ROUTE_CONTRACTS) {
+    const menuNeedle = `getMenuLinkMarkup("${contract.href}", "${contract.label}"`;
+    if (!authRuntime.includes(menuNeedle)) {
+      failures.push(`public/assets/dex-auth.js account menu missing ${contract.label} route ${contract.href}`);
+    }
+
+    const routeContract = COVERED_ROUTES.find((route) => route.file === contract.file && route.rootId === contract.rootId);
+    if (!routeContract) {
+      failures.push(`${contract.label} account route is not listed in COVERED_ROUTES`);
+    } else if (!routeContract.loader) {
+      failures.push(`${contract.label} account route must participate in dx-route-loader`);
+    }
+  }
+}
+
 function verifyRouteLoaderCss(failures) {
   const css = readText(FILES.baseCss);
   for (const marker of REQUIRED_ROUTE_LOADER_MARKERS) {
@@ -256,6 +285,7 @@ function main() {
   const failures = [];
 
   verifyRouteContracts(failures);
+  verifyAccountMenuLoaderCoverage(failures);
   verifyRouteLoaderCss(failures);
   verifyAchievementsRuntimeTimeoutContract(failures);
   verifyEntrySidebarFetchContract(failures);

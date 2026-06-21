@@ -96,7 +96,7 @@
   --dx-safe-right-max: env(safe-area-max-inset-right, 0px);
   --dx-safe-bottom-max: env(safe-area-max-inset-bottom, 0px);
   --dx-safe-left-max: env(safe-area-max-inset-left, 0px);
-  --dex-scroll-line-w: 3px;
+  --dex-scroll-line-w: 4px;
   --dex-scroll-line-track: rgba(17, 23, 33, 0.07);
   --dex-scroll-line-z: 1200;
 }

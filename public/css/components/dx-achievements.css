@@ -60,6 +60,23 @@
   gap: 8px;
 }
 
+#dex-achv .dx-achievements-actions .dx-button-element,
+#dex-achv .dx-achievements-nav .dx-button-element,
+#dex-achv .dx-achievement-claim,
+#dex-achv .dx-achievements-history-actions .dx-button-element,
+#dex-achv .dx-achievements-empty .dx-button-element {
+  color: #fff;
+}
+
+#dex-achv .dx-achievements-actions .dx-button-element--secondary,
+#dex-achv .dx-achievements-nav .dx-button-element--secondary,
+#dex-achv .dx-achievement-claim.dx-button-element--secondary,
+#dex-achv .dx-achievements-history-actions .dx-button-element--secondary,
+#dex-achv .dx-achievements-empty .dx-button-element--secondary {
+  border-color: rgba(255, 255, 255, 0.32);
+  background: rgba(255, 255, 255, 0.1);
+}
+
 #dex-achv .dx-achievements-warning {
   margin: 0;
   padding: 10px 12px;

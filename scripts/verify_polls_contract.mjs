@@ -95,7 +95,9 @@ function verifyRuntimeMarkers() {
     '/trend?bucket=day&window=90d',
     'data-dx-polls-tab="open"',
     'buildPollsHref',
-    'mix-blend-mode:exclusion',
+    '--dx-polls-ink:#f3f3f4',
+    'color:var(--dx-polls-ink);mix-blend-mode:normal',
+    '.dx-poll-card:hover .dx-poll-question{color:var(--dx-polls-accent);mix-blend-mode:normal',
     '.dx-polls-detail > .dx-polls-section-label',
     '.dx-polls-detail > .dx-polls-empty',
   ];
