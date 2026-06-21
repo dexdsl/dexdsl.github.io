@@ -788,6 +788,26 @@
     }
   }
 
+  function findHeaderElement() {
+    var wrapper = document.querySelector(".header-announcement-bar-wrapper");
+    if (wrapper) {
+      var owner = wrapper.closest("header");
+      if (owner) {
+        return owner;
+      }
+      return wrapper;
+    }
+    return document.querySelector("header");
+  }
+
+  function isInsideHeader(el) {
+    if (!el) {
+      return false;
+    }
+    var header = findHeaderElement();
+    return !!(header && (header === el || header.contains(el)));
+  }
+
   function pickMount() {
     var selectors = [
       "[data-dx-auth-mount]",
@@ -811,7 +831,11 @@
       }
       return el;
     }
-    return document.body;
+    // Header chrome can be momentarily unmeasurable (zero-size/hidden) during
+    // route transitions or a persistent-chrome rebuild. Falling back to <body>
+    // here would rip the account menu out of the header and orphan it until a
+    // hard refresh, so prefer the persistent header element over <body>.
+    return findHeaderElement() || document.body;
   }
 
   function ensureAuthUi() {
@@ -867,8 +891,15 @@
         existing.innerHTML = getAuthUiMarkup();
       }
 
+      // Only relocate when it is an actual improvement. If the menu is already
+      // inside the header, never move it into a non-header fallback mount (that
+      // would orphan it in <body> during a transient layout/transition).
       if (mount && !mount.contains(existing)) {
-        mount.appendChild(existing);
+        var mountInHeader = isInsideHeader(mount);
+        var existingInHeader = isInsideHeader(existing);
+        if (mountInHeader || !existingInHeader) {
+          mount.appendChild(existing);
+        }
       }
 
       var existingCs = window.getComputedStyle(existing);
@@ -1053,6 +1084,13 @@
       }
       var parent = ui.parentNode && ui.parentNode.nodeType === 1 ? ui.parentNode : null;
       if (!parent) {
+        repairAuthUiIfMissing();
+        return;
+      }
+      // The menu drifted out of the header (e.g. orphaned into <body> by a
+      // transient mount during a route transition). Pull it back into the
+      // header now that a real mount is available again.
+      if (!isInsideHeader(ui) && findHeaderElement()) {
         repairAuthUiIfMissing();
         return;
       }

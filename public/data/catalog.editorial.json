@@ -1,6 +1,6 @@
 {
   "version": "catalog-editorial-v1",
-  "updatedAt": "2026-06-08T21:53:05.986Z",
+  "updatedAt": "2026-06-21T20:30:28.502Z",
   "manifest": [
     {
       "entry_id": "2-organs-midori-ataka",
@@ -211,16 +211,6 @@
       "performer": "Sky Macklay",
       "instrument": "PREPARED OBOE",
       "status": "active"
-    },
-    {
-      "entry_id": "smoke-title",
-      "entry_href": "/entry/smoke-title/",
-      "title_raw": "Smoke Title",
-      "lookup_number": "LOOKUP-1",
-      "season": "S2",
-      "performer": "Artist",
-      "instrument": "Synth",
-      "status": "draft"
     },
     {
       "entry_id": "snare-drum-matt-leveque",

@@ -7,8 +7,8 @@
     "lookup": "#dex-lookup"
   },
   "stats": {
-    "entries_count": 26,
-    "lookup_count": 24,
+    "entries_count": 27,
+    "lookup_count": 27,
     "seasons": [
       "S2",
       "S1"
@@ -102,6 +102,28 @@
       "performer_norm": "coleman, max & tomecek, arlo",
       "lookup_norm": "w.bsn. coto av2024 s2",
       "instrument_norm": "bassoon + electronics with generative video"
+    },
+    {
+      "id": "snare-drum-matt-leveque",
+      "title_raw": "SNARE DRUM",
+      "performer_raw": "leveque, matt",
+      "instrument_family": [
+        "PERCUSSION"
+      ],
+      "instrument_labels": [
+        "SNARE DRUM"
+      ],
+      "lookup_raw": "P.Sdr. Le AV2024 S2",
+      "season": "S2",
+      "entry_href": "/entry/snare-drum-matt-leveque/",
+      "image_src": "",
+      "image_alt_raw": "",
+      "featured": false,
+      "sort_key": "S2::P.Sdr. Le AV2024 S2",
+      "title_norm": "snare drum",
+      "performer_norm": "leveque, matt",
+      "lookup_norm": "p.sdr. le av2024 s2",
+      "instrument_norm": "snare drum"
     },
     {
       "id": "tim-feeney",

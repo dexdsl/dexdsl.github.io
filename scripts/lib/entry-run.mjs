@@ -187,13 +187,15 @@ async function syncCatalogLinkageAfterWrite(data, opts) {
     rootDir: process.cwd(),
     requireEntryExistsForStatuses: opts.dryRun ? new Set() : new Set(['active']),
   });
-  await writeCatalogEditorialFile(next, filePath);
+  if (!opts.dryRun) {
+    await writeCatalogEditorialFile(next, filePath);
+  }
 
-  const stubLines = await maybeCreateProtectedAssetsStub(config);
+  const stubLines = opts.dryRun ? [] : await maybeCreateProtectedAssetsStub(config);
   return {
     linked: true,
     lines: [
-      `✓ Linked entry ${patch.entry_id} to catalog (${config.mode})`,
+      `${opts.dryRun ? '• [dry-run] would link' : '✓ Linked'} entry ${patch.entry_id} to catalog (${config.mode})`,
       `Catalog file: ${path.resolve(filePath)}`,
       ...stubLines,
     ],

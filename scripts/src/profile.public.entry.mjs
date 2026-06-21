@@ -78,6 +78,106 @@
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   }
 
+  // Deterministic, on-brand gradient so an empty avatar never looks barren.
+  function hashSeed(value) {
+    const text = toText(value) || 'dex';
+    let hash = 2166136261;
+    for (let i = 0; i < text.length; i += 1) {
+      hash ^= text.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+      hash >>>= 0;
+    }
+    return hash >>> 0;
+  }
+
+  function avatarGradient(seedValue) {
+    const seed = hashSeed(seedValue);
+    const hueA = seed % 360;
+    const hueB = (hueA + 50 + ((seed >> 8) % 130)) % 360;
+    return { a: `hsl(${hueA}, 78%, 62%)`, b: `hsl(${hueB}, 70%, 50%)` };
+  }
+
+  // Map a social profile URL to an avatar resolver (unavatar). Best-effort:
+  // the loader falls back to the gradient when nothing resolves.
+  const SOCIAL_AVATAR_PROVIDERS = [
+    { host: /(^|\.)twitter\.com$/i, provider: 'twitter' },
+    { host: /(^|\.)x\.com$/i, provider: 'twitter' },
+    { host: /(^|\.)instagram\.com$/i, provider: 'instagram' },
+    { host: /(^|\.)tiktok\.com$/i, provider: 'tiktok' },
+    { host: /(^|\.)github\.com$/i, provider: 'github' },
+    { host: /(^|\.)soundcloud\.com$/i, provider: 'soundcloud' },
+    { host: /(^|\.)youtube\.com$/i, provider: 'youtube' },
+    { host: /(^|\.)dribbble\.com$/i, provider: 'dribbble' },
+    { host: /(^|\.)twitch\.tv$/i, provider: 'twitch' },
+    { host: /(^|\.)reddit\.com$/i, provider: 'reddit' },
+  ];
+
+  function socialAvatarUrl(rawUrl) {
+    const value = toText(rawUrl);
+    if (!value) return '';
+    let parsed;
+    try { parsed = new URL(value, window.location.origin); } catch { return ''; }
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return '';
+    const match = SOCIAL_AVATAR_PROVIDERS.find((p) => p.host.test(parsed.hostname));
+    if (!match) return '';
+    const segments = parsed.pathname.split('/').filter(Boolean);
+    let username = segments[0] || '';
+    if (match.provider === 'youtube' && (segments[0] === 'channel' || segments[0] === 'c' || segments[0] === 'user')) {
+      username = segments[1] || '';
+    }
+    username = username.replace(/^@/, '');
+    if (!username) return '';
+    return `https://unavatar.io/${match.provider}/${encodeURIComponent(username)}?fallback=false`;
+  }
+
+  function avatarCandidates(profile) {
+    const out = [];
+    const explicit = toText(profile.avatar_url || profile.avatar || profile.picture || profile.photo_url);
+    if (explicit) out.push(explicit);
+    const links = Array.isArray(profile.links) ? profile.links : [];
+    for (const link of links) {
+      const url = socialAvatarUrl(link && link.url);
+      if (url && !out.includes(url)) out.push(url);
+    }
+    return out;
+  }
+
+  function renderAvatar(profile, name) {
+    const grad = avatarGradient(profile.dex_id || profile.handle || name);
+    const style = `--dx-av-a:${grad.a};--dx-av-b:${grad.b}`;
+    return `<div class="dx-prof-avatar" data-dx-avatar style="${htmlEscape(style)}">`
+      + `<span class="dx-prof-avatar-initials" aria-hidden="true">${htmlEscape(initialsOf(name))}</span>`
+      + `<img class="dx-prof-avatar-img" alt="" decoding="async" referrerpolicy="no-referrer" data-dx-avatar-img hidden>`
+      + `</div>`;
+  }
+
+  // Try each candidate via an off-DOM probe so a failed fetch never flashes a
+  // broken image over the gradient. First success wins.
+  function hydrateAvatar(root, candidates) {
+    if (!Array.isArray(candidates) || !candidates.length) return;
+    const img = root.querySelector('[data-dx-avatar-img]');
+    const shell = root.querySelector('[data-dx-avatar]');
+    if (!(img instanceof HTMLImageElement)) return;
+    let index = 0;
+    const tryNext = () => {
+      if (index >= candidates.length) return;
+      const src = candidates[index];
+      index += 1;
+      const probe = new Image();
+      probe.referrerPolicy = 'no-referrer';
+      probe.onload = () => {
+        if (!probe.naturalWidth) { tryNext(); return; }
+        img.src = src;
+        img.hidden = false;
+        img.removeAttribute('hidden');
+        if (shell) shell.setAttribute('data-dx-avatar-ready', 'true');
+      };
+      probe.onerror = tryNext;
+      probe.src = src;
+    };
+    tryNext();
+  }
+
   async function fetchJson(url, options = {}) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
@@ -216,7 +316,7 @@
     return `
       <section class="dx-prof-shell">
         <header class="dx-prof-head">
-          <div class="dx-prof-avatar" aria-hidden="true">${htmlEscape(initialsOf(name))}</div>
+          ${renderAvatar(profile, name)}
           <div class="dx-prof-id">
             <h1 class="dx-prof-name" data-dx-heading-randomize="false">${htmlEscape(name)}</h1>
             <div class="dx-prof-metarow">
@@ -272,18 +372,15 @@
 
     const loader = root.querySelector('.dx-route-loader');
 
-    function paint(html, state) {
+    function paint(html, state, afterPaint) {
       const elapsed = ((window.performance && performance.now) ? performance.now() : Date.now()) - startedAt;
       const finish = () => {
         root.innerHTML = '';
         if (loader) root.appendChild(loader);
         root.insertAdjacentHTML('beforeend', html);
         setFetchState(root, state);
-        if (state === 'ready') {
-          const heading = root.querySelector('.dx-prof-name');
-          if (heading && typeof window.__dxHeadingFx === 'object') {
-            // leave heading as-is (randomize disabled) — names are not catalog headings
-          }
+        if (typeof afterPaint === 'function') {
+          try { afterPaint(); } catch {}
         }
       };
       if (elapsed < MIN_SHEEN_MS) setTimeout(finish, MIN_SHEEN_MS - elapsed);
@@ -303,7 +400,8 @@
 
     if (res.ok && res.body && typeof res.body === 'object') {
       document.title = `${toText(res.body.credit_name) || toText(res.body.handle) || 'Member'} — dex digital sample library`;
-      paint(renderProfile(res.body, catalog), 'ready');
+      const candidates = avatarCandidates(res.body);
+      paint(renderProfile(res.body, catalog), 'ready', () => hydrateAvatar(root, candidates));
     } else {
       paint(renderNotFound(), 'error');
     }
