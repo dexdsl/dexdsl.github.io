@@ -18,6 +18,7 @@ function truncate(value, max) {
 function openInDefaultBrowser(url) {
   const target = toText(url);
   if (!target) return { ok: false, error: 'Missing URL' };
+  if (!/^https?:\/\//i.test(target)) return { ok: true, command: target };
   try {
     let cmd = 'xdg-open';
     let args = [target];
@@ -92,7 +93,9 @@ export function LinksManager({ onExit, width = 100, height = 24 }) {
       const target = rows[linkRowIndexes[Math.max(0, Math.min(linkRowIndexes.length - 1, selectedIndex))]];
       if (!target || target.type !== 'link') return;
       const opened = openInDefaultBrowser(target.url);
-      if (opened.ok) {
+      if (opened.command) {
+        setStatusLine(`Command: ${opened.command}`);
+      } else if (opened.ok) {
         setStatusLine(`Opened ${target.url}`);
       } else {
         setStatusLine(`Open failed: ${opened.error}`);

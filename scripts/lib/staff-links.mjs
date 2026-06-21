@@ -4,24 +4,24 @@ function toText(value) {
 
 export const STAFF_LINK_GROUPS = Object.freeze([
   {
-    id: 'sheets',
-    label: 'Google Sheets',
-    aliases: ['sheet', 'sheets'],
+    id: 'ops',
+    label: 'Worker Ops',
+    aliases: ['ops', 'desk', 'queue', 'queues', 'sheet', 'sheets'],
     links: [
       {
-        id: 'user-submissions',
-        label: 'User submissions (/submit)',
-        url: 'https://docs.google.com/spreadsheets/d/1EE76xNhEh3yvDNI44gVPV2iz5dPFg0ebBi72LLH77l8/edit?gid=0#gid=0',
+        id: 'ops-desk',
+        label: 'Dex ops desk',
+        url: 'dex ops desk',
       },
       {
-        id: 'press-room',
-        label: 'Press room',
-        url: 'https://docs.google.com/spreadsheets/d/1AYcO9fUl5wIAl5NNGxcYrfvFg9wiE6RGbepWQ1nbz1E/edit?gid=0#gid=0',
+        id: 'ops-import',
+        label: 'Sheets import dry run',
+        url: 'dex ops import sheets --kind submissions --file ./exports/submissions.csv --dry-run',
       },
       {
-        id: 'polls',
-        label: 'Polls',
-        url: 'https://docs.google.com/spreadsheets/d/1xQffVmchETLc-tQNFaJCo6t0UbMji-F4rEWtIBrZVio/edit?gid=0#gid=0',
+        id: 'worker-admin',
+        label: 'Worker admin API',
+        url: 'https://dex-api.spring-fog-8edd.workers.dev/admin/ops/tickets',
       },
     ],
   },

@@ -35,9 +35,10 @@ export function resolvePollsApiBase(envName = 'test') {
 export function resolvePollsAdminToken(envName = 'test') {
   const env = normalizePollsEnv(envName);
   const direct = env === 'prod'
-    ? process.env.DEX_POLLS_ADMIN_TOKEN_PROD || process.env.DEX_POLLS_SYNC_ADMIN_TOKEN_PROD || process.env.POLL_SYNC_ADMIN_TOKEN_PROD
-    : process.env.DEX_POLLS_ADMIN_TOKEN_TEST || process.env.DEX_POLLS_SYNC_ADMIN_TOKEN_TEST || process.env.POLL_SYNC_ADMIN_TOKEN_TEST;
-  const shared = process.env.DEX_POLLS_ADMIN_TOKEN
+    ? process.env.DEX_OPS_ADMIN_TOKEN_PROD || process.env.DEX_POLLS_ADMIN_TOKEN_PROD || process.env.DEX_POLLS_SYNC_ADMIN_TOKEN_PROD || process.env.POLL_SYNC_ADMIN_TOKEN_PROD
+    : process.env.DEX_OPS_ADMIN_TOKEN_TEST || process.env.DEX_POLLS_ADMIN_TOKEN_TEST || process.env.DEX_POLLS_SYNC_ADMIN_TOKEN_TEST || process.env.POLL_SYNC_ADMIN_TOKEN_TEST;
+  const shared = process.env.DEX_OPS_ADMIN_TOKEN
+    || process.env.DEX_POLLS_ADMIN_TOKEN
     || process.env.DEX_POLLS_SYNC_ADMIN_TOKEN
     || process.env.POLL_SYNC_ADMIN_TOKEN
     || process.env.DEX_MAINTENANCE_TOKEN;
@@ -161,6 +162,52 @@ export async function getAdminPollSnapshots({ pollId, env = 'test' } = {}) {
   return requestPollsApi(`/admin/polls/${encodeURIComponent(id)}/snapshots`, {
     env,
     admin: true,
+  });
+}
+
+export async function listAdminPollDefinitions({ env = 'test', status = '', visibility = '', limit = 100 } = {}) {
+  return requestPollsApi('/admin/polls', {
+    env,
+    admin: true,
+    query: {
+      status,
+      visibility,
+      limit: Math.max(1, Math.min(200, Math.trunc(Number(limit) || 100))),
+    },
+  });
+}
+
+export async function createAdminPollDefinition({ env = 'test', poll = {}, idempotencyKey = '' } = {}) {
+  return requestPollsApi('/admin/polls', {
+    env,
+    method: 'POST',
+    admin: true,
+    idempotencyKey: toText(idempotencyKey) || crypto.randomUUID(),
+    body: poll,
+  });
+}
+
+export async function patchAdminPollDefinition({ env = 'test', pollId, patch = {} } = {}) {
+  const id = toText(pollId);
+  if (!id) throw new Error('pollId is required');
+  return requestPollsApi(`/admin/polls/${encodeURIComponent(id)}`, {
+    env,
+    method: 'PATCH',
+    admin: true,
+    body: patch,
+  });
+}
+
+export async function setAdminPollDefinitionStatus({ env = 'test', pollId, status } = {}) {
+  const id = toText(pollId);
+  const action = toText(status).toLowerCase();
+  if (!id) throw new Error('pollId is required');
+  if (!['open', 'close'].includes(action)) throw new Error('status must be open or close');
+  return requestPollsApi(`/admin/polls/${encodeURIComponent(id)}/${action}`, {
+    env,
+    method: 'POST',
+    admin: true,
+    idempotencyKey: crypto.randomUUID(),
   });
 }
 

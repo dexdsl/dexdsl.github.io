@@ -66,6 +66,7 @@ Dex dashboard groups commands into:
 - `notes`
 - `polls`
 - `newsletter`
+- `profiles`
 
 3. Infrastructure Commands
 - `assets`
@@ -237,18 +238,49 @@ dex notes publish
 ### `dex polls`
 Usage:
 ```bash
-dex polls <validate|create|edit|close|open|publish> [args]
+dex polls <desk|list|create|edit|open|close|results|snapshot|validate|publish|overview|live|trend|snapshots> [args]
 ```
 
 Commands:
 ```bash
+dex polls list [--env test|prod] [--status draft|open|closed] [--json]
+dex polls create [--env test|prod] [--question ...] [--options "A|B|C"] [--visibility public|members] [--status draft|open]
+dex polls edit <pollId> [--env test|prod] [--question ... --visibility ... --status ... --close-at ...]
+dex polls open <pollId> [--env test|prod]
+dex polls close <pollId> [--env test|prod]
+dex polls results <pollId> [--env prod|test]
+dex polls snapshot <pollId> --summary-file ./summary.md [--env test|prod] [--draft]
 dex polls validate [--file data/polls.json]
-dex polls create [--question ...] [--visibility public|members] [--status draft|open|closed] [--file ...]
-dex polls edit <pollId> [--question ... --visibility ... --status ... --closeAt ... --manualClose true|false --file ...]
-dex polls close <pollId> [--file ...]
-dex polls open <pollId> [--file ...]
 dex polls publish --env test|prod [--file ...]
 ```
+
+By default, `create`, `edit`, `open`, and `close` target the Worker admin API. Pass `--local` or `--file` for the legacy local JSON catalog flow.
+
+### `dex ops`
+Purpose: staff queue management for Worker-backed submissions, press requests, board nominations, support tickets, and user-visible conversations.
+
+Usage:
+```bash
+dex ops desk [--env test|prod] [--kind all|submission|press|board|support]
+dex ops list [--kind submission|press|board|support] [--status received|pending|closed|all] [--limit 50] [--json]
+dex submissions show <ticketId>
+dex submissions advance <ticketId> --status accepted [--public-note "..."] [--internal-note "..."]
+dex press reply <ticketId> --message "..." [--status needs_info]
+dex board assign <ticketId> <staffer>
+dex support create --email person@example.org --title "..." --message "..."
+dex support close <ticketId>
+dex ops import sheets --kind submissions|press|polls|board --file ./export.csv --dry-run
+dex ops import sheets --kind submissions|press|polls|board --file ./export.csv --write
+```
+
+Operational flow:
+1. Public/user intake creates `received` or `pending` records only.
+2. `accepted`, `approved`, `published`, `appointed`, `rejected`, and `closed` require staff commands.
+3. Public replies are visible in user Messages; `--internal` and `--internal-note` stay staff-only.
+
+Auth:
+- Use `DEX_OPS_ADMIN_TOKEN_PROD` / `DEX_OPS_ADMIN_TOKEN_TEST`, or shared `DEX_OPS_ADMIN_TOKEN`.
+- Existing maintenance tokens are accepted by the Worker as fallback aliases where configured.
 
 ### `dex newsletter`
 Usage:
@@ -284,6 +316,27 @@ dex assets diff --env test|prod [--file data/protected.assets.json] [--api-base 
 dex assets publish --env test|prod [--dry-run] [--file data/protected.assets.json] [--api-base ...] [--token ...]
 dex assets bucket ensure --env test|prod [--name dex-protected-assets] [--dry-run] [--api-base ...] [--token ...]
 ```
+
+### `dex profiles`
+Purpose: review member public-profile contribution claims and sync entry-page attribution links.
+
+Usage:
+```bash
+dex profiles claims [--env test|prod] [--status pending|approved|rejected|all] [--limit 50] [--json]
+dex profiles approve <claimId> [--env test|prod] [--role "Performer"] [--json]
+dex profiles reject <claimId> [--env test|prod] [--json]
+dex profiles set-status <claimId> --status <pending|approved|rejected|withdrawn> [--env test|prod]
+dex profiles map sync [--env test|prod] [--out data/public-profiles.json] [--no-mirror] [--json]
+```
+
+Operational flow:
+1. Member claims stay pending after self-service submission.
+2. Staff approves or rejects each claim.
+3. Staff runs `dex profiles map sync --env prod` after approvals to update public attribution data.
+
+Auth:
+- Use `DEX_PROFILES_ADMIN_TOKEN_PROD` / `DEX_PROFILES_ADMIN_TOKEN_TEST`, or shared `DEX_PROFILES_ADMIN_TOKEN`.
+- `DEX_MAINTENANCE_TOKEN` is accepted as a shared fallback.
 
 ### `dex release`
 Usage:

@@ -22,12 +22,10 @@ import { animate } from 'framer-motion/dom';
   const SUBMIT_QUOTA_VERIFY_TIMEOUT_MS = 8000;
   const SUBMIT_MIN_LOADING_MS = 420;
   const ACHIEVEMENTS_REFRESH_TIMEOUT_MS = 5000;
-  const JSONP_TIMEOUT_MS = 8000;
+  const WORKER_TIMEOUT_MS = 8000;
   const PREFETCH_SWR_MS = 60000;
   const QUOTA_RETRY_DELAY_MS = 220;
   const DEFAULT_API = 'https://dex-api.spring-fog-8edd.workers.dev';
-  const DEFAULT_WEBAPP_URL =
-    'https://script.google.com/macros/s/AKfycbyh5TPML3_y5-j1QoOKfju_MayO1_0JErwvVkH3Eba195q_EmWGCEu3CdFFeohWes3Qzw/exec';
   const DEFAULT_WEEKLY_LIMIT = 4;
   const DEFAULT_FLOW = 'sample';
   const FLOW_SAMPLE = 'sample';
@@ -596,7 +594,6 @@ import { animate } from 'framer-motion/dom';
       weeklyUsed: 0,
       quotaLeft: 0,
       quotaResolved: false,
-      webappUrl: config.webappUrl,
       apiBase: config.apiBase,
       auth0Sub: '',
       authUser: null,
@@ -1247,11 +1244,10 @@ import { animate } from 'framer-motion/dom';
         ? window.__DX_SUBMIT_SAMPLES_CONFIG
         : {};
 
-    const webappUrl = text(runtime.webappUrl || root?.dataset?.webappUrl || DEFAULT_WEBAPP_URL, DEFAULT_WEBAPP_URL);
     const weeklyLimitRaw = runtime.weeklyLimit ?? runtime.dailyLimit ?? root?.dataset?.weeklyLimit ?? root?.dataset?.dailyLimit ?? DEFAULT_WEEKLY_LIMIT;
     const weeklyLimit = Math.max(1, Math.min(99, Math.floor(number(weeklyLimitRaw, DEFAULT_WEEKLY_LIMIT))));
     const apiBase = text(runtime.apiBase || root?.dataset?.api || window.DEX_API_BASE_URL || window.DEX_API_ORIGIN || DEFAULT_API, DEFAULT_API).replace(/\/+$/, '');
-    return { webappUrl, weeklyLimit, apiBase };
+    return { weeklyLimit, apiBase };
   }
 
   function setFetchState(root, fetchState) {
@@ -1265,6 +1261,19 @@ import { animate } from 'framer-motion/dom';
 
   function delay(ms) {
     return new Promise((resolve) => window.setTimeout(resolve, Math.max(0, ms)));
+  }
+
+  function withTimeout(promiseLike, timeoutMs, fallback = null) {
+    let timer = 0;
+    const timeout = new Promise((resolve) => {
+      timer = window.setTimeout(() => resolve(fallback), Math.max(1, Number(timeoutMs) || 1));
+    });
+    return Promise.race([
+      Promise.resolve(typeof promiseLike === 'function' ? promiseLike() : promiseLike).catch(() => fallback),
+      timeout,
+    ]).finally(() => {
+      if (timer) window.clearTimeout(timer);
+    });
   }
 
   function canUsePointerHoverTooltip() {
@@ -1533,55 +1542,35 @@ import { animate } from 'framer-motion/dom';
     return false;
   }
 
-  function releaseJsonpCallback(callbackName) {
-    if (!callbackName) return;
+  async function fetchWorkerJson(pathname, options = {}) {
+    const opts = options && typeof options === 'object' ? options : {};
+    if (!state || !text(state.apiBase)) throw new Error('missing Worker API endpoint');
+    const token = opts.token || await resolveAccessTokenMaybe(opts.timeoutMs || WORKER_TIMEOUT_MS);
+    if (!token) throw new Error('missing auth token');
+    const controller = typeof AbortController === 'function' ? new AbortController() : null;
+    const timeout = window.setTimeout(() => {
+      if (controller) controller.abort();
+    }, Math.max(500, Number(opts.timeoutMs || WORKER_TIMEOUT_MS)));
     try {
-      window[callbackName] = () => {};
-    } catch {}
-    window.setTimeout(() => {
-      try {
-        delete window[callbackName];
-      } catch {
-        window[callbackName] = undefined;
+      const response = await fetch(`${state.apiBase}${pathname}`, {
+        method: opts.method || 'GET',
+        headers: {
+          accept: 'application/json',
+          authorization: `Bearer ${token}`,
+          ...(opts.body ? { 'content-type': 'application/json' } : {}),
+        },
+        body: opts.body ? JSON.stringify(opts.body) : undefined,
+        signal: controller?.signal,
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        const detail = text(payload?.error || payload?.message || response.statusText, 'request failed');
+        throw new Error(detail);
       }
-    }, 180000);
-  }
-
-  async function jsonpRequest(url, params = {}, timeoutMs = JSONP_TIMEOUT_MS) {
-    return new Promise((resolve, reject) => {
-      const callbackName = `dxSubmitJsonp_${Date.now()}_${Math.floor(Math.random() * 1_000_000)}`;
-      const script = document.createElement('script');
-      let settled = false;
-      let timer = 0;
-
-      const cleanup = () => {
-        if (timer) window.clearTimeout(timer);
-        releaseJsonpCallback(callbackName);
-        if (script.isConnected) script.remove();
-      };
-
-      const settle = (handler, payload) => {
-        if (settled) return;
-        settled = true;
-        cleanup();
-        handler(payload);
-      };
-
-      window[callbackName] = (payload) => {
-        settle(resolve, payload);
-      };
-
-      const query = new URLSearchParams({ ...params, callback: callbackName });
-      const separator = String(url).includes('?') ? '&' : '?';
-      script.async = true;
-      script.src = `${url}${separator}${query.toString()}`;
-      script.addEventListener('error', () => settle(reject, new Error('JSONP request failed')));
-      document.body.appendChild(script);
-
-      timer = window.setTimeout(() => {
-        settle(reject, new Error('JSONP request timeout'));
-      }, Math.max(250, timeoutMs));
-    });
+      return payload;
+    } finally {
+      window.clearTimeout(timeout);
+    }
   }
 
   async function refreshWeeklyQuotaFromSheet(options = {}) {
@@ -1589,10 +1578,10 @@ import { animate } from 'framer-motion/dom';
     const forceLive = !!opts.forceLive;
     const useCache = opts.useCache !== false;
     const allowRetry = opts.allowRetry !== false;
-    const timeoutMs = Math.max(500, Number(opts.timeoutMs || JSONP_TIMEOUT_MS));
+    const timeoutMs = Math.max(500, Number(opts.timeoutMs || WORKER_TIMEOUT_MS));
     lastQuotaFetchError = '';
-    if (!state || !text(state.webappUrl) || !text(state.auth0Sub)) {
-      lastQuotaFetchError = 'missing auth identity or submit endpoint';
+    if (!state || !text(state.apiBase) || !text(state.auth0Sub)) {
+      lastQuotaFetchError = 'missing auth identity or submit API endpoint';
       setQuotaSource('none');
       return false;
     }
@@ -1607,11 +1596,8 @@ import { animate } from 'framer-motion/dom';
     }
 
     const fetchLiveQuota = async () => {
-      const response = await jsonpRequest(
-        state.webappUrl,
-        { action: activeQuotaAction(), auth0Sub: state.auth0Sub },
-        timeoutMs,
-      );
+      const flow = normalizeFlow(state.flow);
+      const response = await fetchWorkerJson(`/me/submissions/quota?kind=${encodeURIComponent(flow)}`, { timeoutMs });
       const ok = applyQuotaPayload(response);
       if (!ok) {
         lastQuotaFetchError = 'quota response missing expected fields';
@@ -3303,21 +3289,13 @@ import { animate } from 'framer-motion/dom';
 
     await resolveAuthUser(Math.min(AUTH_TIMEOUT_MS, 2200));
     const payload = buildPayload();
-    const callbackName = `dxSubmitCallback_${Date.now()}_${Math.floor(Math.random() * 1_000_000)}`;
-    const script = document.createElement('script');
     const ticket = Date.now();
     state.submitTicket = ticket;
     let settled = false;
 
-    function cleanup() {
-      releaseJsonpCallback(callbackName);
-      if (script.isConnected) script.remove();
-    }
-
     function onResolved(success, responsePayload = null, failureCode = '') {
       if (settled) return;
       settled = true;
-      cleanup();
 
       const finish = () => {
         if (state.submitTicket !== ticket) return;
@@ -3386,22 +3364,20 @@ import { animate } from 'framer-motion/dom';
       }
     }
 
-    window[callbackName] = (response) => {
+    try {
+      const response = await fetchWorkerJson('/me/submissions', {
+        method: 'POST',
+        body: payload,
+        timeoutMs: SUBMIT_TIMEOUT_MS,
+      });
       if (response && response.status === 'ok') {
         onResolved(true, response);
       } else {
         onResolved(false, response, 'submit_rejected');
       }
-    };
-
-    script.async = true;
-    script.src = `${state.webappUrl}?callback=${encodeURIComponent(callbackName)}&${new URLSearchParams(payload).toString()}`;
-    script.addEventListener('error', () => onResolved(false, null, 'script_error'));
-    document.body.appendChild(script);
-
-    window.setTimeout(() => {
-      if (!settled) onResolved(false, null, 'submit_timeout');
-    }, SUBMIT_TIMEOUT_MS);
+    } catch (error) {
+      onResolved(false, { error: text(error?.message, 'submit request failed') }, 'submit_rejected');
+    }
   }
 
   function syncRootFlowAttrs() {

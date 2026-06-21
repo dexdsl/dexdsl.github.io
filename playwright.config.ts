@@ -21,7 +21,7 @@ const viewports = Array.isArray(sanitizeConfig.viewports) && sanitizeConfig.view
 const configuredBaseURL = process.env.BASE_URL || 'http://localhost:8080';
 const skipWebServer = process.env.PLAYWRIGHT_SKIP_WEBSERVER === '1';
 
-// Uses a static server on port 8080 because this repo does not define a Vite preview script.
+// Uses a static docs server on port 8080 so local e2e matches GitHub Pages-style 404 fallback behavior.
 export default defineConfig({
   testDir: './tests',
   snapshotPathTemplate: '{testDir}/{testFilePath}-snapshots/{arg}-{projectName}{ext}',
@@ -50,7 +50,7 @@ export default defineConfig({
   webServer: skipWebServer
     ? undefined
     : {
-      command: 'python3 -m http.server 8080 --directory docs',
+      command: 'node scripts/serve-docs.mjs --port 8080',
       port: 8080,
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,

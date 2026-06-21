@@ -24,8 +24,9 @@ async function main() {
   const full = runLinks();
   mustPass(full, 'links default');
   const fullOut = String(full.stdout || '');
-  assert(fullOut.includes('User submissions (/submit)'), 'default output should include submissions label');
-  assert(fullOut.includes('https://docs.google.com/spreadsheets/d/1EE76xNhEh3yvDNI44gVPV2iz5dPFg0ebBi72LLH77l8/edit?gid=0#gid=0'), 'default output should include submissions sheet link');
+  assert(fullOut.includes('Dex ops desk'), 'default output should include ops desk command');
+  assert(fullOut.includes('dex ops import sheets --kind submissions'), 'default output should include import migration command');
+  assert(!fullOut.includes('https://docs.google.com/spreadsheets/d/'), 'default output should not include operational Sheets links');
   assert(fullOut.includes('https://dashboard.stripe.com/login'), 'default output should include stripe link');
   assert(fullOut.includes('https://github.com/dexdsl/dex-api'), 'default output should include api repo link');
   assert(fullOut.includes('https://dexdsl.github.io/status/'), 'default output should include status link');
@@ -42,7 +43,7 @@ async function main() {
   const payload = JSON.parse(String(sheetsJson.stdout || '{}'));
   assert(Array.isArray(payload.groups), 'json output should include groups array');
   assert.equal(payload.groups.length, 1, 'json group filter should return one group');
-  assert.equal(payload.groups[0].id, 'sheets', 'json group should be sheets');
+  assert.equal(payload.groups[0].id, 'ops', 'legacy sheets group token should resolve to ops');
 
   console.log('test-dex-links-cli passed');
 }

@@ -20,7 +20,7 @@ const SYSTEM_MESSAGES_FIXTURE = [
     title: 'Payment failed',
     body: 'Your latest payment attempt failed. Update your billing method.',
     href: '/entry/settings/#membership',
-    createdAt: '2026-02-25T18:00:00.000Z',
+    createdAt: '2026-06-20T18:00:00.000Z',
     readAt: '',
     archivedAt: '',
   },
@@ -32,8 +32,8 @@ const SYSTEM_MESSAGES_FIXTURE = [
     title: 'Poll closed',
     body: 'A poll you interacted with has closed and results are available.',
     href: '/polls/',
-    createdAt: '2026-02-24T15:00:00.000Z',
-    readAt: '2026-02-24T16:00:00.000Z',
+    createdAt: '2026-06-19T15:00:00.000Z',
+    readAt: '2026-06-19T16:00:00.000Z',
     archivedAt: '',
   },
 ];
@@ -71,6 +71,26 @@ const PRESSROOM_ROWS = [
     updatedAt: '2026-02-26T12:00:00.000Z',
   },
 ];
+
+const OPS_TICKETS_FIXTURE = PRESSROOM_ROWS.map((row) => ({
+  id: row.requestId,
+  requestId: row.requestId,
+  kind: 'press',
+  status: row.status,
+  title: row.project,
+  name: row.name,
+  email: row.email,
+  links: row.links,
+  timeframe: row.timeframe,
+  createdAt: row.timestamp,
+  updatedAt: row.updatedAt,
+  publicNote: 'Press request received and queued for triage.',
+  metadata: {
+    project: row.project,
+    links: row.links,
+    timeframe: row.timeframe,
+  },
+}));
 
 const SUBMISSION_THREADS_FIXTURE = [
   {
@@ -205,31 +225,8 @@ async function stubDexAuthRuntime(page: Page, mode: AuthMode): Promise<void> {
   });
 }
 
-async function stubSubmissionsJsonp(page: Page): Promise<void> {
-  await page.route('https://script.google.com/macros/**', async (route) => {
-    const url = new URL(route.request().url());
-    const callback = String(url.searchParams.get('callback') || '').trim();
-    const action = String(url.searchParams.get('action') || '').trim();
-    const isPressroomScript = url.pathname.includes('AKfycbwb2lOkJDN7rOJVmGHPzY3IBRByjrfMI0GH_TzUsXYDEXIjdIlqr-ZR0VKDWvoPmFjw');
-
-    if (!callback) {
-      await route.fulfill({ status: 400, contentType: 'text/plain', body: 'Missing callback' });
-      return;
-    }
-
-    let payload: unknown = { status: 'error' };
-    if (action === 'list') {
-      payload = { status: 'ok', rows: isPressroomScript ? PRESSROOM_ROWS : SUBMISSION_ROWS };
-    } else if (action === 'ack') {
-      payload = { status: 'ok' };
-    }
-
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/javascript',
-      body: `${callback}(${JSON.stringify(payload)});`,
-    });
-  });
+async function stubOpsTickets(_page: Page): Promise<void> {
+  return Promise.resolve();
 }
 
 async function stubMessagesApi(
@@ -308,6 +305,16 @@ async function stubMessagesApi(
         headers: CORS_HEADERS,
         contentType: 'application/json',
         body: JSON.stringify({ threads: SUBMISSION_THREADS_FIXTURE }),
+      });
+      return;
+    }
+
+    if (pathname === '/me/ops/tickets' && method === 'GET') {
+      await route.fulfill({
+        status: 200,
+        headers: CORS_HEADERS,
+        contentType: 'application/json',
+        body: JSON.stringify({ ok: true, tickets: OPS_TICKETS_FIXTURE }),
       });
       return;
     }
@@ -991,7 +998,7 @@ test('messages inbox merges system + submissions and supports read/archive actio
 
   await stubHeaderRuntimes(page);
   await stubDexAuthRuntime(page, 'signed-in');
-  await stubSubmissionsJsonp(page);
+  await stubOpsTickets(page);
   await stubMessagesApi(page, 'success', [], actionHits);
 
   await page.goto('/entry/messages/', { waitUntil: 'domcontentloaded' });
@@ -1039,7 +1046,7 @@ test('messages inbox merges system + submissions and supports read/archive actio
 test('messages inbox degrades gracefully when system endpoint fails', async ({ page }) => {
   await stubHeaderRuntimes(page);
   await stubDexAuthRuntime(page, 'signed-in');
-  await stubSubmissionsJsonp(page);
+  await stubOpsTickets(page);
   await stubMessagesApi(page, 'failure');
 
   await page.goto('/entry/messages/', { waitUntil: 'domcontentloaded' });
@@ -1050,24 +1057,18 @@ test('messages inbox degrades gracefully when system endpoint fails', async ({ p
   await expect(page.locator('[data-dx-msg-item][data-source-type="pressroom"]')).toHaveCount(1);
 });
 
-test('messages inbox keeps rendering system records when submissions fetch and sheet fallback both fail', async ({ page }) => {
+test('messages inbox keeps rendering system records when submissions and ops fetches fail', async ({ page }) => {
   await stubHeaderRuntimes(page);
   await stubDexAuthRuntime(page, 'signed-in');
-  await stubSubmissionsJsonp(page);
+  await stubOpsTickets(page);
   await stubMessagesApi(page, 'success');
 
   await page.route('https://dex-api.spring-fog-8edd.workers.dev/me/submissions**', async (route) => {
     await route.abort();
   });
 
-  await page.route('https://script.google.com/macros/**', async (route) => {
-    const url = new URL(route.request().url());
-    const action = String(url.searchParams.get('action') || '').toLowerCase();
-    if (action === 'list') {
-      await route.abort();
-      return;
-    }
-    await route.fallback();
+  await page.route('https://dex-api.spring-fog-8edd.workers.dev/me/ops/tickets**', async (route) => {
+    await route.abort();
   });
 
   await page.goto('/entry/messages/', { waitUntil: 'domcontentloaded' });
@@ -1082,7 +1083,7 @@ test('messages inbox keeps rendering system records when submissions fetch and s
 
 test('messages inbox remounts on slot-ready events after route shell swaps', async ({ page }) => {
   await stubDexAuthRuntime(page, 'signed-in');
-  await stubSubmissionsJsonp(page);
+  await stubOpsTickets(page);
   await stubMessagesApi(page, 'success');
 
   await page.goto('/entry/messages/', { waitUntil: 'domcontentloaded' });

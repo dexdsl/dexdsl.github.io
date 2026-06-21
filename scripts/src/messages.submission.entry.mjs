@@ -18,11 +18,8 @@
   const FETCH_STATE_ERROR = 'error';
   const AUTH_TIMEOUT_MS = 6000;
   const FETCH_TIMEOUT_MS = 7000;
-  const JSONP_TIMEOUT_MS = 12000;
   const MIN_SHELL_MS = 120;
   const DEFAULT_API = 'https://dex-api.spring-fog-8edd.workers.dev';
-  const SHEET_API = 'https://script.google.com/macros/s/AKfycbyh5TPML3_y5-j1QoOKfju_MayO1_0JErwvVkH3Eba195q_EmWGCEu3CdFFeohWes3Qzw/exec';
-  const PRESSROOM_SHEET_API = 'https://script.google.com/macros/s/AKfycbwb2lOkJDN7rOJVmGHPzY3IBRByjrfMI0GH_TzUsXYDEXIjdIlqr-ZR0VKDWvoPmFjw/exec';
   const SUBMISSION_PENDING_SID_KEY = 'dex:messages:pending-submission-sid';
   const MESSAGE_PENDING_THREAD_KEY = 'dex:messages:pending-thread:v1';
   const PREFETCH_SWR_MS = 60000;
@@ -46,20 +43,6 @@
 
   function delay(ms) {
     return new Promise((resolve) => window.setTimeout(resolve, Math.max(0, ms)));
-  }
-
-  function releaseJsonpCallback(callbackName) {
-    if (!callbackName) return;
-    try {
-      window[callbackName] = () => {};
-    } catch {}
-    window.setTimeout(() => {
-      try {
-        delete window[callbackName];
-      } catch {
-        window[callbackName] = undefined;
-      }
-    }, 30000);
   }
 
   function mountBreadcrumbMotion() {
@@ -360,46 +343,6 @@
     } finally {
       window.clearTimeout(timer);
     }
-  }
-
-  async function jsonpWithTimeout(url, timeoutMs = JSONP_TIMEOUT_MS) {
-    return new Promise((resolve, reject) => {
-      const callbackName = `dxSubDetailCb${Math.random().toString(36).slice(2)}`;
-      const script = document.createElement('script');
-      let settled = false;
-      let timer = 0;
-
-      function cleanup() {
-        if (timer) window.clearTimeout(timer);
-        releaseJsonpCallback(callbackName);
-        if (script.parentNode) script.parentNode.removeChild(script);
-      }
-
-      window[callbackName] = (payload) => {
-        if (settled) return;
-        settled = true;
-        cleanup();
-        resolve(payload);
-      };
-
-      script.onerror = () => {
-        if (settled) return;
-        settled = true;
-        cleanup();
-        reject(new Error('JSONP request failed'));
-      };
-
-      timer = window.setTimeout(() => {
-        if (settled) return;
-        settled = true;
-        cleanup();
-        reject(new Error('JSONP request timed out'));
-      }, Math.max(250, timeoutMs));
-
-      const separator = url.includes('?') ? '&' : '?';
-      script.src = `${url}${separator}callback=${encodeURIComponent(callbackName)}`;
-      document.body.appendChild(script);
-    });
   }
 
   function readThreadRefFromUrl(urlValue = '') {
@@ -1504,63 +1447,6 @@
     return `Submission ${sid.slice(0, 8)}`;
   }
 
-  async function findLegacySubmissionRowById(authSnapshot, sid) {
-    const sub = toSafeText(authSnapshot?.sub, '');
-    if (!sub) return null;
-    const safeSid = sanitizeSubmissionId(sid);
-    if (!safeSid) return null;
-    try {
-      const legacyResponse = await withTimeout(
-        jsonpWithTimeout(`${SHEET_API}?action=list&auth0Sub=${encodeURIComponent(sub)}`, JSONP_TIMEOUT_MS),
-        JSONP_TIMEOUT_MS + 250,
-        { status: 'timeout', rows: [] },
-      );
-      const rows = Array.isArray(legacyResponse?.rows) ? legacyResponse.rows : [];
-      const match = rows.find((row) => {
-        const rowSid = sanitizeSubmissionId(row?.submissionId || row?.submission_id);
-        return rowSid && rowSid === safeSid;
-      });
-      return isObject(match) ? match : null;
-    } catch {
-      return null;
-    }
-  }
-
-  async function hydrateSubmissionStatusFromLegacySheet(authSnapshot, sid, thread) {
-    if (!isObject(thread)) return thread;
-    if (!isGenericSubmissionStatus(thread.currentStatusRaw)) return thread;
-
-    const legacyRow = await findLegacySubmissionRowById(authSnapshot, sid);
-    if (!isObject(legacyRow)) return thread;
-
-    thread.currentStatusRaw = pickPreferredSubmissionStatus(
-      legacyRow.status,
-      legacyRow.statusRaw,
-      legacyRow.status_raw,
-      thread.currentStatusRaw,
-    );
-    thread.currentStage = statusRawToStage(thread.currentStatusRaw);
-
-    if (!toSafeText(thread.title) || isUntitledSubmissionTitle(thread.title)) {
-      thread.title = pickFirstText([legacyRow.title, legacyRow.submissionTitle, legacyRow.submission_title, thread.title], '');
-    }
-    thread.creator = pickFirstText([thread.creator, legacyRow.creator, legacyRow.artist], '');
-    thread.instrument = pickFirstText([thread.instrument, legacyRow.instrument, legacyRow.instrument_raw], '');
-    thread.category = pickFirstText([thread.category, legacyRow.category, legacyRow.category_raw], '');
-    thread.sourceLink = normalizeHref(pickFirstText([thread.sourceLink, legacyRow.link, legacyRow.sourceLink, legacyRow.source_link], ''));
-    thread.libraryHref = normalizeHref(pickFirstText([thread.libraryHref, legacyRow.libraryHref, legacyRow.library_href], ''));
-    thread.submittedAt = pickFirstText([
-      thread.submittedAt,
-      legacyRow.clientSubmittedAt,
-      legacyRow.client_submitted_at,
-      legacyRow.timestamp,
-    ], '');
-    thread.updatedAt = pickFirstText([thread.updatedAt, legacyRow.timestamp], thread.updatedAt || nowIso());
-    applyCanonicalThreadLookup(thread);
-
-    return thread;
-  }
-
   async function loadSubmissionDetailFallback(apiBase, authSnapshot, sid, failingStatus = 0) {
     const thread = {
       submissionId: sid,
@@ -1590,10 +1476,7 @@
       && (toSafeText(thread.sourceLink) || toSafeText(thread.libraryHref))
     );
 
-    let legacyRow = null;
-    if (!essentialsFromThreadList || isGenericSubmissionStatus(thread.currentStatusRaw)) {
-      legacyRow = await findLegacySubmissionRowById(authSnapshot, sid);
-    }
+    const legacyRow = null;
 
     if (!legacyRow && !thread.title && !thread.lookup) {
       return null;
@@ -2095,10 +1978,6 @@
     try {
       await hydrateThreadFromList(apiBase, authSnapshot, sid, thread);
     } catch {}
-    try {
-      await hydrateSubmissionStatusFromLegacySheet(authSnapshot, sid, thread);
-    } catch {}
-
     const isSparseThread = !toSafeText(thread.title)
       || isUntitledSubmissionTitle(thread.title)
       || !toSafeText(thread.lookup)
@@ -2140,33 +2019,30 @@
     return resolved;
   }
 
-  async function loadPressroomDetail(authSnapshot, requestId) {
+  async function loadPressroomDetail(apiBase, authSnapshot, requestId) {
     const safeRequestId = sanitizeRequestId(requestId);
     if (!safeRequestId) {
       return { ok: false, status: 400, payload: { error: 'MISSING_REQUEST_ID' } };
     }
-    const sub = toSafeText(authSnapshot?.sub, '');
-    if (!sub) {
+    if (!authSnapshot?.authenticated || !authSnapshot?.token) {
       return { ok: false, status: 401, payload: { error: 'AUTH_REQUIRED' } };
     }
 
-    let listPayload = null;
-    try {
-      listPayload = await withTimeout(
-        jsonpWithTimeout(
-          `${PRESSROOM_SHEET_API}?action=list&auth0Sub=${encodeURIComponent(sub)}`,
-          JSONP_TIMEOUT_MS,
-        ),
-        JSONP_TIMEOUT_MS + 250,
-        { status: 'timeout', rows: [] },
-      );
-    } catch {
-      listPayload = null;
+    const listResponse = await fetchJsonWithTimeout(
+      `${apiBase}/me/press-requests?limit=200`,
+      {
+        method: 'GET',
+        headers: {
+          authorization: `Bearer ${authSnapshot.token}`,
+          'content-type': 'application/json',
+        },
+      },
+      FETCH_TIMEOUT_MS,
+    );
+    if (!listResponse.ok) {
+      return { ok: false, status: listResponse.status || 502, payload: listResponse.payload || { error: 'PRESSROOM_LIST_UNAVAILABLE' } };
     }
-    if (!isObject(listPayload) || String(listPayload.status || '').toLowerCase() !== 'ok') {
-      return { ok: false, status: 502, payload: listPayload || { error: 'PRESSROOM_LIST_UNAVAILABLE' } };
-    }
-
+    const listPayload = isObject(listResponse.payload) ? listResponse.payload : {};
     const listRows = Array.isArray(listPayload.rows) ? listPayload.rows : [];
     const rowMatch = listRows.find((row) => {
       const value = isObject(row) ? row : {};
@@ -2178,14 +2054,18 @@
 
     let eventsPayload = null;
     try {
-      eventsPayload = await withTimeout(
-        jsonpWithTimeout(
-          `${PRESSROOM_SHEET_API}?action=events_for_request&auth0Sub=${encodeURIComponent(sub)}&requestId=${encodeURIComponent(safeRequestId)}`,
-          JSONP_TIMEOUT_MS,
-        ),
-        JSONP_TIMEOUT_MS + 250,
-        { status: 'timeout', events: [] },
+      const eventsResponse = await fetchJsonWithTimeout(
+        `${apiBase}/me/press-requests/${encodeURIComponent(safeRequestId)}/events`,
+        {
+          method: 'GET',
+          headers: {
+            authorization: `Bearer ${authSnapshot.token}`,
+            'content-type': 'application/json',
+          },
+        },
+        FETCH_TIMEOUT_MS,
       );
+      eventsPayload = eventsResponse.ok ? eventsResponse.payload : null;
     } catch {
       eventsPayload = null;
     }
@@ -2477,7 +2357,7 @@
     }
 
     const model = normalizeThreadKind(threadRef.kind) === 'pressroom'
-      ? await loadPressroomDetail(authSnapshot, threadRef.rid)
+      ? await loadPressroomDetail(apiBase, authSnapshot, threadRef.rid)
       : await loadSubmissionDetail(apiBase, authSnapshot, threadRef.sid);
 
     if (!model.ok) {

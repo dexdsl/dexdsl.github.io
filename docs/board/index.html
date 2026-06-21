@@ -2209,7 +2209,7 @@
     (
       function(){
       const CFG = {
-        endpointUrl: "https://script.google.com/macros/s/AKfycbx2YD3KCg9dLNPmJDPM87UYuHvcT4YCC3OEVZneMCN2h5r2C2_UYug-ZlFizzC799z8/exec",
+        apiBase: (window.DEX_API_BASE_URL || window.DEX_API_ORIGIN || "https://dex-api.spring-fog-8edd.workers.dev").replace(/\/+$/, ""),
         dates: { soft: "Nov 15, 2025", brief: "Dec 2025 – Jan 2026", appoint: "Rolling from Feb 2026" },
         ein: "92-3509152",
         cityState: "Los Angeles, CA",
@@ -2382,9 +2382,17 @@ if(btn){ btn.disabled = true; }
           _meta:{ ts:new Date().toISOString(), page:location.href, ua:navigator.userAgent }
         };
         try{
-const res = await fetch(CFG.endpointUrl + '?origin=' + encodeURIComponent(location.origin), {
+let token = "";
+try{
+  const auth = window.DEX_AUTH || window.dexAuth || null;
+  if(auth && typeof auth.getAccessToken === "function"){ token = String(await auth.getAccessToken() || "").trim(); }
+}catch(_err){}
+const headers = { "content-type": "application/json", "accept": "application/json" };
+if(token){ headers.authorization = "Bearer " + token; }
+const res = await fetch(CFG.apiBase + "/board/nominations", {
   method: "POST",
-  body: JSON.stringify(payload)   // sends as text/plain by default — Apps Script can still JSON.parse
+  headers,
+  body: JSON.stringify(payload)
 });
           const data=await res.json().catch(()=>({}));
           if(!res.ok || data.ok===false) throw new Error(data.error||"Network error");

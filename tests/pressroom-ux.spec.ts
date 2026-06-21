@@ -1,6 +1,12 @@
-import { expect, test, type Page, type Route } from 'playwright/test';
+import { expect, test, type Page } from 'playwright/test';
 
-type GasStubOptions = {
+const CORS_HEADERS = {
+  'access-control-allow-origin': '*',
+  'access-control-allow-methods': 'GET,POST,OPTIONS',
+  'access-control-allow-headers': 'authorization,content-type',
+};
+
+type PressWorkerStubOptions = {
   quotaPayload?: Record<string, unknown>;
   rows?: Array<Record<string, unknown>>;
   eventsByRequest?: Record<string, Array<Record<string, unknown>>>;
@@ -45,86 +51,119 @@ async function stubDexAuthRuntime(page: Page): Promise<void> {
   });
 }
 
-async function fulfillJsonp(route: Route, payload: unknown): Promise<void> {
-  const requestUrl = new URL(route.request().url());
-  const callback = String(requestUrl.searchParams.get('callback') || '').trim();
-  if (!callback) {
-    await route.fulfill({ status: 400, contentType: 'text/plain', body: 'Missing callback' });
-    return;
-  }
-  await route.fulfill({
-    status: 200,
-    contentType: 'application/javascript',
-    body: `${callback}(${JSON.stringify(payload)});`,
-  });
-}
-
-async function stubPressroomGas(page: Page, options: GasStubOptions = {}): Promise<{ getLastAppend: () => Record<string, string> | null }> {
+async function stubPressroomWorker(page: Page, options: PressWorkerStubOptions = {}): Promise<{ getLastAppend: () => Record<string, string> | null }> {
   const rows = Array.isArray(options.rows) ? [...options.rows] : [];
   const eventsByRequest = options.eventsByRequest || {};
   let lastAppend: Record<string, string> | null = null;
 
-  await page.route('https://script.google.com/macros/**', async (route) => {
+  await page.route('https://dex-api.spring-fog-8edd.workers.dev/me/press-requests**', async (route) => {
+    const request = route.request();
     const requestUrl = new URL(route.request().url());
-    const action = String(requestUrl.searchParams.get('action') || '').toLowerCase();
+    const method = request.method().toUpperCase();
 
-    if (action === 'quota') {
-      await fulfillJsonp(route, {
-        status: 'ok',
-        monthlyLimit: 1,
-        monthlyUsed: 0,
-        monthlyRemaining: 1,
-        monthStart: '2026-02-01T00:00:00.000Z',
-        monthEnd: '2026-03-01T00:00:00.000Z',
-        updatedAt: new Date().toISOString(),
-        ...(options.quotaPayload || {}),
+    if (method === 'OPTIONS') {
+      await route.fulfill({ status: 204, headers: CORS_HEADERS });
+      return;
+    }
+
+    if (requestUrl.pathname === '/me/press-requests/quota' && method === 'GET') {
+      await route.fulfill({
+        status: 200,
+        headers: CORS_HEADERS,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          status: 'ok',
+          monthlyLimit: 1,
+          monthlyUsed: 0,
+          monthlyRemaining: 1,
+          monthStart: '2026-02-01T00:00:00.000Z',
+          monthEnd: '2026-03-01T00:00:00.000Z',
+          updatedAt: new Date().toISOString(),
+          ...(options.quotaPayload || {}),
+        }),
       });
       return;
     }
 
-    if (action === 'list') {
-      await fulfillJsonp(route, { status: 'ok', rows });
-      return;
-    }
-
-    if (action === 'events_for_request') {
-      const requestId = String(requestUrl.searchParams.get('requestId') || '').trim();
-      await fulfillJsonp(route, {
-        status: 'ok',
-        events: eventsByRequest[requestId] || [],
+    if (requestUrl.pathname === '/me/press-requests' && method === 'GET') {
+      await route.fulfill({
+        status: 200,
+        headers: CORS_HEADERS,
+        contentType: 'application/json',
+        body: JSON.stringify({ status: 'ok', rows }),
       });
       return;
     }
 
-    if (action === 'append') {
+    const eventsMatch = requestUrl.pathname.match(/^\/me\/press-requests\/([^/]+)\/events$/);
+    if (eventsMatch && method === 'GET') {
+      const requestId = decodeURIComponent(eventsMatch[1] || '');
+      await route.fulfill({
+        status: 200,
+        headers: CORS_HEADERS,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          status: 'ok',
+          events: eventsByRequest[requestId] || [],
+        }),
+      });
+      return;
+    }
+
+    if (requestUrl.pathname === '/me/press-requests' && method === 'POST') {
       if (options.appendDelayMs && options.appendDelayMs > 0) {
-        await page.waitForTimeout(options.appendDelayMs);
+        await new Promise((resolve) => setTimeout(resolve, options.appendDelayMs));
       }
-      lastAppend = Object.fromEntries(requestUrl.searchParams.entries());
+      const raw = request.postDataJSON() as Record<string, unknown>;
+      lastAppend = Object.fromEntries(Object.entries(raw || {}).map(([key, value]) => [key, String(value ?? '')]));
       const payload = {
         status: 'ok',
         row: rows.length + 2,
         requestId: 'req-press-01',
         ...(options.appendPayload || {}),
       };
-      rows.unshift({
-        row: rows.length + 2,
-        requestId: String(payload.requestId || ''),
-        status: 'submitted',
-        timestamp: new Date().toISOString(),
-        project: String(lastAppend.project || 'Untitled request'),
-        name: String(lastAppend.name || ''),
-        email: String(lastAppend.email || ''),
-        links: String(lastAppend.links || ''),
-        budget: String(lastAppend.budget || ''),
-        timeline: String(lastAppend.timeline || ''),
-        timeframe: String(lastAppend.timeframe || ''),
+      if (String(payload.status || '').toLowerCase() === 'ok') {
+        const requestId = String(payload.requestId || '');
+        rows.unshift({
+          row: rows.length + 2,
+          requestId,
+          status: 'submitted',
+          timestamp: new Date().toISOString(),
+          project: String(lastAppend.project || 'Untitled request'),
+          name: String(lastAppend.name || ''),
+          email: String(lastAppend.email || ''),
+          links: String(lastAppend.links || ''),
+          budget: String(lastAppend.budget || ''),
+          timeline: String(lastAppend.timeline || ''),
+          timeframe: String(lastAppend.timeframe || ''),
+        });
+        if (!eventsByRequest[requestId]) {
+          eventsByRequest[requestId] = [
+            {
+              eventId: `${requestId}-submitted`,
+              requestId,
+              eventType: 'submitted',
+              eventTimestamp: new Date().toISOString(),
+              sourceEventKey: `${requestId}:submitted`,
+            },
+          ];
+        }
+      }
+      await route.fulfill({
+        status: 200,
+        headers: CORS_HEADERS,
+        contentType: 'application/json',
+        body: JSON.stringify(payload),
       });
-      await fulfillJsonp(route, payload);
       return;
     }
 
-    await fulfillJsonp(route, { status: 'error', message: `Unhandled action: ${action || 'none'}` });
+    await route.fulfill({
+      status: 404,
+      headers: CORS_HEADERS,
+      contentType: 'application/json',
+      body: JSON.stringify({ status: 'error', message: `Unhandled PressRoom route: ${method} ${requestUrl.pathname}` }),
+    });
   });
 
   return {
@@ -168,7 +207,7 @@ async function completeWizardToReview(page: Page): Promise<void> {
 test('pressroom route mounts modern shell and removes legacy inline implementation', async ({ page }) => {
   await stubHeaderRuntimes(page);
   await stubDexAuthRuntime(page);
-  await stubPressroomGas(page);
+  await stubPressroomWorker(page);
 
   await page.goto('/entry/pressroom/', { waitUntil: 'domcontentloaded' });
   await waitReady(page);
@@ -188,7 +227,7 @@ test('pressroom renders desktop 60/40 split with sticky command panel', async ({
 
   await stubHeaderRuntimes(page);
   await stubDexAuthRuntime(page);
-  await stubPressroomGas(page);
+  await stubPressroomWorker(page);
 
   await page.goto('/entry/pressroom/', { waitUntil: 'domcontentloaded' });
   await waitReady(page);
@@ -226,7 +265,7 @@ test('pressroom collapses to mobile single-column with readable controls', async
 
   await stubHeaderRuntimes(page);
   await stubDexAuthRuntime(page);
-  await stubPressroomGas(page);
+  await stubPressroomWorker(page);
 
   await page.goto('/entry/pressroom/', { waitUntil: 'domcontentloaded' });
   await waitReady(page);
@@ -261,7 +300,7 @@ test('pressroom collapses to mobile single-column with readable controls', async
 test('pressroom disables begin when monthly quota is exhausted', async ({ page }) => {
   await stubHeaderRuntimes(page);
   await stubDexAuthRuntime(page);
-  await stubPressroomGas(page, {
+  await stubPressroomWorker(page, {
     quotaPayload: {
       monthlyLimit: 1,
       monthlyUsed: 1,
@@ -280,7 +319,7 @@ test('pressroom disables begin when monthly quota is exhausted', async ({ page }
 test('pressroom enforces lock -> sheen -> done on successful submit', async ({ page }) => {
   await stubHeaderRuntimes(page);
   await stubDexAuthRuntime(page);
-  const gas = await stubPressroomGas(page, {
+  const gas = await stubPressroomWorker(page, {
     appendDelayMs: 180,
     appendPayload: {
       requestId: 'req-press-99',
@@ -327,7 +366,7 @@ test('pressroom enforces lock -> sheen -> done on successful submit', async ({ p
 test('pressroom submission failure is loud and remains on review', async ({ page }) => {
   await stubHeaderRuntimes(page);
   await stubDexAuthRuntime(page);
-  await stubPressroomGas(page, {
+  await stubPressroomWorker(page, {
     appendPayload: {
       status: 'error',
       code: 'monthly_limit_reached',
@@ -349,7 +388,7 @@ test('pressroom submission failure is loud and remains on review', async ({ page
 test('pressroom timeline dedupes duplicate events by sourceEventKey', async ({ page }) => {
   await stubHeaderRuntimes(page);
   await stubDexAuthRuntime(page);
-  await stubPressroomGas(page, {
+  await stubPressroomWorker(page, {
     rows: [
       {
         row: 4,

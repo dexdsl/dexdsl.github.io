@@ -392,6 +392,153 @@ test('settings public profile saves opt-in payloads, validates handles, claims c
   expect(payload.favorites_public_refs).toContain(favoriteKey);
 });
 
+test('settings public profile keeps saved handles private until visibility is enabled', async ({ page }) => {
+  await stubAuth(page);
+
+  const publicPatchPayloads: Array<Record<string, unknown>> = [];
+
+  await page.route(`${API_BASE}/**`, async (route) => {
+    const request = route.request();
+    const method = request.method().toUpperCase();
+    const url = new URL(request.url());
+    const path = url.pathname;
+
+    const headers = {
+      'access-control-allow-origin': '*',
+      'access-control-allow-methods': 'GET,POST,PATCH,DELETE,OPTIONS',
+      'access-control-allow-headers': 'authorization,content-type',
+    };
+
+    if (method === 'OPTIONS') {
+      await route.fulfill({ status: 204, headers });
+      return;
+    }
+
+    if (path === '/me/profile' && method === 'GET') {
+      await route.fulfill({
+        status: 200,
+        headers,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          sub: 'auth0|settings-profile-v1-test',
+          name: 'Profile V1',
+          email: 'profile-v1@example.com',
+          credit_name: 'Profile V1',
+          credit_aliases: [],
+          roles: ['Performer'],
+          role_primary: 'Performer',
+          instruments: ['Cello'],
+          instrument_primary: 'Cello',
+          submit_defaults: {
+            creator: 'Profile V1',
+            category: 'S',
+            instrument: 'Cello',
+          },
+          public_profile: {
+            dex_id: 'DEX-PRIVATE',
+            handle: 'private-handle',
+            profile_public: false,
+            bio: 'Private public-profile draft',
+            links: [],
+            location: '',
+            pronouns: '',
+            featured: [],
+            favorites_public: false,
+            favorites_public_refs: [],
+            profile_url: null,
+            updated_at: 1761000000,
+          },
+          updated_at: 1761000000,
+        }),
+      });
+      return;
+    }
+
+    if (path === '/me/profile/handle-available' && method === 'GET') {
+      const handle = url.searchParams.get('handle') || '';
+      await route.fulfill({
+        status: 200,
+        headers,
+        contentType: 'application/json',
+        body: JSON.stringify({ handle, available: true }),
+      });
+      return;
+    }
+
+    if (path === '/me/profile/public' && method === 'PATCH') {
+      const body = request.postDataJSON() as Record<string, unknown>;
+      publicPatchPayloads.push(body);
+      await route.fulfill({
+        status: 200,
+        headers,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          dex_id: 'DEX-PRIVATE',
+          profile_url: body.profile_public && body.handle ? `/u/${body.handle}/` : null,
+          updated_at: 1762000000,
+          ...body,
+        }),
+      });
+      return;
+    }
+
+    if (path === '/me/contributions/claimable' && method === 'GET') {
+      await route.fulfill({ status: 200, headers, contentType: 'application/json', body: JSON.stringify({ candidates: [] }) });
+      return;
+    }
+
+    if (path === '/me/profile' && method === 'PATCH') {
+      await route.fulfill({ status: 200, headers, contentType: 'application/json', body: request.postData() || '{}' });
+      return;
+    }
+
+    if (path === '/me/submissions' && method === 'GET') {
+      await route.fulfill({ status: 200, headers, contentType: 'application/json', body: JSON.stringify({ threads: [] }) });
+      return;
+    }
+
+    if (path === '/me/billing/summary' || path === '/me/billing/plans' || path === '/me/invoices') {
+      await route.fulfill({ status: 200, headers, contentType: 'application/json', body: JSON.stringify({}) });
+      return;
+    }
+
+    await route.fulfill({ status: 200, headers, contentType: 'application/json', body: JSON.stringify({ ok: true }) });
+  });
+
+  await page.goto('/entry/settings/', { waitUntil: 'domcontentloaded' });
+
+  await expect(page.locator('[data-dx-public-profile-card="true"]')).toBeVisible();
+  await expect(page.locator('#profileHandleInput')).toHaveAttribute('placeholder', 'barbara-strozzi');
+  await expect(page.locator('#profilePronounsInput')).toHaveAttribute('placeholder', 'Pronouns (optional)');
+  await expect(page.locator('#profilePublicToggle')).not.toBeChecked();
+  await expect(page.locator('#profilePublicState')).toHaveText('Private');
+  await expect(page.locator('#publicProfileUrlText')).toHaveText('Private until visible is enabled.');
+  await expect(page.locator('#copyPublicProfileUrl')).toBeDisabled();
+
+  await page.fill('#profileHandleInput', 'private-handle-2');
+  await page.fill('#profileBioInput', 'Still private');
+
+  await expect
+    .poll(() => publicPatchPayloads.some((item) => (
+      item.handle === 'private-handle-2'
+        && item.bio === 'Still private'
+        && item.profile_public === false
+    )))
+    .toBeTruthy();
+  await expect(page.locator('#publicProfileUrlText')).toHaveText('Private until visible is enabled.');
+  await expect(page.locator('#copyPublicProfileUrl')).toBeDisabled();
+
+  await page.locator('[data-dx-public-toggle="true"]').click();
+
+  await expect(page.locator('#profilePublicToggle')).toBeChecked();
+  await expect(page.locator('#profilePublicState')).toHaveText('Visible');
+  await expect(page.locator('#publicProfileUrlText')).toHaveText('/u/private-handle-2/');
+  await expect(page.locator('#copyPublicProfileUrl')).toBeEnabled();
+  await expect
+    .poll(() => publicPatchPayloads.some((item) => item.handle === 'private-handle-2' && item.profile_public === true))
+    .toBeTruthy();
+});
+
 test('submit step auto-prefills creator/category/instrument from profile defaults', async ({ page }) => {
   await stubAuth(page);
 

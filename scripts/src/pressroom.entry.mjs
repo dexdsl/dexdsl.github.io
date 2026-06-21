@@ -17,11 +17,10 @@ import { animate } from 'framer-motion/dom';
   const FETCH_STATE_ERROR = 'error';
   const DX_MIN_SHEEN_MS = 120;
   const AUTH_TIMEOUT_MS = 3600;
-  const JSONP_TIMEOUT_MS = 9000;
+  const WORKER_TIMEOUT_MS = 9000;
   const SUBMIT_TIMEOUT_MS = 15000;
   const PREFETCH_SWR_MS = 60000;
-  const DEFAULT_WEBAPP_URL =
-    'https://script.google.com/macros/s/AKfycbwb2lOkJDN7rOJVmGHPzY3IBRByjrfMI0GH_TzUsXYDEXIjdIlqr-ZR0VKDWvoPmFjw/exec';
+  const DEFAULT_API = 'https://dex-api.spring-fog-8edd.workers.dev';
   const DEFAULT_MONTHLY_LIMIT = 1;
 
   const STEPS = [
@@ -57,7 +56,6 @@ import { animate } from 'framer-motion/dom';
 
   const PREFETCH_KEY_PREFIX = 'pressQuota:';
 
-  const inflightJsonp = new Map();
   let state = null;
   let refs = null;
   let liveRoot = null;
@@ -160,10 +158,13 @@ import { animate } from 'framer-motion/dom';
 
   function toConfig(root) {
     const dataset = root && root.dataset ? root.dataset : {};
-    const configuredUrl = text(dataset.webappUrl, '');
+    const runtime = typeof window.__DX_PRESSROOM_CONFIG === 'object' && window.__DX_PRESSROOM_CONFIG
+      ? window.__DX_PRESSROOM_CONFIG
+      : {};
+    const configuredApi = text(runtime.apiBase || dataset.api || window.DEX_API_BASE_URL || window.DEX_API_ORIGIN, '');
     const configuredLimit = number(dataset.monthlyLimit, DEFAULT_MONTHLY_LIMIT);
     return {
-      webappUrl: configuredUrl || DEFAULT_WEBAPP_URL,
+      apiBase: (configuredApi || DEFAULT_API).replace(/\/+$/, ''),
       monthlyLimit: Math.max(1, configuredLimit),
     };
   }
@@ -188,7 +189,7 @@ import { animate } from 'framer-motion/dom';
       auth0Sub: text(window.auth0Sub, ''),
       authUser: null,
       authResolved: false,
-      webappUrl: config.webappUrl,
+      apiBase: config.apiBase,
       form: createInitialForm(),
       stepError: '',
       submitError: '',
@@ -276,6 +277,52 @@ import { animate } from 'framer-motion/dom';
     return { authenticated, user, sub };
   }
 
+  async function resolveAccessToken(timeoutMs = WORKER_TIMEOUT_MS) {
+    const auth = getAuthRuntime();
+    if (!auth || typeof auth.getAccessToken !== 'function') return '';
+    try {
+      if (typeof auth.resolve === 'function') {
+        await withTimeout(auth.resolve(Math.min(timeoutMs, AUTH_TIMEOUT_MS)), Math.min(timeoutMs, AUTH_TIMEOUT_MS), null);
+      } else if (auth.ready && typeof auth.ready.then === 'function') {
+        await withTimeout(auth.ready, Math.min(timeoutMs, AUTH_TIMEOUT_MS), null);
+      }
+    } catch {}
+    try {
+      const token = await withTimeout(auth.getAccessToken(), timeoutMs, '');
+      return text(token, '');
+    } catch {
+      return '';
+    }
+  }
+
+  async function fetchWorkerJson(pathname, options = {}) {
+    const opts = options && typeof options === 'object' ? options : {};
+    if (!state || !text(state.apiBase)) throw new Error('Missing PressRoom API endpoint.');
+    const token = opts.token || await resolveAccessToken(opts.timeoutMs || WORKER_TIMEOUT_MS);
+    if (!token) throw new Error('Sign in again to refresh your PressRoom session.');
+    const controller = typeof AbortController === 'function' ? new AbortController() : null;
+    const timeout = window.setTimeout(() => {
+      if (controller) controller.abort();
+    }, Math.max(500, Number(opts.timeoutMs || WORKER_TIMEOUT_MS)));
+    try {
+      const response = await fetch(`${state.apiBase}${pathname}`, {
+        method: opts.method || 'GET',
+        headers: {
+          accept: 'application/json',
+          authorization: `Bearer ${token}`,
+          ...(opts.body ? { 'content-type': 'application/json' } : {}),
+        },
+        body: opts.body ? JSON.stringify(opts.body) : undefined,
+        signal: controller?.signal,
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(errorMessageFromPayload(payload, response.statusText || 'PressRoom request failed.'));
+      return payload;
+    } finally {
+      window.clearTimeout(timeout);
+    }
+  }
+
   function getPrefetchRuntime() {
     const runtime = window.__DX_PREFETCH;
     if (!runtime || typeof runtime.getFresh !== 'function' || typeof runtime.set !== 'function') return null;
@@ -337,93 +384,6 @@ import { animate } from 'framer-motion/dom';
     state.quotaSource = text(source, state.quotaSource || 'none');
     setQuotaSource(state.quotaSource);
     return true;
-  }
-
-  function normalizedQuery(params) {
-    const pairs = [];
-    const keys = Object.keys(params || {}).sort();
-    for (const key of keys) {
-      const value = params[key];
-      if (value == null) continue;
-      pairs.push(`${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`);
-    }
-    return pairs.join('&');
-  }
-
-  function releaseJsonpCallback(callbackName) {
-    if (!callbackName) return;
-    try {
-      window[callbackName] = () => {};
-    } catch {}
-    window.setTimeout(() => {
-      try {
-        delete window[callbackName];
-      } catch {
-        window[callbackName] = undefined;
-      }
-    }, 180000);
-  }
-
-  function jsonpRequest(url, params, timeoutMs = JSONP_TIMEOUT_MS, options = {}) {
-    const query = normalizedQuery(params || {});
-    const key = `${String(url || '').trim()}?${query}`;
-    const dedupe = options && options.dedupe !== false;
-
-    if (dedupe && inflightJsonp.has(key)) {
-      return inflightJsonp.get(key);
-    }
-
-    const task = new Promise((resolve, reject) => {
-      const callbackName = `dxPressJsonpCb_${Date.now()}_${Math.floor(Math.random() * 1e6)}`;
-      const script = document.createElement('script');
-      let settled = false;
-      let timer = 0;
-
-      function cleanup() {
-        if (timer) window.clearTimeout(timer);
-        releaseJsonpCallback(callbackName);
-        if (script.parentNode) {
-          script.parentNode.removeChild(script);
-        }
-      }
-
-      window[callbackName] = (payload) => {
-        if (settled) return;
-        settled = true;
-        cleanup();
-        resolve(payload);
-      };
-
-      script.onerror = () => {
-        if (settled) return;
-        settled = true;
-        cleanup();
-        reject(new Error('JSONP request failed'));
-      };
-
-      timer = window.setTimeout(() => {
-        if (settled) return;
-        settled = true;
-        cleanup();
-        reject(new Error('JSONP request timed out'));
-      }, Math.max(300, Number(timeoutMs || JSONP_TIMEOUT_MS)));
-
-      const sep = String(url).includes('?') ? '&' : '?';
-      script.src = `${String(url)}${sep}${query}${query ? '&' : ''}callback=${encodeURIComponent(callbackName)}`;
-      script.async = true;
-      script.defer = true;
-      document.body.appendChild(script);
-    });
-
-    const tracked = task.finally(() => {
-      inflightJsonp.delete(key);
-    });
-
-    if (dedupe) {
-      inflightJsonp.set(key, tracked);
-    }
-
-    return tracked;
   }
 
   function normalizeRequestRow(row, index) {
@@ -716,7 +676,6 @@ import { animate } from 'framer-motion/dom';
   function normalizeAppendPayload() {
     if (!state) return null;
     const payload = {
-      action: 'append',
       auth0Sub: state.auth0Sub,
       requestId: (window.crypto && typeof window.crypto.randomUUID === 'function')
         ? window.crypto.randomUUID()
@@ -760,15 +719,9 @@ import { animate } from 'framer-motion/dom';
     }
 
     try {
-      const payload = await jsonpRequest(
-        state.webappUrl,
-        {
-          action: 'quota',
-          auth0Sub: state.auth0Sub,
-        },
-        JSONP_TIMEOUT_MS,
-        { dedupe: !opts.forceLive },
-      );
+      const payload = await fetchWorkerJson('/me/press-requests/quota', {
+        timeoutMs: WORKER_TIMEOUT_MS,
+      });
 
       if (!applyQuotaPayload(payload, 'live')) {
         throw new Error(errorMessageFromPayload(payload, 'Could not verify monthly quota right now.'));
@@ -808,15 +761,9 @@ import { animate } from 'framer-motion/dom';
     renderCommandPanel();
 
     try {
-      const payload = await jsonpRequest(
-        state.webappUrl,
-        {
-          action: 'list',
-          auth0Sub: state.auth0Sub,
-        },
-        JSONP_TIMEOUT_MS,
-        { dedupe: !opts.forceLive },
-      );
+      const payload = await fetchWorkerJson('/me/press-requests?limit=100', {
+        timeoutMs: WORKER_TIMEOUT_MS,
+      });
 
       const status = text(payload?.status, '').toLowerCase();
       if (status !== 'ok' || !Array.isArray(payload?.rows)) {
@@ -867,16 +814,9 @@ import { animate } from 'framer-motion/dom';
     renderHistory();
 
     try {
-      const payload = await jsonpRequest(
-        state.webappUrl,
-        {
-          action: 'events_for_request',
-          auth0Sub: state.auth0Sub,
-          requestId: safeRequestId,
-        },
-        JSONP_TIMEOUT_MS,
-        { dedupe: !opts.force },
-      );
+      const payload = await fetchWorkerJson(`/me/press-requests/${encodeURIComponent(safeRequestId)}/events`, {
+        timeoutMs: WORKER_TIMEOUT_MS,
+      });
 
       const status = text(payload?.status, '').toLowerCase();
       if (status !== 'ok' || !Array.isArray(payload?.events)) {
@@ -927,12 +867,11 @@ import { animate } from 'framer-motion/dom';
       }
 
       const payload = normalizeAppendPayload();
-      const appendPayload = await jsonpRequest(
-        state.webappUrl,
-        payload,
-        SUBMIT_TIMEOUT_MS,
-        { dedupe: false },
-      );
+      const appendPayload = await fetchWorkerJson('/me/press-requests', {
+        method: 'POST',
+        body: payload,
+        timeoutMs: SUBMIT_TIMEOUT_MS,
+      });
 
       const appendStatus = text(appendPayload?.status, '').toLowerCase();
       if (appendStatus !== 'ok') {
@@ -1148,9 +1087,6 @@ import { animate } from 'framer-motion/dom';
     doneBlock.appendChild(create('h3', 'dx-press-done-title', 'Submission Complete'));
     const requestRef = text(state.lastRequestId, text(state.activeRequestId, 'Pending assignment'));
     doneBlock.appendChild(create('p', 'dx-press-done-copy', `Request ID: ${requestRef}`));
-    if (state.lastRow) {
-      doneBlock.appendChild(create('p', 'dx-press-done-copy', `Sheet row: ${state.lastRow}`));
-    }
     doneBlock.appendChild(create('p', 'dx-press-done-copy', getQuotaSummaryText()));
     hostCard.appendChild(doneBlock);
 

@@ -6,6 +6,7 @@ const ROOT = process.cwd();
 
 const FILES = {
   html: path.join(ROOT, 'docs', 'u', 'index.html'),
+  notFound: path.join(ROOT, 'docs', '404.html'),
   runtimeSource: path.join(ROOT, 'scripts', 'src', 'profile.public.entry.mjs'),
   runtimeBuilt: path.join(ROOT, 'public', 'assets', 'js', 'profile.public.js'),
   runtimeMirrorA: path.join(ROOT, 'assets', 'js', 'profile.public.js'),
@@ -65,6 +66,7 @@ function verifyJsonMirror() {
 
 function main() {
   const html = readText(FILES.html);
+  const notFound = readText(FILES.notFound);
   const source = readText(FILES.runtimeSource);
   const built = readText(FILES.runtimeBuilt);
   const mirrorA = readText(FILES.runtimeMirrorA);
@@ -81,6 +83,13 @@ function main() {
     'data-dx-fetch-state="loading"',
     '/css/components/dx-profile-public.css',
     '/assets/js/profile.public.js',
+    'member profile',
+  ]);
+  requireMarkers('docs/404.html', notFound, [
+    'data-dx-profile-fallback',
+    '/css/components/dx-profile-public.css',
+    '/assets/js/profile.public.js',
+    'id="dex-profile"',
     'member profile',
   ]);
   requireMarkers('profile public source', source, [

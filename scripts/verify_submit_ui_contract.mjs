@@ -32,7 +32,7 @@ function verifySubmitRoute() {
     'data-weekly-limit="4"',
     '/css/components/dx-submit-samples.css',
     '/assets/js/submit.samples.js',
-    'data-webapp-url="https://script.google.com/macros/s/AKfycbyh5TPML3_y5-j1QoOKfju_MayO1_0JErwvVkH3Eba195q_EmWGCEu3CdFFeohWes3Qzw/exec"',
+    'data-api="https://dex-api.spring-fog-8edd.workers.dev"',
   ]);
 
   const banned = [
@@ -65,13 +65,13 @@ function verifySubmitRuntime() {
     'CALLS_REGISTRY_URL',
     'applyCallsRegistryContract',
     'getAvailableCallLanes',
-    'quota_call',
-    'submit_call',
+    'fetchWorkerJson',
+    '/me/submissions/quota',
+    '/me/submissions',
     'pitchSystem',
     'pitchDescriptor',
     'Weekly uploads available',
     'refreshWeeklyQuotaFromSheet',
-    "action: activeSubmitAction()",
     'data-dx-quota-source',
     'withCanonicalZwnj',
     'serializePitchSelection',
@@ -101,8 +101,8 @@ function verifySubmitRuntime() {
     const text = readText(relPath);
     assertIncludes(relPath, text, [
       '__dxSubmitSamplesRuntimeLoaded',
-      'quota_call',
-      'submit_call',
+      '/me/submissions/quota',
+      '/me/submissions',
       'data-dx-submit-flow',
       'data-dx-submit-has-active-call',
       'data-dx-submit-active-call-count',
@@ -119,6 +119,19 @@ function verifySubmitRuntime() {
   const bannedQuotaPath = "action:'list'";
   if (source.includes(bannedQuotaPath) || source.includes("action: 'list'")) {
     FAILURES.push(`${sourceRel} still references list action for quota checks`);
+  }
+
+  for (const relPath of [
+    sourceRel,
+    'docs/entry/submit/index.html',
+    'public/assets/js/submit.samples.js',
+    'assets/js/submit.samples.js',
+    'docs/assets/js/submit.samples.js',
+  ]) {
+    const text = readText(relPath);
+    if (text.includes('script.google.com/macros')) {
+      FAILURES.push(`${relPath} still references Apps Script for submit`);
+    }
   }
 }
 

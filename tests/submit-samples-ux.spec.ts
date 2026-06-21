@@ -47,8 +47,79 @@ async function stubDexAuthRuntime(page: Page): Promise<void> {
 
 async function stubApiBaseline(page: Page): Promise<void> {
   await page.route('https://dex-api.spring-fog-8edd.workers.dev/**', async (route) => {
+    const url = new URL(route.request().url());
+    if (url.pathname.startsWith('/me/submissions')) {
+      await route.fallback();
+      return;
+    }
     if (route.request().method().toUpperCase() === 'OPTIONS') {
       await route.fulfill({ status: 204, headers: CORS_HEADERS });
+      return;
+    }
+    await route.fulfill({
+      status: 200,
+      headers: CORS_HEADERS,
+      contentType: 'application/json',
+      body: JSON.stringify({ ok: true }),
+    });
+  });
+}
+
+type SubmitWorkerStubOptions = {
+  quota?: {
+    weeklyLimit: number;
+    weeklyUsed: number;
+    weeklyRemaining: number;
+  };
+  quotaDelayMs?: number;
+  submitDelayMs?: number;
+  onQuota?: () => void;
+  onSubmit?: (payload: Record<string, string>) => void;
+};
+
+async function stubSubmitWorker(page: Page, options: SubmitWorkerStubOptions = {}): Promise<void> {
+  const quota = options.quota || { weeklyLimit: 4, weeklyUsed: 1, weeklyRemaining: 3 };
+  await page.route('https://dex-api.spring-fog-8edd.workers.dev/**', async (route) => {
+    const request = route.request();
+    const method = request.method().toUpperCase();
+    const url = new URL(request.url());
+    if (method === 'OPTIONS') {
+      await route.fulfill({ status: 204, headers: CORS_HEADERS });
+      return;
+    }
+    if (url.pathname === '/me/submissions/quota' && method === 'GET') {
+      if (options.onQuota) options.onQuota();
+      if (options.quotaDelayMs) {
+        await new Promise((resolve) => setTimeout(resolve, options.quotaDelayMs));
+      }
+      await route.fulfill({
+        status: 200,
+        headers: CORS_HEADERS,
+        contentType: 'application/json',
+        body: JSON.stringify({ status: 'ok', ...quota }),
+      });
+      return;
+    }
+    if (url.pathname === '/me/submissions' && method === 'POST') {
+      const raw = request.postDataJSON() as Record<string, unknown>;
+      const payload = Object.fromEntries(Object.entries(raw || {}).map(([key, value]) => [key, String(value ?? '')]));
+      if (options.onSubmit) options.onSubmit(payload);
+      if (options.submitDelayMs) {
+        await new Promise((resolve) => setTimeout(resolve, options.submitDelayMs));
+      }
+      await route.fulfill({
+        status: 200,
+        headers: CORS_HEADERS,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          status: 'ok',
+          row: 42,
+          submissionId: 'sub-e2e-001',
+          ...quota,
+          weeklyUsed: Math.min(quota.weeklyLimit, quota.weeklyUsed + 1),
+          weeklyRemaining: Math.max(0, quota.weeklyRemaining - 1),
+        }),
+      });
       return;
     }
     await route.fulfill({
@@ -143,35 +214,10 @@ async function submitSampleWithPitch(page: Page, scenario: PitchSubmitScenario):
 
   await stubHeaderRuntimes(page);
   await stubDexAuthRuntime(page);
-  await stubApiBaseline(page);
-
-  await page.route('https://script.google.com/macros/**', async (route) => {
-    const url = new URL(route.request().url());
-    const action = String(url.searchParams.get('action') || '').toLowerCase();
-    const callback = String(url.searchParams.get('callback') || '').trim();
-    if (!callback) {
-      await route.fulfill({ status: 400, contentType: 'text/plain', body: 'Missing callback' });
-      return;
-    }
-    if (action === 'quota') {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/javascript',
-        body: `${callback}(${JSON.stringify({
-          status: 'ok',
-          weeklyLimit: 4,
-          weeklyUsed: 1,
-          weeklyRemaining: 3,
-        })});`,
-      });
-      return;
-    }
-    submitParams = Object.fromEntries(url.searchParams.entries());
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/javascript',
-      body: `${callback}(${JSON.stringify({ status: 'ok', row: 77 })});`,
-    });
+  await stubSubmitWorker(page, {
+    onSubmit: (payload) => {
+      submitParams = payload;
+    },
   });
 
   await page.goto('/entry/submit/', { waitUntil: 'domcontentloaded' });
@@ -306,7 +352,6 @@ test('submit page collapses to single-column on mobile with readable field text'
 
 test('submit shell reaches ready before delayed auth resolves, then hydrates quota', async ({ page }) => {
   await stubHeaderRuntimes(page);
-  await stubApiBaseline(page);
 
   await page.route('**/assets/dex-auth.js', async (route) => {
     const script = `
@@ -326,33 +371,16 @@ test('submit shell reaches ready before delayed auth resolves, then hydrates quo
         window.DEX_AUTH = auth;
         window.dexAuth = auth;
         window.auth0 = { getUser: () => delay(2800, user) };
+        setTimeout(() => {
+          window.AUTH0_USER = user;
+          window.auth0Sub = user.sub;
+          document.dispatchEvent(new Event('dex-auth:ready'));
+        }, 2800);
       })();
     `;
     await route.fulfill({ status: 200, contentType: 'application/javascript', body: script });
   });
-
-  await page.route('https://script.google.com/macros/**', async (route) => {
-    const url = new URL(route.request().url());
-    const action = String(url.searchParams.get('action') || '').toLowerCase();
-    const callback = String(url.searchParams.get('callback') || '').trim();
-    if (!callback) {
-      await route.fulfill({ status: 400, contentType: 'text/plain', body: 'Missing callback' });
-      return;
-    }
-    if (action === 'quota') {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/javascript',
-        body: `${callback}(${JSON.stringify({ status: 'ok', weeklyLimit: 4, weeklyUsed: 1, weeklyRemaining: 3 })});`,
-      });
-      return;
-    }
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/javascript',
-      body: `${callback}(${JSON.stringify({ status: 'ok', row: 55 })});`,
-    });
-  });
+  await stubSubmitWorker(page);
 
   const start = Date.now();
   await page.goto('/entry/submit/', { waitUntil: 'domcontentloaded' });
@@ -371,44 +399,18 @@ test('submit shell reaches ready before delayed auth resolves, then hydrates quo
 
 test('submit wizard enforces required fields and keeps payload key contract on submit', async ({ page }) => {
   let submitParams: Record<string, string> | null = null;
-  let listActionCount = 0;
-  let quotaActionCount = 0;
+  let quotaRequestCount = 0;
 
   await stubHeaderRuntimes(page);
   await stubDexAuthRuntime(page);
-  await stubApiBaseline(page);
-
-  await page.route('https://script.google.com/macros/**', async (route) => {
-    const url = new URL(route.request().url());
-    const action = String(url.searchParams.get('action') || '').toLowerCase();
-    const callback = String(url.searchParams.get('callback') || '').trim();
-    if (action === 'list') listActionCount += 1;
-
-    if (!callback) {
-      await route.fulfill({ status: 400, contentType: 'text/plain', body: 'Missing callback' });
-      return;
-    }
-    if (action === 'quota') {
-      quotaActionCount += 1;
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/javascript',
-        body: `${callback}(${JSON.stringify({
-          status: 'ok',
-          weeklyLimit: 4,
-          weeklyUsed: 0,
-          weeklyRemaining: 4,
-        })});`,
-      });
-      return;
-    }
-    submitParams = Object.fromEntries(url.searchParams.entries());
-
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/javascript',
-      body: `${callback}(${JSON.stringify({ status: 'ok', row: 42 })});`,
-    });
+  await stubSubmitWorker(page, {
+    quota: { weeklyLimit: 4, weeklyUsed: 0, weeklyRemaining: 4 },
+    onQuota: () => {
+      quotaRequestCount += 1;
+    },
+    onSubmit: (payload) => {
+      submitParams = payload;
+    },
   });
 
   await page.goto('/entry/submit/', { waitUntil: 'domcontentloaded' });
@@ -448,13 +450,11 @@ test('submit wizard enforces required fields and keeps payload key contract on s
 
   expect(submitParams).not.toBeNull();
   if (!submitParams) return;
-  expect(listActionCount).toBe(0);
-  expect(quotaActionCount).toBeGreaterThan(0);
+  expect(quotaRequestCount).toBeGreaterThan(0);
 
   const keys = Object.keys(submitParams);
   expect(keys).toEqual(
     expect.arrayContaining([
-      'callback',
       'auth0Sub',
       'title',
       'creator',
@@ -504,28 +504,8 @@ test('submit wizard enforces required fields and keeps payload key contract on s
 test('submit services chips use custom tooltip contract and sidebar guidance follows focused field', async ({ page }) => {
   await stubHeaderRuntimes(page);
   await stubDexAuthRuntime(page);
-  await stubApiBaseline(page);
-  await page.route('https://script.google.com/macros/**', async (route) => {
-    const url = new URL(route.request().url());
-    const action = String(url.searchParams.get('action') || '').toLowerCase();
-    const callback = String(url.searchParams.get('callback') || '').trim();
-    if (!callback) {
-      await route.fulfill({ status: 400, contentType: 'text/plain', body: 'Missing callback' });
-      return;
-    }
-    if (action === 'quota') {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/javascript',
-        body: `${callback}(${JSON.stringify({ status: 'ok', weeklyLimit: 4, weeklyUsed: 0, weeklyRemaining: 4 })});`,
-      });
-      return;
-    }
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/javascript',
-      body: `${callback}(${JSON.stringify({ status: 'ok', row: 99 })});`,
-    });
+  await stubSubmitWorker(page, {
+    quota: { weeklyLimit: 4, weeklyUsed: 0, weeklyRemaining: 4 },
   });
 
   await page.goto('/entry/submit/', { waitUntil: 'domcontentloaded' });
@@ -581,7 +561,7 @@ test('submit services chips use custom tooltip contract and sidebar guidance fol
   expect(hasZwnj).toBeTruthy();
 });
 
-test('submit quota JSONP timeout never throws late callback reference errors', async ({ page }) => {
+test('submit quota timeout surfaces retry state without page errors', async ({ page }) => {
   const pageErrors: string[] = [];
   page.on('pageerror', (error) => {
     pageErrors.push(String(error?.message || error));
@@ -589,30 +569,9 @@ test('submit quota JSONP timeout never throws late callback reference errors', a
 
   await stubHeaderRuntimes(page);
   await stubDexAuthRuntime(page);
-  await stubApiBaseline(page);
-  await page.route('https://script.google.com/macros/**', async (route) => {
-    const url = new URL(route.request().url());
-    const action = String(url.searchParams.get('action') || '').toLowerCase();
-    const callback = String(url.searchParams.get('callback') || '').trim();
-    if (!callback) {
-      await route.fulfill({ status: 400, contentType: 'text/plain', body: 'Missing callback' });
-      return;
-    }
-
-    if (action === 'quota') {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/javascript',
-        body: `setTimeout(function(){ if (typeof ${callback} === 'function') { ${callback}(${JSON.stringify({ status: 'ok', weeklyLimit: 4, weeklyUsed: 0, weeklyRemaining: 4 })}); } }, 12000);`,
-      });
-      return;
-    }
-
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/javascript',
-      body: `${callback}(${JSON.stringify({ status: 'ok', row: 100 })});`,
-    });
+  await stubSubmitWorker(page, {
+    quota: { weeklyLimit: 4, weeklyUsed: 0, weeklyRemaining: 4 },
+    quotaDelayMs: 12000,
   });
 
   await page.goto('/entry/submit/', { waitUntil: 'domcontentloaded' });
@@ -622,7 +581,7 @@ test('submit quota JSONP timeout never throws late callback reference errors', a
   await begin.click();
   await expect(page.locator('[data-dx-submit-step="metadata"]')).toBeVisible();
   const step = page.locator('[data-dx-submit-step="metadata"]');
-  await step.locator('.dx-submit-field', { hasText: 'Proposed sample title' }).locator('input').fill('Late JSONP callback');
+  await step.locator('.dx-submit-field', { hasText: 'Proposed sample title' }).locator('input').fill('Late quota response');
   await step.locator('.dx-submit-field', { hasText: 'Sample creator(s)' }).locator('input').fill('No Reference Error');
   await step.locator('.dx-submit-field', { hasText: 'Instrument category' }).locator('select').selectOption('B - Brass');
   await step.locator('.dx-submit-field', { hasText: 'Instrument' }).locator('input').fill('Prepared Trombone');
@@ -637,11 +596,7 @@ test('submit quota JSONP timeout never throws late callback reference errors', a
 
   await expect(page.locator('.dx-submit-toast--error').last()).toContainText('Could not verify weekly quota');
   await page.waitForTimeout(12300);
-
-  const refErrors = pageErrors.filter(
-    (message) => message.includes('dxSubmitJsonp_') && message.includes('is not defined'),
-  );
-  expect(refErrors).toHaveLength(0);
+  expect(pageErrors).toHaveLength(0);
 });
 
 const PITCH_SERIALIZATION_SCENARIOS: Array<PitchSubmitScenario & { name: string }> = [
@@ -681,34 +636,8 @@ for (const scenario of PITCH_SERIALIZATION_SCENARIOS) {
 test('submit intro locks Begin when weekly quota is exhausted for the signed-in user', async ({ page }) => {
   await stubHeaderRuntimes(page);
   await stubDexAuthRuntime(page);
-  await stubApiBaseline(page);
-
-  await page.route('https://script.google.com/macros/**', async (route) => {
-    const url = new URL(route.request().url());
-    const action = String(url.searchParams.get('action') || '').toLowerCase();
-    const callback = String(url.searchParams.get('callback') || '').trim();
-    if (!callback) {
-      await route.fulfill({ status: 400, contentType: 'text/plain', body: 'Missing callback' });
-      return;
-    }
-    if (action === 'quota') {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/javascript',
-        body: `${callback}(${JSON.stringify({
-          status: 'ok',
-          weeklyLimit: 4,
-          weeklyUsed: 4,
-          weeklyRemaining: 0,
-        })});`,
-      });
-      return;
-    }
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/javascript',
-      body: `${callback}(${JSON.stringify({ status: 'ok', row: 101 })});`,
-    });
+  await stubSubmitWorker(page, {
+    quota: { weeklyLimit: 4, weeklyUsed: 4, weeklyRemaining: 0 },
   });
 
   await page.goto('/entry/submit/', { waitUntil: 'domcontentloaded' });
@@ -727,34 +656,9 @@ test('submit intro locks Begin when weekly quota is exhausted for the signed-in 
 test('submit flow locks controls, shows fetching sheen, then proceeds to done', async ({ page }) => {
   await stubHeaderRuntimes(page);
   await stubDexAuthRuntime(page);
-  await stubApiBaseline(page);
-
-  await page.route('https://script.google.com/macros/**', async (route) => {
-    const url = new URL(route.request().url());
-    const action = String(url.searchParams.get('action') || '').toLowerCase();
-    const callback = String(url.searchParams.get('callback') || '').trim();
-    if (!callback) {
-      await route.fulfill({ status: 400, contentType: 'text/plain', body: 'Missing callback' });
-      return;
-    }
-    if (action === 'quota') {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/javascript',
-        body: `${callback}(${JSON.stringify({
-          status: 'ok',
-          weeklyLimit: 4,
-          weeklyUsed: 0,
-          weeklyRemaining: 4,
-        })});`,
-      });
-      return;
-    }
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/javascript',
-      body: `setTimeout(function(){ if (typeof ${callback} === 'function') { ${callback}(${JSON.stringify({ status: 'ok', row: 122 })}); } }, 700);`,
-    });
+  await stubSubmitWorker(page, {
+    quota: { weeklyLimit: 4, weeklyUsed: 0, weeklyRemaining: 4 },
+    submitDelayMs: 700,
   });
 
   await page.goto('/entry/submit/', { waitUntil: 'domcontentloaded' });

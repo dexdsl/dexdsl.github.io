@@ -347,6 +347,14 @@ function parseTopLevelMode(argv) {
     const idx = args.indexOf(firstNonFlag);
     return { mode: 'direct-command', paletteOpen: false, command: 'polls', rest: args.slice(idx + 1) };
   }
+  if (firstNonFlag === 'ops') {
+    const idx = args.indexOf(firstNonFlag);
+    return { mode: 'direct-command', paletteOpen: false, command: 'ops', rest: args.slice(idx + 1) };
+  }
+  if (['submissions', 'press', 'board', 'support'].includes(firstNonFlag)) {
+    const idx = args.indexOf(firstNonFlag);
+    return { mode: 'direct-command', paletteOpen: false, command: firstNonFlag, rest: args.slice(idx + 1) };
+  }
   if (firstNonFlag === 'call') {
     const idx = args.indexOf(firstNonFlag);
     return { mode: 'direct-command', paletteOpen: false, command: 'call', rest: args.slice(idx + 1) };
@@ -517,8 +525,13 @@ async function runPollsCommand(rest = []) {
     getAdminPollLive,
     getAdminPollTrend,
     getAdminPollSnapshots,
+    listAdminPollDefinitions,
+    createAdminPollDefinition,
+    patchAdminPollDefinition,
+    setAdminPollDefinitionStatus,
     publishAdminPollSnapshot,
     promoteAdminPollSnapshot,
+    getPublicPollResults,
   } = await import('./lib/polls-admin-api.mjs');
   const {
     renderLineTrend,
@@ -549,7 +562,7 @@ async function runPollsCommand(rest = []) {
         return;
       }
     }
-    console.log('Usage: dex polls <desk|validate|create|edit|close|open|publish|overview|live|trend|snapshots|publish-results|promote-results> [args]');
+    console.log('Usage: dex polls <desk|list|create|edit|open|close|results|snapshot|validate|publish|overview|live|trend|snapshots|publish-results|promote-results> [args]');
     return;
   }
 
@@ -589,7 +602,77 @@ async function runPollsCommand(rest = []) {
     return;
   }
 
-  const printVoteRows = (options = [], countsRaw = {}, totalRaw = 0) => {
+  const parsePollOptions = () => {
+    const raw = flags.get('--options') || flags.get('--choices') || '';
+    if (!raw) return [];
+    return raw.split(/[|,]/).map((item) => item.trim()).filter(Boolean);
+  };
+
+  const pollBodyFromFlags = (existing = {}) => {
+    const body = { ...existing };
+    const assignIfPresent = (flag, key = flag.replace(/^--/, '')) => {
+      if (flags.has(flag)) body[key] = flags.get(flag);
+    };
+    assignIfPresent('--id');
+    assignIfPresent('--title');
+    assignIfPresent('--question');
+    assignIfPresent('--description');
+    assignIfPresent('--visibility');
+    assignIfPresent('--status');
+    assignIfPresent('--closeAt');
+    assignIfPresent('--close-at', 'closeAt');
+    assignIfPresent('--call-ref', 'callRef');
+    const options = parsePollOptions();
+    if (options.length) body.options = options;
+    if (!body.question && body.title) body.question = body.title;
+    if (!body.title && body.question) body.title = body.question;
+    return body;
+  };
+
+  if (subcommand === 'list') {
+    const env = flags.get('--env') || 'test';
+    const { payload, apiBase } = await listAdminPollDefinitions({
+      env,
+      status: flags.get('--status') || '',
+      visibility: flags.get('--visibility') || '',
+      limit: flags.get('--limit') || 100,
+    });
+    const rows = Array.isArray(payload?.polls) ? payload.polls : [];
+    if (flags.has('--json')) {
+      console.log(JSON.stringify(payload, null, 2));
+      return;
+    }
+    console.log(`polls:list (${env}) count=${rows.length} via ${apiBase}`);
+    for (const poll of rows) {
+      const id = String(poll.id || '').padEnd(34);
+      const status = String(poll.status || '-').padEnd(7);
+      const visibility = String(poll.visibility || '-').padEnd(8);
+      const question = String(poll.question || poll.title || '').trim();
+      console.log(`  ${id} ${status} ${visibility} ${question}`);
+    }
+    return;
+  }
+
+  if (subcommand === 'results') {
+    const env = flags.get('--env') || 'prod';
+    const pollId = values[0] || flags.get('--id');
+    if (!pollId) throw new Error('polls:results requires a poll id');
+    const { payload, apiBase } = await getPublicPollResults({ pollId, env });
+    if (flags.has('--json')) {
+      console.log(JSON.stringify(payload, null, 2));
+      return;
+    }
+    const poll = payload?.poll || {};
+    const counts = payload?.counts || payload?.results?.counts || {};
+    const total = Number(payload?.total || payload?.results?.total || 0) || 0;
+    const options = Array.isArray(poll?.options) ? poll.options : [];
+    console.log(`polls:results (${env}) ${pollId} via ${apiBase}`);
+    console.log(`  question: ${String(poll?.question || 'n/a')}`);
+    printVoteRows(options, counts, total);
+    return;
+  }
+
+  function printVoteRows(options = [], countsRaw = {}, totalRaw = 0) {
     const total = Math.max(0, Number(totalRaw) || 0);
     const counts = countsRaw && typeof countsRaw === 'object' ? countsRaw : {};
     options.forEach((label, index) => {
@@ -597,7 +680,7 @@ async function runPollsCommand(rest = []) {
       const pct = total > 0 ? Math.round((count / total) * 100) : 0;
       console.log(`  ${String(index + 1).padStart(2)}. ${String(label || '').padEnd(42)} ${String(count).padStart(5)} (${String(pct).padStart(3)}%)`);
     });
-  };
+  }
 
   const toTrendSeries = (payload) => {
     const trend = payload?.trend && typeof payload.trend === 'object' ? payload.trend : payload;
@@ -759,14 +842,14 @@ async function runPollsCommand(rest = []) {
     return;
   }
 
-  if (subcommand === 'publish-results') {
+  if (subcommand === 'publish-results' || subcommand === 'snapshot') {
     const env = flags.get('--env') || 'test';
     const pollId = values[0] || flags.get('--id');
     const summaryFile = flags.get('--summary-file');
     const headline = flags.get('--headline') || '';
     const draft = flags.has('--draft');
-    if (!pollId) throw new Error('polls:publish-results requires a poll id');
-    if (!summaryFile) throw new Error('polls:publish-results requires --summary-file <path>');
+    if (!pollId) throw new Error(`polls:${subcommand} requires a poll id`);
+    if (!summaryFile) throw new Error(`polls:${subcommand} requires --summary-file <path>`);
     const summaryMarkdown = await readSummaryFile(summaryFile);
     const { payload, apiBase } = await publishAdminPollSnapshot({
       pollId,
@@ -777,7 +860,7 @@ async function runPollsCommand(rest = []) {
       trendWindow: flags.get('--window') || '90d',
       idempotencyKey: flags.get('--idempotency-key') || '',
     });
-    console.log(`polls:publish-results (${env}) ${pollId} via ${apiBase}`);
+    console.log(`polls:${subcommand} (${env}) ${pollId} via ${apiBase}`);
     console.log(`  version: ${payload?.version ?? '-'} state: ${payload?.state ?? '-'} publishedAt: ${payload?.publishedAt ?? '-'}`);
     return;
   }
@@ -791,6 +874,59 @@ async function runPollsCommand(rest = []) {
     const { payload, apiBase } = await promoteAdminPollSnapshot({ pollId, version, env });
     console.log(`polls:promote-results (${env}) ${pollId} via ${apiBase}`);
     console.log(`  version: ${payload?.version ?? version} state: ${payload?.state ?? '-'} updatedAt: ${payload?.publishedAt || payload?.updatedAt || '-'}`);
+    return;
+  }
+
+  const useLocalPollFile = flags.has('--local') || flags.has('--file');
+
+  if (subcommand === 'create' && !useLocalPollFile) {
+    const env = flags.get('--env') || 'test';
+    const body = pollBodyFromFlags({
+      question: flags.get('--question') || flags.get('--title') || 'New poll question',
+      visibility: flags.get('--visibility') || 'public',
+      status: flags.get('--status') || 'draft',
+    });
+    const { payload, apiBase } = await createAdminPollDefinition({
+      env,
+      poll: body,
+      idempotencyKey: flags.get('--idempotency-key') || '',
+    });
+    if (flags.has('--json')) {
+      console.log(JSON.stringify(payload, null, 2));
+      return;
+    }
+    const poll = payload?.poll || payload;
+    console.log(`polls:create (${env}) ${poll?.id || body.id || '-'} -> ${poll?.status || body.status || 'draft'} via ${apiBase}`);
+    return;
+  }
+
+  if (subcommand === 'edit' && !useLocalPollFile) {
+    const env = flags.get('--env') || 'test';
+    const pollId = values[0] || flags.get('--id');
+    if (!pollId) throw new Error('polls:edit requires a poll id');
+    const patch = pollBodyFromFlags({});
+    delete patch.id;
+    const { payload, apiBase } = await patchAdminPollDefinition({ env, pollId, patch });
+    if (flags.has('--json')) {
+      console.log(JSON.stringify(payload, null, 2));
+      return;
+    }
+    const poll = payload?.poll || payload;
+    console.log(`polls:edit (${env}) ${poll?.id || pollId} -> ${poll?.status || patch.status || '-'} via ${apiBase}`);
+    return;
+  }
+
+  if ((subcommand === 'close' || subcommand === 'open') && !useLocalPollFile) {
+    const env = flags.get('--env') || 'test';
+    const pollId = values[0] || flags.get('--id');
+    if (!pollId) throw new Error(`polls:${subcommand} requires a poll id`);
+    const { payload, apiBase } = await setAdminPollDefinitionStatus({ env, pollId, status: subcommand });
+    if (flags.has('--json')) {
+      console.log(JSON.stringify(payload, null, 2));
+      return;
+    }
+    const poll = payload?.poll || payload;
+    console.log(`polls:${subcommand} (${env}) ${poll?.id || pollId} -> ${poll?.status || subcommand} via ${apiBase}`);
     return;
   }
 
@@ -1139,6 +1275,289 @@ async function runProfilesCommand(rest = []) {
   }
 
   throw new Error(`Unknown profiles command: ${action}`);
+}
+
+function printOpsUsage(defaultKind = '') {
+  const prefix = defaultKind ? `dex ${defaultKind === 'submission' ? 'submissions' : defaultKind}` : 'dex ops';
+  console.log(`Usage: ${prefix} <desk|list|show|advance|reply|assign|export|import|create|close> [args]`);
+  console.log('  dex ops desk [--env test|prod] [--kind all|submission|press|board|support]');
+  console.log('  dex ops list [--kind submission|press|board|support] [--status received|pending|closed|all] [--limit 50] [--json]');
+  console.log('  dex submissions show <ticketId>');
+  console.log('  dex press advance <ticketId> --status accepted [--public-note "..."] [--internal-note "..."]');
+  console.log('  dex board reply <ticketId> --message "..." [--internal]');
+  console.log('  dex support create --email person@example.org --title "..." --message "..."');
+  console.log('  dex ops import sheets --kind submissions|press|polls|board --file ./export.csv --dry-run|--write');
+}
+
+function formatOpsRow(row = {}) {
+  const id = String(row.id || row.ticketId || row.submissionId || '-').padEnd(18);
+  const kind = String(row.kind || row.type || '-').padEnd(11);
+  const status = String(row.status || row.state || '-').padEnd(12);
+  const updated = String(row.updatedAt || row.updated_at || row.createdAt || row.created_at || '-').slice(0, 19).padEnd(19);
+  const title = String(row.title || row.subject || row.summary || row.lookupCode || '').trim();
+  return `${id} ${kind} ${status} ${updated} ${title}`;
+}
+
+function parseCsvRows(text) {
+  const rows = [];
+  let row = [];
+  let cell = '';
+  let quoted = false;
+  for (let index = 0; index < text.length; index += 1) {
+    const ch = text[index];
+    const next = text[index + 1];
+    if (quoted) {
+      if (ch === '"' && next === '"') {
+        cell += '"';
+        index += 1;
+      } else if (ch === '"') {
+        quoted = false;
+      } else {
+        cell += ch;
+      }
+      continue;
+    }
+    if (ch === '"') {
+      quoted = true;
+      continue;
+    }
+    if (ch === ',') {
+      row.push(cell);
+      cell = '';
+      continue;
+    }
+    if (ch === '\n') {
+      row.push(cell);
+      rows.push(row);
+      row = [];
+      cell = '';
+      continue;
+    }
+    if (ch !== '\r') cell += ch;
+  }
+  if (cell || row.length) {
+    row.push(cell);
+    rows.push(row);
+  }
+  const headers = (rows.shift() || []).map((header) => String(header || '').trim());
+  return rows
+    .filter((values) => values.some((value) => String(value || '').trim()))
+    .map((values) => Object.fromEntries(headers.map((header, index) => [header || `field_${index + 1}`, String(values[index] ?? '').trim()])));
+}
+
+async function readOpsImportRows(filePath) {
+  const absolute = path.resolve(filePath);
+  const text = await fs.readFile(absolute, 'utf8');
+  if (/\.json$/i.test(absolute)) {
+    const parsed = JSON.parse(text);
+    if (Array.isArray(parsed)) return parsed;
+    if (Array.isArray(parsed.rows)) return parsed.rows;
+    if (Array.isArray(parsed.items)) return parsed.items;
+    throw new Error(`Import JSON must be an array or contain rows/items: ${absolute}`);
+  }
+  return parseCsvRows(text);
+}
+
+function rowsToCsv(rows = []) {
+  const headers = Array.from(new Set(rows.flatMap((row) => Object.keys(row || {}))));
+  const quote = (value) => {
+    const text = String(value ?? '');
+    return /[",\n\r]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+  };
+  return `${headers.map(quote).join(',')}\n${rows.map((row) => headers.map((header) => quote(row?.[header])).join(',')).join('\n')}\n`;
+}
+
+async function runOpsCommand(rest = [], defaultKind = '') {
+  const parsed = parsePollsCommandArgs(rest);
+  const { subcommand, flags, values } = parsed;
+  const action = String(subcommand || (defaultKind ? 'list' : 'desk')).trim().toLowerCase();
+  if (['help', '--help', '-h'].includes(action) || flags.has('--help')) {
+    printOpsUsage(defaultKind);
+    return;
+  }
+
+  const {
+    createOpsTicket,
+    getOpsTicket,
+    importOpsRows,
+    listOpsTickets,
+    normalizeOpsKind,
+    patchOpsTicket,
+    replyOpsTicket,
+  } = await import('./lib/ops-admin-api.mjs');
+
+  const env = flags.get('--env') || flags.get('--target') || process.env.DEX_OPS_ENV || 'test';
+  const apiBase = flags.get('--api-base') || '';
+  const adminToken = flags.get('--token') || '';
+  const asJson = flags.has('--json');
+  const requestedKind = normalizeOpsKind(flags.get('--kind') || defaultKind || 'all', defaultKind || 'all');
+  const common = { env, apiBase, adminToken };
+
+  if (action === 'desk') {
+    if (process.stdout.isTTY && process.stdin.isTTY) {
+      if (env) process.env.DEX_OPS_ENV = String(env);
+      const { runDashboard } = await import('./ui/dashboard.mjs');
+      await runDashboard(dashboardContext({
+        initialMode: 'ops',
+        version: JSON.parse(await fs.readFile(path.join(PROJECT_ROOT, 'package.json'), 'utf8')).version || 'dev',
+      }));
+      return;
+    }
+  }
+
+  if (action === 'desk' || action === 'list') {
+    const status = String(flags.get('--status') || '').toLowerCase() === 'all' ? '' : flags.get('--status') || '';
+    const result = await listOpsTickets({
+      ...common,
+      kind: requestedKind,
+      status,
+      limit: flags.get('--limit') || 50,
+    });
+    if (asJson) {
+      console.log(JSON.stringify(result.payload, null, 2));
+      return;
+    }
+    const rows = Array.isArray(result.payload?.tickets) ? result.payload.tickets : [];
+    console.log(`ops:list (${env}) kind=${requestedKind} count=${rows.length} via ${result.apiBase}`);
+    rows.forEach((row) => console.log(`  ${formatOpsRow(row)}`));
+    return;
+  }
+
+  if (action === 'show') {
+    const ticketId = values[0] || flags.get('--id');
+    if (!ticketId) throw new Error('ops:show requires a ticket id');
+    const result = await getOpsTicket({ ...common, ticketId });
+    if (asJson) {
+      console.log(JSON.stringify(result.payload, null, 2));
+      return;
+    }
+    const ticket = result.payload?.ticket || {};
+    const events = Array.isArray(result.payload?.events) ? result.payload.events : [];
+    console.log(`ops:show (${env}) ${ticket.id || ticketId} via ${result.apiBase}`);
+    console.log(`  ${formatOpsRow(ticket)}`);
+    events.forEach((event) => {
+      const visibility = event.public ? 'public' : 'internal';
+      const body = String(event.message || event.note || event.status || '').trim();
+      console.log(`  - ${String(event.createdAt || event.created_at || '').slice(0, 19)} ${visibility} ${String(event.type || '-').padEnd(12)} ${body}`);
+    });
+    return;
+  }
+
+  if (action === 'advance' || action === 'assign' || action === 'close') {
+    const ticketId = values[0] || flags.get('--id');
+    if (!ticketId) throw new Error(`ops:${action} requires a ticket id`);
+    const status = action === 'close' ? 'closed' : (flags.get('--status') || values[1]);
+    const assignee = action === 'assign' ? (flags.get('--assignee') || values[1]) : flags.get('--assignee');
+    if (action === 'advance' && !status) throw new Error('ops:advance requires --status <status>');
+    if (action === 'assign' && !assignee) throw new Error('ops:assign requires an assignee');
+    const result = await patchOpsTicket({
+      ...common,
+      ticketId,
+      status,
+      assignee,
+      priority: flags.get('--priority'),
+      publicNote: flags.get('--public-note'),
+      internalNote: flags.get('--internal-note'),
+    });
+    if (asJson) {
+      console.log(JSON.stringify(result.payload, null, 2));
+      return;
+    }
+    const ticket = result.payload?.ticket || {};
+    console.log(`ops:${action} (${env}) ${ticket.id || ticketId} -> ${ticket.status || status || '-'} via ${result.apiBase}`);
+    return;
+  }
+
+  if (action === 'reply') {
+    const ticketId = values[0] || flags.get('--id');
+    const message = flags.get('--message') || values.slice(1).join(' ');
+    if (!ticketId) throw new Error('ops:reply requires a ticket id');
+    if (!message && !flags.get('--internal-note')) throw new Error('ops:reply requires --message or --internal-note');
+    const internal = flags.has('--internal');
+    const result = await replyOpsTicket({
+      ...common,
+      ticketId,
+      message: internal ? '' : message,
+      publicNote: internal ? '' : message,
+      internalNote: internal ? message : flags.get('--internal-note') || '',
+      status: flags.get('--status') || '',
+    });
+    if (asJson) {
+      console.log(JSON.stringify(result.payload, null, 2));
+      return;
+    }
+    const ticket = result.payload?.ticket || {};
+    console.log(`ops:reply (${env}) ${ticket.id || ticketId} -> ${ticket.status || '-'} via ${result.apiBase}`);
+    return;
+  }
+
+  if (action === 'create') {
+    const kind = normalizeOpsKind(flags.get('--kind') || defaultKind || 'support', 'support');
+    const message = flags.get('--message') || values.join(' ');
+    const result = await createOpsTicket({
+      ...common,
+      kind,
+      title: flags.get('--title') || message.slice(0, 80) || `${kind} ticket`,
+      message,
+      email: flags.get('--email') || '',
+      name: flags.get('--name') || '',
+      status: flags.get('--status') || 'received',
+      priority: flags.get('--priority') || '',
+      assignee: flags.get('--assignee') || '',
+      idempotencyKey: flags.get('--idempotency-key') || '',
+    });
+    if (asJson) {
+      console.log(JSON.stringify(result.payload, null, 2));
+      return;
+    }
+    const ticket = result.payload?.ticket || {};
+    console.log(`ops:create (${env}) ${ticket.id || '-'} kind=${ticket.kind || kind} status=${ticket.status || 'received'} via ${result.apiBase}`);
+    return;
+  }
+
+  if (action === 'export') {
+    const result = await listOpsTickets({
+      ...common,
+      kind: requestedKind,
+      status: flags.get('--status') || '',
+      limit: flags.get('--limit') || 200,
+    });
+    const rows = Array.isArray(result.payload?.tickets) ? result.payload.tickets : [];
+    const output = asJson ? `${JSON.stringify(rows, null, 2)}\n` : rowsToCsv(rows);
+    const outPath = flags.get('--out');
+    if (outPath) {
+      await fs.writeFile(path.resolve(outPath), output, 'utf8');
+      console.log(`ops:export (${env}) wrote ${outPath} rows=${rows.length}`);
+      return;
+    }
+    process.stdout.write(output);
+    return;
+  }
+
+  if (action === 'import') {
+    const source = values[0] || 'sheets';
+    const filePath = flags.get('--file');
+    if (!filePath) throw new Error('ops:import requires --file <csv|json>');
+    const rows = await readOpsImportRows(filePath);
+    const kind = normalizeOpsKind(flags.get('--kind') || defaultKind || values[1] || 'support', 'support');
+    const dryRun = !flags.has('--write');
+    const result = await importOpsRows({
+      ...common,
+      kind,
+      rows,
+      dryRun,
+      idempotencyKey: flags.get('--idempotency-key') || '',
+    });
+    if (asJson) {
+      console.log(JSON.stringify(result.payload, null, 2));
+      return;
+    }
+    const summary = result.payload || {};
+    console.log(`ops:import ${source} (${env}) kind=${kind} dryRun=${dryRun ? 'yes' : 'no'} rows=${rows.length} imported=${summary.imported ?? 0} skipped=${summary.skipped ?? 0} via ${result.apiBase}`);
+    return;
+  }
+
+  throw new Error(`Unknown ops command: ${action}`);
 }
 
 function parseBooleanFlag(value, fallback = false) {
@@ -2099,6 +2518,31 @@ if (topLevel.mode === 'direct-command' && topLevel.command === 'polls') {
   process.exit(0);
 }
 
+if (topLevel.mode === 'direct-command' && topLevel.command === 'ops') {
+  await runOpsCommand(topLevel.rest);
+  process.exit(0);
+}
+
+if (topLevel.mode === 'direct-command' && topLevel.command === 'submissions') {
+  await runOpsCommand(topLevel.rest, 'submission');
+  process.exit(0);
+}
+
+if (topLevel.mode === 'direct-command' && topLevel.command === 'press') {
+  await runOpsCommand(topLevel.rest, 'press');
+  process.exit(0);
+}
+
+if (topLevel.mode === 'direct-command' && topLevel.command === 'board') {
+  await runOpsCommand(topLevel.rest, 'board');
+  process.exit(0);
+}
+
+if (topLevel.mode === 'direct-command' && topLevel.command === 'support') {
+  await runOpsCommand(topLevel.rest, 'support');
+  process.exit(0);
+}
+
 if (topLevel.mode === 'direct-command' && topLevel.command === 'call') {
   await runCallCommand(topLevel.rest);
   process.exit(0);
@@ -2141,6 +2585,11 @@ if (topLevel.mode === 'direct-command' && topLevel.command === 'deploy') {
 
 if (topLevel.mode === 'direct-command' && topLevel.command === 'release') {
   await runReleaseCommand(topLevel.rest);
+  process.exit(0);
+}
+
+if (topLevel.mode === 'direct-command' && topLevel.command === 'profiles') {
+  await runProfilesCommand(topLevel.rest);
   process.exit(0);
 }
 

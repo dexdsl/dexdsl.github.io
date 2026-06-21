@@ -774,15 +774,50 @@
     setSaveState('idle');
   }
 
-  function publicProfileUrl(profile = state.publicProfile) {
+  function publicProfilePath(profile = state.publicProfile) {
     const handle = text(profile?.handle || getNode('profileHandleInput')?.value);
     if (!handle) return '';
     return `/u/${handle}/`;
   }
 
+  function isPublicProfileVisible(profile = state.publicProfile) {
+    return Boolean(profile?.profile_public) && Boolean(publicProfilePath(profile));
+  }
+
+  function publicProfileUrl(profile = state.publicProfile) {
+    return isPublicProfileVisible(profile) ? publicProfilePath(profile) : '';
+  }
+
   function setPublicText(id, value, fallback = '—') {
     const node = getNode(id);
     if (node) node.textContent = text(value, fallback);
+  }
+
+  function renderPublicProfileSummary(profile = state.publicProfile) {
+    const normalized = normalizePublicProfilePayload(profile || {}, state.publicServerState || {});
+    const path = publicProfilePath(normalized);
+    const visible = Boolean(normalized.profile_public) && Boolean(path);
+    const displayUrl = visible ? (text(normalized.profile_url) || path) : (path ? 'Private until visible is enabled.' : '/u/handle/');
+    setPublicText('publicDexId', normalized.dex_id);
+    setPublicText('publicProfileUrl', displayUrl);
+    setPublicText('publicProfileUrlText', displayUrl || '/u/handle/', '/u/handle/');
+
+    const stateNode = getNode('profilePublicState');
+    if (stateNode) stateNode.textContent = visible ? 'Visible' : 'Private';
+
+    const hint = getNode('profilePublicHint');
+    if (hint) {
+      hint.textContent = visible
+        ? 'This profile is publicly reachable.'
+        : 'Private until visible is enabled.';
+    }
+
+    const copyUrl = getNode('copyPublicProfileUrl');
+    if (copyUrl) {
+      copyUrl.disabled = !visible;
+      copyUrl.setAttribute('aria-disabled', visible ? 'false' : 'true');
+      copyUrl.title = visible ? 'Copy public profile URL' : 'Enable visibility before copying this URL.';
+    }
   }
 
   function selectedFeaturedRefs() {
@@ -1030,10 +1065,6 @@
     renderClaimableContributions();
   }
 
-  function renderPublicProfileSummary(profile) {
-    renderPublicProfileSummary(profile);
-  }
-
   function renderPublicProfileState() {
     const profile = normalizePublicProfilePayload(state.publicProfile || {}, state.publicServerState || {});
     state.publicProfile = profile;
@@ -1050,10 +1081,7 @@
     const favoritesToggle = getNode('profileFavoritesPublicToggle');
     if (favoritesToggle) favoritesToggle.checked = Boolean(profile.favorites_public);
 
-    const url = text(profile.profile_url, publicProfileUrl(profile));
-    setPublicText('publicDexId', profile.dex_id);
-    setPublicText('publicProfileUrl', url);
-    setPublicText('publicProfileUrlText', url || '/u/handle/', '/u/handle/');
+    renderPublicProfileSummary(profile);
     const handleStatus = getNode('profileHandleStatus');
     if (handleStatus) handleStatus.textContent = profile.handle ? 'Handle saved.' : 'Choose a public URL handle.';
     renderPublicLinks(profile.links);
@@ -1125,7 +1153,7 @@
           dex_id: payload.dex_id,
           handle: payload.handle,
           profile_public: payload.profile_public,
-          profile_url: payload.profile_url || publicProfileUrl(payload),
+          profile_url: payload.profile_public ? (payload.profile_url || publicProfilePath(payload)) : null,
           updated_at: payload.updated_at,
         },
       }));
@@ -1263,7 +1291,7 @@
               ...merged,
               ...uiPayload,
               dex_id: merged.dex_id,
-              profile_url: publicProfileUrl(uiPayload) || merged.profile_url,
+              profile_url: uiPayload.profile_public ? (publicProfilePath(uiPayload) || merged.profile_url) : null,
               updated_at: merged.updated_at,
             }, merged);
             if (!state.publicQueuedPayload && !state.publicSaveTimer && uiWritableHash !== mergedWritableHash) {
@@ -1594,7 +1622,16 @@
     getNode('submitDefaultCreator')?.addEventListener('input', () => scheduleSave());
     getNode('submitDefaultCategory')?.addEventListener('change', () => scheduleSave());
     getNode('submitDefaultInstrument')?.addEventListener('input', () => scheduleSave());
-    getNode('profilePublicToggle')?.addEventListener('change', () => schedulePublicSave());
+    getNode('profilePublicToggle')?.addEventListener('change', () => {
+      const preview = buildPublicPayloadFromUi();
+      state.publicProfile = normalizePublicProfilePayload({
+        ...(state.publicProfile || {}),
+        ...preview,
+        profile_url: preview.profile_public ? publicProfilePath(preview) : null,
+      }, state.publicProfile || {});
+      renderPublicProfileSummary(state.publicProfile);
+      schedulePublicSave();
+    });
     getNode('profileBioInput')?.addEventListener('input', () => schedulePublicSave());
     getNode('profilePronounsInput')?.addEventListener('input', () => schedulePublicSave());
     getNode('profileLocationInput')?.addEventListener('input', () => schedulePublicSave());
@@ -1606,9 +1643,14 @@
       if (input && typeof input.value === 'string') {
         input.value = input.value.toLowerCase().replace(/[^a-z0-9-]/g, '').replace(/--+/g, '-').slice(0, 30);
       }
-      const url = publicProfileUrl({ handle: text(input?.value) });
-      setPublicText('publicProfileUrl', url);
-      setPublicText('publicProfileUrlText', url || '/u/handle/', '/u/handle/');
+      const preview = normalizePublicProfilePayload({
+        ...(state.publicProfile || {}),
+        handle: text(input?.value),
+        profile_public: Boolean(getNode('profilePublicToggle')?.checked),
+      }, state.publicProfile || {});
+      preview.profile_url = preview.profile_public ? publicProfilePath(preview) : null;
+      state.publicProfile = preview;
+      renderPublicProfileSummary(preview);
       scheduleHandleAvailabilityCheck();
       schedulePublicSave();
     });
@@ -1646,7 +1688,7 @@
     });
 
     getNode('copyPublicProfileUrl')?.addEventListener('click', () => {
-      const path = text(state.publicProfile?.profile_url || publicProfileUrl());
+      const path = text(publicProfileUrl());
       if (!path) return;
       const value = new URL(path, window.location.origin).toString();
       navigator.clipboard?.writeText(value).catch(() => {});

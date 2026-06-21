@@ -30,6 +30,7 @@ function verifyPressroomRoute() {
     'id="dex-press"',
     'data-dx-fetch-state="loading"',
     'data-monthly-limit="1"',
+    'data-api="https://dex-api.spring-fog-8edd.workers.dev"',
     '/css/components/dx-pressroom.css',
     '/assets/js/pressroom.js',
   ]);
@@ -55,10 +56,10 @@ function verifyPressroomRuntime() {
   assertIncludes(sourceRel, source, [
     'window.__dxPressroomRuntimeLoaded',
     'DX_MIN_SHEEN_MS = 120',
-    "action: 'quota'",
-    "action: 'list'",
-    "action: 'append'",
-    "action: 'events_for_request'",
+    'fetchWorkerJson',
+    '/me/press-requests/quota',
+    '/me/press-requests?limit=100',
+    '/me/press-requests/${encodeURIComponent(safeRequestId)}/events',
     'data-dx-press-shell',
     'data-dx-press-step',
     'data-dx-press-history',
@@ -79,8 +80,21 @@ function verifyPressroomRuntime() {
     assertIncludes(relPath, text, [
       '__dxPressroomRuntimeLoaded',
       'data-dx-press-shell',
-      'events_for_request',
+      '/me/press-requests',
     ]);
+  }
+
+  for (const relPath of [
+    sourceRel,
+    'docs/entry/pressroom/index.html',
+    'public/assets/js/pressroom.js',
+    'assets/js/pressroom.js',
+    'docs/assets/js/pressroom.js',
+  ]) {
+    const text = readText(relPath);
+    if (text.includes('script.google.com/macros')) {
+      FAILURES.push(`${relPath} still references Apps Script for pressroom`);
+    }
   }
 }
 

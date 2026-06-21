@@ -10,7 +10,6 @@
   var DROPDOWN_OPEN_CLASS = "is-open";
   var AUTH_DROPDOWN_BLUR_UNDERLAY_ID = "dx-auth-menu-scope-blur";
   var DEFAULT_MESSAGES_API = "https://dex-api.spring-fog-8edd.workers.dev";
-  var DEFAULT_SUBMIT_WEBAPP_API = "https://script.google.com/macros/s/AKfycbyh5TPML3_y5-j1QoOKfju_MayO1_0JErwvVkH3Eba195q_EmWGCEu3CdFFeohWes3Qzw/exec";
   var MESSAGES_BADGE_ID = "auth-ui-messages-badge";
   var PREFETCH_SWR_MS = 60000;
   var PREFETCH_TIER1_SWR_MS = 120000;
@@ -212,13 +211,6 @@
     return "pollVotesSummary:" + scope;
   }
 
-  function getSubmitWebappUrl() {
-    var config = window.__DX_SUBMIT_SAMPLES_CONFIG;
-    var configured = config && config.webappUrl;
-    var fromWindow = window.DX_SUBMIT_WEBAPP_URL;
-    return String(configured || fromWindow || DEFAULT_SUBMIT_WEBAPP_API).trim() || DEFAULT_SUBMIT_WEBAPP_API;
-  }
-
   function parseQuotaPayload(payload) {
     if (!payload || typeof payload !== "object") return null;
     var weeklyLimit = toSafeInt(payload.weeklyLimit, NaN);
@@ -238,59 +230,6 @@
       weekEnd: String(payload.weekEnd || ""),
       updatedAt: String(payload.updatedAt || new Date().toISOString())
     };
-  }
-
-  function jsonpWithTimeout(url, params, timeoutMs) {
-    return new Promise(function (resolve, reject) {
-      var callbackName = "dxAuthPrefetchCb_" + Date.now() + "_" + Math.floor(Math.random() * 1e6);
-      var script = document.createElement("script");
-      var settled = false;
-      var timer = 0;
-
-      function cleanup() {
-        if (timer) window.clearTimeout(timer);
-        try {
-          window[callbackName] = function () {};
-        } catch (e) {}
-        window.setTimeout(function () {
-          try {
-            delete window[callbackName];
-          } catch (err) {
-            window[callbackName] = undefined;
-          }
-        }, 180000);
-        if (script && script.parentNode) {
-          script.parentNode.removeChild(script);
-        }
-      }
-
-      window[callbackName] = function (payload) {
-        if (settled) return;
-        settled = true;
-        cleanup();
-        resolve(payload);
-      };
-
-      script.onerror = function () {
-        if (settled) return;
-        settled = true;
-        cleanup();
-        reject(new Error("JSONP request failed"));
-      };
-
-      var query = new URLSearchParams(Object.assign({}, params || {}, { callback: callbackName }));
-      var sep = String(url).indexOf("?") >= 0 ? "&" : "?";
-      script.src = String(url) + sep + query.toString();
-      script.async = true;
-      document.body.appendChild(script);
-
-      timer = window.setTimeout(function () {
-        if (settled) return;
-        settled = true;
-        cleanup();
-        reject(new Error("JSONP request timeout"));
-      }, Math.max(250, Number(timeoutMs || PREFETCH_QUOTA_TIMEOUT_MS)));
-    });
   }
 
   function fetchJsonWithTimeout(url, init, timeoutMs) {
@@ -356,19 +295,21 @@
     });
   }
 
-  function prefetchQuota(scope, forceLive) {
-    if (!scope || !prefetchStore) return Promise.resolve(null);
+  function prefetchQuota(scope, token, forceLive) {
+    if (!scope || !token || !prefetchStore) return Promise.resolve(null);
     var key = getQuotaPrefetchKey(scope);
     if (!forceLive) {
       var cached = prefetchStore.getFresh(key, PREFETCH_SWR_MS);
       if (cached && cached.payload) return Promise.resolve(cached.payload);
     }
     return withPrefetchInflight("prefetch:" + key, function () {
-      return jsonpWithTimeout(
-        getSubmitWebappUrl(),
+      return fetchJsonWithTimeout(
+        getMessagesApiBase() + "/me/submissions/quota",
         {
-          action: "quota",
-          auth0Sub: scope
+          method: "GET",
+          headers: {
+            authorization: "Bearer " + token
+          }
         },
         PREFETCH_QUOTA_TIMEOUT_MS
       ).then(function (payload) {
@@ -450,8 +391,8 @@
 
     tokenPromise.then(function (token) {
       var safeToken = String(token || "").trim();
-      prefetchQuota(scope, false).catch(function () {});
       if (!safeToken) return;
+      prefetchQuota(scope, safeToken, false).catch(function () {});
       prefetchUnreadCount(scope, safeToken, false)
         .then(function (record) {
           var count = toSafeInt(record && record.count, 0);

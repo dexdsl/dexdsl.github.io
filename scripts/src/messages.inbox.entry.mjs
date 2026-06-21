@@ -12,15 +12,12 @@
 
   const DX_MIN_SHEEN_MS = 120;
   const AUTH_TIMEOUT_MS = 6000;
-  const JSONP_TIMEOUT_MS = 12000;
   const SYSTEM_FETCH_TIMEOUT_MS = 6000;
   const SUBMISSIONS_FETCH_TIMEOUT_MS = 6000;
   const PRESSROOM_FETCH_TIMEOUT_MS = 6000;
   const ACTION_TIMEOUT_MS = 5000;
   const NON_SUB_RETENTION_DAYS = 90;
   const PREFETCH_SWR_MS = 60000;
-  const SHEET_API = 'https://script.google.com/macros/s/AKfycbyh5TPML3_y5-j1QoOKfju_MayO1_0JErwvVkH3Eba195q_EmWGCEu3CdFFeohWes3Qzw/exec';
-  const PRESSROOM_SHEET_API = 'https://script.google.com/macros/s/AKfycbwb2lOkJDN7rOJVmGHPzY3IBRByjrfMI0GH_TzUsXYDEXIjdIlqr-ZR0VKDWvoPmFjw/exec';
   const DEFAULT_API = 'https://dex-api.spring-fog-8edd.workers.dev';
   const SUBMISSION_STATE_PREFIX = 'dex:messages:submission-state:v1:';
   const SUBMISSION_PENDING_SID_KEY = 'dex:messages:pending-submission-sid';
@@ -47,20 +44,6 @@
 
   function delay(ms) {
     return new Promise((resolve) => window.setTimeout(resolve, Math.max(0, ms)));
-  }
-
-  function releaseJsonpCallback(callbackName) {
-    if (!callbackName) return;
-    try {
-      window[callbackName] = () => {};
-    } catch {}
-    window.setTimeout(() => {
-      try {
-        delete window[callbackName];
-      } catch {
-        window[callbackName] = undefined;
-      }
-    }, 30000);
   }
 
   function nowIso() {
@@ -276,46 +259,6 @@
     try {
       window.localStorage.setItem(key, JSON.stringify(stateMap || {}));
     } catch {}
-  }
-
-  async function jsonpWithTimeout(url, timeoutMs) {
-    return new Promise((resolve, reject) => {
-      const callbackName = `dxMsgCb${Math.random().toString(36).slice(2)}`;
-      const script = document.createElement('script');
-      let settled = false;
-      let timer = 0;
-
-      function cleanup() {
-        if (timer) window.clearTimeout(timer);
-        releaseJsonpCallback(callbackName);
-        if (script.parentNode) script.parentNode.removeChild(script);
-      }
-
-      window[callbackName] = (payload) => {
-        if (settled) return;
-        settled = true;
-        cleanup();
-        resolve(payload);
-      };
-
-      script.onerror = () => {
-        if (settled) return;
-        settled = true;
-        cleanup();
-        reject(new Error('JSONP request failed'));
-      };
-
-      timer = window.setTimeout(() => {
-        if (settled) return;
-        settled = true;
-        cleanup();
-        reject(new Error('JSONP request timed out'));
-      }, timeoutMs);
-
-      const separator = url.includes('?') ? '&' : '?';
-      script.src = `${url}${separator}callback=${encodeURIComponent(callbackName)}`;
-      document.body.appendChild(script);
-    });
   }
 
   async function fetchJsonWithTimeout(url, init, timeoutMs) {
@@ -776,119 +719,15 @@
         : Array.isArray(payload.items)
           ? payload.items
           : [];
-      const normalizedRecords = normalizeSubmissionThreadRecords(rows, submissionState);
-      const sub = toSafeText(authSnapshot?.sub, '');
-      const needsLegacyHydration = normalizedRecords.some((record) => {
-        const lookup = toSafeText(record?.metadata?.lookup || record?.title, '');
-        const submissionTitle = toSafeText(record?.metadata?.submissionTitle, '');
-        return isPlaceholderSubmissionLookup(lookup) || !submissionTitle || isUntitledSubmissionTitle(submissionTitle);
-      });
-
-      if (needsLegacyHydration && sub) {
-        let legacyRows = [];
-        try {
-          const legacyResponse = await withTimeout(
-            jsonpWithTimeout(`${SHEET_API}?action=list&auth0Sub=${encodeURIComponent(sub)}`, JSONP_TIMEOUT_MS),
-            JSONP_TIMEOUT_MS + 250,
-            { status: 'timeout', rows: [] },
-          );
-          legacyRows = Array.isArray(legacyResponse?.rows) ? legacyResponse.rows : [];
-        } catch {
-          legacyRows = [];
-        }
-        if (legacyRows.length) {
-          const legacyRecords = normalizeSubmissionRecords(legacyRows, sub, submissionState);
-          const legacyBySid = new Map();
-          for (const legacy of legacyRecords) {
-            const sid = toSafeText(legacy?.metadata?.submissionId, '');
-            if (!sid) continue;
-            legacyBySid.set(sid, legacy);
-          }
-          const mergedRecords = normalizedRecords.map((record) => {
-            const sid = toSafeText(record?.metadata?.submissionId, '');
-            const legacy = sid ? legacyBySid.get(sid) : null;
-            if (!legacy) return record;
-
-            const currentLookup = sanitizeLookupValue(record?.metadata?.lookup || record?.title);
-            const legacyLookup = sanitizeLookupValue(legacy?.metadata?.lookup || legacy?.title);
-            const currentSubmissionLookup = sanitizeLookupValue(record?.metadata?.submissionLookupNumber);
-            const legacySubmissionLookup = sanitizeLookupValue(legacy?.metadata?.submissionLookupNumber);
-            const currentFinalLookup = sanitizeLookupValue(record?.metadata?.finalLookupNumber);
-            const legacyFinalLookup = sanitizeLookupValue(legacy?.metadata?.finalLookupNumber);
-            const nextSubmissionLookup = currentSubmissionLookup || legacySubmissionLookup;
-            const nextFinalLookup = currentFinalLookup || legacyFinalLookup;
-            const currentSubmissionTitle = sanitizeSubmissionTitle(record?.metadata?.submissionTitle);
-            const legacySubmissionTitle = sanitizeSubmissionTitle(legacy?.metadata?.submissionTitle);
-            const nextSubmissionTitle = currentSubmissionTitle || legacySubmissionTitle;
-            const nextLookup = nextFinalLookup || nextSubmissionLookup || currentLookup || legacyLookup;
-            const fallbackTitle = sanitizeSubmissionTitle(record.title)
-              || sanitizeSubmissionTitle(legacy.title)
-              || toSafeText(record.title, '')
-              || 'Submission';
-            const nextTitle = composeSubmissionCardTitle(nextSubmissionTitle, nextLookup, fallbackTitle);
-
-            return {
-              ...record,
-              title: nextTitle,
-              body: toSafeText(record.body, '') || toSafeText(legacy.body, ''),
-              metadata: {
-                ...record.metadata,
-                lookup: nextLookup,
-                submissionTitle: nextSubmissionTitle || toSafeText(record?.metadata?.submissionTitle, ''),
-                sourceLink: toSafeText(record?.metadata?.sourceLink, '') || toSafeText(legacy?.metadata?.sourceLink, ''),
-                submissionLookupNumber: nextSubmissionLookup,
-                finalLookupNumber: nextFinalLookup,
-              },
-            };
-          });
-          return {
-            records: mergedRecords,
-            warning: '',
-          };
-        }
-
-        return {
-          records: normalizedRecords,
-          warning: '',
-        };
-      }
-
       return {
-        records: normalizedRecords,
+        records: normalizeSubmissionThreadRecords(rows, submissionState),
         warning: '',
       };
     }
 
-    const sub = toSafeText(authSnapshot?.sub, '');
-    if (!sub) {
-      return {
-        records: [],
-        warning: 'Submissions are temporarily unavailable.',
-      };
-    }
-
-    let rows = [];
-    try {
-      const legacyResponse = await withTimeout(
-        jsonpWithTimeout(`${SHEET_API}?action=list&auth0Sub=${encodeURIComponent(sub)}`, JSONP_TIMEOUT_MS),
-        JSONP_TIMEOUT_MS + 250,
-        { status: 'timeout', rows: [] },
-      );
-      rows = Array.isArray(legacyResponse?.rows) ? legacyResponse.rows : [];
-    } catch {
-      rows = [];
-    }
-
-    if (!rows.length) {
-      return {
-        records: [],
-        warning: 'Submissions are temporarily unavailable.',
-      };
-    }
-
     return {
-      records: normalizeSubmissionRecords(rows, sub, submissionState),
-      warning: '',
+      records: [],
+      warning: 'Submissions are temporarily unavailable.',
     };
   }
 
@@ -962,6 +801,7 @@
       const metadata = parseMetadata(value.metadata || value.metadata_json || value.metadataJson || value.meta);
       const merged = { ...value, ...metadata };
       const requestId = sanitizeRequestId(merged.requestId || merged.request_id || merged.id);
+      const kind = toSafeText(merged.kind || merged.ticketKind, 'press').toLowerCase();
       const statusRaw = toSafeText(merged.status, 'submitted');
       const normalizedStatus = normalizePressroomStatus(statusRaw);
       const recordId = requestId || `pressroom:${index + 1}:${toSafeText(merged.timestamp, 'unknown')}`;
@@ -974,20 +814,22 @@
         || merged.created_at,
       );
       const project = toSafeText(merged.project || merged.title, '');
-      const requestTitle = composePressroomCardTitle(project, requestId, `Pressroom request ${index + 1}`);
+      const kindLabel = kind === 'board' ? 'Board' : kind === 'support' ? 'Support' : 'Pressroom';
+      const requestTitle = composePressroomCardTitle(project, requestId, `${kindLabel} request ${index + 1}`);
       const sourceLink = toSafeText(merged.links || merged.sourceLink || merged.source_link || merged.link, '');
       return {
         id: recordId,
         sourceType: 'pressroom',
-        category: 'pressroom',
+        category: kind === 'board' || kind === 'support' ? kind : 'pressroom',
         severity: severityFromPressroomStatus(normalizedStatus),
-        title: requestTitle,
+        title: kind === 'board' || kind === 'support' ? `${kindLabel}: ${requestTitle}` : requestTitle,
         body: toSafeText(merged.publicNote || merged.public_note || merged.desc || merged.description, ''),
-        href: requestId
+        href: kind === 'press' && requestId
           ? `/entry/messages/submission/?kind=pressroom&rid=${encodeURIComponent(requestId)}`
-          : '/entry/pressroom/',
+          : '/entry/messages/',
         metadata: {
           requestId,
+          kind,
           status: normalizedStatus,
           name: toSafeText(merged.name, ''),
           email: toSafeText(merged.email, ''),
@@ -1010,9 +852,8 @@
     });
   }
 
-  async function loadPressroomRecords(authSnapshot, submissionState) {
-    const sub = toSafeText(authSnapshot?.sub, '');
-    if (!sub) {
+  async function loadPressroomRecords(apiBase, authSnapshot, submissionState) {
+    if (!authSnapshot?.authenticated || !authSnapshot?.token) {
       return {
         records: [],
         warning: '',
@@ -1020,12 +861,20 @@
     }
 
     try {
-      const response = await withTimeout(
-        jsonpWithTimeout(`${PRESSROOM_SHEET_API}?action=list&auth0Sub=${encodeURIComponent(sub)}`, JSONP_TIMEOUT_MS),
-        JSONP_TIMEOUT_MS + 250,
-        { status: 'timeout', rows: [] },
+      const response = await fetchJsonWithTimeout(
+        `${apiBase}/me/ops/tickets?limit=200`,
+        {
+          method: 'GET',
+          headers: {
+            authorization: `Bearer ${authSnapshot.token}`,
+            'content-type': 'application/json',
+          },
+        },
+        PRESSROOM_FETCH_TIMEOUT_MS,
       );
-      const rows = Array.isArray(response?.rows) ? response.rows : [];
+      if (!response.ok) throw new Error('Worker ops tickets unavailable.');
+      const payload = isObject(response.payload) ? response.payload : {};
+      const rows = Array.isArray(payload.tickets) ? payload.tickets : [];
       return {
         records: normalizePressroomRecords(rows, submissionState),
         warning: '',
@@ -1433,22 +1282,6 @@
           acknowledged = !!ackResult.ok;
         }
 
-        if (!acknowledged) {
-          const row = Number(record.metadata?.row);
-          if (Number.isFinite(row)) {
-            try {
-              const legacyResponse = await withTimeout(
-                jsonpWithTimeout(`${SHEET_API}?action=ack&row=${encodeURIComponent(String(row))}`, JSONP_TIMEOUT_MS),
-                JSONP_TIMEOUT_MS + 100,
-                { status: 'timeout' },
-              );
-              acknowledged = String(legacyResponse?.status || '').toLowerCase() === 'ok';
-            } catch {
-              acknowledged = false;
-            }
-          }
-        }
-
         if (acknowledged) {
           record.readAt = now;
           updateSubmissionState(context.scope, context.submissionState, record.id, { readAt: now });
@@ -1537,7 +1370,7 @@
 
     const settled = await Promise.allSettled([
       loadSubmissionRecords(apiBase, authSnapshot, submissionState),
-      loadPressroomRecords(authSnapshot, submissionState),
+      loadPressroomRecords(apiBase, authSnapshot, submissionState),
       loadSystemRecords(apiBase, authSnapshot),
     ]);
 

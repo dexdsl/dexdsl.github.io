@@ -21,6 +21,7 @@ import { DexNotesManager } from './dex-notes-manager.mjs';
 import { ProtectedAssetsManager } from './protected-assets-manager.mjs';
 import { EntryAuditManager } from './entry-audit-manager.mjs';
 import { LinksManager } from './links-manager.mjs';
+import { OpsManager } from './ops-manager.mjs';
 
 const MENU_SECTIONS = [
   {
@@ -49,6 +50,7 @@ const MENU_SECTIONS = [
     id: 'infrastructure',
     label: 'Infrastructure Commands',
     items: [
+      { id: 'ops', label: 'Ops Desk', description: 'Manage Worker-backed submissions, press, board, support, and conversations' },
       { id: 'links', label: 'Links', description: 'Open staff operational links in your default browser' },
       { id: 'assets', label: 'Assets', description: 'Validate/publish protected asset lookups (Esc to return)' },
       { id: 'status', label: 'Status', description: 'Manage status incidents and generate incident pages' },
@@ -58,7 +60,7 @@ const MENU_SECTIONS = [
   },
 ];
 const MENU_ITEMS = MENU_SECTIONS.flatMap((section) => section.items);
-const MODE_ITEMS = new Set(['init', 'update', 'doctor', 'entry-audit', 'polls', 'calls', 'catalog', 'home', 'notes', 'links', 'assets', 'status', 'newsletter']);
+const MODE_ITEMS = new Set(['init', 'update', 'doctor', 'entry-audit', 'polls', 'calls', 'catalog', 'home', 'notes', 'ops', 'links', 'assets', 'status', 'newsletter']);
 const PALETTE_ITEMS = MENU_ITEMS.map((item) => item.id);
 const LOGO = [
   '██████╗ ███████╗██╗  ██╗',
@@ -339,6 +341,12 @@ function DashboardApp({ initialPaletteOpen, initialMode = 'menu', version, noAni
               })
               : mode === 'links'
               ? React.createElement(LinksManager, {
+                onExit: () => setMode('menu'),
+                width: Math.max(60, cols - 8),
+                height: Math.max(12, workspaceHeight - 2),
+              })
+              : mode === 'ops'
+              ? React.createElement(OpsManager, {
                 onExit: () => setMode('menu'),
                 width: Math.max(60, cols - 8),
                 height: Math.max(12, workspaceHeight - 2),

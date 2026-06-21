@@ -43,7 +43,11 @@ function verifySettingsHtml(failures) {
       'id="submitDefaultCategory"',
       'id="profileInsightsSummary"',
       'id="profilePublicToggle"',
+      'id="profilePublicState"',
+      'id="profilePublicHint"',
       'id="profileHandleInput"',
+      'placeholder="barbara-strozzi"',
+      'placeholder="Pronouns (optional)"',
       'id="profileBioInput"',
       'id="profileLinksRows"',
       'id="profileClaimableList"',
@@ -129,6 +133,8 @@ function verifyCss(failures) {
     '[data-dx-settings-profile="v1"] .dx-profile-list-row',
     '[data-dx-settings-profile="v1"] .dx-profile-link-row',
     '[data-dx-settings-profile="v1"] .dx-profile-switch',
+    '[data-dx-settings-profile="v1"] .dx-profile-switch-rail',
+    '[data-dx-settings-profile="v1"] .dx-profile-switch-state',
     '@media (prefers-reduced-motion: reduce)',
   ];
 

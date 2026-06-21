@@ -72,6 +72,34 @@ async function routeLocalSidebarRuntime(page: Page): Promise<void> {
   });
 }
 
+test('public profile static fallback loads shell assets for dynamic /u handles', async ({ page }) => {
+  await routeCatalog(page);
+  await routePublicProfileApi(page, 'tester', {
+    dex_id: 'DEX-7Q2KP4',
+    handle: 'tester',
+    profile_public: true,
+    credit_name: 'Test Performer',
+    bio: 'Builds playable sample instruments.',
+    links: [],
+    roles: [],
+    instruments: [],
+    contributions: [],
+    favorites_public: false,
+    favorites: [],
+  });
+
+  const response = await page.goto('/u/tester/', { waitUntil: 'domcontentloaded' });
+  expect(response?.status()).toBe(404);
+
+  await expect(page.locator('html')).toHaveAttribute('data-dx-profile-fallback', 'true');
+  await expect(page.locator('link[href="/css/components/dx-profile-public.css"]')).toHaveCount(1);
+  await expect(page.locator('#dex-profile')).toHaveAttribute('data-dx-fetch-state', 'ready');
+  await expect(page.locator('h1.dx-prof-name')).toHaveText('Test Performer');
+  await expect
+    .poll(() => page.evaluate(() => Boolean((window as typeof window & { __dxProfilePublicLoaded?: boolean }).__dxProfilePublicLoaded)))
+    .toBeTruthy();
+});
+
 test('public profile route renders logged out with hydrated contributions, favorites, and copyable Dex ID', async ({ page, context }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: 'http://localhost:8080' });
   await routeCatalog(page);

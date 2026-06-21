@@ -3111,15 +3111,20 @@ body.dx-route-profile-protected #dex-settings :is(h1,h2,h3,h4,p,label,span,stron
                       <p class="dx-profile-kicker">Public profile</p>
                       <p class="note">Opt in to a member page at <span id="publicProfileUrlText">/u/handle/</span>.</p>
                     </div>
-                    <label class="dx-profile-switch" for="profilePublicToggle">
-                      <input id="profilePublicToggle" type="checkbox">
-                      <span>Visible</span>
+                    <label class="dx-profile-switch" for="profilePublicToggle" data-dx-public-toggle="true">
+                      <input id="profilePublicToggle" type="checkbox" aria-describedby="profilePublicHint">
+                      <span class="dx-profile-switch-rail" aria-hidden="true"><span></span></span>
+                      <span class="dx-profile-switch-copy">
+                        <span class="dx-profile-switch-label">Profile visibility</span>
+                        <span id="profilePublicState" class="dx-profile-switch-state">Private</span>
+                      </span>
                     </label>
                   </div>
+                  <p id="profilePublicHint" class="note dx-profile-public-hint">Private until visible is enabled.</p>
                   <div class="dx-profile-default-grid dx-profile-public-grid">
                     <div class="field">
                       <label class="label" for="profileHandleInput">Handle</label>
-                      <input id="profileHandleInput" class="dx-profile-input" type="text" maxlength="30" autocomplete="off" spellcheck="false" placeholder="andrew-chanover">
+                      <input id="profileHandleInput" class="dx-profile-input" type="text" maxlength="30" autocomplete="off" spellcheck="false" placeholder="barbara-strozzi">
                       <p id="profileHandleStatus" class="note" aria-live="polite">Choose a public URL handle.</p>
                     </div>
                     <div class="field">
@@ -3138,7 +3143,7 @@ body.dx-route-profile-protected #dex-settings :is(h1,h2,h3,h4,p,label,span,stron
                     </div>
                     <div class="field">
                       <label class="label" for="profilePronounsInput">Pronouns</label>
-                      <input id="profilePronounsInput" class="dx-profile-input" type="text" maxlength="40" placeholder="they/them">
+                      <input id="profilePronounsInput" class="dx-profile-input" type="text" maxlength="40" placeholder="Pronouns (optional)">
                     </div>
                     <div class="field">
                       <label class="label" for="profileLocationInput">Location</label>
