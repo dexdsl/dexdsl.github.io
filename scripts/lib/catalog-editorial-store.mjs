@@ -93,6 +93,9 @@ function normalizeModelEntry(entry, row) {
   }
   if (toText(row.title_raw)) out.title_raw = toText(row.title_raw);
   if (toText(row.entry_href)) out.entry_href = normalizeHref(row.entry_href);
+  // Editorial-managed entry artwork (set from the ops app, lives in the repo).
+  if (toText(row.image_src)) out.image_src = toText(row.image_src);
+  if (toText(row.image_alt_raw)) out.image_alt_raw = toText(row.image_alt_raw);
   out.status = toText(row.status) || 'active';
   return out;
 }

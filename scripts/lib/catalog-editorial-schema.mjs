@@ -15,6 +15,8 @@ const manifestEntrySchema = z.object({
   season: z.string().trim().max(64).optional(),
   performer: z.string().trim().max(240).optional(),
   instrument: z.string().trim().max(240).optional(),
+  image_src: z.string().trim().max(1000).optional(),
+  image_alt_raw: z.string().trim().max(400).optional(),
   status: z.enum(CATALOG_EDITORIAL_STATUS_VALUES).optional(),
 });
 
@@ -73,6 +75,8 @@ function normalizeManifestEntry(entry) {
     season: normalizeSeason(entry?.season),
     performer: toText(entry?.performer),
     instrument: toText(entry?.instrument),
+    image_src: toText(entry?.image_src),
+    image_alt_raw: toText(entry?.image_alt_raw),
     status: CATALOG_EDITORIAL_STATUS_VALUES.includes(toText(entry?.status)) ? toText(entry?.status) : 'active',
   };
   return normalized;
