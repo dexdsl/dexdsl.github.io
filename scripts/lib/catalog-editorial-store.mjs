@@ -5,6 +5,7 @@ import {
   CATALOG_EDITORIAL_VERSION,
   normalizeCatalogEditorialFile,
 } from './catalog-editorial-schema.mjs';
+import { hasCatalogLookup } from './catalog-sanitize.mjs';
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(SCRIPT_DIR, '..', '..');
@@ -306,18 +307,20 @@ export function applyCatalogEditorialToModel(model, editorialData) {
 
 export function buildCatalogManifestSnapshot(model, editorialData) {
   const normalizedModel = applyCatalogEditorialToModel(model, editorialData);
-  const rows = (Array.isArray(normalizedModel.entries) ? normalizedModel.entries : []).map((entry) => ({
-    entry_id: toText(entry.id),
-    entry_href: normalizeHref(entry.entry_href),
-    lookup_number: toText(entry.lookup_raw),
-    season: toText(entry.season),
-    performer: toText(entry.performer_raw),
-    instrument: Array.isArray(entry.instrument_family) && entry.instrument_family.length
-      ? toText(entry.instrument_family[0])
-      : (Array.isArray(entry.instrument_labels) && entry.instrument_labels.length ? toText(entry.instrument_labels[0]) : ''),
-    status: toText(entry.status) || 'active',
-    updated_at: new Date().toISOString(),
-  }));
+  const rows = (Array.isArray(normalizedModel.entries) ? normalizedModel.entries : [])
+    .filter((entry) => normalizeHref(entry.entry_href).startsWith('/entry/') && hasCatalogLookup(entry))
+    .map((entry) => ({
+      entry_id: toText(entry.id),
+      entry_href: normalizeHref(entry.entry_href),
+      lookup_number: toText(entry.lookup_raw),
+      season: toText(entry.season),
+      performer: toText(entry.performer_raw),
+      instrument: Array.isArray(entry.instrument_family) && entry.instrument_family.length
+        ? toText(entry.instrument_family[0])
+        : (Array.isArray(entry.instrument_labels) && entry.instrument_labels.length ? toText(entry.instrument_labels[0]) : ''),
+      status: toText(entry.status) || 'active',
+      updated_at: new Date().toISOString(),
+    }));
 
   return {
     version: CATALOG_EDITORIAL_VERSION,

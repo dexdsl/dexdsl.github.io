@@ -2176,6 +2176,55 @@
   background:rgba(0,0,0,.06);
 }
 
+/* ===== Your contributions (credited list + search + claim) ===== */
+#dex-settings .dx-contrib-surface{ display:grid; gap:10px; }
+#dex-settings .dx-contrib-list{ display:grid; gap:8px; }
+#dex-settings .dx-contrib-search{ display:grid; gap:6px; margin-top:4px; }
+#dex-settings .dx-contrib-card{
+  display:flex; align-items:center; gap:12px; justify-content:space-between;
+  border:1px solid rgba(255,255,255,.16); border-radius:10px;
+  background:rgba(255,255,255,.05); padding:10px 12px;
+}
+#dex-settings .dx-contrib-card-main{
+  display:grid; gap:2px; min-width:0; text-decoration:none; color:inherit; flex:1 1 auto;
+}
+a.dx-contrib-card-main:hover .dx-contrib-card-title{ text-decoration:underline; }
+#dex-settings .dx-contrib-card-title{
+  font:700 13px var(--font-heading,'Typefesse',sans-serif); text-transform:uppercase; letter-spacing:.01em;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+#dex-settings .dx-contrib-card-sub{ font:600 11.5px var(--font-body,monospace); color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#dex-settings .dx-contrib-card-aside{ display:inline-flex; align-items:center; gap:8px; flex:0 0 auto; }
+#dex-settings .dx-contrib-status{
+  font:700 10px var(--font-heading,'Typefesse',sans-serif); text-transform:uppercase; letter-spacing:.04em;
+  padding:3px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.18); color:var(--muted); white-space:nowrap;
+}
+#dex-settings .dx-contrib-status.is-in_library{ color:#bfe9c8; border-color:rgba(120,220,150,.4); }
+#dex-settings .dx-contrib-status.is-approved{ color:#bfe9c8; border-color:rgba(120,220,150,.4); }
+#dex-settings .dx-contrib-status.is-pending{ color:#ffd9a3; border-color:rgba(255,180,80,.4); }
+#dex-settings .dx-contrib-star{
+  border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.06); color:#f3f3f4; cursor:pointer;
+  font:700 11px var(--font-heading,'Typefesse',sans-serif); text-transform:uppercase; letter-spacing:.02em;
+  padding:5px 10px; border-radius:999px; white-space:nowrap;
+}
+#dex-settings .dx-contrib-star[aria-pressed="true"]{ border-color:transparent; background:linear-gradient(130deg, var(--accent), orange); color:#fff; }
+#dex-settings .dx-contrib-suggest-label{ margin:2px 0 0; text-transform:uppercase; letter-spacing:.06em; font-size:10.5px; }
+
+/* Claim confirmation dialog */
+#dex-settings .dx-contrib-dialog{ position:fixed; inset:0; z-index:1400; display:grid; place-items:center; background:rgba(6,7,10,.62); }
+#dex-settings .dx-contrib-dialog[hidden]{ display:none; }
+#dex-settings .dx-contrib-dialog-card{
+  width:min(440px, calc(100vw - 32px)); max-height:calc(100dvh - 48px); overflow:auto;
+  background:var(--glass-bg); border:1px solid var(--glass-brd); border-radius:var(--radius);
+  box-shadow:var(--shadow-1); -webkit-backdrop-filter:blur(20px) saturate(120%); backdrop-filter:blur(20px) saturate(120%);
+  padding:18px; display:grid; gap:12px;
+}
+#dex-settings .dx-contrib-dialog-card h3{ margin:0; font:800 18px var(--font-heading,'Typefesse',sans-serif); text-transform:uppercase; }
+#dex-settings .dx-contrib-dialog-entry{ display:grid; gap:3px; margin:0; padding:10px 12px; border:1px solid var(--glass-brd); border-radius:10px; background:rgba(255,255,255,.05); }
+#dex-settings .dx-contrib-dialog-name{ font:700 14px var(--font-heading,'Typefesse',sans-serif); text-transform:uppercase; }
+#dex-settings .dx-contrib-dialog-meta{ font:600 12px var(--font-body,monospace); color:var(--muted); }
+#dex-settings .dx-contrib-dialog-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:2px; }
+
 /* Save status pill + undo */
 #dex-settings .save-status{
   display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px;
@@ -3161,19 +3210,34 @@ body.dx-route-profile-protected #dex-settings :is(h1,h2,h3,h4,p,label,span,stron
                     </div>
                     <div id="profileLinksRows" class="dx-profile-list" aria-label="Public profile links"></div>
                   </div>
-                  <div class="field">
-                    <label class="label" for="profileFeaturedInput">Featured contribution lookups</label>
-                    <div id="profileFeaturedTokens" class="tokens" role="listbox" aria-label="Featured contributions">
-                      <input id="profileFeaturedInput" type="text" autocomplete="off" placeholder="Add lookup and press Enter">
+                  <div class="field dx-contrib-surface">
+                    <div class="dx-profile-row-head">
+                      <label class="label">Your contributions</label>
+                      <button id="refreshContributions" class="btn" type="button">Refresh</button>
+                    </div>
+                    <p class="note">Catalog entries credited to you. Star one to feature it on your public page, or search the catalog to claim more.</p>
+                    <div id="profileCreditedList" class="dx-contrib-list" aria-live="polite">
+                      <p class="note">Loading your contributions…</p>
+                    </div>
+                    <div class="dx-contrib-search">
+                      <label class="label" for="profileContribSearch">Find an entry to claim</label>
+                      <input id="profileContribSearch" class="dx-profile-input" type="text" autocomplete="off" spellcheck="false" placeholder="Search by title, performer, or lookup…">
+                      <div id="profileContribResults" class="dx-contrib-list" aria-live="polite"></div>
                     </div>
                   </div>
-                  <div class="field">
-                    <div class="dx-profile-row-head">
-                      <label class="label">Claim matching entries</label>
-                      <button id="refreshClaimableContribs" class="btn" type="button">Refresh</button>
-                    </div>
-                    <div id="profileClaimableList" class="dx-profile-list" aria-live="polite">
-                      <p class="note">Matching catalog entries will appear here.</p>
+
+                  <div id="profileClaimDialog" class="dx-contrib-dialog" hidden role="dialog" aria-modal="true" aria-labelledby="profileClaimDialogTitle">
+                    <div class="dx-contrib-dialog-card">
+                      <h3 id="profileClaimDialogTitle">Claim this contribution?</h3>
+                      <p class="dx-contrib-dialog-entry">
+                        <span class="dx-contrib-dialog-name" data-dx-claim-title></span>
+                        <span class="dx-contrib-dialog-meta" data-dx-claim-meta></span>
+                      </p>
+                      <p class="note">Claims are reviewed by Dex staff before they appear publicly on entry pages and your profile.</p>
+                      <div class="dx-contrib-dialog-actions">
+                        <button class="btn" type="button" data-dx-claim-cancel>Cancel</button>
+                        <button class="btn primary" type="button" data-dx-claim-confirm>Submit claim</button>
+                      </div>
                     </div>
                   </div>
                   <div class="field">

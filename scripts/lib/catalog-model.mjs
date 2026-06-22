@@ -413,15 +413,20 @@ function finalizeEntries(entriesByHref, lookupMap) {
     entry.image_src = normalizeImageSrc(entry.image_src);
   }
 
-  entries.sort((a, b) => {
+  const publishableEntries = entries.filter((entry) => {
+    const href = canonicalizeInternalHref(entry.entry_href);
+    return /^\/entry\/[^/?#]+\/?$/i.test(href) && Boolean(cleanText(entry.lookup_raw));
+  });
+
+  publishableEntries.sort((a, b) => {
     if (a.season !== b.season) return String(b.season).localeCompare(String(a.season));
     if (a.performer_raw !== b.performer_raw) return a.performer_raw.localeCompare(b.performer_raw);
     return a.title_raw.localeCompare(b.title_raw);
   });
 
-  if (entries.length > 0) entries[0].featured = true;
+  if (publishableEntries.length > 0) publishableEntries[0].featured = true;
 
-  return entries;
+  return publishableEntries;
 }
 
 export function buildCatalogModelFromHtml(html, sourceLabel = 'local') {

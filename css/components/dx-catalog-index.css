@@ -292,29 +292,58 @@
   min-width: 0;
 }
 
+.dx-catalog-index-season-gutter {
+  display: grid;
+  gap: 0.72rem;
+}
+
+.dx-catalog-index-season-revealer {
+  overflow: hidden;
+  scrollbar-width: none;
+}
+
+.dx-catalog-index-season-revealer::-webkit-scrollbar {
+  display: none;
+}
+
 .dx-catalog-index-season-track {
+  --dx-catalog-index-season-card-width: clamp(220px, 27.5%, 340px);
   margin: 0;
   padding: 0;
   list-style: none;
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(220px, 27.5%);
+  display: flex;
   gap: clamp(0.62rem, 1.1vw, 0.88rem);
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: thin;
-  scroll-behavior: smooth;
+  overflow: hidden;
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+}
+
+.dx-catalog-index-season-track::-webkit-scrollbar {
+  display: none;
 }
 
 .dx-catalog-index-season-slide {
-  min-width: 0;
-  scroll-snap-align: start;
+  min-width: var(--dx-catalog-index-season-card-width);
+  flex: 0 0 var(--dx-catalog-index-season-card-width);
   border-radius: var(--dx-catalog-index-radius);
   border: 1px solid rgba(255, 255, 255, 0.62);
   background: rgba(255, 255, 255, 0.58);
   overflow: hidden;
   display: grid;
   grid-template-rows: auto 1fr;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.dx-catalog-index-season-slide:hover,
+.dx-catalog-index-season-slide:focus-within {
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.84);
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow: 0 14px 28px rgba(9, 14, 26, 0.16);
 }
 
 .dx-catalog-index-season-media {
@@ -331,6 +360,44 @@
 .dx-catalog-index-season-media--unannounced {
   position: relative;
   display: block;
+}
+
+.dx-catalog-index-season-media--fallback {
+  position: relative;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(145deg, rgba(8, 12, 20, 0.88), rgba(28, 35, 52, 0.72)),
+    radial-gradient(circle at 24% 18%, rgba(255, 25, 16, 0.34), transparent 32%),
+    radial-gradient(circle at 76% 80%, rgba(39, 185, 255, 0.34), transparent 34%);
+}
+
+.dx-catalog-index-season-media--fallback .dx-catalog-index-season-img {
+  width: 44%;
+  height: 44%;
+  object-fit: contain;
+  opacity: 0.86;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.28));
+}
+
+.dx-catalog-index-season-fallback-code {
+  position: absolute;
+  left: 0.62rem;
+  bottom: 0.56rem;
+  max-width: calc(100% - 1.24rem);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.48);
+  background: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.92);
+  font-family: var(--font-mono, "Courier Prime", monospace);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  padding: 0.18rem 0.42rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .dx-catalog-index-season-growlix-token {
@@ -479,6 +546,38 @@
   display: flex;
   gap: 0.5rem;
   justify-content: flex-end;
+}
+
+.dx-catalog-index-season-pips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.34rem;
+  max-width: min(100%, 760px);
+  justify-self: center;
+}
+
+.dx-catalog-index-season-pip {
+  width: 0.5rem;
+  height: 0.5rem;
+  min-width: 0.5rem;
+  padding: 0;
+  border: 1px solid rgba(34, 40, 54, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease;
+}
+
+.dx-catalog-index-season-pip.is-active {
+  transform: scale(1.55);
+  border-color: rgba(255, 25, 16, 0.42);
+  background: rgba(255, 25, 16, 0.78);
+}
+
+.dx-catalog-index-season-pip:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 25, 16, 0.22);
 }
 
 .dx-catalog-index-heading {
@@ -788,7 +887,7 @@ select.dx-catalog-index-select {
 
 @media (max-width: 1060px) {
   .dx-catalog-index-season-track {
-    grid-auto-columns: minmax(240px, 46%);
+    --dx-catalog-index-season-card-width: clamp(240px, 46%, 420px);
   }
 }
 
@@ -799,12 +898,17 @@ select.dx-catalog-index-select {
   }
 
   .dx-catalog-index-season-track {
-    grid-auto-columns: minmax(76vw, 76vw);
+    --dx-catalog-index-season-card-width: min(76vw, 24rem);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   #gooey-mesh-wrapper .gooey-blob {
     opacity: 0.2;
+  }
+
+  .dx-catalog-index-season-slide,
+  .dx-catalog-index-season-pip {
+    transition: none;
   }
 }

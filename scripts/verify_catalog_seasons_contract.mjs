@@ -48,7 +48,11 @@ function main() {
     'data-dx-season-card-kind',
     'data-dx-growlix-token',
     'dx-catalog-index-season-slide--unannounced',
+    'dx-catalog-index-season-pips',
+    'data-dx-carousel-active-slot',
+    'data-dx-carousel-page-button',
     'HOME_SIGNUP_TEASER_IMAGE',
+    'CATALOG_FALLBACK_IMAGE',
     '__DX_SEASON_TEASER_SEED',
   ];
   for (const marker of requiredRuntimeMarkers) {
@@ -62,6 +66,8 @@ function main() {
     '.dx-catalog-index-season-slide--unannounced',
     '.dx-catalog-index-season-growlix-token',
     '.dx-catalog-index-season-media--unannounced',
+    '.dx-catalog-index-season-pips',
+    '.dx-catalog-index-season-media--fallback',
   ];
   for (const marker of requiredCssMarkers) {
     if (!cssSource.includes(marker)) {

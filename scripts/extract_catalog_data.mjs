@@ -247,6 +247,37 @@ function countProtectedChars(value) {
   return 0;
 }
 
+function refreshCatalogStats(model) {
+  const entries = Array.isArray(model?.entries) ? model.entries : [];
+  const seasons = Array.from(new Set(entries.map((entry) => String(entry?.season || '').trim()).filter(Boolean)))
+    .sort((a, b) => b.localeCompare(a));
+  const instruments = Array.from(
+    new Set(entries.flatMap((entry) => (Array.isArray(entry?.instrument_family) ? entry.instrument_family : []))
+      .map((value) => String(value || '').trim())
+      .filter(Boolean)),
+  ).sort((a, b) => a.localeCompare(b));
+
+  const next = {
+    ...model,
+    stats: {
+      ...(model?.stats || {}),
+      entries_count: entries.length,
+      lookup_count: entries.filter((entry) => String(entry?.lookup_raw || '').trim()).length,
+      seasons,
+      instruments,
+      protected_char_count: 0,
+    },
+  };
+  next.stats.protected_char_count = countProtectedChars(next);
+  return next;
+}
+
+function publishableEntry(entry) {
+  return /^\/entry\/[^/?#]+\/?$/i.test(String(entry?.entry_href || '').trim())
+    && Boolean(String(entry?.lookup_raw || '').trim())
+    && Boolean(String(entry?.season || '').trim());
+}
+
 function readCatalogEditorialIfExists() {
   if (!fs.existsSync(CATALOG_EDITORIAL_PATH)) return defaultCatalogEditorialData();
   try {
@@ -266,7 +297,7 @@ function readHomeFeaturedIfExists() {
 }
 
 function buildEntriesPayload(model) {
-  const entries = Array.isArray(model?.entries) ? model.entries : [];
+  const entries = (Array.isArray(model?.entries) ? model.entries : []).filter(publishableEntry);
   return {
     source: model?.source || 'unknown',
     generated_at: new Date().toISOString(),
@@ -276,10 +307,10 @@ function buildEntriesPayload(model) {
       lookup: model?.anchors?.lookup || '#dex-lookup',
     },
     stats: {
-      entries_count: Number(model?.stats?.entries_count || entries.length),
-      lookup_count: Number(model?.stats?.lookup_count || 0),
-      seasons: Array.isArray(model?.stats?.seasons) ? model.stats.seasons : [],
-      instruments: Array.isArray(model?.stats?.instruments) ? model.stats.instruments : [],
+      entries_count: entries.length,
+      lookup_count: entries.filter((entry) => String(entry?.lookup_raw || '').trim()).length,
+      seasons: Array.from(new Set(entries.map((entry) => String(entry?.season || '').trim()).filter(Boolean))).sort((a, b) => b.localeCompare(a)),
+      instruments: Array.from(new Set(entries.flatMap((entry) => Array.isArray(entry?.instrument_family) ? entry.instrument_family : []).filter(Boolean))).sort((a, b) => a.localeCompare(b)),
       protected_char_count: countProtectedChars(entries),
     },
     spotlight: model?.spotlight || {},
@@ -358,10 +389,7 @@ async function main() {
   // performer names / identity grouping), normalize known performer names, and drop dev-stub
   // placeholder entries. Runs before payloads are built so every output (data, entries,
   // search, curation, featured) is clean.
-  model = removeExcludedEntries(applyPerformerAliases(deepStripInvisibleMarks(model)));
-
-  model.stats = model.stats || {};
-  model.stats.protected_char_count = countProtectedChars(model);
+  model = refreshCatalogStats(removeExcludedEntries(applyPerformerAliases(deepStripInvisibleMarks(model))));
 
   const search = buildSearchIndex(model);
   const entries = buildEntriesPayload(model);

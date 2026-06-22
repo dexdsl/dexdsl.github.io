@@ -24,6 +24,54 @@ export const PERFORMER_ALIASES = new Map([
   ['sebastian suarez-solis', 'suarez-solis, sebastian'],
 ]);
 
+function toText(value) {
+  return String(value || '').trim();
+}
+
+function entryHrefOf(item) {
+  if (!item || typeof item !== 'object') return '';
+  for (const key of ['entry_href', 'href', 'entryHref', 'url']) {
+    const raw = toText(item[key]);
+    if (/^\/entry\/[^/?#]+\/?$/i.test(raw)) return raw.endsWith('/') ? raw : `${raw}/`;
+    const m = raw.match(/\/entry\/([^/?#]+)/i);
+    if (m) return `/entry/${m[1]}/`;
+  }
+  return '';
+}
+
+function lookupOf(item) {
+  if (!item || typeof item !== 'object') return '';
+  for (const key of ['lookup_raw', 'lookup_number', 'lookup', 'entryLookupNumber', 'lookupNumber']) {
+    const value = toText(item[key]);
+    if (value) return value;
+  }
+  return '';
+}
+
+export function hasCatalogLookup(item) {
+  return Boolean(lookupOf(item));
+}
+
+export function isLookuplessCatalogEntry(item) {
+  if (!item || typeof item !== 'object') return false;
+  const href = entryHrefOf(item);
+  if (!href) return false;
+  const hasCatalogShape = [
+    'id',
+    'entry_id',
+    'title_raw',
+    'title',
+    'performer_raw',
+    'performer',
+    'instrument_family',
+    'instrument',
+    'lookup_raw',
+    'lookup_number',
+    'lookup',
+  ].some((key) => Object.prototype.hasOwnProperty.call(item, key));
+  return hasCatalogShape && !hasCatalogLookup(item);
+}
+
 export function stripInvisibleMarks(value) {
   return typeof value === 'string' ? value.replace(INVISIBLE_MARKS_RE, '') : value;
 }
@@ -79,7 +127,7 @@ export function isExcludedEntry(item, excluded = EXCLUDED_ENTRY_IDS) {
 export function removeExcludedEntries(value, excluded = EXCLUDED_ENTRY_IDS) {
   if (Array.isArray(value)) {
     return value
-      .filter((item) => !isExcludedEntry(item, excluded))
+      .filter((item) => !isExcludedEntry(item, excluded) && !isLookuplessCatalogEntry(item))
       .map((item) => removeExcludedEntries(item, excluded));
   }
   if (value && typeof value === 'object') {

@@ -84,7 +84,11 @@
     publicFavoritesRetryCount: 0,
     handleCheckTimer: 0,
     handleCheckValue: '',
-    claimableContributions: null,
+    featuredRefs: [],
+    contributions: null, // { credited: [], candidates: [] }
+    catalogIndex: null, // [] of { lookup, foldedLookup, slug, href, title, performer, hay }
+    catalogPromise: null,
+    contribSearchResults: [],
     saveDebounceMs: 450,
     pendingSaveTimer: 0,
     queuedPayload: null,
@@ -348,6 +352,51 @@
       } catch {}
     }
     return '';
+  }
+
+  // Resolve the signed-in user's profile from the auth runtime (ID token), which
+  // carries name + picture even when the API access token does not.
+  async function getClientUser() {
+    const runtimes = [window.DEX_AUTH, window.dexAuth, window.auth0].filter(Boolean);
+    for (const runtime of runtimes) {
+      if (!runtime || typeof runtime.getUser !== 'function') continue;
+      try {
+        const maybe = runtime.getUser();
+        const user = typeof maybe?.then === 'function' ? await maybe : maybe;
+        if (user && typeof user === 'object') return user;
+      } catch {}
+    }
+    if (window.AUTH0_USER && typeof window.AUTH0_USER === 'object') return window.AUTH0_USER;
+    return null;
+  }
+
+  // Push the client identity (name/photo) to the API so it can hydrate the
+  // public /u profile, which is viewed logged-out and can't read the ID token.
+  let identitySyncDone = false;
+  async function syncClientIdentity() {
+    if (identitySyncDone) return;
+    const user = await getClientUser();
+    if (!user) return;
+    const name = firstString(user.name, user.nickname, user.given_name, '');
+    const picture = firstString(user.picture, '');
+    if (!name && !picture) return;
+    identitySyncDone = true;
+    try {
+      const fresh = await apiFetch('/me/identity/refresh', {
+        method: 'POST',
+        body: JSON.stringify({ name, picture }),
+        timeoutMs: 10000,
+      });
+      if (fresh && typeof fresh === 'object') {
+        if (state.me && typeof state.me === 'object') {
+          state.me.name = firstString(fresh.name, state.me.name, '');
+          state.me.picture = firstString(fresh.picture, state.me.picture, '');
+        }
+        renderIdentity({ ...(state.me || {}), name: fresh.name, picture: fresh.picture, provider: fresh.provider });
+      }
+    } catch {
+      identitySyncDone = false;
+    }
   }
 
   async function apiFetch(path, options = {}) {
@@ -820,35 +869,42 @@
     }
   }
 
-  function selectedFeaturedRefs() {
-    const wrap = getNode('profileFeaturedTokens');
-    if (!wrap) return [];
-    return Array.from(wrap.querySelectorAll('.tok span:first-child'))
-      .map((node) => text(node.textContent))
-      .filter(Boolean);
+  // Fold a lookup the same way the API does (lowercase, alnum tokens) so the
+  // "is this featured?" check survives casing/punctuation differences.
+  function foldRef(value) {
+    return text(value).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   }
 
+  // state.featuredRefs is the source of truth for featured contributions. Stars
+  // on the credited list toggle membership here; the public-profile save reads
+  // it via selectedFeaturedRefs().
+  function selectedFeaturedRefs() {
+    return normalizePublicRefArray(state.featuredRefs, [], PUBLIC_PROFILE_FEATURED_MAX);
+  }
+
+  function setFeaturedRefs(values) {
+    state.featuredRefs = normalizePublicRefArray(values, [], PUBLIC_PROFILE_FEATURED_MAX);
+  }
+
+  function isFeatured(lookup) {
+    const folded = foldRef(lookup);
+    return state.featuredRefs.some((ref) => foldRef(ref) === folded);
+  }
+
+  function toggleFeatured(lookup) {
+    const folded = foldRef(lookup);
+    if (isFeatured(lookup)) {
+      state.featuredRefs = state.featuredRefs.filter((ref) => foldRef(ref) !== folded);
+    } else {
+      state.featuredRefs = normalizePublicRefArray(state.featuredRefs.concat([lookup]), [], PUBLIC_PROFILE_FEATURED_MAX);
+    }
+  }
+
+  // Compatibility shim: renderPublicProfileState() still calls this with the
+  // saved featured list. Route it into the featured-ref store + re-render.
   function renderPublicTokenList(values) {
-    const wrap = getNode('profileFeaturedTokens');
-    const input = getNode('profileFeaturedInput');
-    if (!wrap || !input) return;
-    wrap.querySelectorAll('.tok').forEach((token) => token.remove());
-    normalizePublicRefArray(values, [], PUBLIC_PROFILE_FEATURED_MAX).forEach((value) => {
-      const token = document.createElement('span');
-      token.className = 'tok';
-      token.innerHTML = `<span>${value}</span><button type="button" aria-label="Remove">×</button>`;
-      token.querySelector('button')?.addEventListener('click', async () => {
-        token.remove();
-        try {
-          await apiFetch(`/me/contributions/claims/${encodeURIComponent(value)}`, {
-            method: 'DELETE',
-            timeoutMs: 10000,
-          });
-        } catch {}
-        schedulePublicSave();
-      });
-      input.before(token);
-    });
+    setFeaturedRefs(values);
+    renderContributions();
   }
 
   function selectedPublicLinks() {
@@ -1003,66 +1059,242 @@
     });
   }
 
-  function renderClaimableContributions() {
-    const wrap = getNode('profileClaimableList');
-    if (!wrap) return;
-    const candidates = Array.isArray(state.claimableContributions) ? state.claimableContributions : [];
-    wrap.innerHTML = '';
-    if (!candidates.length) {
-      const empty = document.createElement('p');
-      empty.className = 'note';
-      empty.textContent = state.claimableContributions ? 'No matching unclaimed catalog entries found.' : 'Matching catalog entries will appear here.';
-      wrap.appendChild(empty);
-      return;
-    }
-    candidates.forEach((candidate) => {
-      const lookup = text(candidate.lookup);
-      if (!lookup) return;
-      const row = document.createElement('div');
-      row.className = 'dx-profile-list-row';
-      row.innerHTML = `
-        <span class="dx-profile-list-row-main">
-          <span class="dx-profile-list-row-title"></span>
-          <span class="dx-profile-list-row-meta"></span>
-        </span>
-        <button class="btn" type="button">Claim</button>
-      `;
-      row.querySelector('.dx-profile-list-row-title').textContent = lookup;
-      row.querySelector('.dx-profile-list-row-meta').textContent = text(candidate.href || candidate.slug || 'Catalog match');
-      row.querySelector('button')?.addEventListener('click', async () => {
-        const button = row.querySelector('button');
-        if (button) button.disabled = true;
-        try {
-          const payload = await apiFetch('/me/contributions/claims', {
-            method: 'POST',
-            body: JSON.stringify({ entry_lookup: lookup }),
-            timeoutMs: 10000,
-          });
-          state.claimableContributions = candidates.filter((item) => text(item.lookup) !== lookup);
-          if (text(payload?.status) === 'approved') {
-            const mergedFeatured = normalizePublicRefArray(selectedFeaturedRefs().concat([lookup]), [], PUBLIC_PROFILE_FEATURED_MAX);
-            renderPublicTokenList(mergedFeatured);
-            schedulePublicSave();
-          }
-          renderClaimableContributions();
-          setPublicSaveState('saved');
-        } catch (error) {
-          setPublicSaveState('error', summarizeSaveError(error));
-          if (button) button.disabled = false;
-        }
-      });
-      wrap.appendChild(row);
-    });
+  // ---- Your contributions: credited list + catalog search + claim ----
+
+  const CONTRIB_STATUS_LABELS = {
+    in_library: 'In library',
+    approved: 'Approved',
+    pending: 'Pending review',
+  };
+
+  function contribStatusLabel(status) {
+    return CONTRIB_STATUS_LABELS[text(status)] || 'Pending review';
   }
 
-  async function hydrateClaimableContributions() {
+  // Load a lightweight catalog index (published JSON) so members can search the
+  // whole catalog client-side to find an entry to claim.
+  function loadCatalogIndex() {
+    if (state.catalogPromise) return state.catalogPromise;
+    state.catalogPromise = (async () => {
+      const out = [];
+      const seen = new Set();
+      const add = (entry) => {
+        const lookup = text(entry?.lookup || entry?.lookup_raw || entry?.lookupNumber);
+        const folded = foldRef(lookup);
+        if (!folded || seen.has(folded)) return;
+        seen.add(folded);
+        const title = text(entry?.title || entry?.title_raw, lookup);
+        const performer = text(entry?.performer_display || entry?.performer || entry?.performer_raw);
+        const slug = text(entry?.slug || entry?.id || entry?.entry_id);
+        const href = text(entry?.href || entry?.entry_href || entry?.entryHref);
+        out.push({ lookup, foldedLookup: folded, slug, href, title, performer, hay: `${lookup} ${title} ${performer}`.toLowerCase() });
+      };
+      const fetchJson = async (url) => {
+        try {
+          const res = await fetch(url, { headers: { accept: 'application/json' } });
+          if (!res.ok) return null;
+          return await res.json();
+        } catch { return null; }
+      };
+      const [a, b] = await Promise.all([
+        fetchJson('/data/catalog-performers.json'),
+        fetchJson('/data/catalog.entries.json'),
+      ]);
+      for (const e of (a && Array.isArray(a.entries) ? a.entries : [])) add(e);
+      for (const e of (b && Array.isArray(b.entries) ? b.entries : [])) add(e);
+      state.catalogIndex = out;
+      return out;
+    })();
+    return state.catalogPromise;
+  }
+
+  function creditedFoldedSet() {
+    const set = new Set();
+    const credited = state.contributions && Array.isArray(state.contributions.credited) ? state.contributions.credited : [];
+    for (const c of credited) set.add(foldRef(c.lookup));
+    return set;
+  }
+
+  function renderContribCard(item, opts = {}) {
+    const card = document.createElement('div');
+    card.className = 'dx-contrib-card';
+    const lookup = text(item.lookup);
+    const title = text(item.title, lookup);
+    const performer = text(item.performer);
+    const href = text(item.href);
+
+    const main = document.createElement(href ? 'a' : 'div');
+    main.className = 'dx-contrib-card-main';
+    if (href) { main.href = href; main.target = '_blank'; main.rel = 'noopener'; }
+    main.innerHTML = '<span class="dx-contrib-card-title"></span><span class="dx-contrib-card-sub"></span>';
+    main.querySelector('.dx-contrib-card-title').textContent = title;
+    main.querySelector('.dx-contrib-card-sub').textContent = [lookup, performer].filter(Boolean).join(' · ');
+    card.appendChild(main);
+
+    const aside = document.createElement('div');
+    aside.className = 'dx-contrib-card-aside';
+
+    if (opts.credited) {
+      if (text(item.status)) {
+        const badge = document.createElement('span');
+        badge.className = `dx-contrib-status is-${text(item.status, 'pending')}`;
+        badge.textContent = contribStatusLabel(item.status);
+        aside.appendChild(badge);
+      }
+      const star = document.createElement('button');
+      star.type = 'button';
+      star.className = 'dx-contrib-star';
+      const featured = isFeatured(lookup);
+      star.setAttribute('aria-pressed', featured ? 'true' : 'false');
+      star.title = featured ? 'Featured on your public page' : 'Feature on your public page';
+      star.textContent = featured ? '★ Featured' : '☆ Feature';
+      star.addEventListener('click', () => {
+        toggleFeatured(lookup);
+        renderContributions();
+        schedulePublicSave();
+      });
+      aside.appendChild(star);
+    } else {
+      const claim = document.createElement('button');
+      claim.type = 'button';
+      claim.className = 'btn dx-contrib-claim';
+      claim.textContent = 'Claim';
+      claim.addEventListener('click', () => openClaimConfirm(item, claim));
+      aside.appendChild(claim);
+    }
+    card.appendChild(aside);
+    return card;
+  }
+
+  function renderContributions() {
+    const creditedWrap = getNode('profileCreditedList');
+    if (creditedWrap) {
+      const credited = state.contributions && Array.isArray(state.contributions.credited) ? state.contributions.credited : [];
+      creditedWrap.innerHTML = '';
+      if (!state.contributions) {
+        const note = document.createElement('p'); note.className = 'note'; note.textContent = 'Loading your contributions…';
+        creditedWrap.appendChild(note);
+      } else if (!credited.length) {
+        const note = document.createElement('p'); note.className = 'note';
+        note.textContent = 'Nothing credited to you yet. Search below to claim a catalog entry.';
+        creditedWrap.appendChild(note);
+      } else {
+        credited.forEach((item) => creditedWrap.appendChild(renderContribCard(item, { credited: true })));
+      }
+    }
+    renderContribSearchResults();
+  }
+
+  function renderContribSearchResults() {
+    const wrap = getNode('profileContribResults');
+    if (!wrap) return;
+    const query = text(getNode('profileContribSearch')?.value).toLowerCase();
+    wrap.innerHTML = '';
+
+    const credited = creditedFoldedSet();
+    const suggestions = (state.contributions && Array.isArray(state.contributions.candidates) ? state.contributions.candidates : [])
+      .filter((e) => !credited.has(foldRef(e.lookup)));
+
+    let results;
+    let showSuggestLabel = false;
+    if (query.length >= 2) {
+      const index = Array.isArray(state.catalogIndex) ? state.catalogIndex : [];
+      results = index.filter((e) => !credited.has(e.foldedLookup) && e.hay.includes(query)).slice(0, 12);
+    } else {
+      results = suggestions;
+      showSuggestLabel = suggestions.length > 0;
+    }
+
+    if (!results.length) {
+      const note = document.createElement('p'); note.className = 'note';
+      note.textContent = query.length >= 2
+        ? 'No catalog entries match that search.'
+        : 'Entries credited to names like yours appear here — or search the full catalog above.';
+      wrap.appendChild(note);
+      return;
+    }
+    if (showSuggestLabel) {
+      const label = document.createElement('p');
+      label.className = 'note dx-contrib-suggest-label';
+      label.textContent = 'Suggested from your name';
+      wrap.appendChild(label);
+    }
+    results.forEach((item) => wrap.appendChild(renderContribCard(item, { credited: false })));
+  }
+
+  function openClaimConfirm(item, triggerButton) {
+    const lookup = text(item.lookup);
+    if (!lookup) return;
+    const dialog = getNode('profileClaimDialog');
+    if (!dialog) { void confirmAndClaim(item, triggerButton); return; }
+    const titleNode = dialog.querySelector('[data-dx-claim-title]');
+    const metaNode = dialog.querySelector('[data-dx-claim-meta]');
+    if (titleNode) titleNode.textContent = text(item.title, lookup);
+    if (metaNode) metaNode.textContent = [lookup, text(item.performer)].filter(Boolean).join(' · ');
+    dialog.hidden = false;
+    dialog.setAttribute('data-open', 'true');
+
+    const confirmBtn = dialog.querySelector('[data-dx-claim-confirm]');
+    const cancelBtn = dialog.querySelector('[data-dx-claim-cancel]');
+    const close = () => {
+      dialog.hidden = true;
+      dialog.removeAttribute('data-open');
+      confirmBtn?.removeEventListener('click', onConfirm);
+      cancelBtn?.removeEventListener('click', onCancel);
+    };
+    const onConfirm = async () => {
+      if (confirmBtn) confirmBtn.disabled = true;
+      await confirmAndClaim(item, triggerButton);
+      if (confirmBtn) confirmBtn.disabled = false;
+      close();
+    };
+    const onCancel = () => close();
+    confirmBtn?.addEventListener('click', onConfirm);
+    cancelBtn?.addEventListener('click', onCancel);
+  }
+
+  async function confirmAndClaim(item, triggerButton) {
+    const lookup = text(item.lookup);
+    if (!lookup) return;
+    if (triggerButton) triggerButton.disabled = true;
+    try {
+      const payload = await apiFetch('/me/contributions/claims', {
+        method: 'POST',
+        body: JSON.stringify({ entry_lookup: lookup }),
+        timeoutMs: 10000,
+      });
+      const status = text(payload?.status, 'pending');
+      if (!state.contributions) state.contributions = { credited: [], candidates: [] };
+      const folded = foldRef(lookup);
+      state.contributions.candidates = (state.contributions.candidates || []).filter((c) => foldRef(c.lookup) !== folded);
+      if (!(state.contributions.credited || []).some((c) => foldRef(c.lookup) === folded)) {
+        state.contributions.credited = (state.contributions.credited || []).concat([{
+          lookup, slug: text(item.slug), href: text(item.href), title: text(item.title, lookup),
+          performer: text(item.performer), status, source: 'claim',
+        }]);
+      }
+      const input = getNode('profileContribSearch');
+      if (input) input.value = '';
+      renderContributions();
+      setPublicSaveState('saved');
+    } catch (error) {
+      setPublicSaveState('error', summarizeSaveError(error));
+      if (triggerButton) triggerButton.disabled = false;
+    }
+  }
+
+  async function hydrateContributions() {
+    void loadCatalogIndex().then(() => renderContribSearchResults());
     try {
       const payload = await apiFetch('/me/contributions/claimable', { timeoutMs: 10000 });
-      state.claimableContributions = Array.isArray(payload?.candidates) ? payload.candidates : [];
+      state.contributions = {
+        credited: Array.isArray(payload?.credited) ? payload.credited : [],
+        candidates: Array.isArray(payload?.candidates) ? payload.candidates : [],
+      };
     } catch {
-      state.claimableContributions = [];
+      state.contributions = { credited: [], candidates: [] };
     }
-    renderClaimableContributions();
+    renderContributions();
   }
 
   function renderPublicProfileState() {
@@ -1086,7 +1318,7 @@
     if (handleStatus) handleStatus.textContent = profile.handle ? 'Handle saved.' : 'Choose a public URL handle.';
     renderPublicLinks(profile.links);
     renderPublicTokenList(profile.featured);
-    renderClaimableContributions();
+    renderContributions();
     renderPublicFavorites();
     setPublicSaveState('idle');
   }
@@ -1655,26 +1887,24 @@
       schedulePublicSave();
     });
 
-    getNode('profileFeaturedInput')?.addEventListener('keydown', (event) => {
-      if (event.key !== 'Enter' && event.key !== ',' && event.key !== 'Tab') return;
-      const input = getNode('profileFeaturedInput');
-      const value = text(input?.value);
-      if (value) {
-        renderPublicTokenList(selectedFeaturedRefs().concat([value]));
-        if (input) input.value = '';
-        schedulePublicSave();
-      }
-      if (event.key !== 'Tab') event.preventDefault();
+    let contribSearchTimer = 0;
+    getNode('profileContribSearch')?.addEventListener('input', () => {
+      void loadCatalogIndex();
+      if (contribSearchTimer) window.clearTimeout(contribSearchTimer);
+      contribSearchTimer = window.setTimeout(() => {
+        contribSearchTimer = 0;
+        renderContribSearchResults();
+      }, 140);
     });
 
     getNode('profileAddLink')?.addEventListener('click', () => {
       addPublicLinkRow({ label: '', url: 'https://' });
     });
 
-    getNode('refreshClaimableContribs')?.addEventListener('click', async () => {
-      const button = getNode('refreshClaimableContribs');
+    getNode('refreshContributions')?.addEventListener('click', async () => {
+      const button = getNode('refreshContributions');
       if (button) button.disabled = true;
-      await hydrateClaimableContributions();
+      await hydrateContributions();
       if (button) button.disabled = false;
     });
 
@@ -1962,7 +2192,8 @@
       await loadTaxonomy();
       if (state.profile) renderContributionState();
       await hydrateSubmissionInsights();
-      await hydrateClaimableContributions();
+      await hydrateContributions();
+      void syncClientIdentity();
       renderPublicFavorites();
     }
 

@@ -8,6 +8,7 @@
 
   const DEFAULT_API_BASE = 'https://dex-api.spring-fog-8edd.workers.dev';
   const CATALOG_INDEX_URL = '/data/catalog-performers.json';
+  const CATALOG_ENTRIES_URL = '/data/catalog.entries.json';
   const API_TIMEOUT_MS = 9000;
   const MIN_SHEEN_MS = 140;
 
@@ -23,6 +24,14 @@
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
+  }
+
+  function firstText(...values) {
+    for (const value of values) {
+      const next = toText(value);
+      if (next) return next;
+    }
+    return '';
   }
 
   function getApiBase() {
@@ -132,8 +141,36 @@
 
   function avatarCandidates(profile) {
     const out = [];
-    const explicit = toText(profile.avatar_url || profile.avatar || profile.picture || profile.photo_url);
-    if (explicit) out.push(explicit);
+    const explicitFields = [
+      profile?.provider?.picture,
+      profile?.provider?.avatar_url,
+      profile?.provider?.avatarUrl,
+      profile?.provider?.image_url,
+      profile?.social_profile?.picture,
+      profile?.social_profile?.avatarAssetUrl,
+      profile?.socialProfile?.picture,
+      profile?.socialProfile?.avatarAssetUrl,
+      profile?.identity?.provider?.picture,
+      profile?.identity?.picture,
+      profile?.avatarAssetUrl,
+      profile?.avatar_asset_url,
+      profile?.avatarUrl,
+      profile?.avatar_url,
+      profile?.avatar,
+      profile?.picture,
+      profile?.profile_picture,
+      profile?.profilePicture,
+      profile?.photo_url,
+      profile?.photoUrl,
+      profile?.image_url,
+      profile?.imageUrl,
+      profile?.icon_url,
+      profile?.iconUrl,
+    ];
+    for (const value of explicitFields) {
+      const src = toText(value);
+      if (src && !out.includes(src)) out.push(src);
+    }
     const links = Array.isArray(profile.links) ? profile.links : [];
     for (const link of links) {
       const url = socialAvatarUrl(link && link.url);
@@ -194,23 +231,51 @@
   }
 
   let catalogIndexPromise = null;
+
+  function mergeCatalogRecord(existing, next) {
+    if (!existing) return next;
+    return {
+      lookup: firstText(existing.lookup, next.lookup),
+      slug: firstText(existing.slug, next.slug),
+      href: firstText(existing.href, next.href),
+      title: firstText(existing.title, next.title),
+      performer: firstText(existing.performer, next.performer),
+      imageSrc: firstText(existing.imageSrc, next.imageSrc),
+      imageAlt: firstText(existing.imageAlt, next.imageAlt),
+    };
+  }
+
+  function addCatalogRecord(map, record) {
+    if (!record || typeof record !== 'object') return;
+    const normalized = {
+      lookup: toText(record.lookup || record.lookup_raw || record.lookupNumber),
+      slug: toText(record.slug || record.id || record.entry_id) || slugFromHref(record.href || record.entry_href || record.entryHref),
+      href: normalizePath(record.href || record.entry_href || record.entryHref),
+      title: toText(record.title || record.title_raw) || toText(record.lookup || record.lookup_raw, 'Catalog entry'),
+      performer: toText(record.performer_display || record.performer || record.performer_raw),
+      imageSrc: toText(record.imageSrc || record.image_src || record.thumbnailSrc || record.thumbnail),
+      imageAlt: toText(record.imageAlt || record.image_alt || record.image_alt_raw),
+    };
+    const keys = [];
+    if (normalized.lookup) keys.push(`lookup:${foldLookup(normalized.lookup)}`);
+    if (normalized.slug) keys.push(`slug:${normalized.slug.toLowerCase()}`);
+    if (normalized.href) keys.push(`href:${normalized.href.toLowerCase()}`);
+    for (const key of keys) map.set(key, mergeCatalogRecord(map.get(key), normalized));
+  }
+
+  function entriesFromCatalogPayload(body) {
+    return body && Array.isArray(body.entries) ? body.entries : [];
+  }
+
   function loadCatalogIndex() {
     if (!catalogIndexPromise) {
-      catalogIndexPromise = fetchJson(CATALOG_INDEX_URL).then((res) => {
+      catalogIndexPromise = Promise.all([
+        fetchJson(CATALOG_INDEX_URL),
+        fetchJson(CATALOG_ENTRIES_URL),
+      ]).then(([performerRes, entriesRes]) => {
         const map = new Map();
-        const entries = (res.body && Array.isArray(res.body.entries)) ? res.body.entries : [];
-        for (const e of entries) {
-          const record = {
-            lookup: toText(e.lookup),
-            slug: toText(e.slug) || slugFromHref(e.href),
-            href: normalizePath(e.href),
-            title: toText(e.title) || toText(e.lookup, 'Catalog entry'),
-            performer: toText(e.performer_display),
-          };
-          if (record.lookup) map.set(`lookup:${foldLookup(record.lookup)}`, record);
-          if (record.slug) map.set(`slug:${record.slug.toLowerCase()}`, record);
-          if (record.href) map.set(`href:${record.href.toLowerCase()}`, record);
-        }
+        for (const e of entriesFromCatalogPayload(performerRes.body)) addCatalogRecord(map, e);
+        for (const e of entriesFromCatalogPayload(entriesRes.body)) addCatalogRecord(map, e);
         return map;
       }).catch(() => new Map());
     }
@@ -237,20 +302,33 @@
       .join('')}</div>`;
   }
 
-  function renderContributionCard(ref, catalog) {
+  function renderEntryCard(ref, catalog, options = {}) {
     const meta = catalogMetaFor(ref, catalog);
     const lookup = toText(ref?.lookup || ref?.entry_lookup || ref?.entryLookupNumber || ref?.lookupNumber || meta.lookup);
     const title = toText(ref?.title || meta.title) || lookup || 'Catalog entry';
     const href = normalizePath(ref?.href || ref?.entryHref || ref?.entryUrl || meta.href);
     const role = toText(ref.role);
-    const inner =
+    const imageSrc = toText(ref?.imageSrc || ref?.image_src || ref?.thumbnailSrc || ref?.thumbnail || meta.imageSrc);
+    const imageAlt = toText(ref?.imageAlt || ref?.image_alt || ref?.image_alt_raw || meta.imageAlt || title);
+    const thumb = options.preview && imageSrc
+      ? `<span class="dx-prof-card-thumb"><img src="${htmlEscape(imageSrc)}" alt="${htmlEscape(imageAlt)}" loading="lazy" decoding="async"></span>`
+      : (options.preview ? '<span class="dx-prof-card-thumb is-empty" aria-hidden="true"></span>' : '');
+    const copy =
+      `<span class="dx-prof-card-copy">` +
       (lookup ? `<span class="dx-prof-card-lookup">${htmlEscape(lookup)}</span>` : '') +
-      `<h3 class="dx-prof-card-title">${htmlEscape(title)}</h3>` +
-      (role ? `<span class="dx-prof-card-role">${htmlEscape(role)}</span>` : '');
-    const cls = `dx-prof-card${ref.featured ? ' is-featured' : ''}`;
+      `<span class="dx-prof-card-title">${htmlEscape(title)}</span>` +
+      (role ? `<span class="dx-prof-card-role">${htmlEscape(role)}</span>` : '') +
+      `</span>`;
+    const arrow = href ? '<span class="dx-prof-card-arrow" aria-hidden="true">View</span>' : '';
+    const inner = `${thumb}${copy}${arrow}`;
+    const cls = `dx-prof-card${options.preview ? ' dx-prof-card--media' : ''}${ref.featured ? ' is-featured' : ''}`;
     return href
       ? `<a class="${cls}" href="${htmlEscape(href)}">${inner}</a>`
       : `<div class="${cls}">${inner}</div>`;
+  }
+
+  function renderContributionCard(ref, catalog) {
+    return renderEntryCard(ref, catalog);
   }
 
   function favoriteRecordFromRef(ref, catalog) {
@@ -259,16 +337,24 @@
       const parts = trimmed.split('|');
       if (parts.length >= 2) {
         const kind = parts[0];
-        const lookup = parts[1];
+        const value = parts[1];
         const bucket = parts[2] || '';
-        const meta = catalogMetaFor({ lookup }, catalog);
+        // Favorite refs encode the entry as either a lookup number or an entry
+        // href (e.g. "entry|/entry/2-organs-midori-ataka/"). Resolve catalog
+        // metadata by href when it looks like a path so the card gets a real
+        // title, thumbnail, and a working link to the entry page.
+        const looksLikeHref = /^(https?:)?\//.test(value);
+        const meta = catalogMetaFor(looksLikeHref ? { href: value } : { lookup: value }, catalog);
+        const lookup = toText(meta.lookup) || (looksLikeHref ? '' : value);
+        const href = toText(meta.href) || (looksLikeHref ? normalizePath(value) : '');
+        const baseTitle = toText(meta.title) || lookup || (looksLikeHref ? '' : value);
         return {
           lookup,
-          href: meta.href,
-          title: kind === 'bucket' && bucket
-            ? `${toText(meta.title, lookup)} — Bucket ${bucket}`
-            : toText(meta.title, lookup),
+          href,
+          title: kind === 'bucket' && bucket ? `${baseTitle} — Bucket ${bucket}` : baseTitle,
           role: kind === 'file' ? 'Favorite file' : kind === 'bucket' ? 'Favorite bucket' : 'Favorite entry',
+          imageSrc: toText(meta.imageSrc),
+          imageAlt: toText(meta.imageAlt, baseTitle),
         };
       }
       return { lookup: trimmed };
@@ -278,13 +364,40 @@
       href: ref?.entryHref || ref?.entryUrl || ref?.href || '',
       title: ref?.title || ref?.lookupNumber || ref?.lookup || '',
       role: ref?.kind ? `Favorite ${ref.kind}` : '',
+      imageSrc: ref?.imageSrc || ref?.image_src || ref?.thumbnailSrc || ref?.thumbnail || '',
+      imageAlt: ref?.imageAlt || ref?.image_alt || ref?.image_alt_raw || '',
     };
   }
 
+  function displayNameForProfile(profile) {
+    return firstText(
+      profile?.credit_name,
+      profile?.name,
+      profile?.display_name,
+      profile?.displayName,
+      profile?.full_name,
+      profile?.fullName,
+      profile?.provider?.name,
+      profile?.provider?.displayName,
+      profile?.identity?.name,
+      profile?.handle,
+      'Member',
+    );
+  }
+
+  function handleLabel(handle) {
+    const value = toText(handle).replace(/^@+/, '');
+    return value ? `@${value}` : '';
+  }
+
   function renderProfile(profile, catalog) {
-    const name = toText(profile.credit_name) || toText(profile.handle) || 'Member';
+    const name = displayNameForProfile(profile);
+    const handle = toText(profile.handle).replace(/^@+/, '');
     const dexId = toText(profile.dex_id);
     const meta = [];
+    if (handle) {
+      meta.push(`<a class="dx-prof-handle" href="/u/${htmlEscape(encodeURIComponent(handle))}/">${htmlEscape(handleLabel(handle))}</a>`);
+    }
     if (toText(profile.location)) meta.push(`<span>${htmlEscape(profile.location)}</span>`);
     if (toText(profile.pronouns)) meta.push(`<span class="dx-prof-pronouns">${htmlEscape(profile.pronouns)}</span>`);
 
@@ -303,9 +416,12 @@
     const favorites = Array.isArray(profile.favorites) ? profile.favorites : [];
     const favHtml = favorites.length
       ? `<section class="dx-prof-section">
-           <p class="dx-prof-section-label">Favorite samples &amp; collections</p>
-           <div class="dx-prof-grid">${favorites
-             .map((ref) => renderContributionCard(favoriteRecordFromRef(ref, catalog), catalog))
+           <div class="dx-prof-section-head">
+             <p class="dx-prof-section-label">Saved</p>
+             <h2 class="dx-prof-section-title">Favorite samples &amp; collections</h2>
+           </div>
+           <div class="dx-prof-grid dx-prof-grid--favorites">${favorites
+             .map((ref) => renderEntryCard(favoriteRecordFromRef(ref, catalog), catalog, { preview: true }))
              .join('')}</div>
          </section>`
       : '';
@@ -327,12 +443,17 @@
             ${linksHtml}
           </div>
         </header>
-        ${(rolesHtml || instrHtml) ? `<section class="dx-prof-section">${rolesHtml}${instrHtml}</section>` : ''}
-        <section class="dx-prof-section">
-          <p class="dx-prof-section-label">Contributions</p>
-          ${contribHtml}
-        </section>
-        ${favHtml}
+        <div class="dx-prof-body">
+          ${(rolesHtml || instrHtml) ? `<section class="dx-prof-section dx-prof-section--chips">${rolesHtml}${instrHtml}</section>` : ''}
+          <section class="dx-prof-section">
+            <div class="dx-prof-section-head">
+              <p class="dx-prof-section-label">Public record</p>
+              <h2 class="dx-prof-section-title">Contributions</h2>
+            </div>
+            ${contribHtml}
+          </section>
+          ${favHtml}
+        </div>
       </section>`;
   }
 
@@ -345,6 +466,42 @@
           <p class="dx-prof-empty"><a class="dx-prof-link" href="/catalog/">Browse the catalog</a></p>
         </div>
       </section>`;
+  }
+
+  // The header runtime only publishes --dx-profile-footer-height for protected
+  // routes; /u is public, so it never reserves footer space and the glass would
+  // run under the fixed footer. Measure the footer ourselves into a separate
+  // variable the CSS falls back to (so we never fight the header runtime).
+  function syncFooterMetrics() {
+    if (typeof document === 'undefined' || !document.documentElement) return;
+    const footers = document.querySelectorAll('.dex-footer');
+    let height = 0;
+    footers.forEach((footer) => {
+      if (!(footer instanceof HTMLElement)) return;
+      const rect = footer.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) height = Math.max(height, Math.round(rect.height));
+    });
+    const root = document.documentElement;
+    if (height > 0) root.style.setProperty('--dx-prof-measured-footer', `${height}px`);
+    else root.style.removeProperty('--dx-prof-measured-footer');
+  }
+
+  let footerMetricsBound = false;
+  function bindFooterMetrics() {
+    syncFooterMetrics();
+    // The footer is injected asynchronously by the header runtime; retry a few
+    // times so the first paint still settles on the right height.
+    [120, 320, 700, 1400].forEach((delay) => setTimeout(syncFooterMetrics, delay));
+    if (footerMetricsBound) return;
+    footerMetricsBound = true;
+    window.addEventListener('resize', syncFooterMetrics, { passive: true });
+    window.addEventListener('dx:slotready', syncFooterMetrics);
+    window.addEventListener('dx:route-transition-in:end', syncFooterMetrics);
+    if (typeof ResizeObserver === 'function') {
+      const observer = new ResizeObserver(() => syncFooterMetrics());
+      const target = document.querySelector('.dex-footer') || document.body;
+      if (target) observer.observe(target);
+    }
   }
 
   function bindCopy(root) {
@@ -399,7 +556,7 @@
     ]);
 
     if (res.ok && res.body && typeof res.body === 'object') {
-      document.title = `${toText(res.body.credit_name) || toText(res.body.handle) || 'Member'} — dex digital sample library`;
+      document.title = `${displayNameForProfile(res.body)} — dex digital sample library`;
       const candidates = avatarCandidates(res.body);
       paint(renderProfile(res.body, catalog), 'ready', () => hydrateAvatar(root, candidates));
     } else {
@@ -408,6 +565,7 @@
   }
 
   bindCopy(document);
+  bindFooterMetrics();
   window.__dxProfilePublicMount = mount;
 
   if (document.readyState === 'loading') {

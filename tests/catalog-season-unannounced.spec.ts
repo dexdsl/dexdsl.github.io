@@ -32,6 +32,25 @@ function readSeasonTokenPool(seasonId: string): string[] {
   return tokens.length ? tokens : DEFAULT_POOL;
 }
 
+function readCatalogEntries(): any[] {
+  const filePath = path.join(process.cwd(), 'data', 'catalog.entries.json');
+  const payload = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  return Array.isArray(payload?.entries) ? payload.entries : [];
+}
+
+async function clickVisible(page: Page, selector: string): Promise<void> {
+  const matches = page.locator(selector);
+  const count = await matches.count();
+  for (let index = 0; index < count; index += 1) {
+    const candidate = matches.nth(index);
+    if (await candidate.isVisible()) {
+      await candidate.click();
+      return;
+    }
+  }
+  throw new Error(`No visible element matched ${selector}`);
+}
+
 async function blockExternalRequests(page: Page): Promise<void> {
   await page.route('**/*', async (route) => {
     const rawUrl = route.request().url();
@@ -188,4 +207,67 @@ test('teaser card insertion index varies by page-load seed (not fixed to trail p
 
   expect(secondIndex).toBeGreaterThanOrEqual(0);
   expect(secondIndex).not.toBe(firstIndex);
+});
+
+test('season carousel includes every valid S1 catalog entry, including entries without source images', async ({ page }) => {
+  await setTeaserSeed(page, 'seed-catalog-s1-complete');
+  await loadCatalog(page);
+  await selectSeasonTabIfPresent(page, 'S1');
+
+  const expectedS1 = readCatalogEntries()
+    .filter((entry) => String(entry?.season || '').toUpperCase() === 'S1' && String(entry?.lookup_raw || '').trim())
+    .map((entry) => String(entry.id || '').trim())
+    .filter(Boolean);
+  expect(expectedS1.length).toBeGreaterThan(0);
+
+  const renderedIds = await page.locator('.dx-catalog-index-season-track > .dx-catalog-index-season-slide[data-dx-season-card-kind="entry"]')
+    .evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-dx-season-card-id') || ''));
+
+  for (const entryId of expectedS1) {
+    expect(renderedIds).toContain(entryId);
+  }
+  expect(renderedIds).toContain('prepared-bass-viol-suarez-solis');
+  expect(renderedIds).toContain('prepared-harpsichord-suarez-solis');
+
+  const sebastianFallbacks = page.locator(
+    '.dx-catalog-index-season-slide[data-dx-season-card-id^="prepared-"][data-dx-season-card-id$="suarez-solis"] .dx-catalog-index-season-media--fallback',
+  );
+  await expect(sebastianFallbacks).toHaveCount(2);
+});
+
+test('season carousel pages infinitely by one slot and exposes pips without native scrollbars', async ({ page }) => {
+  await setTeaserSeed(page, 'seed-catalog-paged-nav');
+  await loadCatalog(page);
+  await selectSeasonTabIfPresent(page, 'S1');
+
+  const track = page.locator('.dx-catalog-index-season-track').first();
+  await expect(track).toBeVisible();
+
+  const metrics = await track.evaluate((node) => {
+    const style = window.getComputedStyle(node);
+    return {
+      overflowX: style.overflowX,
+      overflowY: style.overflowY,
+      scrollbarWidth: style.scrollbarWidth,
+    };
+  });
+  expect(metrics.overflowX).toBe('hidden');
+  expect(metrics.overflowY).toBe('hidden');
+  expect(metrics.scrollbarWidth).toBe('none');
+
+  const size = Number(await track.getAttribute('data-dx-carousel-size'));
+  expect(size).toBeGreaterThan(2);
+  const initialSlot = Number(await track.getAttribute('data-dx-carousel-active-slot'));
+  expect(initialSlot).toBeGreaterThanOrEqual(0);
+
+  await clickVisible(page, '.dx-catalog-index-season-arrow--right');
+  await expect(track).toHaveAttribute('data-dx-carousel-active-slot', String((initialSlot + 1) % size));
+
+  await clickVisible(page, '.dx-catalog-index-season-arrow--left');
+  await clickVisible(page, '.dx-catalog-index-season-arrow--left');
+  await expect(track).toHaveAttribute('data-dx-carousel-active-slot', String((initialSlot - 1 + size) % size));
+
+  const activePips = page.locator('.dx-catalog-index-season-pip.is-active');
+  await expect(activePips).toHaveCount(1);
+  await expect(activePips.first()).toHaveAttribute('data-dx-carousel-pip', String((initialSlot - 1 + size) % size));
 });

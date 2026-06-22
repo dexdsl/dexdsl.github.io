@@ -15,6 +15,7 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
   const DEFAULT_UNANNOUNCED_MESSAGE = 'this artist has not been announced yet';
   const DEFAULT_UNANNOUNCED_TOKEN_POOL = ['???', '!!!', '***', '@@@'];
   const HOME_SIGNUP_TEASER_IMAGE = '/assets/img/3b1476c230073f7589e3.jpg';
+  const CATALOG_FALLBACK_IMAGE = '/assets/series/dex.png';
   const REDIRECT_HASHES = {
     '#dex-how': '/catalog/how/#dex-how',
     '#list-of-identifiers': '/catalog/symbols/#list-of-identifiers',
@@ -39,6 +40,7 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
   let blobResizeHandler = null;
   let drawerOpen = false;
   let seasonCarouselSeason = '';
+  let seasonCarouselIndexes = new Map();
   let seasonTeaserSeed = '';
   let favoritesSignalsBound = false;
   let newsletterActivated = false;
@@ -746,6 +748,17 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
     return normalizeImageSrc(entry?.image_src);
   }
 
+  function positiveModulo(value, length) {
+    const size = Number(length) || 0;
+    if (size <= 0) return 0;
+    return ((Number(value) % size) + size) % size;
+  }
+
+  function centeredCarouselIndex(slideCount) {
+    const count = Math.max(1, Number(slideCount) || 1);
+    return count * 80;
+  }
+
   function randomEntryHref() {
     const pool = allEntries()
       .map((entry) => canonicalEntryHref(entry.entry_href))
@@ -1235,19 +1248,27 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
   function renderSeasonSlide(entry) {
     const href = canonicalEntryHref(entry.entry_href) || '/catalog/';
     const imageSrc = imageCandidateForEntry(entry);
+    const hasImage = Boolean(imageSrc);
     const slide = create('li', 'dx-catalog-index-season-slide');
     const season = text(entry.season).toUpperCase();
     slide.setAttribute('data-dx-season-card-kind', 'entry');
+    slide.setAttribute('data-dx-season-card-id', text(entry.id || ''));
+    slide.setAttribute('data-dx-season-card-href', href);
+    slide.setAttribute('data-dx-season-card-lookup', text(entry.lookup_raw || ''));
     if (season) slide.setAttribute('data-dx-season-id', season);
 
     const media = create('a', 'dx-catalog-index-season-media');
     media.href = href;
+    if (!hasImage) media.classList.add('dx-catalog-index-season-media--fallback');
     const image = create('img', 'dx-catalog-index-season-img');
     image.loading = 'lazy';
     image.decoding = 'async';
     image.alt = text(entry.image_alt_raw || entry.title_raw || entry.performer_raw || 'Catalog entry');
-    if (imageSrc) image.src = imageSrc;
+    image.src = imageSrc || CATALOG_FALLBACK_IMAGE;
     media.appendChild(image);
+    if (!hasImage) {
+      media.appendChild(create('span', 'dx-catalog-index-season-fallback-code', text(entry.lookup_raw || 'DEX')));
+    }
 
     const copy = create('div', 'dx-catalog-index-season-copy');
     copy.appendChild(create('h3', 'dx-catalog-index-season-performer', text(entry.performer_raw || 'Unknown performer')));
@@ -1297,12 +1318,12 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
   }
 
   function renderSeasonCarousel(target) {
-    const imageEntries = allEntries().filter((entry) => {
-      return !!canonicalEntryHref(entry.entry_href) && !!text(entry.season).trim() && !!imageCandidateForEntry(entry);
+    const catalogEntries = allEntries().filter((entry) => {
+      return !!canonicalEntryHref(entry.entry_href) && !!text(entry.lookup_raw).trim() && !!text(entry.season).trim();
     });
 
     const seasonBuckets = new Map();
-    imageEntries.forEach((entry) => {
+    catalogEntries.forEach((entry) => {
       const season = text(entry.season).trim().toUpperCase();
       if (!season) return;
       if (!seasonBuckets.has(season)) seasonBuckets.set(season, []);
@@ -1357,7 +1378,9 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
     const track = create('ul', 'dx-catalog-index-season-track');
     track.setAttribute('aria-live', 'polite');
     revealer.appendChild(track);
-    gutter.appendChild(revealer);
+    const pips = create('div', 'dx-catalog-index-season-pips');
+    pips.setAttribute('aria-label', 'Carousel pages');
+    gutter.append(revealer, pips);
 
     const desktopArrows = create('div', 'dx-catalog-index-season-desktop-arrows');
     const desktopLeftWrap = create('div', 'dx-catalog-index-season-arrow-wrap dx-catalog-index-season-arrow-wrap--left');
@@ -1373,19 +1396,51 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
     const mobileRight = createSeasonCarouselArrow('right');
     mobileArrows.append(mobileLeft, mobileRight);
 
-    const scrollTrack = (direction) => {
-      const firstCard = track.querySelector('.dx-catalog-index-season-slide');
-      const gap = parseFloat(window.getComputedStyle(track).columnGap || '0') || 0;
-      const step = firstCard ? firstCard.getBoundingClientRect().width + gap : Math.max(track.clientWidth * 0.8, 240);
-      track.scrollBy({ left: direction * step, behavior: 'smooth' });
+    let currentSlides = [];
+
+    const carouselIndexForSeason = (slideCount) => {
+      const count = Math.max(1, Number(slideCount) || 1);
+      const key = text(seasonCarouselSeason).toUpperCase();
+      const existing = seasonCarouselIndexes.get(key);
+      if (Number.isFinite(existing)) return existing;
+      const initial = centeredCarouselIndex(count);
+      seasonCarouselIndexes.set(key, initial);
+      return initial;
     };
 
-    [desktopLeft, mobileLeft].forEach((button) => {
-      button.addEventListener('click', () => scrollTrack(-1));
-    });
-    [desktopRight, mobileRight].forEach((button) => {
-      button.addEventListener('click', () => scrollTrack(1));
-    });
+    const setCarouselIndexForSeason = (index) => {
+      seasonCarouselIndexes.set(text(seasonCarouselSeason).toUpperCase(), Number(index) || 0);
+    };
+
+    const setCarouselSlot = (slot, slideCount) => {
+      const count = Math.max(1, Number(slideCount) || 1);
+      const current = carouselIndexForSeason(count);
+      const currentSlot = positiveModulo(current, count);
+      const targetSlot = positiveModulo(slot, count);
+      const forward = positiveModulo(targetSlot - currentSlot, count);
+      const backward = forward - count;
+      const delta = Math.abs(backward) < Math.abs(forward) ? backward : forward;
+      setCarouselIndexForSeason(current + delta);
+      return delta;
+    };
+
+    const renderPips = (slides, activeSlot) => {
+      clearNode(pips);
+      if (!slides.length) return;
+      slides.forEach((slide, index) => {
+        const pip = create('button', 'dx-catalog-index-season-pip');
+        pip.type = 'button';
+        pip.setAttribute('aria-label', `Show ${seasonLabel(seasonCarouselSeason)} card ${index + 1}`);
+        pip.setAttribute('data-dx-carousel-pip', String(index));
+        pip.classList.toggle('is-active', index === activeSlot);
+        pip.setAttribute('aria-current', index === activeSlot ? 'true' : 'false');
+        pip.addEventListener('click', () => {
+          const delta = setCarouselSlot(index, slides.length);
+          renderTrack(delta === 0 ? 0 : (delta > 0 ? 1 : -1));
+        });
+        pips.appendChild(pip);
+      });
+    };
 
     const renderTabs = () => {
       clearNode(tabs);
@@ -1416,11 +1471,24 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
       const seasonEntries = seasonBuckets.get(seasonCarouselSeason) || [];
       const unannouncedCards = buildUnannouncedCardsForSeason(seasonCarouselSeason);
       const slides = interleaveSeasonTeasers(seasonCarouselSeason, seasonEntries, unannouncedCards);
-      slides.forEach((slide) => {
+      currentSlides = slides;
+      const activeIndex = carouselIndexForSeason(slides.length);
+      const activeSlot = positiveModulo(activeIndex, slides.length);
+      track.setAttribute('data-dx-carousel-active-index', String(activeIndex));
+      track.setAttribute('data-dx-carousel-active-slot', String(activeSlot));
+      track.setAttribute('data-dx-carousel-size', String(slides.length));
+      const orderedSlides = slides.map((_, index) => slides[positiveModulo(activeSlot + index, slides.length)]);
+      orderedSlides.forEach((slide, visibleIndex) => {
+        const originalIndex = slides.indexOf(slide);
         if (slide.kind === 'entry') track.appendChild(renderSeasonSlide(slide.entry));
         else if (slide.kind === 'teaser') track.appendChild(renderUnannouncedSeasonSlide(slide.card));
+        const rendered = track.lastElementChild;
+        if (rendered) {
+          rendered.setAttribute('data-dx-carousel-slot', String(originalIndex));
+          rendered.setAttribute('data-dx-carousel-visible-index', String(visibleIndex));
+        }
       });
-      track.scrollLeft = 0;
+      renderPips(slides, activeSlot);
 
       if (prefersReducedMotion()) return;
       const offset = direction === 0 ? 0 : direction * 8;
@@ -1436,6 +1504,30 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
         },
       );
     };
+
+    const pageCarousel = (direction) => {
+      if (!currentSlides.length) return;
+      const count = currentSlides.length;
+      const current = carouselIndexForSeason(count);
+      setCarouselIndexForSeason(current + direction);
+      renderTrack(direction);
+    };
+
+    [desktopLeft, mobileLeft].forEach((button) => {
+      button.setAttribute('data-dx-carousel-page-button', 'previous');
+      button.addEventListener('click', () => pageCarousel(-1));
+    });
+    [desktopRight, mobileRight].forEach((button) => {
+      button.setAttribute('data-dx-carousel-page-button', 'next');
+      button.addEventListener('click', () => pageCarousel(1));
+    });
+
+    gutter.tabIndex = 0;
+    gutter.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      pageCarousel(event.key === 'ArrowLeft' ? -1 : 1);
+    });
 
     renderTabs();
     renderTrack();

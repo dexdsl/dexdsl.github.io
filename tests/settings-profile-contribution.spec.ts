@@ -294,10 +294,21 @@ test('settings public profile saves opt-in payloads, validates handles, claims c
         headers,
         contentType: 'application/json',
         body: JSON.stringify({
+          credited: [
+            {
+              lookup: 'S.Vlc. Lo AV2023 S1',
+              href: '/entry/cello-emmanuel-losa/',
+              title: 'Cello - Emmanuel Losa',
+              performer: 'emmanuel losa',
+              status: 'in_library',
+            },
+          ],
           candidates: [
             {
               lookup: 'E.Mod. Zh AV2024 S2',
               href: '/entry/bojun-zhang/',
+              title: 'Modular - Bojun Zhang',
+              performer: 'bojun zhang',
             },
           ],
         }),
@@ -356,10 +367,14 @@ test('settings public profile saves opt-in payloads, validates handles, claims c
   await expect(page.locator('#publicProfileUrlText')).toHaveText('/u/saved-handle/');
   await expect(page.locator(`#profilePublicFavoritesList input[value="${favoriteKey}"]`)).toBeChecked();
 
-  await page.locator('#profileFeaturedTokens .tok').filter({ hasText: 'S.Vlc. Lo AV2023 S1' }).locator('button').click();
-  await expect
-    .poll(() => deleteClaimPaths.length)
-    .toBeGreaterThan(0);
+  // The credited entry renders with a pressed "Featured" star (it's in the saved
+  // featured list). Un-star it to drop it from the featured payload.
+  const creditedCard = page.locator('#profileCreditedList .dx-contrib-card').filter({ hasText: 'S.Vlc. Lo AV2023 S1' });
+  await expect(creditedCard).toBeVisible();
+  const star = creditedCard.locator('.dx-contrib-star');
+  await expect(star).toHaveAttribute('aria-pressed', 'true');
+  await star.click();
+  await expect(star).toHaveAttribute('aria-pressed', 'false');
 
   await page.fill('#profileHandleInput', 'new-handle');
   await expect
@@ -367,11 +382,17 @@ test('settings public profile saves opt-in payloads, validates handles, claims c
     .toBeTruthy();
   await page.fill('#profileBioInput', 'Updated public bio');
 
-  await page.click('#profileClaimableList button:has-text("Claim")');
+  // Claim the suggested candidate via the confirmation dialog.
+  await page.locator('#profileContribResults .dx-contrib-card').filter({ hasText: 'E.Mod. Zh AV2024 S2' })
+    .locator('button:has-text("Claim")').click();
+  await expect(page.locator('#profileClaimDialog')).toBeVisible();
+  await page.click('#profileClaimDialog [data-dx-claim-confirm]');
   await expect
     .poll(() => claimPayloads.length)
     .toBeGreaterThan(0);
   expect(claimPayloads.at(-1)).toMatchObject({ entry_lookup: 'E.Mod. Zh AV2024 S2' });
+  // Claimed entry moves into the credited list with a pending badge.
+  await expect(page.locator('#profileCreditedList .dx-contrib-card').filter({ hasText: 'E.Mod. Zh AV2024 S2' })).toBeVisible();
 
   await expect
     .poll(() => publicPatchPayloads.length)
@@ -390,6 +411,9 @@ test('settings public profile saves opt-in payloads, validates handles, claims c
     favorites_public: true,
   });
   expect(payload.favorites_public_refs).toContain(favoriteKey);
+  // Un-starred entry should no longer be in the featured payload.
+  const featuredPayload = [...publicPatchPayloads].reverse().find((item) => Array.isArray(item.featured));
+  if (featuredPayload) expect(featuredPayload.featured).not.toContain('S.Vlc. Lo AV2023 S1');
 });
 
 test('settings public profile keeps saved handles private until visibility is enabled', async ({ page }) => {

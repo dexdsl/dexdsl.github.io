@@ -83,12 +83,16 @@ function main() {
     'data-dx-fetch-state="loading"',
     '/css/components/dx-profile-public.css',
     '/assets/js/profile.public.js',
+    // Account menu must mount on profile pages (and persist across SPA nav).
+    '/assets/dex-auth.js',
     'member profile',
   ]);
   requireMarkers('docs/404.html', notFound, [
     'data-dx-profile-fallback',
     '/css/components/dx-profile-public.css',
     '/assets/js/profile.public.js',
+    // Account menu must mount on the dynamic /u fallback too.
+    '/assets/dex-auth.js',
     'id="dex-profile"',
     'member profile',
   ]);

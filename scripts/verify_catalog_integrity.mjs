@@ -13,6 +13,10 @@ const SEASONS_PATH = path.join(ROOT, 'public', 'data', 'catalog.seasons.json');
 const EDITORIAL_PATH = path.join(ROOT, 'public', 'data', 'catalog.editorial.json');
 const CURATION_SNAPSHOT_PATH = path.join(ROOT, 'public', 'data', 'catalog.curation.snapshot.json');
 const HOME_SNAPSHOT_PATH = path.join(ROOT, 'public', 'data', 'home.featured.snapshot.json');
+const DATA_ENTRIES_PATH = path.join(ROOT, 'data', 'catalog.entries.json');
+const ASSET_ENTRIES_PATH = path.join(ROOT, 'assets', 'data', 'catalog.entries.json');
+const PUBLIC_ASSET_ENTRIES_PATH = path.join(ROOT, 'public', 'assets', 'data', 'catalog.entries.json');
+const DOCS_ASSET_ENTRIES_PATH = path.join(ROOT, 'docs', 'assets', 'data', 'catalog.entries.json');
 
 const INDEX_PAGE_PATH = path.join(ROOT, 'docs', 'catalog', 'index.html');
 const HOME_PAGE_PATH = path.join(ROOT, 'docs', 'index.html');
@@ -55,6 +59,46 @@ function getMainHtml(html) {
   return html.slice(start, end + '</main>'.length);
 }
 
+function rowLabel(row) {
+  return String(row?.id || row?.entry_id || row?.entry_href || row?.href || '(unknown)');
+}
+
+function rowLookup(row) {
+  return String(row?.lookup_raw || row?.lookup_number || row?.lookup || '').trim();
+}
+
+function assertPublishableRows(failures, rows, label) {
+  for (const row of rows || []) {
+    const href = String(row?.entry_href || row?.href || '').trim();
+    if (!href.startsWith('/entry/')) {
+      failures.push(`${label} row has non-entry href: ${rowLabel(row)}`);
+    }
+    if (!rowLookup(row)) {
+      failures.push(`${label} row missing lookup number: ${rowLabel(row)}`);
+    }
+    if (!String(row?.season || '').trim()) {
+      failures.push(`${label} row missing season: ${rowLabel(row)}`);
+    }
+  }
+}
+
+function hrefSet(rows = []) {
+  return new Set(rows.map((row) => String(row?.entry_href || '').trim()).filter(Boolean));
+}
+
+function compareEntryMirror(failures, expected, actual, label) {
+  const expectedEntries = Array.isArray(expected?.entries) ? expected.entries : [];
+  const actualEntries = Array.isArray(actual?.entries) ? actual.entries : [];
+  const expectedHrefs = hrefSet(expectedEntries);
+  const actualHrefs = hrefSet(actualEntries);
+  for (const href of expectedHrefs) {
+    if (!actualHrefs.has(href)) failures.push(`${label} missing catalog entry href: ${href}`);
+  }
+  for (const href of actualHrefs) {
+    if (!expectedHrefs.has(href)) failures.push(`${label} has stale catalog entry href: ${href}`);
+  }
+}
+
 function main() {
   const failures = [];
 
@@ -67,6 +111,10 @@ function main() {
   const editorialModel = readJson(EDITORIAL_PATH);
   const curationSnapshot = readJson(CURATION_SNAPSHOT_PATH);
   const homeSnapshot = readJson(HOME_SNAPSHOT_PATH);
+  const dataEntriesModel = readJson(DATA_ENTRIES_PATH);
+  const assetEntriesModel = readJson(ASSET_ENTRIES_PATH);
+  const publicAssetEntriesModel = readJson(PUBLIC_ASSET_ENTRIES_PATH);
+  const docsAssetEntriesModel = readJson(DOCS_ASSET_ENTRIES_PATH);
 
   for (const key of REQUIRED_MODEL_KEYS) {
     if (!(key in model)) failures.push(`catalog model missing key: ${key}`);
@@ -112,6 +160,16 @@ function main() {
   if (Number(entriesModel?.stats?.entries_count || 0) !== model.entries.length) {
     failures.push('catalog.entries stats.entries_count does not match catalog.data entries length');
   }
+
+  assertPublishableRows(failures, model.entries || [], 'catalog.data');
+  assertPublishableRows(failures, entriesModel.entries || [], 'catalog.entries');
+  assertPublishableRows(failures, searchModel.entries || [], 'catalog.search');
+  assertPublishableRows(failures, curationSnapshot.manifest || [], 'catalog curation snapshot');
+  compareEntryMirror(failures, model, entriesModel, 'public/data/catalog.entries.json');
+  compareEntryMirror(failures, entriesModel, dataEntriesModel, 'data/catalog.entries.json');
+  compareEntryMirror(failures, entriesModel, assetEntriesModel, 'assets/data/catalog.entries.json');
+  compareEntryMirror(failures, entriesModel, publicAssetEntriesModel, 'public/assets/data/catalog.entries.json');
+  compareEntryMirror(failures, entriesModel, docsAssetEntriesModel, 'docs/assets/data/catalog.entries.json');
 
   const modelEntryHrefs = new Set();
   for (const entry of model.entries || []) {

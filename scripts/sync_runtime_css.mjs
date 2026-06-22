@@ -23,7 +23,13 @@ const SYNC_MAP = [
   },
   {
     source: 'public/data/catalog.entries.json',
-    targets: ['data/catalog.entries.json', 'docs/data/catalog.entries.json'],
+    targets: [
+      'data/catalog.entries.json',
+      'docs/data/catalog.entries.json',
+      'assets/data/catalog.entries.json',
+      'public/assets/data/catalog.entries.json',
+      'docs/assets/data/catalog.entries.json',
+    ],
   },
   {
     source: 'data/catalog.seasons.json',

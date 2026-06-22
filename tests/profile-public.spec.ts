@@ -41,21 +41,42 @@ async function routePublicProfileApi(page: Page, handle: string, body: unknown, 
 }
 
 async function routeCatalog(page: Page): Promise<void> {
+  const catalogEntries = [
+    {
+      lookup: 'S.Vlc. Lo AV2023 S1',
+      slug: 'cello-emmanuel-losa',
+      href: '/entry/cello-emmanuel-losa/',
+      title: 'Cello - Emmanuel Losa',
+      performer_display: 'emmanuel losa',
+      image_src: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 fill=%22%23ff2d13%22/%3E%3C/svg%3E',
+      image_alt_raw: 'Cello preview',
+    },
+  ];
   await page.route('**/data/catalog-performers.json', async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({
         generated_at: '2026-06-21T00:00:00.000Z',
-        entries: [
-          {
-            lookup: 'S.Vlc. Lo AV2023 S1',
-            slug: 'cello-emmanuel-losa',
-            href: '/entry/cello-emmanuel-losa/',
-            title: 'Cello - Emmanuel Losa',
-            performer_display: 'emmanuel losa',
-          },
-        ],
+        entries: catalogEntries,
+      }),
+    });
+  });
+  await page.route('**/data/catalog.entries.json', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        generated_at: '2026-06-21T00:00:00.000Z',
+        entries: catalogEntries.map((entry) => ({
+          lookup_raw: entry.lookup,
+          id: entry.slug,
+          entry_href: entry.href,
+          title_raw: entry.title,
+          performer_raw: entry.performer_display,
+          image_src: entry.image_src,
+          image_alt_raw: entry.image_alt_raw,
+        })),
       }),
     });
   });
@@ -105,6 +126,8 @@ test('public profile route renders logged out with hydrated contributions, favor
   await routeCatalog(page);
   await routeProfileShell(page, 'tester');
 
+  // The auth runtime must load on profile pages so the header account menu
+  // mounts (and survives SPA navigation). The page still renders publicly.
   let authRuntimeRequested = false;
   await page.route('**/assets/dex-auth.js', async (route) => {
     authRuntimeRequested = true;
@@ -115,10 +138,13 @@ test('public profile route renders logged out with hydrated contributions, favor
     dex_id: 'DEX-7Q2KP4',
     handle: 'tester',
     profile_public: true,
-    credit_name: 'Test Performer',
+    name: 'Test Performer',
     bio: 'Builds playable sample instruments.',
     pronouns: 'they/them',
     location: 'Los Angeles',
+    provider: {
+      picture: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 fill=%22%2300a1ff%22/%3E%3C/svg%3E',
+    },
     links: [{ label: 'Site', url: 'https://example.com' }],
     roles: ['Performer', 'Composer'],
     role_primary: 'Performer',
@@ -139,12 +165,16 @@ test('public profile route renders logged out with hydrated contributions, favor
 
   await expect(page.locator('#dex-profile')).toHaveAttribute('data-dx-fetch-state', 'ready');
   await expect(page.locator('h1.dx-prof-name')).toHaveText('Test Performer');
+  await expect(page.locator('.dx-prof-handle')).toHaveText('@tester');
+  await expect(page.locator('.dx-prof-avatar-img')).toBeVisible();
   await expect(page.locator('.dx-prof-bio')).toContainText('Builds playable sample instruments.');
   await expect(page.locator('.dx-prof-link')).toHaveAttribute('href', 'https://example.com');
   await expect(page.locator('.dx-prof-card-title').filter({ hasText: 'Cello - Emmanuel Losa' })).toHaveCount(2);
-  await expect(page.locator('.dx-prof-section-label').filter({ hasText: 'Favorite samples & collections' })).toBeVisible();
+  await expect(page.locator('.dx-prof-grid--favorites .dx-prof-card-thumb img')).toBeVisible();
+  await expect(page.locator('.dx-prof-grid--favorites a.dx-prof-card')).toHaveAttribute('href', '/entry/cello-emmanuel-losa/');
+  await expect(page.locator('.dx-prof-section-title').filter({ hasText: 'Favorite samples & collections' })).toBeVisible();
   await expect(page.locator('body')).not.toHaveClass(/dx-route-profile-protected/);
-  expect(authRuntimeRequested).toBe(false);
+  expect(authRuntimeRequested).toBe(true);
 
   const dexButton = page.locator('[data-dx-copy="DEX-7Q2KP4"]');
   await dexButton.click();
