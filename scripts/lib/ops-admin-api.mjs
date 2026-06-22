@@ -271,3 +271,46 @@ export async function importOpsRows({
     },
   });
 }
+
+// ---------------------------------------------------------------------------
+// Submission threads / kanban board (messaging-kanban-system.md, P1/P2)
+// ---------------------------------------------------------------------------
+
+export async function listAdminThreads({ env = 'test', kind = '', apiBase = '', adminToken = '' } = {}) {
+  return requestOpsApi('/admin/threads', {
+    env,
+    apiBase,
+    adminToken,
+    query: kind ? { kind } : {},
+  });
+}
+
+export async function getAdminThread({ env = 'test', submissionId, apiBase = '', adminToken = '' } = {}) {
+  const id = toText(submissionId);
+  if (!id) throw new Error('submissionId is required');
+  return requestOpsApi(`/admin/threads/${encodeURIComponent(id)}`, { env, apiBase, adminToken });
+}
+
+export async function patchAdminThread({ env = 'test', submissionId, patch = {}, apiBase = '', adminToken = '' } = {}) {
+  const id = toText(submissionId);
+  if (!id) throw new Error('submissionId is required');
+  return requestOpsApi(`/admin/threads/${encodeURIComponent(id)}`, {
+    env,
+    apiBase,
+    adminToken,
+    method: 'PATCH',
+    body: patch,
+  });
+}
+
+export async function postAdminThreadMessage({ env = 'test', submissionId, body = '', visibility = 'public', apiBase = '', adminToken = '' } = {}) {
+  const id = toText(submissionId);
+  if (!id) throw new Error('submissionId is required');
+  return requestOpsApi(`/admin/threads/${encodeURIComponent(id)}/messages`, {
+    env,
+    apiBase,
+    adminToken,
+    method: 'POST',
+    body: { body: toText(body, '', 4000), visibility: visibility === 'internal' ? 'internal' : 'public' },
+  });
+}

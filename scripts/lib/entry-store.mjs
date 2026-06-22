@@ -7,6 +7,7 @@ import { getAssetOrigin } from './asset-origin.mjs';
 import { rewriteLocalAssetLinks } from './rewrite-asset-links.mjs';
 import { formatSanitizationIssues, sanitizeGeneratedHtml, verifySanitizedHtml } from './sanitize-generated-html.mjs';
 import { pushRecent } from './recents-store.mjs';
+import { normalizeEntryBuckets } from './bucket-normalize.mjs';
 
 export async function readEntryFolder(slug, { entriesDir = './entries' } = {}) {
   const folder = path.join(path.resolve(entriesDir), slug);
@@ -43,6 +44,7 @@ export async function readEntryFolder(slug, { entriesDir = './entries' } = {}) {
       delete entry.sidebarPageConfig.recordingIndexSourceUrl;
     }
   }
+  if (entry && typeof entry === 'object') normalizeEntryBuckets(entry);
   let descriptionText = '';
   try {
     descriptionText = await fs.readFile(descPath, 'utf8');
@@ -114,6 +116,7 @@ export async function writeEntryFolder(slug, data, { entriesDir = './entries' } 
     if ('recordingIndexSourceUrl' in entryToWrite.sidebarPageConfig) {
       delete entryToWrite.sidebarPageConfig.recordingIndexSourceUrl;
     }
+    normalizeEntryBuckets(entryToWrite);
     const file = path.join(folder, 'entry.json');
     await fs.writeFile(file, `${JSON.stringify(entryToWrite, null, 2)}
 `, 'utf8');

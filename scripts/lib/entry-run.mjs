@@ -15,6 +15,7 @@ import {
 } from './entry-catalog-linkage.mjs';
 import { assertAssetReferenceToken, assertAssetReferenceTokenKinds } from './asset-ref.mjs';
 import { upsertProtectedAssetsLookupMapping } from './protected-assets-publisher.mjs';
+import { bucketFoldersToProtectedImport } from './entry-bucket-folders.mjs';
 import { parseRecordingIndexSheetUrl } from './recording-index-import.mjs';
 
 function toText(value) {
@@ -204,9 +205,18 @@ async function syncCatalogLinkageAfterWrite(data, opts) {
 
 async function syncProtectedAssetsAfterWrite(data, opts = {}) {
   if (opts?.dryRun) return { synced: false, lines: [] };
-  const importData = data?.protectedAssetsImport && typeof data.protectedAssetsImport === 'object'
+  let importData = data?.protectedAssetsImport && typeof data.protectedAssetsImport === 'object'
     ? data.protectedAssetsImport
     : null;
+  // No explicit import? Derive one from the entry's scanned bucket folders so
+  // Scan → Save → Publish makes the declared buckets downloadable (no sheet step).
+  if (!importData) {
+    importData = bucketFoldersToProtectedImport(data?.sidebar?.downloads, {
+      lookupNumber: toText(data?.sidebar?.lookupNumber),
+      title: toText(data?.title),
+      season: toText(data?.creditsData?.season || data?.sidebar?.credits?.season || ''),
+    });
+  }
   if (!importData) return { synced: false, lines: [] };
 
   const lookupNumber = toText(importData.lookupNumber || data?.sidebar?.lookupNumber);

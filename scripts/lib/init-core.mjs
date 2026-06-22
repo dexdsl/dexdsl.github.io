@@ -9,6 +9,7 @@ import { getAssetOrigin } from './asset-origin.mjs';
 import { rewriteLocalAssetLinks } from './rewrite-asset-links.mjs';
 import { formatSanitizationIssues, sanitizeGeneratedHtml, verifySanitizedHtml } from './sanitize-generated-html.mjs';
 import { pushRecent } from './recents-store.mjs';
+import { normalizeEntryBuckets } from './bucket-normalize.mjs';
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(SCRIPT_DIR, '../..');
@@ -91,6 +92,12 @@ export async function writeEntryFromData({ templateHtml, templatePath, data, opt
     manifestSchemaForFormats(formatKeys.audio, formatKeys.video).parse(data.manifest);
   } catch (error) {
     throw new Error(formatZodError(error, 'Manifest (wizard step)'));
+  }
+
+  // Keep the three bucket locations in sync before validating/writing.
+  if (data.sidebar && typeof data.sidebar === 'object') {
+    const synced = normalizeEntryBuckets({ selectedBuckets: data.selectedBuckets, sidebarPageConfig: data.sidebar });
+    data.selectedBuckets = synced.selectedBuckets;
   }
 
   try {

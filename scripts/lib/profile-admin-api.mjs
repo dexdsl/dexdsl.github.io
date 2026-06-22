@@ -118,7 +118,7 @@ export async function updateProfileClaim({ env = 'test', claimId, status, role, 
   const id = toText(claimId);
   if (!id) throw new Error('claimId is required');
   const nextStatus = toText(status).toLowerCase();
-  if (!['pending', 'approved', 'rejected', 'withdrawn'].includes(nextStatus)) {
+  if (!['pending', 'approved', 'rejected', 'withdrawn', 'revoked'].includes(nextStatus)) {
     throw new Error(`Unsupported claim status: ${status}`);
   }
   const body = { status: nextStatus };
@@ -138,6 +138,36 @@ export function approveProfileClaim(options = {}) {
 
 export function rejectProfileClaim(options = {}) {
   return updateProfileClaim({ ...options, status: 'rejected' });
+}
+
+export function revokeProfileClaim(options = {}) {
+  return updateProfileClaim({ ...options, status: 'revoked' });
+}
+
+export async function listAuth0Users({ env = 'test', page = 0, perPage = 50, q, apiBase, adminToken } = {}) {
+  const query = {
+    page: Math.max(0, Math.trunc(Number(page) || 0)),
+    per_page: Math.max(1, Math.min(100, Math.trunc(Number(perPage) || 50))),
+  };
+  const search = toText(q);
+  if (search) query.q = search;
+  return requestProfilesApi('/admin/users', { env, apiBase, adminToken, query });
+}
+
+export async function userAction({ env = 'test', userId, action, apiBase, adminToken } = {}) {
+  const id = toText(userId);
+  if (!id) throw new Error('userId is required');
+  const next = toText(action).toLowerCase();
+  if (!['resend_verification', 'block', 'unblock', 'delete'].includes(next)) {
+    throw new Error(`Unsupported user action: ${action}`);
+  }
+  return requestProfilesApi(`/admin/users/${encodeURIComponent(id)}/action`, {
+    env,
+    apiBase,
+    adminToken,
+    method: 'POST',
+    body: { action: next },
+  });
 }
 
 export async function getPublicProfilesMap({ env = 'test', apiBase, adminToken } = {}) {

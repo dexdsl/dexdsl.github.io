@@ -36,7 +36,8 @@ assert.match(profileAdminApi, /writePublicProfilesMap/, 'profiles admin API clie
 assert.match(profileAdminApi, /docs\/data\/public-profiles\.json/, 'map sync must mirror docs data');
 assert.match(profileAdminApi, /public\/data\/public-profiles\.json/, 'map sync must mirror public data');
 
-assert.match(settingsRuntime, /payload\?\.status\) === 'approved'/, 'settings must only add claimed contributions after approved status');
+assert.match(settingsRuntime, /openClaimConfirm|profileClaimDialog/, 'settings claim flow must confirm before submitting a claim');
+assert.match(settingsRuntime, /Pending review/, 'settings must reflect that submitted claims are pending staff review');
 assert.match(settingsRuntime, /Private until visible is enabled\./, 'settings must show private URL copy when visibility is off');
 assert.match(settingsRuntime, /publicProfilePath/, 'settings must separate profile path from public URL visibility');
 assert.match(settingsRuntime, /copyUrl\.disabled = !visible/, 'settings must disable public URL copying while private');

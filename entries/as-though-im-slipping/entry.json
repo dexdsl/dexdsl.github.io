@@ -6,8 +6,8 @@
     "artistName": "Paul Yorke, Sofi Jacquez"
   },
   "lifecycle": {
-    "publishedAt": "2026-03-25T20:32:24.859Z",
-    "updatedAt": "2026-03-25T20:32:24.859Z"
+    "publishedAt": "2026-06-22T06:04:15.875Z",
+    "updatedAt": "2026-06-22T06:04:15.875Z"
   },
   "video": {
     "mode": "url",
@@ -15,7 +15,7 @@
     "dataUrlOriginal": "https://www.youtube.com/watch?v=hXvUAoRNI_8",
     "dataHtml": ""
   },
-  "descriptionText": "AS THOUGH I’M SLIP‌PING - MIXED ENSEMBLE.",
+  "descriptionText": "AS THOUGH I’M SLIP‌PING - MIXED ENSEMBLE. Description test",
   "series": "dex",
   "selectedBuckets": [
     "A",
@@ -27,27 +27,27 @@
       "Paul Yorke, Sofi Jacquez"
     ],
     "artistAlt": null,
+    "audio": {
+      "master": [],
+      "mix": [],
+      "recording": []
+    },
     "instruments": [
       "AS THOUGH I’M SLIP‌PING"
     ],
+    "location": "Unknown",
+    "season": "S2",
     "video": {
-      "director": [],
       "cinematography": [],
+      "director": [],
       "editing": []
     },
-    "audio": {
-      "recording": [],
-      "mix": [],
-      "master": []
-    },
-    "year": 2024,
-    "season": "S2",
-    "location": "Unknown"
+    "year": 2024
   },
   "fileSpecs": {
     "bitDepth": 24,
-    "sampleRate": 48000,
     "channels": "stereo",
+    "sampleRate": 48000,
     "staticSizes": {
       "A": "",
       "B": "",
@@ -62,40 +62,44 @@
     "tags": []
   },
   "sidebarPageConfig": {
-    "lookupNumber": "P.Ens. JaYo AV2024 S2",
+    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Paul Yorke, Sofi Jacquez.",
     "buckets": [
       "A",
       "B",
       "C"
     ],
-    "specialEventImage": "/assets/series/dex.png",
-    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Paul Yorke, Sofi Jacquez.",
     "credits": {
       "artist": [
         "Paul Yorke, Sofi Jacquez"
       ],
       "artistAlt": null,
+      "audio": {
+        "master": [],
+        "mix": [],
+        "recording": []
+      },
       "instruments": [
         "AS THOUGH I’M SLIP‌PING"
       ],
+      "location": "Unknown",
+      "season": "S2",
       "video": {
-        "director": [],
         "cinematography": [],
+        "director": [],
         "editing": []
       },
-      "audio": {
-        "recording": [],
-        "mix": [],
-        "master": []
-      },
-      "year": 2024,
-      "season": "S2",
-      "location": "Unknown"
+      "year": 2024
+    },
+    "downloads": {
+      "fileSpecs": {},
+      "recordingIndexBundleRef": "bundle:recording-index:P.Ens. JaYo AV2024 S2:all",
+      "recordingIndexPdfRef": "asset:as-though-im-slipping-recording-index-pdf",
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1RE91PASFDrycJ_Nm1KW7bRLDs44UT-Vik1xr15BUjLQ/edit?gid=0#gid=0"
     },
     "fileSpecs": {
       "bitDepth": 24,
-      "sampleRate": 48000,
       "channels": "stereo",
+      "sampleRate": 48000,
       "staticSizes": {
         "A": "",
         "B": "",
@@ -105,14 +109,11 @@
         "X": ""
       }
     },
+    "lookupNumber": "P.Ens. JaYo AV2024 S2",
     "metadata": {
       "sampleLength": "AUTO",
       "tags": []
     },
-    "downloads": {
-      "recordingIndexPdfRef": "asset:as-though-im-slipping-recording-index-pdf",
-      "recordingIndexBundleRef": "bundle:recording-index:P.Ens. JaYo AV2024 S2:all",
-      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1RE91PASFDrycJ_Nm1KW7bRLDs44UT-Vik1xr15BUjLQ/edit?gid=0#gid=0"
-    }
+    "specialEventImage": "/assets/series/dex.png"
   }
 }
