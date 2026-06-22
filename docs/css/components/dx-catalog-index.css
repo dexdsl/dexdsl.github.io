@@ -558,26 +558,27 @@
 }
 
 .dx-catalog-index-season-pip {
+  flex: 0 0 auto;
   width: 0.5rem;
   height: 0.5rem;
   min-width: 0.5rem;
+  aspect-ratio: 1 / 1;
   padding: 0;
-  border: 1px solid rgba(34, 40, 54, 0.28);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.6);
+  border: 0;
+  border-radius: 50%;
+  background: rgba(34, 40, 54, 0.24);
   cursor: pointer;
-  transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease;
+  transition: transform 160ms ease, background-color 160ms ease;
 }
 
 .dx-catalog-index-season-pip.is-active {
-  transform: scale(1.55);
-  border-color: rgba(255, 25, 16, 0.42);
-  background: rgba(255, 25, 16, 0.78);
+  transform: none;
+  background: rgba(34, 40, 54, 0.92);
 }
 
 .dx-catalog-index-season-pip:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(255, 25, 16, 0.22);
+  box-shadow: 0 0 0 3px rgba(34, 40, 54, 0.22);
 }
 
 .dx-catalog-index-heading {
