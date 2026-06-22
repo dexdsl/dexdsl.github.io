@@ -1880,6 +1880,16 @@
         <div class="dx-sub-actions">${actionsHtml}</div>
 
         <section class="dx-sub-timeline" id="dx-sub-timeline">${timelineHtml}</section>
+
+        ${(!isPressroom && model.thread.submissionId) ? `
+        <section class="dx-sub-reply" data-dx-sub-reply>
+          <p class="dx-sub-kicker">Reply to Dex</p>
+          <textarea class="dx-sub-reply-input" data-dx-sub-reply-input rows="3" maxlength="2000" placeholder="Add a message to your submission thread…"></textarea>
+          <div class="dx-sub-reply-row">
+            <span class="dx-sub-reply-status" data-dx-sub-reply-status aria-live="polite"></span>
+            <button type="button" class="dx-sub-cta" data-dx-sub-action="reply">Send</button>
+          </div>
+        </section>` : ''}
       </aside>
     `;
     mountBreadcrumbMotion();
@@ -2254,6 +2264,44 @@
           previewSlot.setAttribute('data-dx-preview-loaded', 'true');
           actionTarget.setAttribute('disabled', 'disabled');
           actionTarget.textContent = 'Drive preview loaded';
+          return;
+        }
+
+        if (action === 'reply') {
+          const composer = actionTarget.closest('[data-dx-sub-reply]');
+          const input = composer instanceof HTMLElement ? composer.querySelector('[data-dx-sub-reply-input]') : null;
+          const statusEl = composer instanceof HTMLElement ? composer.querySelector('[data-dx-sub-reply-status]') : null;
+          const bodyText = input instanceof HTMLTextAreaElement ? input.value.trim() : '';
+          const replySid = sanitizeSubmissionId(toSafeText(context?.threadRef?.sid || context?.model?.thread?.submissionId, ''));
+          if (!bodyText || !replySid) return;
+          actionTarget.setAttribute('disabled', 'disabled');
+          if (statusEl instanceof HTMLElement) statusEl.textContent = 'Sending…';
+          try {
+            const res = await fetchJsonWithTimeout(
+              `${context.apiBase}/me/submissions/${encodeURIComponent(replySid)}/messages`,
+              {
+                method: 'POST',
+                headers: { authorization: `Bearer ${context.authSnapshot.token}`, 'content-type': 'application/json' },
+                body: JSON.stringify({ body: bodyText }),
+              },
+              FETCH_TIMEOUT_MS,
+            );
+            if (res && res.ok) {
+              const next = await loadSubmissionDetail(context.apiBase, context.authSnapshot, replySid);
+              if (next.ok) {
+                next.kind = 'submission';
+                context.model = next;
+                renderReady(root, context.model);
+                bindActions(root, context);
+                return;
+              }
+            }
+            if (statusEl instanceof HTMLElement) statusEl.textContent = 'Could not send — please try again.';
+            actionTarget.removeAttribute('disabled');
+          } catch {
+            if (statusEl instanceof HTMLElement) statusEl.textContent = 'Could not send — please try again.';
+            actionTarget.removeAttribute('disabled');
+          }
           return;
         }
 

@@ -202,11 +202,15 @@ board with a different column set (`open → triaged → waiting → closed`).
   and a reply composer, plus priority/assignee quick-edit. Lib `ops-admin-api.mjs`
   (`listAdminThreads`/`getAdminThread`/`patchAdminThread`/`postAdminThreadMessage`),
   bridge `threads.*`.
-- **P3 (member two-way inbox): ◑ PARTIAL.** Member reply endpoint shipped (P1).
-  Remaining: upgrade the site `/entry/messages/` inbox to two-way + `/u` submissions
-  tab + inbound email (Squarespace-bridged UI — next).
-- **P4 (polish): ◑ STARTED.** priority/assignee/tags + `sla_due_at` data + the board
-  shows priority. Remaining: SLA pills/aging, swimlanes, saved filters, templates.
+- **P3 (member two-way inbox): ◑ MOSTLY DONE.** Member reply endpoint (P1) + the
+  submission timeline view (`messages.submission.entry.mjs`) now has a **reply
+  composer** that POSTs `/me/submissions/:id/messages` and re-renders the timeline —
+  it's two-way. Remaining: **inbound email** (needs a Resend inbound route + MX/DNS
+  config + sender verification — infra, can't be done from code alone) and an
+  optional dedicated "my submissions" index.
+- **P4 (polish): ✅ DONE.** Board now has **SLA/aging pills** (fresh/warn/stale from
+  last activity), a **search + priority filter** (persisted to localStorage),
+  **swimlanes by assignee**, and **reply templates** in the thread composer.
 
 ## 9. Edge cases to design for
 

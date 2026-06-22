@@ -417,3 +417,29 @@ body.dx-route-profile-protected #dex-submission .dx-sub-shell {
     padding-bottom: max(14px, env(safe-area-inset-bottom, 0px));
   }
 }
+
+/* Member reply composer (two-way inbox — P3) */
+.dx-sub-reply {
+  margin-top: clamp(14px, 2vw, 22px);
+  display: grid;
+  gap: 10px;
+  padding: clamp(14px, 2vw, 20px);
+  border: 1px solid var(--dx-sub-line, rgba(255, 255, 255, 0.14));
+  border-radius: var(--dx-sub-radius, 12px);
+  background: var(--dx-sub-card-bg, rgba(255, 255, 255, 0.04));
+}
+.dx-sub-reply-input {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 84px;
+  resize: vertical;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--dx-sub-line, rgba(255, 255, 255, 0.18));
+  background: rgba(0, 0, 0, 0.18);
+  color: inherit;
+  font: inherit;
+}
+.dx-sub-reply-input:focus-visible { outline: none; border-color: var(--dx-accent-solid, #ff2d13); }
+.dx-sub-reply-row { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+.dx-sub-reply-status { font-size: 0.82rem; opacity: 0.8; margin-right: auto; }
