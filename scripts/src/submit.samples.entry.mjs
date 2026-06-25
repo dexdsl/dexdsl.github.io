@@ -568,6 +568,141 @@ import { animate } from 'framer-motion/dom';
     };
   }
 
+  // --- Draft persistence (localStorage; survives refresh) ---
+  const DRAFT_STORAGE_PREFIX = 'dex:submit:draft:v1';
+  const DRAFT_FORM_STEP_MAX = STEPS.length - 2; // steps 0..3 are the form; last is "done"
+  let draftSaveTimer = 0;
+
+  function draftStorageKey(sub, flowKey) {
+    const safeSub = text(sub, '') || 'anon';
+    return `${DRAFT_STORAGE_PREFIX}:${safeSub}:${normalizeFlow(flowKey)}`;
+  }
+
+  function readStoredDraft(sub, flowKey) {
+    try {
+      const raw = window.localStorage.getItem(draftStorageKey(sub, flowKey));
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== 'object' || !parsed.meta || typeof parsed.meta !== 'object') return null;
+      return parsed;
+    } catch {
+      return null;
+    }
+  }
+
+  function writeStoredDraft(sub, flowKey, draft, step) {
+    try {
+      const safeStep = Number.isFinite(step) ? Math.max(0, Math.min(DRAFT_FORM_STEP_MAX, step)) : 0;
+      window.localStorage.setItem(draftStorageKey(sub, flowKey), JSON.stringify({
+        meta: draft.meta,
+        licenseType: text(draft.licenseType, 'joint'),
+        licenseConfirmed: !!draft.licenseConfirmed,
+        rightsConfirmed: !!draft.rightsConfirmed,
+        signatureName: text(draft.signatureName, ''),
+        step: safeStep,
+        savedAt: Date.now(),
+      }));
+    } catch {}
+  }
+
+  function clearStoredDraft(sub, flowKey) {
+    try {
+      window.localStorage.removeItem(draftStorageKey(sub, flowKey));
+    } catch {}
+  }
+
+  function clearActiveStoredDrafts() {
+    if (!state) return;
+    const safeFlow = normalizeFlow(state.flow);
+    clearStoredDraft(state.auth0Sub, safeFlow);
+    clearStoredDraft('', safeFlow);
+  }
+
+  function scheduleDraftSave() {
+    if (!state || draftSaveTimer) return;
+    draftSaveTimer = window.setTimeout(() => {
+      draftSaveTimer = 0;
+      if (!state) return;
+      const safeFlow = normalizeFlow(state.flow);
+      // Never persist the terminal "done" screen; clear so a refresh starts fresh.
+      if (state.step >= STEPS.length - 1) {
+        clearStoredDraft(state.auth0Sub, safeFlow);
+        return;
+      }
+      writeStoredDraft(state.auth0Sub, safeFlow, getFlowDraft(safeFlow), state.step);
+    }, 400);
+  }
+
+  function applyStoredDraftToFlow(flowKey, stored) {
+    if (!state || !stored || typeof stored !== 'object') return;
+    const safeFlow = normalizeFlow(flowKey);
+    const base = baseFlowDraft(safeFlow);
+    const draft = getFlowDraft(safeFlow);
+    draft.meta = cloneMeta({ ...base.meta, ...(stored.meta && typeof stored.meta === 'object' ? stored.meta : {}) });
+    draft.licenseType = text(stored.licenseType, 'joint');
+    draft.licenseConfirmed = !!stored.licenseConfirmed;
+    draft.rightsConfirmed = !!stored.rightsConfirmed;
+    draft.signatureName = text(stored.signatureName, '');
+  }
+
+  function syncLiveFromActiveDraft(restoredStep) {
+    const safeFlow = normalizeFlow(state.flow);
+    const draft = getFlowDraft(safeFlow);
+    state.meta = cloneMeta(draft.meta);
+    state.licenseType = text(draft.licenseType, 'joint');
+    state.licenseConfirmed = !!draft.licenseConfirmed;
+    state.rightsConfirmed = !!draft.rightsConfirmed;
+    state.signatureName = text(draft.signatureName, '');
+    if (Number.isFinite(restoredStep)) {
+      state.step = Math.max(0, Math.min(DRAFT_FORM_STEP_MAX, restoredStep));
+    }
+  }
+
+  function hydrateStoredDrafts(sub) {
+    if (!state || state.routeFlowExplicit) return false;
+    let restoredActive = false;
+    let restoredStep = null;
+    for (const flowKey of [FLOW_SAMPLE, FLOW_CALL]) {
+      const stored = readStoredDraft(sub, flowKey);
+      if (!stored) continue;
+      applyStoredDraftToFlow(flowKey, stored);
+      if (normalizeFlow(flowKey) === normalizeFlow(state.flow)) {
+        restoredActive = true;
+        restoredStep = Number.isFinite(stored.step) ? stored.step : 0;
+      }
+    }
+    if (restoredActive) syncLiveFromActiveDraft(restoredStep);
+    return restoredActive;
+  }
+
+  function activeDraftIsPristine() {
+    if (!state) return true;
+    const base = baseFlowDraft(normalizeFlow(state.flow));
+    return state.step === 0
+      && !text(state.signatureName, '')
+      && !state.licenseConfirmed
+      && !state.rightsConfirmed
+      && JSON.stringify(cloneMeta(state.meta)) === JSON.stringify(cloneMeta(base.meta));
+  }
+
+  function reconcileDraftsForSub(sub) {
+    const safeSub = text(sub, '');
+    if (!safeSub || !state || state.routeFlowExplicit) return;
+    // Migrate anon drafts onto the resolved sub, then (only when the user has
+    // not started editing) hydrate the live form from the sub's drafts.
+    for (const flowKey of [FLOW_SAMPLE, FLOW_CALL]) {
+      if (readStoredDraft(safeSub, flowKey)) continue;
+      const anon = readStoredDraft('', flowKey);
+      if (anon) {
+        writeStoredDraft(safeSub, flowKey, anon, anon.step);
+        clearStoredDraft('', flowKey);
+      }
+    }
+    if (activeDraftIsPristine() && hydrateStoredDrafts(safeSub)) {
+      render();
+    }
+  }
+
   function getCallLaneSchema(laneId) {
     const safeLane = normalizeLane(laneId);
     const lanes = Array.isArray(state?.callSchema?.lanes) ? state.callSchema.lanes : DEFAULT_CALL_SCHEMA.lanes;
@@ -631,6 +766,8 @@ import { animate } from 'framer-motion/dom';
       lastSubmissionLookup: '',
       lastSubmissionId: '',
       focusedField: '',
+      fieldErrors: {},
+      validationSummary: '',
       submitting: false,
       submitTicket: 0,
       submitError: '',
@@ -660,6 +797,7 @@ import { animate } from 'framer-motion/dom';
     draft.licenseConfirmed = !!state.licenseConfirmed;
     draft.rightsConfirmed = !!state.rightsConfirmed;
     draft.signatureName = text(state.signatureName, '');
+    scheduleDraftSave();
   }
 
   function applyFlowDraft(flowKey) {
@@ -674,6 +812,7 @@ import { animate } from 'framer-motion/dom';
     state.signatureName = text(draft.signatureName, '');
     state.submitError = '';
     state.focusedField = '';
+    state.fieldErrors = {};
     if (state.step > 3) state.step = 0;
     if (safeFlow === FLOW_CALL) {
       state.meta.callLane = normalizeLane(state.meta.callLane);
@@ -1770,75 +1909,88 @@ import { animate } from 'framer-motion/dom';
     return text(laneId, 'call lane').toUpperCase();
   }
 
+  function setFieldErrors(errors) {
+    state.fieldErrors = errors && typeof errors === 'object' ? errors : {};
+  }
+
+  // A validation failure records per-field inline errors (state.fieldErrors)
+  // plus a summary string. The caller re-renders (to paint the inline errors),
+  // then raises a single summary toast for screen-reader announcement.
+  function failValidation(errors, summary) {
+    setFieldErrors(errors);
+    const keys = Object.keys(errors);
+    state.validationSummary = text(summary, '')
+      || (keys.length ? text(errors[keys[0]], 'Missing required fields.') : 'Missing required fields.');
+    return false;
+  }
+
+  function renderMetaValidationFailure() {
+    render();
+    showToast(text(state.validationSummary, '') || 'Missing required fields.', true);
+    const firstInvalid = liveRoot?.querySelector('.dx-submit-field.has-error .dx-submit-input');
+    if (firstInvalid instanceof HTMLElement) {
+      try { firstInvalid.focus({ preventScroll: false }); } catch {}
+    }
+  }
+
   function validateSampleMeta() {
+    const errors = {};
     const required = ['title', 'creator', 'instrument', 'category', 'collectionType'];
     for (const key of required) {
       const value = state.meta[key];
-      if (Array.isArray(value) ? value.length === 0 : !text(value)) {
-        showToast(`Missing ${key}`, true);
-        return false;
-      }
+      if (Array.isArray(value) ? value.length === 0 : !text(value)) errors[key] = 'Required';
     }
+    if (Object.keys(errors).length) return failValidation(errors, 'Missing required fields.');
+    setFieldErrors({});
     return true;
   }
 
   function validateCallMeta() {
     if (!state.hasActiveCall) {
-      showToast('No active call lane is currently open.', true);
-      return false;
+      return failValidation({}, 'No active call lane is currently open.');
     }
+    const errors = {};
     const lane = normalizeLane(state.meta.callLane);
     if (!lane) {
-      showToast('Choose a call lane.', true);
-      return false;
+      errors.callLane = 'Choose a call lane.';
+    } else if (!Array.isArray(state.activeCallLanes) || !state.activeCallLanes.includes(lane)) {
+      errors.callLane = 'Selected call lane is not currently active.';
     }
-    if (!Array.isArray(state.activeCallLanes) || !state.activeCallLanes.includes(lane)) {
-      showToast('Selected call lane is not currently active.', true);
-      return false;
-    }
-    if (!text(state.meta.title)) {
-      showToast('Missing title', true);
-      return false;
-    }
-    if (!text(state.meta.creator)) {
-      showToast('Missing creator', true);
-      return false;
+    if (!text(state.meta.title)) errors.title = 'Required';
+    if (!text(state.meta.creator)) errors.creator = 'Required';
+
+    if (lane && !errors.callLane) {
+      const laneSchema = getCallLaneSchema(lane);
+      const fields = Array.isArray(laneSchema?.fields) ? laneSchema.fields : [];
+      for (const field of fields) {
+        if (!field || typeof field !== 'object') continue;
+        if (!field.required) continue;
+        const fieldKey = text(field.key, '');
+        if (!fieldKey) continue;
+        const value = state.meta[fieldKey];
+        if (!text(value)) {
+          errors[fieldKey] = 'Required';
+          continue;
+        }
+        if (text(field.type, '').toLowerCase() === 'number') {
+          const parsed = Number(value);
+          const min = Number.isFinite(Number(field.min)) ? Number(field.min) : null;
+          const max = Number.isFinite(Number(field.max)) ? Number(field.max) : null;
+          if (!Number.isFinite(parsed)) errors[fieldKey] = 'Enter a number.';
+          else if (min !== null && parsed < min) errors[fieldKey] = `Must be at least ${min}.`;
+          else if (max !== null && parsed > max) errors[fieldKey] = `Must be at most ${max}.`;
+        }
+      }
+      if (lane === 'in-dex-a' && !normalizeSubcall(state.meta.callSubcall)) {
+        errors.callSubcall = 'Choose an IN DEX A subcall.';
+      }
     }
 
-    const laneSchema = getCallLaneSchema(lane);
-    const fields = Array.isArray(laneSchema?.fields) ? laneSchema.fields : [];
-    for (const field of fields) {
-      if (!field || typeof field !== 'object') continue;
-      if (!field.required) continue;
-      const fieldKey = text(field.key, '');
-      if (!fieldKey) continue;
-      const value = state.meta[fieldKey];
-      if (!text(value)) {
-        showToast(`Missing ${text(field.label, fieldKey)}`, true);
-        return false;
-      }
-      if (text(field.type, '').toLowerCase() === 'number') {
-        const parsed = Number(value);
-        if (!Number.isFinite(parsed)) {
-          showToast(`Invalid ${text(field.label, fieldKey)}`, true);
-          return false;
-        }
-        const min = Number.isFinite(Number(field.min)) ? Number(field.min) : null;
-        const max = Number.isFinite(Number(field.max)) ? Number(field.max) : null;
-        if (min !== null && parsed < min) {
-          showToast(`${text(field.label, fieldKey)} must be at least ${min}.`, true);
-          return false;
-        }
-        if (max !== null && parsed > max) {
-          showToast(`${text(field.label, fieldKey)} must be at most ${max}.`, true);
-          return false;
-        }
-      }
+    if (Object.keys(errors).length) {
+      const summary = errors.callLane || 'Missing required fields.';
+      return failValidation(errors, summary);
     }
-    if (lane === 'in-dex-a' && !normalizeSubcall(state.meta.callSubcall)) {
-      showToast('Choose an IN DEX A subcall.', true);
-      return false;
-    }
+    setFieldErrors({});
     return true;
   }
 
@@ -1870,10 +2022,28 @@ import { animate } from 'framer-motion/dom';
     return button;
   }
 
-  function wrapField(labelText, required = false) {
+  function wrapField(labelText, required = false, fieldKey = '') {
     const field = create('label', 'dx-submit-field');
+    const key = text(fieldKey, '');
+    if (key) field.setAttribute('data-dx-field', key);
     const label = create('span', 'dx-submit-field-label', `${labelText}${required ? ' *' : ''}`);
     field.appendChild(label);
+    const errMsg = key ? text(state?.fieldErrors?.[key], '') : '';
+    if (errMsg) {
+      field.classList.add('has-error');
+      const err = create('p', 'dx-submit-field-error', errMsg);
+      err.setAttribute('role', 'alert');
+      field.appendChild(err);
+      const clearOnce = () => {
+        field.classList.remove('has-error');
+        if (err.parentNode) err.remove();
+        if (state && state.fieldErrors) delete state.fieldErrors[key];
+        field.removeEventListener('input', clearOnce);
+        field.removeEventListener('change', clearOnce);
+      };
+      field.addEventListener('input', clearOnce);
+      field.addEventListener('change', clearOnce);
+    }
     return field;
   }
 
@@ -2129,7 +2299,7 @@ import { animate } from 'framer-motion/dom';
     if (!fieldKey) return null;
     const label = text(schema.label, fieldKey);
     const required = !!schema.required;
-    const field = wrapField(label, required);
+    const field = wrapField(label, required, fieldKey);
     const type = text(schema.type, 'text').toLowerCase();
     const currentValue = text(state.meta[fieldKey], '');
 
@@ -2183,7 +2353,7 @@ import { animate } from 'framer-motion/dom';
 
     const grid = create('div', 'dx-submit-grid');
 
-    const laneField = wrapField('Call lane', true);
+    const laneField = wrapField('Call lane', true, 'callLane');
     const laneGroup = create('div', 'dx-submit-badge-group');
     const lanes = getAvailableCallLanes();
     lanes.forEach((lane) => {
@@ -2207,7 +2377,7 @@ import { animate } from 'framer-motion/dom';
     }
     grid.appendChild(laneField);
 
-    const titleField = wrapField('Proposal title', true);
+    const titleField = wrapField('Proposal title', true, 'title');
     const titleInput = create('input', 'dx-submit-input');
     titleInput.type = 'text';
     titleInput.maxLength = 100;
@@ -2220,7 +2390,7 @@ import { animate } from 'framer-motion/dom';
     titleField.appendChild(titleInput);
     grid.appendChild(titleField);
 
-    const creatorField = wrapField('Proposer / creator', true);
+    const creatorField = wrapField('Proposer / creator', true, 'creator');
     const creatorInput = create('input', 'dx-submit-input');
     creatorInput.type = 'text';
     creatorInput.maxLength = 2000;
@@ -2275,7 +2445,7 @@ import { animate } from 'framer-motion/dom';
     next.type = 'button';
     next.addEventListener('click', () => {
       if (!guardQuotaForProgression(true)) return;
-      if (!validateMeta()) return;
+      if (!validateMeta()) { renderMetaValidationFailure(); return; }
       state.step = 2;
       render();
     });
@@ -2319,7 +2489,7 @@ import { animate } from 'framer-motion/dom';
 
     const grid = create('div', 'dx-submit-grid');
 
-    const titleField = wrapField('Proposed sample title', true);
+    const titleField = wrapField('Proposed sample title', true, 'title');
     const titleInput = create('input', 'dx-submit-input');
     titleInput.type = 'text';
     titleInput.maxLength = 100;
@@ -2332,7 +2502,7 @@ import { animate } from 'framer-motion/dom';
     titleField.appendChild(titleInput);
     grid.appendChild(titleField);
 
-    const creatorField = wrapField('Sample creator(s)', true);
+    const creatorField = wrapField('Sample creator(s)', true, 'creator');
     const creatorInput = create('input', 'dx-submit-input');
     creatorInput.type = 'text';
     creatorInput.maxLength = 2000;
@@ -2345,7 +2515,7 @@ import { animate } from 'framer-motion/dom';
     creatorField.appendChild(creatorInput);
     grid.appendChild(creatorField);
 
-    const categoryField = wrapField('Instrument category', true);
+    const categoryField = wrapField('Instrument category', true, 'category');
     const categorySelect = create('select', 'dx-submit-input');
     CATEGORY_OPTIONS.forEach((value) => {
       const option = create('option', '', value || 'Choose category');
@@ -2360,7 +2530,7 @@ import { animate } from 'framer-motion/dom';
     categoryField.appendChild(categorySelect);
     grid.appendChild(categoryField);
 
-    const instrumentField = wrapField('Instrument', true);
+    const instrumentField = wrapField('Instrument', true, 'instrument');
     const instrumentInput = create('input', 'dx-submit-input');
     instrumentInput.type = 'text';
     instrumentInput.maxLength = 120;
@@ -2464,7 +2634,7 @@ import { animate } from 'framer-motion/dom';
     scaleField.appendChild(scaleInput);
     grid.appendChild(scaleField);
 
-    const collectionField = wrapField('Collection type', true);
+    const collectionField = wrapField('Collection type', true, 'collectionType');
     const collectionGroup = create('div', 'dx-submit-badge-group');
     COLLECTION_OPTIONS.forEach((entry) => {
       collectionGroup.appendChild(
@@ -2528,7 +2698,7 @@ import { animate } from 'framer-motion/dom';
     next.type = 'button';
     next.addEventListener('click', () => {
       if (!guardQuotaForProgression(true)) return;
-      if (!validateMeta()) return;
+      if (!validateMeta()) { renderMetaValidationFailure(); return; }
       state.step = 2;
       render();
     });
@@ -3344,6 +3514,7 @@ import { animate } from 'framer-motion/dom';
             state.quotaLeft = Math.max(0, state.weeklyLimit - state.weeklyUsed);
           }
           state.quotaResolved = true;
+          clearActiveStoredDrafts();
           state.step = 4;
           render();
           showToast(state.flow === FLOW_CALL ? 'Call submitted' : 'Submitted');
@@ -3464,6 +3635,7 @@ import { animate } from 'framer-motion/dom';
       if (state.auth0Sub !== sub) {
         state.auth0Sub = sub;
         window.auth0Sub = sub;
+        reconcileDraftsForSub(sub);
       }
       state.authUser = await resolveAuthUser(Math.min(AUTH_TIMEOUT_MS, 2200));
       await hydrateSubmitProfileDefaults({ force: !!opts.forceLive });
@@ -3496,10 +3668,18 @@ import { animate } from 'framer-motion/dom';
 
     try {
       liveRoot = root;
+      // Persist drafts as the user types: field listeners mutate state without a
+      // re-render, so hook input/change once at the stable root element.
+      if (!root.__dxDraftBound) {
+        root.__dxDraftBound = true;
+        root.addEventListener('input', () => persistActiveFlowDraft());
+        root.addEventListener('change', () => persistActiveFlowDraft());
+      }
       setFetchState(root, FETCH_STATE_LOADING);
       const config = toConfig(root);
       state = makeState(config);
       state.auth0Sub = text(window.auth0Sub, '');
+      hydrateStoredDrafts(state.auth0Sub || '');
       setQuotaSource('none');
       render();
       const schemaPromise = loadCallSchema().catch(() => {});

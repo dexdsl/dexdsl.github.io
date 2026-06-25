@@ -1763,18 +1763,20 @@ body.dx-route-profile-protected :is(
 }
 
 /* =========================================================================
-   Black glass treatment — polls / favorites / settings / achievements / messages.
-   These routes get a dark translucent card with light text instead of a
-   flat or white-glass surface; submit / press keep their light
-   glass. Centralised here so the per-route inline colour vars flip via
-   higher-specificity overrides rather than editing each runtime.
+   Black glass treatment — polls / favorites / settings / achievements /
+   messages / submit / press. These routes get a dark translucent card with
+   light text instead of a flat or white-glass surface. Centralised here so the
+   per-route inline colour vars flip via higher-specificity overrides rather
+   than editing each runtime.
    ========================================================================= */
 body.dx-route-profile-protected :is(
   #dex-console[data-dx-polls-app],
   #dex-favorites,
   #dex-settings,
   #dex-msg,
-  #dex-achv
+  #dex-achv,
+  #dex-submit,
+  #dex-press
 ) {
   --dx-blackglass-bg: linear-gradient(145deg, rgba(15, 16, 21, 0.66) 0%, rgba(9, 10, 14, 0.52) 100%);
   --dx-blackglass-rim: rgba(255, 255, 255, 0.14);
@@ -1785,6 +1787,68 @@ body.dx-route-profile-protected :is(
   --dx-blackglass-faint: rgba(255, 255, 255, 0.40);
   --dx-blackglass-line: rgba(255, 255, 255, 0.14);
   --dx-blackglass-line-strong: rgba(255, 255, 255, 0.26);
+}
+
+/* Submit + Press: flip the per-route surface/control tokens to black glass so
+   the (already canonical-geometry) shells read dark like the other account
+   pages. The .dx-*-main backdrop stays blur(24px) saturate(170%) in the
+   component CSS for the surface contract; only colours flip here. */
+body.dx-route-profile-protected #dex-submit {
+  --dx-submit-surface: var(--dx-blackglass-bg);
+  --dx-submit-rim: var(--dx-blackglass-rim);
+  --dx-submit-shadow: var(--dx-blackglass-shadow);
+  --dx-submit-ink: var(--dx-blackglass-ink);
+  --dx-submit-muted: var(--dx-blackglass-muted);
+  --dx-submit-panel: rgba(255, 255, 255, 0.06);
+  --dx-submit-panel-rim: var(--dx-blackglass-line);
+  --dx-submit-line: var(--dx-blackglass-line);
+  --dx-submit-field: rgba(255, 255, 255, 0.10);
+  --dx-submit-field-rim: var(--dx-blackglass-line-strong);
+  --dx-submit-track: rgba(255, 255, 255, 0.16);
+  color: var(--dx-blackglass-ink);
+}
+body.dx-route-profile-protected #dex-press {
+  --dx-press-surface: var(--dx-blackglass-bg);
+  --dx-press-rim: var(--dx-blackglass-rim);
+  --dx-press-shadow: var(--dx-blackglass-shadow);
+  --dx-press-ink: var(--dx-blackglass-ink);
+  --dx-press-muted: var(--dx-blackglass-muted);
+  --dx-press-panel: rgba(255, 255, 255, 0.06);
+  --dx-press-panel-rim: var(--dx-blackglass-line);
+  --dx-press-line: var(--dx-blackglass-line);
+  --dx-press-field: rgba(255, 255, 255, 0.10);
+  --dx-press-field-rim: var(--dx-blackglass-line-strong);
+  --dx-press-track: rgba(255, 255, 255, 0.16);
+  color: var(--dx-blackglass-ink);
+}
+/* Lighten semantic-colour text that sat on light chips/cards so it stays
+   legible on the dark sheet (keep the colour families). */
+body.dx-route-profile-protected #dex-submit .dx-submit-action-kicker,
+body.dx-route-profile-protected #dex-submit .dx-submit-action-copy {
+  color: #ffb4ab;
+}
+body.dx-route-profile-protected #dex-press :is(
+  .dx-press-status--submitted,
+  .dx-press-status--triage,
+  .dx-press-status--in_review
+) {
+  color: #ffd9a0;
+}
+body.dx-route-profile-protected #dex-press .dx-press-status--needs_info {
+  color: #ffb4ab;
+}
+body.dx-route-profile-protected #dex-press :is(
+  .dx-press-status--approved,
+  .dx-press-status--closed
+) {
+  color: #9be7b4;
+}
+body.dx-route-profile-protected #dex-press .dx-press-checklist-item.is-done {
+  color: #9be7b4;
+}
+body.dx-route-profile-protected #dex-press .dx-press-error-title,
+body.dx-route-profile-protected #dex-press .dx-press-error-copy {
+  color: #ffb4ab;
 }
 
 /* Polls + favorites: the shell becomes the black glass card; inner rows stay

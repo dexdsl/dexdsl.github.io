@@ -7,6 +7,14 @@
   --dx-submit-muted: #4b5261;
   --dx-submit-accent: #ff1910;
   --dx-submit-accent-2: #ff9810;
+  /* Surface/control tokens — light defaults; flipped to black-glass under
+     body.dx-route-profile-protected #dex-submit in dex.css. */
+  --dx-submit-panel: rgba(255, 255, 255, 0.62);     /* inner card surfaces */
+  --dx-submit-panel-rim: rgba(255, 255, 255, 0.54); /* inner card borders */
+  --dx-submit-line: rgba(255, 255, 255, 0.42);      /* sheet dividers */
+  --dx-submit-field: rgba(255, 255, 255, 0.84);     /* inputs / chips / badges */
+  --dx-submit-field-rim: rgba(17, 24, 39, 0.2);     /* control borders */
+  --dx-submit-track: rgba(17, 24, 39, 0.14);        /* progress track */
 }
 
 #dex-submit {
@@ -15,25 +23,39 @@
   position: relative;
 }
 
+/* Single black-glass sheet: the shell carries the one rim/shadow/backdrop;
+   the two columns inside are flattened to transparent regions split by a
+   divider (mirrors the settings unified-sheet pattern). */
 #dex-submit .dx-submit-shell {
   width: 100%;
   height: 100%;
   display: grid;
   grid-template-columns: minmax(0, 3fr) minmax(300px, 2fr);
-  gap: clamp(10px, 1.35vw, 18px);
+  gap: 0;
+  border: 1px solid var(--dx-submit-rim);
+  border-radius: var(--dx-submit-radius);
+  background: var(--dx-submit-surface);
+  box-shadow: var(--dx-submit-shadow);
+  -webkit-backdrop-filter: blur(22px) saturate(135%);
+  backdrop-filter: blur(22px) saturate(135%);
 }
 
 #dex-submit .dx-submit-shell.is-flow-gate {
   grid-template-columns: minmax(0, 3.4fr) minmax(240px, 1.1fr);
 }
 
+/* Canonical card skin (kept on .dx-submit-main for the surface contract:
+   radius > 0 + blur(24px) saturate(170%)); no bg/border so the sheet shows
+   through. */
 #dex-submit .dx-submit-surface {
-  border: 1px solid var(--dx-submit-rim);
   border-radius: var(--dx-submit-radius);
-  background: var(--dx-submit-surface);
-  box-shadow: var(--dx-submit-shadow);
   -webkit-backdrop-filter: blur(24px) saturate(170%);
   backdrop-filter: blur(24px) saturate(170%);
+}
+
+/* Command column reads as the right region of the sheet, split by a divider. */
+#dex-submit .dx-submit-command {
+  border-left: 1px solid var(--dx-submit-line);
 }
 
 #dex-submit[data-dx-submit-submitting="true"] .dx-submit-shell {
@@ -189,9 +211,9 @@
   display: grid;
   gap: 8px;
   padding: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.42);
+  border: 1px solid var(--dx-submit-panel-rim);
   border-radius: calc(var(--dx-submit-radius) - 2px);
-  background: rgba(255, 255, 255, 0.64);
+  background: var(--dx-submit-panel);
 }
 
 #dex-submit .dx-submit-progress-row {
@@ -202,13 +224,13 @@
 
 #dex-submit .dx-submit-step-chip {
   appearance: none;
-  border: 1px solid rgba(17, 24, 39, 0.2);
+  border: 1px solid var(--dx-submit-field-rim);
   border-radius: 999px;
   padding: 5px 10px;
   font-family: var(--font-mono, "Courier Prime", monospace);
   font-size: 12px;
-  background: rgba(255, 255, 255, 0.84);
-  color: #111827;
+  background: var(--dx-submit-field);
+  color: var(--dx-submit-ink);
 }
 
 #dex-submit .dx-submit-step-chip:disabled {
@@ -230,7 +252,7 @@
   height: 6px;
   border-radius: 999px;
   overflow: hidden;
-  background: rgba(17, 24, 39, 0.14);
+  background: var(--dx-submit-track);
 }
 
 #dex-submit .dx-submit-progress-fill {
@@ -258,10 +280,10 @@
 #dex-submit .dx-submit-stage-card {
   display: grid;
   gap: clamp(10px, 1.2vw, 16px);
-  padding: clamp(12px, 1.5vw, 18px);
-  border: 1px solid rgba(255, 255, 255, 0.54);
-  border-radius: calc(var(--dx-submit-radius) - 2px);
-  background: rgba(255, 255, 255, 0.62);
+  padding: clamp(12px, 1.5vw, 18px) 2px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 #dex-submit .dx-submit-gate-card {
@@ -281,7 +303,7 @@
 }
 
 #dex-submit .dx-submit-field-label {
-  color: #121826;
+  color: var(--dx-submit-ink);
   font-family: var(--font-heading, "Stretch Pro", sans-serif);
   font-size: 13px;
   letter-spacing: 0.02em;
@@ -292,9 +314,9 @@
   min-height: 44px;
   box-sizing: border-box;
   border-radius: 10px;
-  border: 1px solid rgba(17, 24, 39, 0.22);
-  background: rgba(255, 255, 255, 0.82);
-  color: #121826;
+  border: 1px solid var(--dx-submit-field-rim);
+  background: var(--dx-submit-field);
+  color: var(--dx-submit-ink);
   font-family: var(--font-mono, "Courier Prime", monospace);
   font-size: clamp(15px, 1.04vw, 16px);
   line-height: 1.4;
@@ -312,6 +334,24 @@
   resize: vertical;
 }
 
+#dex-submit .dx-submit-field.has-error .dx-submit-input {
+  border-color: rgba(255, 80, 70, 0.72);
+  box-shadow: 0 0 0 3px rgba(255, 80, 70, 0.18);
+}
+
+#dex-submit .dx-submit-field-error {
+  order: 99; /* always render below the control regardless of DOM order */
+  margin: 0;
+  color: #ff8a80;
+  font-family: var(--font-mono, "Courier Prime", monospace);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+#dex-submit .dx-submit-field-error[hidden] {
+  display: none;
+}
+
 #dex-submit .dx-submit-badge-group,
 #dex-submit .dx-submit-license-options,
 #dex-submit .dx-submit-pill-group {
@@ -323,11 +363,11 @@
 #dex-submit .dx-submit-badge,
 #dex-submit .dx-submit-pill {
   appearance: none;
-  border: 1px solid rgba(17, 24, 39, 0.2);
+  border: 1px solid var(--dx-submit-field-rim);
   border-radius: 10px;
   padding: 6px 10px;
-  background: rgba(255, 255, 255, 0.84);
-  color: #111827;
+  background: var(--dx-submit-field);
+  color: var(--dx-submit-ink);
   font-family: var(--font-mono, "Courier Prime", monospace);
   font-size: 12px;
   line-height: 1.2;
@@ -385,16 +425,16 @@
 #dex-submit .dx-submit-license-card {
   max-height: min(42vh, 320px);
   overflow: auto;
-  border: 1px solid rgba(17, 24, 39, 0.18);
+  border: 1px solid var(--dx-submit-field-rim);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.84);
+  background: var(--dx-submit-field);
   padding: 12px;
 }
 
 #dex-submit .dx-submit-license-pre {
   margin: 0;
   white-space: pre-wrap;
-  color: #20242d;
+  color: var(--dx-submit-ink);
   font-family: var(--font-mono, "Courier Prime", monospace);
   font-size: 13px;
   line-height: 1.4;
@@ -404,7 +444,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #20242d;
+  color: var(--dx-submit-ink);
   font-family: var(--font-mono, "Courier Prime", monospace);
   font-size: 13px;
 }
@@ -440,12 +480,18 @@
 }
 
 #dex-submit .dx-submit-command-card {
-  border: 1px solid rgba(255, 255, 255, 0.54);
-  border-radius: calc(var(--dx-submit-radius) - 2px);
-  background: rgba(255, 255, 255, 0.62);
-  padding: 10px;
+  border: 0;
+  border-top: 1px solid var(--dx-submit-line);
+  border-radius: 0;
+  background: transparent;
+  padding: 12px 0;
   display: grid;
   gap: 6px;
+}
+
+#dex-submit .dx-submit-command-card:first-child {
+  border-top: 0;
+  padding-top: 2px;
 }
 
 #dex-submit .dx-submit-checklist {
@@ -460,7 +506,7 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  color: #20242d;
+  color: var(--dx-submit-ink);
   font-family: var(--font-mono, "Courier Prime", monospace);
   font-size: 12px;
 }
@@ -522,6 +568,8 @@
     position: relative;
     top: auto;
     max-height: none;
+    border-left: 0;
+    border-top: 1px solid var(--dx-submit-line);
   }
 }
 
@@ -554,6 +602,24 @@
     right: 8px;
     left: 8px;
     bottom: max(8px, env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (max-width: 560px) {
+  #dex-submit .dx-submit-stage-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #dex-submit .dx-submit-stage-actions .dx-button-element {
+    width: 100%;
+    justify-content: center;
+  }
+
+  #dex-submit .dx-submit-badge,
+  #dex-submit .dx-submit-pill,
+  #dex-submit .dx-submit-step-chip {
+    min-height: 38px;
   }
 }
 

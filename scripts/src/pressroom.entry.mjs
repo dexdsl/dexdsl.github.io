@@ -182,6 +182,91 @@ import { animate } from 'framer-motion/dom';
     };
   }
 
+  // --- Draft persistence (localStorage; survives refresh) ---
+  const PRESS_DRAFT_PREFIX = 'dex:press:draft:v1';
+  const PRESS_FORM_STEP_MAX = STEPS.length - 2; // steps 0..review persist; last is "done"
+  let pressDraftTimer = 0;
+
+  function pressDraftKey(sub) {
+    const safeSub = text(sub, '') || 'anon';
+    return `${PRESS_DRAFT_PREFIX}:${safeSub}`;
+  }
+
+  function readPressDraft(sub) {
+    try {
+      const raw = window.localStorage.getItem(pressDraftKey(sub));
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== 'object' || !parsed.form || typeof parsed.form !== 'object') return null;
+      return parsed;
+    } catch {
+      return null;
+    }
+  }
+
+  function writePressDraft(sub, form, step) {
+    try {
+      const safeStep = Number.isFinite(step) ? Math.max(0, Math.min(PRESS_FORM_STEP_MAX, step)) : 0;
+      window.localStorage.setItem(pressDraftKey(sub), JSON.stringify({ form, step: safeStep, savedAt: Date.now() }));
+    } catch {}
+  }
+
+  function clearPressDraft(sub) {
+    try {
+      window.localStorage.removeItem(pressDraftKey(sub));
+    } catch {}
+  }
+
+  function clearActivePressDrafts() {
+    if (!state) return;
+    clearPressDraft(state.auth0Sub);
+    clearPressDraft('');
+  }
+
+  function schedulePressDraftSave() {
+    if (!state || pressDraftTimer) return;
+    pressDraftTimer = window.setTimeout(() => {
+      pressDraftTimer = 0;
+      if (!state) return;
+      if (state.step >= STEPS.length - 1) {
+        clearPressDraft(state.auth0Sub);
+        return;
+      }
+      writePressDraft(state.auth0Sub, state.form, state.step);
+    }, 400);
+  }
+
+  function pressFormIsPristine() {
+    if (!state) return true;
+    const base = createInitialForm();
+    return state.step === 0 && Object.keys(base).every((key) => !text(state.form[key]));
+  }
+
+  function hydratePressDraft(sub) {
+    if (!state) return false;
+    const stored = readPressDraft(sub);
+    if (!stored) return false;
+    const base = createInitialForm();
+    state.form = { ...base, ...(stored.form && typeof stored.form === 'object' ? stored.form : {}) };
+    if (Number.isFinite(stored.step)) {
+      state.step = Math.max(0, Math.min(PRESS_FORM_STEP_MAX, stored.step));
+    }
+    return true;
+  }
+
+  function reconcilePressDraftForSub(sub) {
+    const safeSub = text(sub, '');
+    if (!safeSub || !state) return;
+    if (!readPressDraft(safeSub)) {
+      const anon = readPressDraft('');
+      if (anon) {
+        writePressDraft(safeSub, anon.form, anon.step);
+        clearPressDraft('');
+      }
+    }
+    if (pressFormIsPristine()) hydratePressDraft(safeSub);
+  }
+
   function makeState(config) {
     return {
       step: 0,
@@ -192,6 +277,7 @@ import { animate } from 'framer-motion/dom';
       apiBase: config.apiBase,
       form: createInitialForm(),
       stepError: '',
+      fieldErrors: {},
       submitError: '',
       isSubmitting: false,
       monthlyLimit: config.monthlyLimit,
@@ -581,6 +667,24 @@ import { animate } from 'framer-motion/dom';
     }
     field.appendChild(title);
     field.appendChild(inputNode);
+    const key = text(options.fieldKey, '');
+    if (key) field.setAttribute('data-dx-field', key);
+    const errMsg = key ? text(state?.fieldErrors?.[key], '') : '';
+    if (errMsg) {
+      field.classList.add('has-error');
+      const err = create('p', 'dx-press-field-error', errMsg);
+      err.setAttribute('role', 'alert');
+      field.appendChild(err);
+      const clearOnce = () => {
+        field.classList.remove('has-error');
+        if (err.parentNode) err.remove();
+        if (state && state.fieldErrors) delete state.fieldErrors[key];
+        field.removeEventListener('input', clearOnce);
+        field.removeEventListener('change', clearOnce);
+      };
+      field.addEventListener('input', clearOnce);
+      field.addEventListener('change', clearOnce);
+    }
     return field;
   }
 
@@ -591,7 +695,10 @@ import { animate } from 'framer-motion/dom';
     input.value = value;
     input.placeholder = placeholder || '';
     input.disabled = lockUiFlag();
-    input.addEventListener('input', onInput);
+    input.addEventListener('input', (event) => {
+      onInput(event);
+      schedulePressDraftSave();
+    });
     return input;
   }
 
@@ -601,7 +708,10 @@ import { animate } from 'framer-motion/dom';
     input.value = value;
     input.placeholder = placeholder || '';
     input.disabled = lockUiFlag();
-    input.addEventListener('input', onInput);
+    input.addEventListener('input', (event) => {
+      onInput(event);
+      schedulePressDraftSave();
+    });
     return input;
   }
 
@@ -624,22 +734,31 @@ import { animate } from 'framer-motion/dom';
     return banner;
   }
 
-  function validateStep(index) {
-    if (!state) return '';
+  // Returns a per-field error map for the given step (empty when valid).
+  function validateStepFields(index) {
+    const errors = {};
+    if (!state) return errors;
     if (index === 1) {
-      if (!text(state.form.name)) return 'Enter contact name before continuing.';
-      if (!text(state.form.email)) return 'Enter contact email before continuing.';
+      if (!text(state.form.name)) errors.name = 'Enter your contact name.';
+      if (!text(state.form.email)) errors.email = 'Enter a contact email.';
     }
     if (index === 2) {
-      if (!text(state.form.project)) return 'Enter project title before continuing.';
-      if (!text(state.form.desc)) return 'Enter project description before continuing.';
+      if (!text(state.form.project)) errors.project = 'Enter a project title.';
+      if (!text(state.form.desc)) errors.desc = 'Add a project description.';
     }
     if (index === 3) {
-      if (!text(state.form.links)) return 'Add at least one source link before continuing.';
-      if (!text(state.form.budget)) return 'Enter a budget estimate before continuing.';
-      if (!text(state.form.timeframe)) return 'Enter preferred timeframe before continuing.';
+      if (!text(state.form.links)) errors.links = 'Add at least one source link.';
+      if (!text(state.form.budget)) errors.budget = 'Enter a budget estimate.';
+      if (!text(state.form.timeframe)) errors.timeframe = 'Enter a preferred timeframe.';
     }
-    return '';
+    return errors;
+  }
+
+  // Back-compat summary string (used for the banner + submit guard).
+  function validateStep(index) {
+    const errors = validateStepFields(index);
+    const keys = Object.keys(errors);
+    return keys.length ? 'Complete the required fields before continuing.' : '';
   }
 
   function setStep(nextStep) {
@@ -652,6 +771,8 @@ import { animate } from 'framer-motion/dom';
     }
     state.step = bounded;
     state.stepError = '';
+    state.fieldErrors = {};
+    schedulePressDraftSave();
     renderProgress();
     renderStep();
     renderCommandPanel();
@@ -659,12 +780,19 @@ import { animate } from 'framer-motion/dom';
 
   function goNext() {
     if (!state) return;
-    const error = validateStep(state.step);
-    if (error) {
-      state.stepError = error;
+    const errors = validateStepFields(state.step);
+    const keys = Object.keys(errors);
+    if (keys.length) {
+      state.fieldErrors = errors;
+      state.stepError = 'Complete the required fields before continuing.';
       renderStep();
+      const firstInvalid = liveRoot?.querySelector('.dx-press-field.has-error .dx-press-input');
+      if (firstInvalid instanceof HTMLElement) {
+        try { firstInvalid.focus({ preventScroll: false }); } catch {}
+      }
       return;
     }
+    state.fieldErrors = {};
     setStep(state.step + 1);
   }
 
@@ -881,6 +1009,7 @@ import { animate } from 'framer-motion/dom';
       state.lastRequestId = text(appendPayload?.requestId, text(payload?.requestId, ''));
       state.lastRow = text(appendPayload?.row, '');
       state.form = createInitialForm();
+      clearActivePressDrafts();
 
       await loadRequests({ forceLive: true });
       if (state.lastRequestId) {
@@ -962,13 +1091,13 @@ import { animate } from 'framer-motion/dom';
       state.form.name = event.target.value;
     });
     nameInput.autocomplete = 'name';
-    grid.appendChild(createField('Contact name', nameInput, { required: true }));
+    grid.appendChild(createField('Contact name', nameInput, { required: true, fieldKey: 'name' }));
 
     const emailInput = createInput('email', state.form.email, 'name@example.com', (event) => {
       state.form.email = event.target.value;
     });
     emailInput.autocomplete = 'email';
-    grid.appendChild(createField('Contact email', emailInput, { required: true }));
+    grid.appendChild(createField('Contact email', emailInput, { required: true, fieldKey: 'email' }));
 
     hostCard.appendChild(grid);
 
@@ -990,12 +1119,12 @@ import { animate } from 'framer-motion/dom';
     const projectInput = createInput('text', state.form.project, 'Project title', (event) => {
       state.form.project = event.target.value;
     });
-    grid.appendChild(createField('Project title', projectInput, { required: true }));
+    grid.appendChild(createField('Project title', projectInput, { required: true, fieldKey: 'project' }));
 
     const descInput = createTextarea(state.form.desc, 'Scope, goals, and requested editorial angle.', (event) => {
       state.form.desc = event.target.value;
     });
-    grid.appendChild(createField('Project description', descInput, { required: true }));
+    grid.appendChild(createField('Project description', descInput, { required: true, fieldKey: 'desc' }));
 
     hostCard.appendChild(grid);
 
@@ -1017,12 +1146,12 @@ import { animate } from 'framer-motion/dom';
     const linksInput = createInput('url', state.form.links, 'https://drive.google.com/...', (event) => {
       state.form.links = event.target.value;
     });
-    grid.appendChild(createField('Source links', linksInput, { required: true }));
+    grid.appendChild(createField('Source links', linksInput, { required: true, fieldKey: 'links' }));
 
     const budgetInput = createInput('text', state.form.budget, '$2,500', (event) => {
       state.form.budget = event.target.value;
     });
-    grid.appendChild(createField('Budget (USD)', budgetInput, { required: true }));
+    grid.appendChild(createField('Budget (USD)', budgetInput, { required: true, fieldKey: 'budget' }));
 
     const timelineInput = createInput('text', state.form.timeline, 'Milestones and deadlines', (event) => {
       state.form.timeline = event.target.value;
@@ -1032,7 +1161,7 @@ import { animate } from 'framer-motion/dom';
     const timeframeInput = createInput('text', state.form.timeframe, 'Desired release window', (event) => {
       state.form.timeframe = event.target.value;
     });
-    grid.appendChild(createField('Timeframe', timeframeInput, { required: true }));
+    grid.appendChild(createField('Timeframe', timeframeInput, { required: true, fieldKey: 'timeframe' }));
 
     hostCard.appendChild(grid);
 
@@ -1100,6 +1229,8 @@ import { animate } from 'framer-motion/dom';
     const newRequest = createButton('Start another request', 'secondary', () => {
       state.form = createInitialForm();
       state.submitError = '';
+      state.fieldErrors = {};
+      clearActivePressDrafts();
       setStep(0);
       refreshMonthlyQuota({ useCache: false, forceLive: true }).catch(() => {});
     });
@@ -1405,6 +1536,7 @@ import { animate } from 'framer-motion/dom';
       state.auth0Sub = text(snapshot.sub, '');
       if (state.auth0Sub) {
         window.auth0Sub = state.auth0Sub;
+        reconcilePressDraftForSub(state.auth0Sub);
       }
       state.authResolved = true;
       renderAll();
@@ -1439,6 +1571,7 @@ import { animate } from 'framer-motion/dom';
 
       const config = toConfig(root);
       state = makeState(config);
+      hydratePressDraft(state.auth0Sub || '');
       setQuotaSource('none');
 
       renderRootScaffold(root);

@@ -7,6 +7,14 @@
   --dx-press-muted: #4a5262;
   --dx-press-accent: #ff1910;
   --dx-press-accent-2: #ff9516;
+  /* Surface/control tokens — light defaults; flipped to black-glass under
+     body.dx-route-profile-protected #dex-press in dex.css. */
+  --dx-press-panel: rgba(255, 255, 255, 0.62);     /* inner card surfaces */
+  --dx-press-panel-rim: rgba(255, 255, 255, 0.54); /* inner card borders */
+  --dx-press-line: rgba(255, 255, 255, 0.42);      /* sheet dividers */
+  --dx-press-field: rgba(255, 255, 255, 0.8);      /* inputs / chips / rows */
+  --dx-press-field-rim: rgba(17, 24, 39, 0.22);    /* control borders */
+  --dx-press-track: rgba(17, 24, 39, 0.14);        /* progress track */
 }
 
 #dex-press {
@@ -15,21 +23,35 @@
   position: relative;
 }
 
+/* Single black-glass sheet: the shell carries the one rim/shadow/backdrop;
+   the two columns inside are flattened to transparent regions split by a
+   divider (mirrors the settings unified-sheet pattern). */
 #dex-press .dx-press-shell {
   width: 100%;
   height: 100%;
   display: grid;
   grid-template-columns: minmax(0, 3fr) minmax(300px, 2fr);
-  gap: clamp(10px, 1.35vw, 18px);
-}
-
-#dex-press .dx-press-surface {
+  gap: 0;
   border: 1px solid var(--dx-press-rim);
   border-radius: var(--dx-press-radius);
   background: var(--dx-press-surface);
   box-shadow: var(--dx-press-shadow);
+  -webkit-backdrop-filter: blur(22px) saturate(135%);
+  backdrop-filter: blur(22px) saturate(135%);
+}
+
+/* Canonical card skin (kept on .dx-press-main for the surface contract:
+   radius > 0 + blur(24px) saturate(170%)); no bg/border so the sheet shows
+   through. */
+#dex-press .dx-press-surface {
+  border-radius: var(--dx-press-radius);
   -webkit-backdrop-filter: blur(24px) saturate(170%);
   backdrop-filter: blur(24px) saturate(170%);
+}
+
+/* Command column reads as the right region of the sheet, split by a divider. */
+#dex-press .dx-press-command {
+  border-left: 1px solid var(--dx-press-line);
 }
 
 #dex-press[data-dx-press-submitting='true'] .dx-press-main {
@@ -156,9 +178,9 @@
   display: grid;
   gap: 8px;
   padding: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.42);
+  border: 1px solid var(--dx-press-panel-rim);
   border-radius: calc(var(--dx-press-radius) - 2px);
-  background: rgba(255, 255, 255, 0.64);
+  background: var(--dx-press-panel);
 }
 
 #dex-press .dx-press-progress-row {
@@ -169,13 +191,13 @@
 
 #dex-press .dx-press-step-chip {
   appearance: none;
-  border: 1px solid rgba(17, 24, 39, 0.2);
+  border: 1px solid var(--dx-press-field-rim);
   border-radius: 999px;
   padding: 5px 10px;
   font-family: var(--font-mono, 'Courier Prime', monospace);
   font-size: 12px;
-  background: rgba(255, 255, 255, 0.84);
-  color: #111827;
+  background: var(--dx-press-field);
+  color: var(--dx-press-ink);
 }
 
 #dex-press .dx-press-step-chip:disabled {
@@ -197,7 +219,7 @@
   height: 6px;
   border-radius: 999px;
   overflow: hidden;
-  background: rgba(17, 24, 39, 0.14);
+  background: var(--dx-press-track);
 }
 
 #dex-press .dx-press-progress-fill {
@@ -218,10 +240,10 @@
 #dex-press .dx-press-step-card {
   display: grid;
   gap: clamp(10px, 1.2vw, 16px);
-  padding: clamp(12px, 1.5vw, 18px);
-  border: 1px solid rgba(255, 255, 255, 0.54);
-  border-radius: calc(var(--dx-press-radius) - 2px);
-  background: rgba(255, 255, 255, 0.62);
+  padding: clamp(12px, 1.5vw, 18px) 2px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 #dex-press .dx-press-grid {
@@ -246,7 +268,7 @@
 #dex-press .dx-press-done-title,
 #dex-press .dx-press-history-title {
   margin: 0;
-  color: #121826;
+  color: var(--dx-press-ink);
   font-family: var(--font-heading, 'Stretch Pro', sans-serif);
   font-size: 13px;
   letter-spacing: 0.02em;
@@ -261,9 +283,9 @@
   min-height: 44px;
   box-sizing: border-box;
   border-radius: 10px;
-  border: 1px solid rgba(17, 24, 39, 0.22);
-  background: rgba(255, 255, 255, 0.82);
-  color: #121826;
+  border: 1px solid var(--dx-press-field-rim);
+  background: var(--dx-press-field);
+  color: var(--dx-press-ink);
   font-family: var(--font-mono, 'Courier Prime', monospace);
   font-size: clamp(15px, 1.03vw, 16px);
   line-height: 1.4;
@@ -281,6 +303,24 @@
   box-shadow: 0 0 0 3px rgba(255, 25, 16, 0.18);
 }
 
+#dex-press .dx-press-field.has-error .dx-press-input {
+  border-color: rgba(255, 80, 70, 0.72);
+  box-shadow: 0 0 0 3px rgba(255, 80, 70, 0.18);
+}
+
+#dex-press .dx-press-field-error {
+  order: 99; /* always render below the control regardless of DOM order */
+  margin: 0;
+  color: #ff8a80;
+  font-family: var(--font-mono, 'Courier Prime', monospace);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+#dex-press .dx-press-field-error[hidden] {
+  display: none;
+}
+
 #dex-press .dx-press-review {
   margin: 0;
   display: grid;
@@ -291,9 +331,9 @@
   display: grid;
   gap: 4px;
   padding: 10px;
-  border: 1px solid rgba(17, 24, 39, 0.16);
+  border: 1px solid var(--dx-press-panel-rim);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.72);
+  background: var(--dx-press-panel);
 }
 
 #dex-press .dx-press-nav,
@@ -350,10 +390,11 @@
   display: grid;
   gap: 10px;
   grid-template-rows: auto auto minmax(180px, 1fr);
-  padding: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.48);
-  border-radius: calc(var(--dx-press-radius) - 2px);
-  background: rgba(255, 255, 255, 0.56);
+  padding: 14px 2px 2px;
+  border: 0;
+  border-top: 1px solid var(--dx-press-line);
+  border-radius: 0;
+  background: transparent;
   overflow: hidden;
 }
 
@@ -374,9 +415,9 @@
 
 #dex-press .dx-press-history-item {
   appearance: none;
-  border: 1px solid rgba(17, 24, 39, 0.16);
+  border: 1px solid var(--dx-press-field-rim);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--dx-press-field);
   text-align: left;
   padding: 10px;
   display: grid;
@@ -407,23 +448,23 @@
   gap: 6px;
   padding: 10px;
   border-radius: 10px;
-  border: 1px solid rgba(17, 24, 39, 0.14);
-  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid var(--dx-press-field-rim);
+  background: var(--dx-press-field);
 }
 
 #dex-press .dx-press-status {
   display: inline-flex;
   align-items: center;
   border-radius: 999px;
-  border: 1px solid rgba(17, 24, 39, 0.25);
+  border: 1px solid var(--dx-press-field-rim);
   padding: 3px 10px;
   font-family: var(--font-mono, 'Courier Prime', monospace);
   font-size: 11px;
   line-height: 1.2;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  background: rgba(255, 255, 255, 0.8);
-  color: #111827;
+  background: var(--dx-press-field);
+  color: var(--dx-press-ink);
 }
 
 #dex-press .dx-press-status--submitted,
@@ -452,8 +493,8 @@
   gap: 6px;
   padding: 12px;
   border-radius: 10px;
-  border: 1px solid rgba(17, 24, 39, 0.16);
-  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--dx-press-panel-rim);
+  background: var(--dx-press-panel);
 }
 
 #dex-press .dx-press-command {
@@ -471,10 +512,16 @@
 #dex-press .dx-press-command-card {
   display: grid;
   gap: 8px;
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  background: rgba(255, 255, 255, 0.7);
+  padding: 12px 0;
+  border: 0;
+  border-top: 1px solid var(--dx-press-line);
+  border-radius: 0;
+  background: transparent;
+}
+
+#dex-press .dx-press-command-heading {
+  border-top: 0;
+  padding-top: 2px;
 }
 
 #dex-press .dx-press-checklist {
@@ -511,6 +558,8 @@
   #dex-press .dx-press-command {
     position: static;
     max-height: none;
+    border-left: 0;
+    border-top: 1px solid var(--dx-press-line);
   }
 }
 
