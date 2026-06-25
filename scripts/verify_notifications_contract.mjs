@@ -104,7 +104,6 @@ function verifyMessagesRuntimeContract() {
   assertIncludes(sourceRel, sourceText, [
     'window.__dxMessagesInboxRuntimeLoaded',
     'withTimeout(',
-    'jsonpWithTimeout(',
     'data-dx-msg-filter',
     '/me/submissions?limit=200&state=all',
     "'/me/messages/read-all'",

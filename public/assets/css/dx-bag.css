@@ -1,5 +1,9 @@
 @media (min-width: 981px) {
-  html,
+  /* Scope the html lock to the bag body so it stops the moment the bag class is
+     removed on soft-nav — a bare `html` rule kept overflow:hidden on every page
+     reached from the bag (this stylesheet persists across slot navigation),
+     locking scroll site-wide. */
+  html:has(body.dx-bag-page),
   html body.dx-bag-page,
   body.dx-bag-page {
     height: 100dvh !important;
@@ -50,8 +54,14 @@
     z-index: calc(var(--dx-layer-gooey) + 1) !important;
   }
 
+  /* The bag has no scroll, so the shared blobs cluster small and centered instead
+     of the full-bleed wash other routes get from page scroll. Scale the goo stage
+     out so the merged blob fills the viewport edge-to-edge like the home/catalog
+     mesh, keeping the goo merge + full opacity for visual parity. */
   body.dx-bag-page #gooey-mesh-wrapper .gooey-stage {
     filter: url(#goo) !important;
+    transform: scale(1.6) !important;
+    transform-origin: center center !important;
   }
 
   body.dx-bag-page :is(
@@ -140,7 +150,10 @@ body.dx-bag-page .content {
   display: grid;
   gap: clamp(14px, 1.8vw, 22px);
   padding: clamp(14px, 2.1vw, 24px);
-  border-radius: var(--dx-radius-lg, 12px);
+  /* --dx-radius-lg resolves to --radius-003 (999px), which turned this card into
+     a pill/oval that clipped the heading under overflow:hidden. Use a real card
+     radius instead. */
+  border-radius: clamp(16px, 1.4vw, 24px);
   border: 1px solid rgba(255, 255, 255, 0.45);
   background: var(--dx-header-glass-bg, rgba(238, 244, 252, 0.42));
   box-shadow: var(--dx-header-glass-shadow, 0 16px 36px rgba(18, 22, 30, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.32));

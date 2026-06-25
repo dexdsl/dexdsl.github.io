@@ -1636,10 +1636,6 @@ body.dx-route-profile-protected #dex-settings .savebar {
 }
 
 body.dx-route-profile-protected :is(
-  #dex-msg .dx-msg-shell,
-  #dex-msg .dx-msg-item,
-  #dex-msg .dx-msg-warning,
-  #dex-msg .dx-msg-empty,
   #dex-settings #dxMembershipV3Root .dx-memv3-card,
   #dex-settings #dxMembershipV3Root .dx-memv3-status,
   #dex-settings #dxMembershipV3Root .dx-memv3-tier,
@@ -1767,9 +1763,9 @@ body.dx-route-profile-protected :is(
 }
 
 /* =========================================================================
-   Black glass treatment — polls / favorites / settings / achievements.
-   These four routes get a dark translucent card with light text instead of a
-   flat or white-glass surface; messages / submit / press keep their light
+   Black glass treatment — polls / favorites / settings / achievements / messages.
+   These routes get a dark translucent card with light text instead of a
+   flat or white-glass surface; submit / press keep their light
    glass. Centralised here so the per-route inline colour vars flip via
    higher-specificity overrides rather than editing each runtime.
    ========================================================================= */
@@ -1777,6 +1773,7 @@ body.dx-route-profile-protected :is(
   #dex-console[data-dx-polls-app],
   #dex-favorites,
   #dex-settings,
+  #dex-msg,
   #dex-achv
 ) {
   --dx-blackglass-bg: linear-gradient(145deg, rgba(15, 16, 21, 0.66) 0%, rgba(9, 10, 14, 0.52) 100%);

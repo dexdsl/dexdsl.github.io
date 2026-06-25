@@ -53,6 +53,7 @@
 <script defer src="/assets/js/header-slot.js?v=20260528a"></script>
 <script defer src="/assets/js/dx-scroll-dot.js"></script>
 <script defer src="/assets/js/interactive-hover.js"></script>
+<script defer src="/assets/js/dx-pagenav.js"></script>
 <script defer src="/assets/js/dx-favorites.js"></script>
 <script defer src="/assets/js/header-slot.js"></script>
 </head>
@@ -2085,25 +2086,25 @@
 
 
 /* ===== Profile 4-card layout (equal columns, variable heights) ===== */
-#dex-settings #pane-profile .twocol{
+#dex-settings #pane-account .twocol{
   display:grid;
   grid-template-columns:1fr;
   gap:var(--gap);
 }
-#dex-settings #pane-profile .profile-col{
+#dex-settings #pane-account .profile-col{
   display:grid;
   gap:var(--gap);
   align-content:start;
 }
 @media (min-width: 980px){
-  #dex-settings #pane-profile .twocol{
+  #dex-settings #pane-account .twocol{
     grid-template-columns:minmax(0,1fr) minmax(0,1fr);
     align-items:start;
     column-gap:var(--gap);
     row-gap:var(--gap);
   }
 }
-#dex-settings #pane-profile #dangerCard{ margin-top:0 !important; }
+#dex-settings #pane-account #dangerCard{ margin-top:0 !important; }
 
 /* Identity row */
 #dex-settings .ident-row{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
@@ -2242,9 +2243,20 @@ a.dx-contrib-card-main:hover .dx-contrib-card-title{ text-decoration:underline; 
 #dex-settings[data-fit-profile="1"] .grid{
   grid-template-columns: 1fr !important; /* collapse aside only for Profile */
 }
-#dex-settings[data-fit-profile="1"] #pane-profile .twocol{
+#dex-settings[data-fit-profile="1"] :is(#pane-account,#pane-public) .twocol{
   height:auto;
   overflow:visible;
+}
+/* Public profile pane: single column (no security/danger rail). */
+#dex-settings #pane-public .twocol{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:var(--gap);
+}
+#dex-settings #pane-public .profile-col{
+  display:grid;
+  gap:clamp(20px, 2.4vw, 34px);
+  align-content:start;
 }
 
 /* ===== Membership persuasion aside ===== */
@@ -2815,19 +2827,19 @@ a.dx-contrib-card-main:hover .dx-contrib-card-title{ text-decoration:underline; 
   line-height:.95;
   color:var(--dx-blackglass-ink, #f3f3f4);
 }
-#dex-settings #pane-profile .twocol{
+#dex-settings #pane-account .twocol{
   gap:clamp(22px, 3vw, 52px);
 }
 @media (min-width: 980px){
-  #dex-settings #pane-profile .twocol{
+  #dex-settings #pane-account .twocol{
     grid-template-columns:minmax(0, 1fr) minmax(280px, 390px);
   }
-  #dex-settings #pane-profile .profile-col-right{
+  #dex-settings #pane-account .profile-col-right{
     border-left:1px solid var(--glass-brd);
     padding-left:clamp(18px, 2.2vw, 32px);
   }
 }
-#dex-settings #pane-profile .profile-col{
+#dex-settings #pane-account .profile-col{
   gap:clamp(20px, 2.4vw, 34px);
 }
 #dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-stack{
@@ -3010,6 +3022,15 @@ body.dx-route-profile-protected #dex-settings :is(h1,h2,h3,h4,p,label,span,stron
       min-height:0 !important;
       overflow-y:auto !important;
       overflow-x:hidden !important;
+      /* Stop browser scroll-anchoring from yanking the view off-canvas when the
+         public-profile/contributions/favorites lists re-render after a toggle. */
+      overflow-anchor:none !important;
+    }
+    body.dx-route-profile-protected #dex-settings .pane,
+    body.dx-route-profile-protected #dex-settings .dx-profile-stack,
+    body.dx-route-profile-protected #dex-settings .dx-contrib-list,
+    body.dx-route-profile-protected #dex-settings .dx-profile-list{
+      overflow-anchor:none !important;
     }
     /* Flatten the structural containers so the panel is one continuous sheet. */
     body.dx-route-profile-protected #dex-settings :is(.hdr,.tabsbar,.card){
@@ -3059,7 +3080,8 @@ body.dx-route-profile-protected #dex-settings :is(h1,h2,h3,h4,p,label,span,stron
     </button>
 
     <nav class="pills" role="tablist" aria-label="Settings sections">
-      <button class="pill" type="button" role="tab" id="tab-profile"    data-pane="profile"    aria-controls="pane-profile"    aria-selected="true">PROFILE</button>
+      <button class="pill" type="button" role="tab" id="tab-account"    data-pane="account"    aria-controls="pane-account"    aria-selected="true">ACCOUNT</button>
+<button class="pill" type="button" role="tab" id="tab-public"     data-pane="public"     aria-controls="pane-public"     aria-selected="false">PUBLIC PROFILE</button>
 <button class="pill" type="button" role="tab" id="tab-membership" data-pane="membership" aria-controls="pane-membership" aria-selected="false">MEMBERSHIP</button>
 <button class="pill" type="button" role="tab" id="tab-notifs"     data-pane="notifs"     aria-controls="pane-notifs"     aria-selected="false">NOTIFICATIONS</button>
 
@@ -3075,8 +3097,8 @@ body.dx-route-profile-protected #dex-settings :is(h1,h2,h3,h4,p,label,span,stron
 
   <div class="grid">
     <main>
-      <!-- PROFILE -->
-      <section id="pane-profile" class="pane" role="tabpanel" aria-labelledby="tab-profile" data-dx-settings-profile="v1">
+      <!-- ACCOUNT -->
+      <section id="pane-account" class="pane" role="tabpanel" aria-labelledby="tab-account" data-dx-settings-profile="v1">
         <div class="twocol">
           <div class="profile-col profile-col-left">
             <!-- Identity -->
@@ -3420,6 +3442,17 @@ body.dx-route-profile-protected #dex-settings :is(h1,h2,h3,h4,p,label,span,stron
 </div>
 
 
+      </section>
+
+      <!-- PUBLIC PROFILE (the public-profile subcard is relocated here at runtime) -->
+      <section id="pane-public" class="pane" role="tabpanel" aria-labelledby="tab-public" data-dx-settings-profile="v1" data-dx-settings-public="v1" hidden>
+        <div class="twocol twocol--single">
+          <div class="profile-col profile-col-left">
+            <div class="card" id="publicProfileCardHost">
+              <div class="dx-profile-stack" id="publicProfileStackHost"></div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- MEMBERSHIP (gated chooser; portal button lives here only) -->
@@ -4028,8 +4061,15 @@ function mergeIdentity(profile, ident){
 
 
 
+      /* Relocate the public-profile subcard into its own pane (split from Account). */
+      (function relocatePublicProfile(){
+        const section = document.querySelector('#dex-settings [data-dx-profile-panel="public-profile"]');
+        const host = document.getElementById('publicProfileStackHost');
+        if (section && host && section.parentElement !== host) host.appendChild(section);
+      })();
+
       /* Tabs + animated ink + arrows (board-style behavior) */
-      const order = ['profile','membership','notifs'];
+      const order = ['account','public','membership','notifs'];
 const HEROICON_ARROW_LEFT_D = 'M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18';
 const HEROICON_ARROW_RIGHT_D = 'M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3';
 // Only pick real tabs with data-pane
@@ -4077,7 +4117,7 @@ function ensureHeroiconNavArrow(btn, d){
 }
 
 function toggleProfileAside() {
-  const hide = (current === 'profile');
+  const hide = (current === 'account' || current === 'public');
   if (asideMembershipRail) asideMembershipRail.hidden = hide;
   if (asideWhy) asideWhy.hidden = hide;
   if (asideBilling) asideBilling.hidden = hide;
@@ -4093,17 +4133,17 @@ function setSettingsPaneState(paneName) {
       const prev  = $('#navPrev'), next = $('#navNext');
       ensureHeroiconNavArrow(prev, HEROICON_ARROW_LEFT_D);
       ensureHeroiconNavArrow(next, HEROICON_ARROW_RIGHT_D);
-      let current = 'profile';
+      let current = 'account';
       const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       // — Fit the 4 profile cards to one screen (no page scroll) using DOM geometry
 function fitProfileLayout(){
-  const twocol = document.querySelector('#pane-profile .twocol');
-  if (twocol){
+  const FIT_PANES = ['account','public'];
+  document.querySelectorAll('#pane-account .twocol, #pane-public .twocol').forEach((twocol)=>{
     twocol.style.removeProperty('--profile-fit-h');
     twocol.style.removeProperty('grid-template-rows');
-  }
-  if (current !== 'profile'){
+  });
+  if (!FIT_PANES.includes(current)){
     root.removeAttribute('data-fit-profile');
     return;
   }

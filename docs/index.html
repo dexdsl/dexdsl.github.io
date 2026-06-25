@@ -223,6 +223,7 @@ body {
 <script defer src="/assets/js/dx-scroll-dot.js"></script>
 <script defer src="/assets/js/dx-marketing-newsletter.js"></script>
 <script defer src="/assets/js/interactive-hover.js"></script>
+<script defer src="/assets/js/dx-pagenav.js"></script>
 <link rel="stylesheet" href="/css/fonts.css">
 </head>
 
@@ -2429,7 +2430,22 @@ function loadYT(){
     return card;
   }
 
+  let homePageNav=null;
   function renderDots(){
+    // Global iOS-style pip strip (dx-pagenav); falls back to legacy dots.
+    if (window.dxPageNav && typeof window.dxPageNav.create === 'function'){
+      if(!homePageNav){
+        homePageNav = window.dxPageNav.create({
+          mount: dots,
+          count: items.length,
+          ariaLabel: 'Featured entries',
+          onSelect: (i)=>{ if(i===idx || isAnimating) return; goTo(i, i>idx?1:-1); },
+        });
+      }
+      homePageNav.setCount(items.length);
+      homePageNav.setActive(idx);
+      return;
+    }
     dots.innerHTML='';
     items.forEach((_,i)=>{
       const d=document.createElement('div');
@@ -2466,6 +2482,10 @@ function loadYT(){
   frame.appendChild(prev);
   frame.appendChild(cardHost);
   frame.appendChild(next);
+  if (window.dxPageNav && typeof window.dxPageNav.upgradeLegacyArrow === 'function'){
+    window.dxPageNav.upgradeLegacyArrow(prev);
+    window.dxPageNav.upgradeLegacyArrow(next);
+  }
 
   function commitCard(nextCard, nextIndex){
     cardHost.replaceChildren(nextCard);

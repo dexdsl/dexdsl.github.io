@@ -915,42 +915,110 @@
     const style = document.createElement('style');
     style.id = 'dx-messages-runtime-style';
     style.textContent = `
-      #dex-msg{width:100%;}
-      #dex-msg .dx-msg-shell{display:flex;flex-direction:column;gap:12px;padding:16px;border:1px solid rgba(255,255,255,.32);border-radius:10px;background:rgba(255,255,255,.18);backdrop-filter:blur(24px) saturate(170%);-webkit-backdrop-filter:blur(24px) saturate(170%);box-shadow:0 8px 24px rgba(0,0,0,.12);font-family:'Courier New',monospace;color:#171a1f;}
-      #dex-msg .dx-msg-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
-      #dex-msg .dx-msg-title{margin:0;font-family:'Typefesse',sans-serif;font-size:clamp(1.4rem,3.2vw,1.95rem);}
-      #dex-msg .dx-msg-sub{margin:0;color:rgba(20,24,31,.78);font-size:.9rem;}
-      #dex-msg .dx-msg-controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
-      #dex-msg .dx-msg-btn{appearance:none;border:1px solid rgba(255,255,255,.42);background:rgba(255,255,255,.6);color:#111827;border-radius:8px;padding:7px 10px;font-size:.8rem;line-height:1;cursor:pointer;}
-      #dex-msg .dx-msg-btn.is-active{background:#ff1910;color:#fff;border-color:#ff1910;}
-      #dex-msg .dx-msg-btn:disabled{opacity:.5;cursor:not-allowed;}
-      #dex-msg .dx-msg-toggle{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:#1f2937;}
-      #dex-msg .dx-msg-warning{margin:0;padding:10px 12px;border:1px solid rgba(255,180,0,.45);border-radius:8px;background:rgba(255,191,0,.14);font-size:.85rem;}
-      #dex-msg .dx-msg-list{display:grid;grid-template-columns:1fr;gap:10px;min-height:120px;}
-      #dex-msg .dx-msg-item{border:1px solid rgba(255,255,255,.36);border-radius:9px;background:rgba(255,255,255,.7);padding:12px;display:grid;gap:10px;}
-      #dex-msg .dx-msg-item[data-source-type='submission']{border-left:4px solid #ff1910;}
-      #dex-msg .dx-msg-item[data-source-type='pressroom']{border-left:4px solid #0b7285;}
-      #dex-msg .dx-msg-item[data-source-type='system']{border-left:4px solid #1f2937;}
-      #dex-msg .dx-msg-item[data-dx-msg-read='false']{box-shadow:inset 0 0 0 1px rgba(255,25,16,.3);}
-      #dex-msg .dx-msg-item[data-dx-msg-archived='true']{opacity:.62;}
-      #dex-msg .dx-msg-row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;}
-      #dex-msg .dx-msg-kicker{margin:0;font-size:.75rem;letter-spacing:.02em;text-transform:uppercase;color:rgba(17,24,39,.72);}
-      #dex-msg .dx-msg-heading{margin:0;font-size:1rem;line-height:1.2;}
-      #dex-msg .dx-msg-time{margin:0;font-size:.78rem;color:rgba(17,24,39,.72);}
-      #dex-msg .dx-msg-body{margin:0;font-size:.88rem;line-height:1.35;color:#111827;}
-      #dex-msg .dx-msg-footer{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
-      #dex-msg .dx-msg-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.42);border-radius:7px;padding:4px 8px;font-size:.75rem;background:rgba(255,255,255,.55);}
-      #dex-msg .dx-msg-chip--critical{background:rgba(168,27,27,.14);border-color:rgba(168,27,27,.34);}
-      #dex-msg .dx-msg-chip--warning{background:rgba(193,116,0,.14);border-color:rgba(193,116,0,.34);}
-      #dex-msg .dx-msg-chip--info{background:rgba(22,80,173,.11);border-color:rgba(22,80,173,.26);}
-      #dex-msg .dx-msg-actions{display:flex;flex-wrap:wrap;gap:6px;}
-      #dex-msg .dx-msg-empty{margin:0;padding:14px 12px;border:1px dashed rgba(17,24,39,.3);border-radius:9px;background:rgba(255,255,255,.45);font-size:.9rem;}
-      #dex-msg .dx-msg-link{display:inline-flex;align-items:center;gap:6px;font-size:.84rem;text-decoration:none;color:#111827;}
-      #dex-msg .dx-msg-link:hover{text-decoration:underline;}
-      #dex-msg .dx-msg-badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#ff1910;color:#fff;font-size:.72rem;line-height:1;}
-      @media (max-width:720px){
-        #dex-msg .dx-msg-shell{padding:12px;}
-        #dex-msg .dx-msg-controls{width:100%;}
+      #dex-msg{width:100%;
+        --dx-msg-ink:var(--dx-blackglass-ink,#f3f3f4);
+        --dx-msg-muted:var(--dx-blackglass-muted,rgba(255,255,255,.62));
+        --dx-msg-faint:var(--dx-blackglass-faint,rgba(255,255,255,.40));
+        --dx-msg-line:var(--dx-blackglass-line,rgba(255,255,255,.14));
+        --dx-msg-line-strong:var(--dx-blackglass-line-strong,rgba(255,255,255,.26));
+        --dx-msg-accent:var(--dx-accent-solid,#ff5b3a);
+        font-family:var(--dx-mono,'Courier Prime','Courier New',monospace);}
+      #dex-msg .dx-msg-shell{display:flex;flex-direction:column;gap:clamp(14px,1.8vw,20px);height:100%;min-height:0;color:var(--dx-msg-ink);
+        background:linear-gradient(145deg,rgba(17,18,24,.92) 0%,rgba(10,11,15,.86) 100%);border:1px solid var(--dx-blackglass-rim,var(--dx-msg-line-strong));border-radius:var(--dx-header-glass-radius,12px);
+        box-shadow:var(--dx-blackglass-shadow,0 18px 42px rgba(0,0,0,.42));backdrop-filter:var(--dx-blackglass-backdrop,blur(22px) saturate(135%));-webkit-backdrop-filter:var(--dx-blackglass-backdrop,blur(22px) saturate(135%));padding:clamp(16px,2.1vw,26px);}
+      #dex-msg .dx-msg-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;flex:0 0 auto;}
+      #dex-msg .dx-msg-title{margin:0;font-family:'Stretch Pro','Typefesse',var(--dx-mono),sans-serif;font-size:clamp(1.3rem,3vw,1.8rem);letter-spacing:.01em;text-transform:uppercase;display:flex;align-items:center;gap:10px;}
+      #dex-msg .dx-msg-sub{margin:4px 0 0;color:var(--dx-msg-muted);font-size:.82rem;}
+      #dex-msg .dx-msg-controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;flex:0 0 auto;}
+      /* segmented source filter — the modern pills */
+      #dex-msg .dx-msg-seg{display:inline-flex;padding:3px;gap:2px;border:1px solid var(--dx-msg-line);border-radius:999px;background:rgba(255,255,255,.05);}
+      #dex-msg .dx-msg-seg-btn{appearance:none;border:0;background:transparent;color:var(--dx-msg-muted);border-radius:999px;padding:6px 13px;font:inherit;font-size:.74rem;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:color .18s ease,background .18s ease;}
+      #dex-msg .dx-msg-seg-btn:hover{color:var(--dx-msg-ink);}
+      #dex-msg .dx-msg-seg-btn.is-active{background:var(--dx-msg-accent);color:#fff;box-shadow:0 2px 10px rgba(0,0,0,.28);}
+      #dex-msg .dx-msg-btn{appearance:none;border:1px solid var(--dx-msg-line-strong);background:rgba(255,255,255,.06);color:var(--dx-msg-ink);border-radius:999px;padding:7px 13px;font:inherit;font-size:.74rem;letter-spacing:.03em;text-transform:uppercase;line-height:1;cursor:pointer;transition:background .18s ease,border-color .18s ease;}
+      #dex-msg .dx-msg-btn:hover{background:rgba(255,255,255,.12);}
+      #dex-msg .dx-msg-btn:disabled{opacity:.45;cursor:not-allowed;}
+      #dex-msg .dx-msg-btn--accent{background:var(--dx-msg-accent);border-color:transparent;color:#fff;}
+      #dex-msg .dx-msg-toggle{display:inline-flex;align-items:center;gap:7px;font-size:.74rem;letter-spacing:.03em;text-transform:uppercase;color:var(--dx-msg-muted);cursor:pointer;}
+      #dex-msg .dx-msg-toggle input{accent-color:var(--dx-msg-accent);}
+      #dex-msg .dx-msg-badge{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 7px;border-radius:999px;background:var(--dx-msg-accent);color:#fff;font-size:.72rem;line-height:1;}
+      #dex-msg .dx-msg-warning{margin:0;padding:9px 12px;border:1px solid rgba(214,147,47,.4);border-radius:9px;background:rgba(214,147,47,.12);color:var(--dx-msg-ink);font-size:.8rem;flex:0 0 auto;}
+      /* board */
+      #dex-msg .dx-msg-board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.4vw,18px);flex:1 1 auto;min-height:0;overflow-anchor:none;}
+      #dex-msg .dx-msg-lane{display:flex;flex-direction:column;min-height:0;border:1px solid var(--dx-msg-line);border-radius:12px;background:rgba(255,255,255,.03);overflow:hidden;}
+      #dex-msg .dx-msg-lane-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 13px;border-bottom:1px solid var(--dx-msg-line);position:sticky;top:0;background:rgba(20,21,27,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:1;}
+      #dex-msg .dx-msg-lane-label{margin:0;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dx-msg-ink);font-weight:700;}
+      #dex-msg .dx-msg-lane[data-lane='needs'] .dx-msg-lane-label{color:var(--dx-msg-accent);}
+      #dex-msg .dx-msg-lane-count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;border:1px solid var(--dx-msg-line-strong);font-size:.7rem;color:var(--dx-msg-muted);}
+      #dex-msg .dx-msg-lane-body{display:flex;flex-direction:column;gap:9px;padding:11px;overflow-y:auto;overflow-anchor:none;min-height:60px;}
+      #dex-msg .dx-msg-card{position:relative;display:grid;gap:7px;padding:12px 13px 12px 15px;border:1px solid var(--dx-msg-line);border-radius:11px;background:rgba(255,255,255,.05);cursor:pointer;text-align:left;color:inherit;font:inherit;width:100%;transition:transform .16s ease,background .16s ease,border-color .16s ease;}
+      #dex-msg .dx-msg-card:hover{background:rgba(255,255,255,.09);border-color:var(--dx-msg-line-strong);transform:translateY(-1px);}
+      #dex-msg .dx-msg-card:focus-visible{outline:2px solid var(--dx-msg-accent);outline-offset:2px;}
+      #dex-msg .dx-msg-card::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:3px;background:var(--dx-msg-faint);}
+      #dex-msg .dx-msg-card[data-source-type='submission']::before{background:var(--dx-msg-accent);}
+      #dex-msg .dx-msg-card[data-source-type='pressroom']::before{background:#3aa6c0;}
+      #dex-msg .dx-msg-card[data-source-type='system']::before{background:var(--dx-msg-muted);}
+      #dex-msg .dx-msg-card[data-dx-msg-archived='true']{opacity:.6;}
+      #dex-msg .dx-msg-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+      #dex-msg .dx-msg-kicker{margin:0;font-size:.64rem;letter-spacing:.07em;text-transform:uppercase;color:var(--dx-msg-faint);}
+      #dex-msg .dx-msg-dot{width:8px;height:8px;border-radius:999px;background:var(--dx-msg-accent);flex:0 0 auto;box-shadow:0 0 0 3px rgba(255,91,58,.18);}
+      #dex-msg .dx-msg-heading{margin:0;font-size:.92rem;line-height:1.25;color:var(--dx-msg-ink);}
+      #dex-msg .dx-msg-snippet{margin:0;font-size:.78rem;line-height:1.4;color:var(--dx-msg-muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+      #dex-msg .dx-msg-card-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:1px;}
+      #dex-msg .dx-msg-time{margin:0;font-size:.7rem;color:var(--dx-msg-faint);}
+      #dex-msg .dx-msg-chip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--dx-msg-line-strong);border-radius:999px;padding:3px 8px;font-size:.66rem;letter-spacing:.03em;text-transform:uppercase;color:var(--dx-msg-ink);background:rgba(255,255,255,.05);}
+      #dex-msg .dx-msg-chip--critical{background:rgba(224,34,58,.16);border-color:rgba(224,34,58,.4);color:#f3b0b6;}
+      #dex-msg .dx-msg-chip--warning{background:rgba(214,147,47,.16);border-color:rgba(214,147,47,.4);color:#f0cd93;}
+      #dex-msg .dx-msg-chip--info{background:rgba(120,170,255,.12);border-color:rgba(120,170,255,.28);color:#c9d9ff;}
+      #dex-msg .dx-msg-railmini{display:flex;gap:3px;align-items:center;}
+      #dex-msg .dx-msg-railmini i{height:3px;flex:1;border-radius:3px;background:var(--dx-msg-line-strong);}
+      #dex-msg .dx-msg-railmini i.on{background:var(--dx-msg-accent);}
+      #dex-msg .dx-msg-lane-empty{margin:0;padding:14px 10px;font-size:.74rem;color:var(--dx-msg-faint);text-align:center;border:1px dashed var(--dx-msg-line);border-radius:9px;}
+      #dex-msg .dx-msg-empty{margin:0;padding:16px;border:1px dashed var(--dx-msg-line-strong);border-radius:11px;background:rgba(255,255,255,.03);font-size:.86rem;color:var(--dx-msg-muted);}
+      @media (max-width:900px){
+        #dex-msg .dx-msg-board{grid-auto-flow:column;grid-auto-columns:78%;grid-template-columns:none;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
+        #dex-msg .dx-msg-lane{scroll-snap-align:start;}
+      }
+      /* thread modal — black-glass surface matching the download modal */
+      #dex-msg-modal{position:fixed;inset:0;z-index:2147483000;display:none;align-items:center;justify-content:center;padding:clamp(12px,3vw,40px);font-family:var(--dx-mono,'Courier Prime',monospace);}
+      #dex-msg-modal[data-open='true']{display:flex;}
+      #dex-msg-modal .dx-msg-modal-backdrop{position:absolute;inset:0;background:rgba(6,7,10,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+      #dex-msg-modal .dx-msg-modal-card{position:relative;z-index:1;width:min(720px,100%);max-height:min(86dvh,860px);display:flex;flex-direction:column;color:var(--dx-blackglass-ink,#f3f3f4);
+        background:var(--dx-blackglass-bg,linear-gradient(145deg,rgba(15,16,21,.92),rgba(9,10,14,.88)));border:1px solid var(--dx-blackglass-rim,rgba(255,255,255,.16));border-radius:16px;
+        box-shadow:0 30px 80px rgba(0,0,0,.6);backdrop-filter:var(--dx-blackglass-backdrop,blur(22px) saturate(135%));-webkit-backdrop-filter:var(--dx-blackglass-backdrop,blur(22px) saturate(135%));overflow:hidden;}
+      #dex-msg-modal .dx-msg-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid var(--dx-blackglass-line,rgba(255,255,255,.14));flex:0 0 auto;}
+      #dex-msg-modal .dx-msg-modal-kicker{margin:0;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dx-blackglass-faint,rgba(255,255,255,.4));}
+      #dex-msg-modal .dx-msg-modal-title{margin:3px 0 0;font-size:1.05rem;line-height:1.25;}
+      #dex-msg-modal .dx-msg-modal-close{appearance:none;border:1px solid var(--dx-blackglass-line-strong,rgba(255,255,255,.26));background:rgba(255,255,255,.06);color:inherit;border-radius:999px;width:34px;height:34px;font-size:1.1rem;line-height:1;cursor:pointer;flex:0 0 auto;}
+      #dex-msg-modal .dx-msg-modal-close:hover{background:rgba(255,255,255,.14);}
+      #dex-msg-modal .dx-msg-modal-rail{display:flex;gap:5px;padding:13px 20px 4px;flex:0 0 auto;flex-wrap:wrap;}
+      #dex-msg-modal .dx-msg-rail-step{flex:1 1 0;min-width:62px;display:flex;flex-direction:column;gap:5px;}
+      #dex-msg-modal .dx-msg-rail-bar{height:4px;border-radius:4px;background:var(--dx-blackglass-line-strong,rgba(255,255,255,.26));}
+      #dex-msg-modal .dx-msg-rail-step[data-state='done'] .dx-msg-rail-bar,#dex-msg-modal .dx-msg-rail-step[data-state='active'] .dx-msg-rail-bar{background:var(--dx-accent-solid,#ff5b3a);}
+      #dex-msg-modal .dx-msg-rail-step[data-state='active'] .dx-msg-rail-bar{box-shadow:0 0 10px rgba(255,91,58,.5);}
+      #dex-msg-modal .dx-msg-rail-label{font-size:.6rem;letter-spacing:.04em;text-transform:uppercase;color:var(--dx-blackglass-faint,rgba(255,255,255,.4));white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+      #dex-msg-modal .dx-msg-rail-step[data-state='active'] .dx-msg-rail-label{color:var(--dx-blackglass-ink,#f3f3f4);}
+      #dex-msg-modal .dx-msg-modal-body{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-anchor:none;padding:16px 20px;display:flex;flex-direction:column;gap:11px;}
+      #dex-msg-modal .dx-msg-bubble{display:grid;gap:5px;padding:11px 13px;border:1px solid var(--dx-blackglass-line,rgba(255,255,255,.14));border-radius:12px;background:rgba(255,255,255,.05);}
+      #dex-msg-modal .dx-msg-bubble--member{margin-left:auto;max-width:84%;background:rgba(255,91,58,.14);border-color:rgba(255,91,58,.32);}
+      #dex-msg-modal .dx-msg-bubble--system{max-width:90%;}
+      #dex-msg-modal .dx-msg-bubble-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;}
+      #dex-msg-modal .dx-msg-bubble-type{margin:0;font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dx-blackglass-faint,rgba(255,255,255,.4));}
+      #dex-msg-modal .dx-msg-bubble-time{margin:0;font-size:.66rem;color:var(--dx-blackglass-faint,rgba(255,255,255,.4));}
+      #dex-msg-modal .dx-msg-bubble-body{margin:0;font-size:.86rem;line-height:1.45;white-space:pre-wrap;}
+      #dex-msg-modal .dx-msg-bubble-link{font-size:.76rem;color:var(--dx-accent-solid,#ff5b3a);text-decoration:none;}
+      #dex-msg-modal .dx-msg-bubble-link:hover{text-decoration:underline;}
+      #dex-msg-modal .dx-msg-modal-empty{margin:auto;color:var(--dx-blackglass-muted,rgba(255,255,255,.62));font-size:.85rem;text-align:center;}
+      #dex-msg-modal .dx-msg-modal-foot{flex:0 0 auto;border-top:1px solid var(--dx-blackglass-line,rgba(255,255,255,.14));padding:14px 20px;display:grid;gap:9px;}
+      #dex-msg-modal .dx-msg-composer{display:grid;gap:8px;}
+      #dex-msg-modal .dx-msg-composer textarea{width:100%;resize:vertical;min-height:64px;border:1px solid var(--dx-blackglass-line-strong,rgba(255,255,255,.26));border-radius:10px;background:rgba(0,0,0,.28);color:inherit;padding:10px 12px;font:inherit;font-size:.86rem;}
+      #dex-msg-modal .dx-msg-composer textarea:focus{outline:none;border-color:var(--dx-accent-solid,#ff5b3a);}
+      #dex-msg-modal .dx-msg-composer-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+      #dex-msg-modal .dx-msg-composer-status{font-size:.74rem;color:var(--dx-blackglass-muted,rgba(255,255,255,.62));}
+      #dex-msg-modal .dx-msg-modal-actions{display:flex;gap:8px;flex-wrap:wrap;}
+      #dex-msg-modal .dx-msg-modal-note{margin:0;font-size:.72rem;color:var(--dx-blackglass-faint,rgba(255,255,255,.4));}
+      @media (max-width:640px){
+        #dex-msg-modal .dx-msg-modal-card{max-height:92dvh;}
       }
     `;
     document.head.appendChild(style);
@@ -1012,109 +1080,478 @@
     persistSubmissionState(scope, submissionState);
   }
 
+  // ---- status-lane kanban helpers --------------------------------------
+  const STAGE_FLOW = [
+    { key: 'received', label: 'Received' },
+    { key: 'acknowledged', label: 'Acknowledged' },
+    { key: 'reviewing', label: 'Reviewing' },
+    { key: 'accepted', label: 'Accepted' },
+    { key: 'in_library', label: 'In library' },
+  ];
+
+  function statusToStage(status) {
+    const s = String(status || '').toLowerCase();
+    if (/librar/.test(s)) return 'in_library';
+    if (/reject|declin/.test(s)) return 'rejected';
+    if (/accept|approv/.test(s)) return 'accepted';
+    if (/review/.test(s)) return 'reviewing';
+    if (/acknowledg/.test(s)) return 'acknowledged';
+    if (/receiv|sent|submit/.test(s)) return 'received';
+    if (/need|revision|info/.test(s)) return 'needs_info';
+    return 'reviewing';
+  }
+
+  function submissionStageKey(record) {
+    return statusToStage(record?.metadata?.status);
+  }
+
+  function threadStageKey(thread) {
+    const stage = String(thread?.currentStage || '').toLowerCase();
+    if (stage === 'rejected' || STAGE_FLOW.some((s) => s.key === stage)) return stage;
+    return statusToStage(thread?.status);
+  }
+
+  function stageIndex(stage) {
+    const i = STAGE_FLOW.findIndex((s) => s.key === stage);
+    return i < 0 ? 2 : i;
+  }
+
+  function stageLabel(stage) {
+    const found = STAGE_FLOW.find((s) => s.key === stage);
+    if (found) return found.label;
+    if (stage === 'rejected') return 'Rejected';
+    if (stage === 'needs_info') return 'Needs info';
+    return '';
+  }
+
+  function stageSev(stage) {
+    const s = String(stage || '').toLowerCase();
+    if (s === 'rejected') return 'critical';
+    if (s === 'needs_info' || s === 'revision_requested') return 'warning';
+    return 'info';
+  }
+
+  function formatEventType(type) {
+    const map = {
+      lookup_generated: 'Lookup generated', lookup_finalized: 'Lookup finalized',
+      bucket_assigned: 'Bucket assigned', acknowledged: 'Acknowledged',
+      user_acknowledged: 'Acknowledged', request_submitted: 'Submitted',
+      received: 'Received', reviewing: 'In review', accepted: 'Accepted',
+      rejected: 'Rejected', in_library: 'In library', message: 'Message',
+      needs_info: 'Needs info',
+    };
+    return map[String(type || '').toLowerCase()] || '';
+  }
+
+  // Lane assignment: needs-you (member action) → in-progress → resolved.
+  function laneFor(record) {
+    if (record.archivedAt) return 'resolved';
+    if (record.sourceType === 'submission') {
+      const stage = submissionStageKey(record);
+      if (stage === 'in_library' || stage === 'rejected' || stage === 'closed') return 'resolved';
+      if (stage === 'needs_info') return 'needs';
+      return 'progress';
+    }
+    // system / pressroom notifications: unread asks for attention, read is settled.
+    return record.readAt ? 'progress' : 'needs';
+  }
+
+  function relativeTime(value) {
+    const ts = parseTimestamp(value);
+    if (ts === null) return '';
+    const diff = Date.now() - ts;
+    const min = 60000, hr = 3600000, day = 86400000;
+    if (diff < min) return 'just now';
+    if (diff < hr) return `${Math.floor(diff / min)}m ago`;
+    if (diff < day) return `${Math.floor(diff / hr)}h ago`;
+    if (diff < day * 7) return `${Math.floor(diff / day)}d ago`;
+    return formatDateTime(value);
+  }
+
+  function railMiniHtml(stage) {
+    const idx = stageIndex(stage);
+    return `<div class="dx-msg-railmini" aria-hidden="true">${STAGE_FLOW
+      .map((step, i) => `<i class="${i <= idx ? 'on' : ''}"></i>`)
+      .join('')}</div>`;
+  }
+
+  function cardHtml(record) {
+    const sourceLabel = record.sourceType === 'submission' ? 'Submission'
+      : record.sourceType === 'pressroom' ? 'Pressroom' : 'System';
+    const kind = record.sourceType === 'submission' ? normalizeSubmissionKind(record.metadata?.submissionKind) : '';
+    const kindLabel = kind === 'call' ? 'Call' : kind === 'sample' ? 'Sample' : '';
+    const kicker = [sourceLabel, kindLabel, record.category].filter(Boolean).join(' · ');
+    const unreadDot = !record.readAt && !record.archivedAt ? '<span class="dx-msg-dot" aria-label="Unread"></span>' : '';
+    const snippet = record.body ? `<p class="dx-msg-snippet">${escapeHtml(record.body)}</p>` : '';
+    const stage = record.sourceType === 'submission' ? submissionStageKey(record) : '';
+    const railMini = record.sourceType === 'submission' && stage !== 'rejected' ? railMiniHtml(stage) : '';
+    const chipLabel = stage ? (stageLabel(stage) || record.metadata?.status || record.severity) : record.severity;
+    const statusChip = `<span class="dx-msg-chip ${severityChipClass(stage ? stageSev(stage) : record.severity)}">${escapeHtml(chipLabel)}</span>`;
+    const sid = sanitizeSubmissionId(record.metadata?.submissionId || '');
+    const rid = sanitizeRequestId(record.metadata?.requestId || '');
+    return `
+      <button type="button" class="dx-msg-card" data-dx-msg-open="1" data-record-id="${escapeHtml(record.id)}" data-source-type="${escapeHtml(record.sourceType)}" data-dx-msg-archived="${record.archivedAt ? 'true' : 'false'}"${sid ? ` data-dx-submission-sid="${escapeHtml(sid)}"` : ''}${rid ? ` data-dx-request-id="${escapeHtml(rid)}"` : ''} data-dx-thread-kind="${record.sourceType === 'pressroom' ? 'pressroom' : 'submission'}">
+        <div class="dx-msg-card-top"><p class="dx-msg-kicker">${escapeHtml(kicker)}</p>${unreadDot}</div>
+        <h3 class="dx-msg-heading">${escapeHtml(record.title)}</h3>
+        ${snippet}
+        ${railMini}
+        <div class="dx-msg-card-foot"><span class="dx-msg-time">${escapeHtml(relativeTime(record.createdAt))}</span>${statusChip}</div>
+      </button>`;
+  }
+
   function render(root, model) {
     ensureStyles();
 
-    const visible = visibleRecords(model.records, model.filter, model.showArchived);
+    const sourceFiltered = visibleRecords(model.records, model.filter, model.showArchived);
     const unread = unreadCount(model.records);
     dispatchUnreadCount(unread);
+
+    const lanes = [
+      { key: 'needs', label: 'Needs you' },
+      { key: 'progress', label: 'In progress' },
+      { key: 'resolved', label: 'Resolved' },
+    ];
+    const byLane = { needs: [], progress: [], resolved: [] };
+    for (const record of sourceFiltered) (byLane[laneFor(record)] || byLane.progress).push(record);
+
+    const segs = [
+      { key: 'all', label: 'All' },
+      { key: 'submission', label: 'Submissions' },
+      { key: 'pressroom', label: 'Pressroom' },
+      { key: 'system', label: 'System' },
+    ];
+    const segHtml = segs
+      .map((item) => `<button class="dx-msg-seg-btn${model.filter === item.key ? ' is-active' : ''}" type="button" role="tab" aria-selected="${model.filter === item.key}" data-dx-msg-filter="${item.key}">${item.label}</button>`)
+      .join('');
 
     const warningsHtml = model.warnings
       .filter(Boolean)
       .map((warning) => `<p class="dx-msg-warning">${escapeHtml(warning)}</p>`)
       .join('');
 
-    const filters = [
-      { key: 'all', label: 'All' },
-      { key: 'submission', label: 'Submissions' },
-      { key: 'pressroom', label: 'Pressroom' },
-      { key: 'system', label: 'System' },
-    ];
-
-    const filterButtons = filters
-      .map((item) => {
-        const active = model.filter === item.key ? ' is-active' : '';
-        return `<button class="dx-msg-btn${active}" type="button" data-dx-msg-filter="${item.key}">${item.label}</button>`;
+    const lanesHtml = lanes
+      .map((lane) => {
+        const cards = byLane[lane.key];
+        const body = cards.length ? cards.map(cardHtml).join('') : '<p class="dx-msg-lane-empty">Nothing here</p>';
+        return `
+          <section class="dx-msg-lane" data-lane="${lane.key}">
+            <header class="dx-msg-lane-head">
+              <p class="dx-msg-lane-label">${lane.label}</p>
+              <span class="dx-msg-lane-count">${cards.length}</span>
+            </header>
+            <div class="dx-msg-lane-body">${body}</div>
+          </section>`;
       })
       .join('');
 
-    const rowsHtml = visible.length === 0
-      ? `<p class="dx-msg-empty">No messages for this filter yet.</p>`
-      : visible
-        .map((record) => {
-          const sourceLabel = record.sourceType === 'submission'
-            ? 'Submission'
-            : record.sourceType === 'pressroom'
-              ? 'Pressroom'
-              : 'System';
-          const submissionKind = record.sourceType === 'submission'
-            ? normalizeSubmissionKind(record.metadata?.submissionKind)
-            : '';
-          const submissionKindLabel = submissionKind === 'call' ? 'Call' : submissionKind === 'sample' ? 'Sample' : '';
-          const readFlag = record.readAt ? 'true' : 'false';
-          const archivedFlag = record.archivedAt ? 'true' : 'false';
-          const markAction = record.readAt ? 'unread' : 'read';
-          const markActionLabel = record.readAt ? 'Mark unread' : 'Mark read';
-          const row = record.metadata?.row;
-          const canAck = record.sourceType === 'submission' && Number.isFinite(Number(row));
-          const body = record.body
-            ? `<p class="dx-msg-body">${escapeHtml(record.body)}</p>`
-            : '';
-          const submissionSid = sanitizeSubmissionId(record.metadata?.submissionId || '');
-          const requestId = sanitizeRequestId(record.metadata?.requestId || '');
-          const sidAttr = submissionSid ? ` data-dx-submission-sid="${escapeHtml(submissionSid)}"` : '';
-          const ridAttr = requestId ? ` data-dx-request-id="${escapeHtml(requestId)}"` : '';
-          const kindAttr = record.sourceType === 'pressroom'
-            ? ' data-dx-thread-kind="pressroom"'
-            : ' data-dx-thread-kind="submission"';
-          const link = record.href
-            ? `<a class="dx-msg-link" href="${escapeHtml(record.href)}"${sidAttr}${ridAttr}${kindAttr}>Open</a>`
-            : '';
-          return `
-            <article class="dx-msg-item" data-dx-msg-item data-source-type="${escapeHtml(record.sourceType)}" data-record-id="${escapeHtml(record.id)}" data-dx-msg-read="${readFlag}" data-dx-msg-archived="${archivedFlag}">
-              <div class="dx-msg-row">
-                <div>
-                  <p class="dx-msg-kicker">${escapeHtml(sourceLabel)}${submissionKindLabel ? ` · ${escapeHtml(submissionKindLabel)}` : ''} · ${escapeHtml(record.category)}</p>
-                  <h3 class="dx-msg-heading">${escapeHtml(record.title)}</h3>
-                </div>
-                <p class="dx-msg-time">${escapeHtml(formatDateTime(record.createdAt))}</p>
-              </div>
-              ${body}
-              <div class="dx-msg-footer">
-                <span class="dx-msg-chip ${severityChipClass(record.severity)}">${escapeHtml(record.severity)}</span>
-                ${link}
-                <div class="dx-msg-actions">
-                  <button class="dx-msg-btn" type="button" data-dx-msg-action="${markAction}" data-record-id="${escapeHtml(record.id)}">${markActionLabel}</button>
-                  <button class="dx-msg-btn" type="button" data-dx-msg-action="archive" data-record-id="${escapeHtml(record.id)}">Archive</button>
-                  ${canAck ? `<button class="dx-msg-btn" type="button" data-dx-msg-action="ack" data-record-id="${escapeHtml(record.id)}">Acknowledge</button>` : ''}
-                </div>
-              </div>
-            </article>
-          `;
-        })
-        .join('');
+    const boardHtml = sourceFiltered.length === 0
+      ? '<p class="dx-msg-empty">No messages for this filter yet.</p>'
+      : `<div class="dx-msg-board">${lanesHtml}</div>`;
 
     root.innerHTML = `
       <aside class="dx-msg-shell">
         <section class="dx-msg-head">
           <div>
-            <h1 class="dx-msg-title">Inbox</h1>
-            <p class="dx-msg-sub">Submission, Pressroom, and account messages in one place.</p>
+            <h1 class="dx-msg-title">Inbox${unread ? ` <span class="dx-msg-badge">${unread}</span>` : ''}</h1>
+            <p class="dx-msg-sub">Submissions, Pressroom, and account messages — one board.</p>
           </div>
           <div class="dx-msg-controls">
-            ${filterButtons}
-            <label class="dx-msg-toggle">
-              <input type="checkbox" data-dx-msg-toggle="archived" ${model.showArchived ? 'checked' : ''}>
-              Show archived
-            </label>
-            <button class="dx-msg-btn" type="button" data-dx-msg-action="read-all">Mark visible unread as read</button>
-            <span class="dx-msg-badge" id="dx-msg-unread-count">${unread}</span>
+            <div class="dx-msg-seg" role="tablist" aria-label="Filter by source">${segHtml}</div>
+            <label class="dx-msg-toggle"><input type="checkbox" data-dx-msg-toggle="archived" ${model.showArchived ? 'checked' : ''}> Archived</label>
+            <button class="dx-msg-btn" type="button" data-dx-msg-action="read-all">Mark all read</button>
           </div>
         </section>
         ${warningsHtml}
-        <section class="dx-msg-list" id="dx-msg-list">${rowsHtml}</section>
+        ${boardHtml}
       </aside>
     `;
+  }
+
+  // ---- thread modal (dark-glass surface) --------------------------------
+  let modalKeyHandler = null;
+  let modalLastFocus = null;
+
+  function ensureModalEl() {
+    let el = document.getElementById('dex-msg-modal');
+    if (el) return el;
+    el = document.createElement('div');
+    el.id = 'dex-msg-modal';
+    el.setAttribute('aria-hidden', 'true');
+    el.innerHTML = `
+      <div class="dx-msg-modal-backdrop" data-dx-msg-modal-close="1"></div>
+      <div class="dx-msg-modal-card" role="dialog" aria-modal="true" aria-label="Conversation" tabindex="-1">
+        <div class="dx-msg-modal-head">
+          <div><p class="dx-msg-modal-kicker" data-dx-modal-kicker></p><h2 class="dx-msg-modal-title" data-dx-modal-title></h2></div>
+          <button type="button" class="dx-msg-modal-close" data-dx-msg-modal-close="1" aria-label="Close">×</button>
+        </div>
+        <div class="dx-msg-modal-rail" data-dx-modal-rail hidden></div>
+        <div class="dx-msg-modal-body" data-dx-modal-body></div>
+        <div class="dx-msg-modal-foot" data-dx-modal-foot></div>
+      </div>`;
+    document.body.appendChild(el);
+    el.addEventListener('click', (event) => {
+      const target = event.target;
+      if (target instanceof HTMLElement && target.closest('[data-dx-msg-modal-close]')) closeThreadModal();
+    });
+    return el;
+  }
+
+  function closeThreadModal() {
+    const el = document.getElementById('dex-msg-modal');
+    if (!el) return;
+    el.removeAttribute('data-open');
+    el.setAttribute('aria-hidden', 'true');
+    if (modalKeyHandler) {
+      document.removeEventListener('keydown', modalKeyHandler);
+      modalKeyHandler = null;
+    }
+    try { document.body.style.overflow = el.__dxPrevOverflow || ''; } catch {}
+    if (modalLastFocus && typeof modalLastFocus.focus === 'function') {
+      try { modalLastFocus.focus(); } catch {}
+    }
+  }
+
+  function openModalShell(kicker, title) {
+    const el = ensureModalEl();
+    modalLastFocus = document.activeElement;
+    el.querySelector('[data-dx-modal-kicker]').textContent = kicker || '';
+    el.querySelector('[data-dx-modal-title]').textContent = title || '';
+    const rail = el.querySelector('[data-dx-modal-rail]');
+    rail.hidden = true;
+    rail.innerHTML = '';
+    el.querySelector('[data-dx-modal-body]').innerHTML = '<p class="dx-msg-modal-empty">Loading…</p>';
+    el.querySelector('[data-dx-modal-foot]').innerHTML = '';
+    el.setAttribute('data-open', 'true');
+    el.setAttribute('aria-hidden', 'false');
+    try { el.__dxPrevOverflow = document.body.style.overflow; document.body.style.overflow = 'hidden'; } catch {}
+    modalKeyHandler = (event) => { if (event.key === 'Escape') closeThreadModal(); };
+    document.addEventListener('keydown', modalKeyHandler);
+    const card = el.querySelector('.dx-msg-modal-card');
+    if (card) try { card.focus(); } catch {}
+    return el;
+  }
+
+  async function loadThreadDetail(context, sid) {
+    const response = await fetchJsonWithTimeout(
+      `${context.apiBase}/me/submissions/${encodeURIComponent(sid)}`,
+      { method: 'GET', headers: { authorization: `Bearer ${context.authSnapshot.token || ''}`, 'content-type': 'application/json' } },
+      SUBMISSIONS_FETCH_TIMEOUT_MS,
+    );
+    if (!response.ok) return null;
+    const payload = isObject(response.payload) ? response.payload : {};
+    const threadPayload = isObject(payload.thread) ? payload.thread : (isObject(payload.submission) ? payload.submission : {});
+    const rawTimeline = Array.isArray(payload.timeline) ? payload.timeline : (Array.isArray(payload.events) ? payload.events : []);
+    const timeline = rawTimeline
+      .map(normalizeTimelineEvent)
+      .filter(Boolean)
+      .sort((a, b) => (parseTimestamp(a.createdAt) || 0) - (parseTimestamp(b.createdAt) || 0));
+    return {
+      thread: {
+        currentStage: toSafeText(threadPayload.currentStage || threadPayload.current_stage, ''),
+        status: toSafeText(threadPayload.currentStatusRaw || threadPayload.current_status_raw || threadPayload.status, ''),
+        lookup: toSafeText(threadPayload.lookup || threadPayload.effectiveLookupNumber || threadPayload.effective_lookup_number, ''),
+      },
+      timeline,
+    };
+  }
+
+  function normalizeTimelineEvent(row, index) {
+    const value = isObject(row) ? row : {};
+    const eventType = String(value.eventType || value.event_type || value.stage || '').toLowerCase();
+    const note = toSafeText(value.publicNote || value.public_note || value.body || value.message, '');
+    const author = String(value.author || value.actor_type || value.actorType || '').toLowerCase();
+    const statusRaw = toSafeText(value.statusRaw || value.status_raw, '');
+    const createdAt = toSafeText(value.eventAt || value.event_at || value.createdAt || value.created_at, '');
+    const link = toSafeText(value.libraryHref || value.library_href || value.sourceLink || value.source_link, '');
+    if (!note && !statusRaw && !eventType) return null;
+    return { id: toSafeText(value.id, `tl-${index + 1}`), eventType, note, author, statusRaw, createdAt, link };
+  }
+
+  function bubbleHtml(event) {
+    const isMember = event.author === 'member' || event.author === 'user';
+    const cls = isMember ? 'dx-msg-bubble--member' : 'dx-msg-bubble--system';
+    const type = isMember ? 'You' : (formatEventType(event.eventType) || event.statusRaw || 'Update');
+    const note = event.note ? `<p class="dx-msg-bubble-body">${escapeHtml(event.note)}</p>` : '';
+    const link = event.link ? `<a class="dx-msg-bubble-link" href="${escapeHtml(event.link)}" target="_blank" rel="noopener">Open link ↗</a>` : '';
+    const chip = (event.statusRaw && !isMember) ? `<span class="dx-msg-chip ${severityChipClass(stageSev(event.eventType))}">${escapeHtml(event.statusRaw)}</span>` : '';
+    return `<article class="dx-msg-bubble ${cls}"><div class="dx-msg-bubble-head"><p class="dx-msg-bubble-type">${escapeHtml(type)}</p><p class="dx-msg-bubble-time">${escapeHtml(relativeTime(event.createdAt))}</p></div>${note}${(chip || link) ? `<div>${chip}${link}</div>` : ''}</article>`;
+  }
+
+  function railHtml(stage) {
+    if (stage === 'rejected') {
+      return '<div class="dx-msg-rail-step" data-state="active" style="flex:1"><div class="dx-msg-rail-bar"></div><span class="dx-msg-rail-label">Rejected</span></div>';
+    }
+    const idx = stageIndex(stage);
+    return STAGE_FLOW
+      .map((step, i) => `<div class="dx-msg-rail-step" data-state="${i < idx ? 'done' : i === idx ? 'active' : 'todo'}"><div class="dx-msg-rail-bar"></div><span class="dx-msg-rail-label">${escapeHtml(step.label)}</span></div>`)
+      .join('');
+  }
+
+  function openThreadModal(record, ctx) {
+    ensureStyles();
+    const kicker = record.sourceType === 'submission' ? 'Submission thread'
+      : record.sourceType === 'pressroom' ? 'Pressroom request' : 'Notification';
+    const el = openModalShell(kicker, record.title);
+    if (record.sourceType === 'submission') {
+      void renderSubmissionModal(el, record, ctx);
+    } else {
+      renderSimpleModal(el, record, ctx);
+    }
+  }
+
+  async function renderSubmissionModal(el, record, ctx) {
+    const { context, model, root } = ctx;
+    const body = el.querySelector('[data-dx-modal-body]');
+    const foot = el.querySelector('[data-dx-modal-foot]');
+    const railEl = el.querySelector('[data-dx-modal-rail]');
+    const sid = sanitizeSubmissionId(record.metadata?.submissionId || '');
+
+    if (!record.readAt) {
+      performRecordAction('read', record, context).then(() => render(root, model)).catch(() => {});
+    }
+
+    let detail = null;
+    if (sid) {
+      try { detail = await loadThreadDetail(context, sid); } catch { detail = null; }
+    }
+
+    const stage = detail?.thread ? threadStageKey(detail.thread) : submissionStageKey(record);
+    railEl.hidden = false;
+    railEl.innerHTML = railHtml(stage);
+
+    const timeline = Array.isArray(detail?.timeline) ? detail.timeline : [];
+    if (timeline.length) {
+      body.innerHTML = timeline.map(bubbleHtml).join('');
+    } else if (record.body) {
+      body.innerHTML = `<article class="dx-msg-bubble dx-msg-bubble--system"><div class="dx-msg-bubble-head"><p class="dx-msg-bubble-type">Update</p><p class="dx-msg-bubble-time">${escapeHtml(relativeTime(record.createdAt))}</p></div><p class="dx-msg-bubble-body">${escapeHtml(record.body)}</p></article>`;
+    } else {
+      body.innerHTML = '<p class="dx-msg-modal-empty">No messages yet. Start the conversation below.</p>';
+    }
+    body.scrollTop = body.scrollHeight;
+
+    const deepHref = sid ? `/entry/messages/submission/?sid=${encodeURIComponent(sid)}` : '/entry/submit/';
+    foot.innerHTML = `
+      <div class="dx-msg-composer">
+        <textarea data-dx-msg-reply maxlength="2000" rows="3" placeholder="Add a message to your submission thread…"></textarea>
+        <div class="dx-msg-composer-row">
+          <span class="dx-msg-composer-status" data-dx-msg-reply-status aria-live="polite"></span>
+          <div class="dx-msg-modal-actions">
+            ${record.archivedAt ? '' : '<button type="button" class="dx-msg-btn" data-dx-msg-modal-action="archive">Archive</button>'}
+            <button type="button" class="dx-msg-btn dx-msg-btn--accent" data-dx-msg-modal-action="reply"${sid ? '' : ' disabled'}>Send</button>
+          </div>
+        </div>
+      </div>
+      <p class="dx-msg-modal-note"><a class="dx-msg-bubble-link" href="${escapeHtml(deepHref)}">Open full thread ↗</a></p>`;
+
+    foot.querySelectorAll('[data-dx-msg-modal-action]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const act = btn.getAttribute('data-dx-msg-modal-action');
+        if (act === 'reply') {
+          const textarea = foot.querySelector('[data-dx-msg-reply]');
+          const statusEl = foot.querySelector('[data-dx-msg-reply-status]');
+          const text = toSafeText(textarea && textarea.value, '');
+          if (!text || !sid) return;
+          btn.setAttribute('disabled', 'disabled');
+          if (statusEl) statusEl.textContent = 'Sending…';
+          try {
+            const res = await fetchJsonWithTimeout(
+              `${context.apiBase}/me/submissions/${encodeURIComponent(sid)}/messages`,
+              { method: 'POST', headers: { authorization: `Bearer ${context.authSnapshot.token || ''}`, 'content-type': 'application/json' }, body: JSON.stringify({ body: text }) },
+              ACTION_TIMEOUT_MS,
+            );
+            if (!res.ok) throw new Error('send failed');
+            if (textarea) textarea.value = '';
+            await renderSubmissionModal(el, record, ctx);
+          } catch {
+            if (statusEl) statusEl.textContent = 'Could not send right now.';
+            btn.removeAttribute('disabled');
+          }
+          return;
+        }
+        if (act === 'archive') {
+          btn.setAttribute('disabled', 'disabled');
+          const result = await performRecordAction('archive', record, context);
+          render(root, model);
+          if (result.ok) closeThreadModal();
+          else btn.removeAttribute('disabled');
+        }
+      });
+    });
+  }
+
+  function renderSimpleModal(el, record, ctx) {
+    const { context, model, root } = ctx;
+    const body = el.querySelector('[data-dx-modal-body]');
+    const foot = el.querySelector('[data-dx-modal-foot]');
+    el.querySelector('[data-dx-modal-rail]').hidden = true;
+
+    if (!record.readAt) {
+      performRecordAction('read', record, context).then(() => render(root, model)).catch(() => {});
+    }
+
+    body.innerHTML = `<article class="dx-msg-bubble dx-msg-bubble--system"><div class="dx-msg-bubble-head"><p class="dx-msg-bubble-type">${escapeHtml(record.category || 'Notification')}</p><p class="dx-msg-bubble-time">${escapeHtml(relativeTime(record.createdAt))}</p></div>${record.body ? `<p class="dx-msg-bubble-body">${escapeHtml(record.body)}</p>` : '<p class="dx-msg-modal-empty">No additional details.</p>'}</article>`;
+
+    const rid = sanitizeRequestId(record.metadata?.requestId || '');
+    const deepHref = record.sourceType === 'pressroom' && rid
+      ? `/entry/messages/submission/?kind=pressroom&rid=${encodeURIComponent(rid)}`
+      : toSafeText(record.href, '');
+    foot.innerHTML = `
+      <div class="dx-msg-modal-actions">
+        ${record.archivedAt ? '' : '<button type="button" class="dx-msg-btn" data-dx-simple-action="archive">Archive</button>'}
+        ${deepHref ? `<a class="dx-msg-btn dx-msg-btn--accent" href="${escapeHtml(deepHref)}">Open ↗</a>` : ''}
+      </div>`;
+    foot.querySelectorAll('[data-dx-simple-action]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        btn.setAttribute('disabled', 'disabled');
+        const result = await performRecordAction('archive', record, context);
+        render(root, model);
+        if (result.ok) closeThreadModal();
+        else btn.removeAttribute('disabled');
+      });
+    });
+  }
+
+  // Shared record mutation used by the board + the modal.
+  async function performRecordAction(action, record, context) {
+    const now = nowIso();
+    if (action === 'read' || action === 'unread') {
+      const value = action === 'read' ? now : '';
+      const previous = record.readAt;
+      record.readAt = value;
+      if (record.sourceType !== 'system') {
+        updateSubmissionState(context.scope, context.submissionState, record.id, { readAt: value });
+        return { ok: true };
+      }
+      const response = await mutateSystemRecord(context.apiBase, context.authSnapshot, record.id, action);
+      if (!response.ok) { record.readAt = previous; return { ok: false, warning: `Unable to mark message as ${action} right now.` }; }
+      return { ok: true };
+    }
+    if (action === 'archive') {
+      const previous = record.archivedAt;
+      record.archivedAt = now;
+      if (record.sourceType !== 'system') {
+        updateSubmissionState(context.scope, context.submissionState, record.id, { archivedAt: now });
+        return { ok: true };
+      }
+      const response = await mutateSystemRecord(context.apiBase, context.authSnapshot, record.id, 'archive');
+      if (!response.ok) { record.archivedAt = previous; return { ok: false, warning: 'Unable to archive message right now.' }; }
+      return { ok: true };
+    }
+    if (action === 'ack') {
+      if (record.sourceType !== 'submission') return { ok: false };
+      const submissionId = toSafeText(record.metadata?.submissionId, '');
+      if (!submissionId) return { ok: false, warning: 'Unable to acknowledge submission right now.' };
+      const ackResult = await fetchJsonWithTimeout(
+        `${context.apiBase}/me/submissions/${encodeURIComponent(submissionId)}/ack`,
+        { method: 'POST', headers: { authorization: `Bearer ${context.authSnapshot.token || ''}`, 'content-type': 'application/json' } },
+        ACTION_TIMEOUT_MS,
+      );
+      if (!ackResult.ok) return { ok: false, warning: 'Unable to acknowledge submission right now.' };
+      record.readAt = now;
+      updateSubmissionState(context.scope, context.submissionState, record.id, { readAt: now });
+      return { ok: true };
+    }
+    return { ok: false };
   }
 
   function bindHandlers(root, model, context) {
@@ -1126,169 +1563,45 @@
     const eventAbortController = new AbortController();
     root.__dxMessagesEventAbortController = eventAbortController;
     const eventOptions = { signal: eventAbortController.signal };
-    const captureEventOptions = { signal: eventAbortController.signal, capture: true };
-
-    function cachePendingThreadFromTarget(target) {
-      if (!(target instanceof Element)) return;
-      const openLink = target.closest('a.dx-msg-link[href]');
-      if (!(openLink instanceof HTMLAnchorElement)) return;
-      const kindFromData = normalizeThreadKind(openLink.getAttribute('data-dx-thread-kind'));
-      const sidFromData = sanitizeSubmissionId(openLink.getAttribute('data-dx-submission-sid'));
-      const ridFromData = sanitizeRequestId(openLink.getAttribute('data-dx-request-id'));
-      const hrefThread = parseThreadRefFromHref(openLink.getAttribute('href'));
-      const kind = kindFromData === 'pressroom' || hrefThread.kind === 'pressroom' ? 'pressroom' : 'submission';
-      const sid = sidFromData || hrefThread.sid;
-      const rid = ridFromData || hrefThread.rid;
-      if (kind === 'pressroom' && rid) {
-        setPendingMessageThread({ kind: 'pressroom', rid });
-        return;
-      }
-      if (sid) setPendingMessageThread({ kind: 'submission', sid });
-    }
-
-    root.addEventListener('pointerdown', (event) => {
-      cachePendingThreadFromTarget(event.target);
-    }, captureEventOptions);
-
-    root.addEventListener('keydown', (event) => {
-      const key = event instanceof KeyboardEvent ? event.key : '';
-      if (key !== 'Enter' && key !== ' ') return;
-      cachePendingThreadFromTarget(event.target);
-    }, captureEventOptions);
 
     root.addEventListener('click', async (event) => {
       const target = event.target;
       if (!(target instanceof HTMLElement)) return;
 
-      cachePendingThreadFromTarget(target);
-
-      const filterKey = target.getAttribute('data-dx-msg-filter');
-      if (filterKey) {
-        model.filter = normalizeFilter(filterKey);
+      // Segmented source filter.
+      const seg = target.closest('[data-dx-msg-filter]');
+      if (seg instanceof HTMLElement) {
+        model.filter = normalizeFilter(seg.getAttribute('data-dx-msg-filter'));
         render(root, model);
         return;
       }
 
-      const action = target.getAttribute('data-dx-msg-action');
-      if (!action) return;
+      // Open a card → thread modal.
+      const openCard = target.closest('[data-dx-msg-open]');
+      if (openCard instanceof HTMLElement) {
+        const record = findRecord(model.records, openCard.getAttribute('data-record-id'));
+        if (record) openThreadModal(record, { context, model, root });
+        return;
+      }
 
+      const action = target.getAttribute('data-dx-msg-action');
       if (action === 'read-all') {
         const visible = visibleRecords(model.records, model.filter, model.showArchived).filter((record) => !record.readAt);
         if (!visible.length) return;
         target.setAttribute('disabled', 'disabled');
         const markedAt = nowIso();
-
         for (const record of visible) {
           record.readAt = markedAt;
           if (record.sourceType !== 'system') {
             updateSubmissionState(context.scope, context.submissionState, record.id, { readAt: markedAt });
           }
         }
-
-        const systemRecords = visible.filter((record) => record.sourceType === 'system');
-        if (systemRecords.length) {
+        if (visible.some((record) => record.sourceType === 'system')) {
           const response = await mutateSystemRecord(context.apiBase, context.authSnapshot, '', 'read-all');
           if (!response.ok) {
             model.warnings = [...model.warnings, 'Unable to persist bulk read for system notifications right now.'];
           }
         }
-
-        render(root, model);
-        return;
-      }
-
-      const recordId = target.getAttribute('data-record-id');
-      if (!recordId) return;
-      const record = findRecord(model.records, recordId);
-      if (!record) return;
-
-      target.setAttribute('disabled', 'disabled');
-      const now = nowIso();
-
-      if (action === 'read') {
-        const previous = record.readAt;
-        record.readAt = now;
-
-        if (record.sourceType !== 'system') {
-          updateSubmissionState(context.scope, context.submissionState, record.id, { readAt: now });
-        } else {
-          const response = await mutateSystemRecord(context.apiBase, context.authSnapshot, record.id, 'read');
-          if (!response.ok) {
-            record.readAt = previous;
-            model.warnings = [...model.warnings, 'Unable to mark message as read right now.'];
-          }
-        }
-
-        render(root, model);
-        return;
-      }
-
-      if (action === 'unread') {
-        const previous = record.readAt;
-        record.readAt = '';
-
-        if (record.sourceType !== 'system') {
-          updateSubmissionState(context.scope, context.submissionState, record.id, { readAt: '' });
-        } else {
-          const response = await mutateSystemRecord(context.apiBase, context.authSnapshot, record.id, 'unread');
-          if (!response.ok) {
-            record.readAt = previous;
-            model.warnings = [...model.warnings, 'Unable to mark message as unread right now.'];
-          }
-        }
-
-        render(root, model);
-        return;
-      }
-
-      if (action === 'archive') {
-        const previous = record.archivedAt;
-        record.archivedAt = now;
-
-        if (record.sourceType !== 'system') {
-          updateSubmissionState(context.scope, context.submissionState, record.id, { archivedAt: now });
-        } else {
-          const response = await mutateSystemRecord(context.apiBase, context.authSnapshot, record.id, 'archive');
-          if (!response.ok) {
-            record.archivedAt = previous;
-            model.warnings = [...model.warnings, 'Unable to archive message right now.'];
-          }
-        }
-
-        render(root, model);
-        return;
-      }
-
-      if (action === 'ack') {
-        if (record.sourceType !== 'submission') {
-          render(root, model);
-          return;
-        }
-
-        let acknowledged = false;
-        const submissionId = toSafeText(record.metadata?.submissionId, '');
-        if (submissionId) {
-          const ackResult = await fetchJsonWithTimeout(
-            `${context.apiBase}/me/submissions/${encodeURIComponent(submissionId)}/ack`,
-            {
-              method: 'POST',
-              headers: {
-                authorization: `Bearer ${context.authSnapshot.token || ''}`,
-                'content-type': 'application/json',
-              },
-            },
-            ACTION_TIMEOUT_MS,
-          );
-          acknowledged = !!ackResult.ok;
-        }
-
-        if (acknowledged) {
-          record.readAt = now;
-          updateSubmissionState(context.scope, context.submissionState, record.id, { readAt: now });
-        } else {
-          model.warnings = [...model.warnings, 'Unable to acknowledge submission right now.'];
-        }
-
         render(root, model);
       }
     }, eventOptions);
@@ -1296,8 +1609,7 @@
     root.addEventListener('change', (event) => {
       const target = event.target;
       if (!(target instanceof HTMLElement)) return;
-      const toggle = target.getAttribute('data-dx-msg-toggle');
-      if (toggle !== 'archived') return;
+      if (target.getAttribute('data-dx-msg-toggle') !== 'archived') return;
       if (target instanceof HTMLInputElement) {
         model.showArchived = !!target.checked;
         render(root, model);

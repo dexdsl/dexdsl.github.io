@@ -412,3 +412,136 @@ textarea:focus-visible {
     transform: translateY(0) scale(1);
   }
 }
+
+/* ============================================================================
+   dx-pagenav — the one global paged-nav primitive (pips + L/R chevrons).
+   iOS UIPageControl-style: windowed dots, capsule active, edge-shrink. Driven by
+   /assets/js/dx-pagenav.js. Auto-themes light vs dark (profile-protected / .--on-dark).
+   ============================================================================ */
+.dx-pagenav {
+  --dx-pagenav-size: 8px;
+  --dx-pagenav-gap: 7px;
+  --dx-pagenav-window: 7;
+  --dx-pagenav-active-extra: 12px;
+  --dx-pagenav-dot: rgba(34, 40, 54, 0.26);
+  --dx-pagenav-active: rgba(20, 24, 34, 0.92);
+  --dx-pagenav-ring: rgba(34, 40, 54, 0.22);
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  justify-self: center;
+  max-width: 100%;
+  line-height: 0;
+}
+.dx-pagenav[data-dx-pagenav-hidden] { display: none; }
+
+.dx-pagenav__viewport {
+  overflow: hidden;
+  display: flex;
+  justify-content: flex-start;
+}
+.dx-pagenav__track {
+  display: flex;
+  align-items: center;
+  gap: var(--dx-pagenav-gap);
+  will-change: transform;
+  padding: 2px 0;
+}
+.dx-pagenav__dot {
+  flex: 0 0 auto;
+  /* !important: these dots are <button>s that inherit host button resets
+     (min-height / border-radius) which otherwise stretch them into tall bars. */
+  box-sizing: border-box !important;
+  width: var(--dx-pagenav-size) !important;
+  height: var(--dx-pagenav-size) !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-height: var(--dx-pagenav-size) !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--dx-pagenav-dot);
+  cursor: pointer;
+  transform-origin: center;
+  transition:
+    width 380ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    background-color 300ms ease,
+    transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 300ms ease;
+}
+.dx-pagenav__dot.is-active {
+  width: calc(var(--dx-pagenav-size) + var(--dx-pagenav-active-extra)) !important;
+  background: var(--dx-pagenav-active);
+}
+/* Trailing/leading taper indicates more pages — a gentle size step, not a fade. */
+.dx-pagenav__dot[data-edge="1"] { transform: scale(0.78); }
+.dx-pagenav__dot[data-edge="2"] { transform: scale(0.56); opacity: 0.82; }
+.dx-pagenav__dot:hover:not(.is-active) { background: var(--dx-pagenav-active); opacity: 0.55; }
+.dx-pagenav__dot:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--dx-pagenav-ring);
+}
+
+.dx-pagenav--on-dark,
+body.dx-route-profile-protected .dx-pagenav {
+  --dx-pagenav-dot: rgba(255, 255, 255, 0.32);
+  --dx-pagenav-active: rgba(255, 255, 255, 0.95);
+  --dx-pagenav-ring: rgba(255, 255, 255, 0.3);
+}
+
+/* ---- L/R page-nav buttons (the dex hero "tabbed" prototype) ----------------
+   A flat, glyphless, semi-transparent rounded-square tab — modelled on the home
+   featured-carousel hero nav, which is the global standard. !important throughout
+   because this class is also stamped onto legacy arrows (achievements ::before
+   glyphs, board/settings heroicons, home carousel) by dx-pagenav.js, overriding
+   their existing !important rules. Positioning is left to legacy/wrapper rules. */
+.dx-pagenav-arrow {
+  --dx-pagenav-arrow-size: clamp(40px, 3vw, 50px);
+  --dx-pagenav-arrow-radius: 8px;
+  box-sizing: border-box !important;
+  width: var(--dx-pagenav-arrow-size) !important;
+  height: var(--dx-pagenav-arrow-size) !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  border-radius: var(--dx-pagenav-arrow-radius) !important;
+  border: 1px solid rgba(0, 0, 0, 0.55) !important;
+  background: rgba(0, 0, 0, 0.25) !important;
+  color: #232323 !important;
+  cursor: pointer;
+  overflow: hidden !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  transition: transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1), background-color 200ms ease, opacity 200ms ease;
+}
+/* Glyphless to match the hero tab — suppress legacy CSS glyphs and any injected
+   icon so every nav button reads as the same clean tab. */
+.dx-pagenav-arrow::before,
+.dx-pagenav-arrow::after { content: none !important; background: none !important; border: 0 !important; }
+.dx-pagenav-arrow > svg,
+.dx-pagenav-arrow > * { display: none !important; }
+.dx-pagenav-arrow:hover { background: rgba(0, 0, 0, 0.36) !important; transform: translateY(-1px); }
+.dx-pagenav-arrow:active { transform: scale(0.93); }
+.dx-pagenav-arrow:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(255, 25, 16, 0.26) !important; }
+.dx-pagenav-arrow:disabled,
+.dx-pagenav-arrow[aria-disabled="true"] { opacity: 0.35; cursor: default; pointer-events: none; }
+
+.dx-pagenav-arrow--on-dark,
+body.dx-route-profile-protected .dx-pagenav-arrow {
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  background: rgba(255, 255, 255, 0.16) !important;
+  color: var(--dx-blackglass-ink, #f3f3f4) !important;
+}
+.dx-pagenav-arrow--on-dark:hover,
+body.dx-route-profile-protected .dx-pagenav-arrow:hover { background: rgba(255, 255, 255, 0.26) !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dx-pagenav__dot,
+  .dx-pagenav-arrow { transition: none; }
+}

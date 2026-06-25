@@ -7,6 +7,7 @@ const DOCS_DIR = path.join(ROOT, 'docs');
 const SLOT_SCRIPT_TAG = '<script defer src="/assets/js/header-slot.js"></script>';
 const DOT_SCRIPT_TAG = '<script defer src="/assets/js/dx-scroll-dot.js"></script>';
 const INTERACTIVE_HOVER_SCRIPT_TAG = '<script defer src="/assets/js/interactive-hover.js"></script>';
+const PAGENAV_SCRIPT_TAG = '<script defer src="/assets/js/dx-pagenav.js"></script>';
 const FAVORITES_SCRIPT_TAG = '<script defer src="/assets/js/dx-favorites.js"></script>';
 const RUNTIME_CONFIG_TAG = '<script defer src="/assets/dex-runtime-config.js"></script>';
 const AUTH0_VENDOR_TAG = '<script src="/assets/vendor/auth0-spa-js.umd.min.js"></script>';
@@ -212,7 +213,8 @@ function shouldInject(relativePath, html) {
   return !html.includes(FAVORITES_SCRIPT_TAG)
     || !html.includes(SLOT_SCRIPT_TAG)
     || !html.includes(DOT_SCRIPT_TAG)
-    || !html.includes(INTERACTIVE_HOVER_SCRIPT_TAG);
+    || !html.includes(INTERACTIVE_HOVER_SCRIPT_TAG)
+    || !html.includes(PAGENAV_SCRIPT_TAG);
 }
 
 function injectSingleTag(html, tag, anchors = []) {
@@ -274,6 +276,7 @@ function injectTag(html, relativePath) {
   next = injectSingleTag(next, SLOT_SCRIPT_TAG, [authAnchor, authConfigAnchor]);
   next = injectSingleTag(next, DOT_SCRIPT_TAG, [SLOT_SCRIPT_TAG, authAnchor, authConfigAnchor]);
   next = injectSingleTag(next, INTERACTIVE_HOVER_SCRIPT_TAG, [DOT_SCRIPT_TAG, SLOT_SCRIPT_TAG, authAnchor, authConfigAnchor]);
+  next = injectSingleTag(next, PAGENAV_SCRIPT_TAG, [INTERACTIVE_HOVER_SCRIPT_TAG, DOT_SCRIPT_TAG, SLOT_SCRIPT_TAG, authAnchor, authConfigAnchor]);
   next = injectSingleTagBefore(next, FAVORITES_SCRIPT_TAG, [
     SLOT_SCRIPT_TAG,
     DOT_SCRIPT_TAG,

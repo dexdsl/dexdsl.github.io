@@ -1226,21 +1226,16 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
 
   function createSeasonCarouselArrow(direction) {
     const sideClass = direction === 'left' ? 'nav-left' : 'nav-right';
-    const button = create('button', `dx-catalog-index-season-arrow dx-catalog-index-season-arrow--${direction} nav ${sideClass}`);
+    const dir = direction === 'left' ? 'prev' : 'next';
+    // Global dx-pagenav chevron button (styled by css/components/dx-controls.css).
+    const button = create('button', `dx-catalog-index-season-arrow dx-pagenav-arrow dx-pagenav-arrow--${dir} nav ${sideClass}`);
     button.type = 'button';
     button.setAttribute('aria-label', direction === 'left' ? 'Previous' : 'Next');
-    if (direction === 'left') {
-      button.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-        </svg>
-      `;
-    } else {
-      button.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-        </svg>
-      `;
+    button.innerHTML = direction === 'left'
+      ? '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M15.5 19 8.5 12l7-7" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M8.5 5l7 7-7 7" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    if (window.dxPageNav && typeof window.dxPageNav.enhanceArrow === 'function') {
+      window.dxPageNav.enhanceArrow(button);
     }
     return button;
   }
@@ -1397,6 +1392,7 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
     mobileArrows.append(mobileLeft, mobileRight);
 
     let currentSlides = [];
+    let pageNav = null;
 
     const carouselIndexForSeason = (slideCount) => {
       const count = Math.max(1, Number(slideCount) || 1);
@@ -1424,22 +1420,27 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
       return delta;
     };
 
+    // Pip strip via the global dx-pagenav primitive (iOS windowed dots + capsule).
     const renderPips = (slides, activeSlot) => {
-      clearNode(pips);
-      if (!slides.length) return;
-      slides.forEach((slide, index) => {
-        const pip = create('button', 'dx-catalog-index-season-pip');
-        pip.type = 'button';
-        pip.setAttribute('aria-label', `Show ${seasonLabel(seasonCarouselSeason)} card ${index + 1}`);
-        pip.setAttribute('data-dx-carousel-pip', String(index));
-        pip.classList.toggle('is-active', index === activeSlot);
-        pip.setAttribute('aria-current', index === activeSlot ? 'true' : 'false');
-        pip.addEventListener('click', () => {
-          const delta = setCarouselSlot(index, slides.length);
-          renderTrack(delta === 0 ? 0 : (delta > 0 ? 1 : -1));
+      if (!slides.length) {
+        if (pageNav) pageNav.setCount(0);
+        return;
+      }
+      if (!pageNav && window.dxPageNav && typeof window.dxPageNav.create === 'function') {
+        pageNav = window.dxPageNav.create({
+          mount: pips,
+          count: slides.length,
+          ariaLabel: 'Carousel pages',
+          onSelect: (index) => {
+            const delta = setCarouselSlot(index, currentSlides.length || slides.length);
+            renderTrack(delta === 0 ? 0 : (delta > 0 ? 1 : -1));
+          },
         });
-        pips.appendChild(pip);
-      });
+      }
+      if (pageNav) {
+        pageNav.setCount(slides.length);
+        pageNav.setActive(activeSlot);
+      }
     };
 
     const renderTabs = () => {

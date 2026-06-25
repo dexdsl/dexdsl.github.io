@@ -1297,7 +1297,26 @@
     renderContributions();
   }
 
+  // Re-rendering the public lists after a toggle/save changes content height; keep
+  // the settings scroll body where it was so the view never jumps off-canvas.
+  function preserveSettingsScroll(run) {
+    const host = document.querySelector('#dex-settings > .grid');
+    const top = host ? host.scrollTop : 0;
+    try {
+      run();
+    } finally {
+      if (host) {
+        host.scrollTop = top;
+        window.requestAnimationFrame(() => { host.scrollTop = top; });
+      }
+    }
+  }
+
   function renderPublicProfileState() {
+    preserveSettingsScroll(renderPublicProfileStateInner);
+  }
+
+  function renderPublicProfileStateInner() {
     const profile = normalizePublicProfilePayload(state.publicProfile || {}, state.publicServerState || {});
     state.publicProfile = profile;
     const publicToggle = getNode('profilePublicToggle');
