@@ -1726,7 +1726,7 @@
       background: var(--glass-bg); box-shadow: var(--shadow-1);
       -webkit-backdrop-filter: blur(14px) saturate(120%);
       backdrop-filter: blur(14px) saturate(120%);
-      padding: 10px 42px; /* space for arrows; square padding feel */
+      padding: 10px 16px; /* square padding feel */
     }
     /* board-style pills + animated ink */
     #dex-settings .pills{ position:relative; display:inline-grid; grid-auto-flow:column; gap:6px; align-items:center; }
@@ -2762,7 +2762,7 @@ a.dx-contrib-card-main:hover .dx-contrib-card-title{ text-decoration:underline; 
   position:sticky;
   top:0;
   margin:0;
-  padding:12px 48px;
+  padding:12px 16px;
   border:0;
   border-bottom:1px solid var(--glass-brd);
   border-radius:0;
@@ -2927,9 +2927,22 @@ a.dx-contrib-card-main:hover .dx-contrib-card-title{ text-decoration:underline; 
 #dex-settings #asideWhy::before{
   opacity:.45;
 }
+/* Membership: tighten the sparse vertical rhythm. The membership + billing
+   cards are flattened to dividers (no per-card glass), so the global card
+   padding plus the V3 root gap stacked into oversized empty bands between
+   the short "no active plan" card and the billing-history card. */
+#dex-settings #pane-membership #dxMembershipV3Root{
+  gap:clamp(12px, 1.4vw, 18px);
+}
+#dex-settings #pane-membership .card{
+  padding:clamp(14px, 1.6vw, 20px) 0;
+}
+#dex-settings #pane-membership #dxMembershipV3Root > .dx-memv3-card:first-child{
+  padding-top:0;
+}
 @media (max-width: 760px){
   #dex-settings .tabsbar{
-    padding:10px 40px;
+    padding:10px 14px;
   }
   #dex-settings .pills{
     width:100%;
@@ -3071,14 +3084,8 @@ body.dx-route-profile-protected #dex-settings :is(h1,h2,h3,h4,p,label,span,stron
     <p class="sub">Manage your profile, membership, and notifications.</p>
   </header>
 
-  <!-- Tabs bar (board-style pills + ink + arrows) -->
+  <!-- Tabs bar (board-style pills + ink) -->
   <div class="tabsbar">
-    <button class="nav nav-left"  type="button" id="navPrev" aria-label="Previous tab">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-      </svg>
-    </button>
-
     <nav class="pills" role="tablist" aria-label="Settings sections">
       <button class="pill" type="button" role="tab" id="tab-account"    data-pane="account"    aria-controls="pane-account"    aria-selected="true">ACCOUNT</button>
 <button class="pill" type="button" role="tab" id="tab-public"     data-pane="public"     aria-controls="pane-public"     aria-selected="false">PUBLIC PROFILE</button>
@@ -3087,12 +3094,6 @@ body.dx-route-profile-protected #dex-settings :is(h1,h2,h3,h4,p,label,span,stron
 
       <span class="ink" aria-hidden="true"></span>
     </nav>
-
-    <button class="nav nav-right" type="button" id="navNext" aria-label="Next tab">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-      </svg>
-    </button>
   </div>
 
   <div class="grid">
@@ -3266,7 +3267,11 @@ body.dx-route-profile-protected #dex-settings :is(h1,h2,h3,h4,p,label,span,stron
                     <div class="dx-profile-row-head">
                       <label class="dx-profile-switch" for="profileFavoritesPublicToggle">
                         <input id="profileFavoritesPublicToggle" type="checkbox">
-                        <span>Show selected favorites</span>
+                        <span class="dx-profile-switch-rail" aria-hidden="true"><span></span></span>
+                        <span class="dx-profile-switch-copy">
+                          <span class="dx-profile-switch-label">Public favorites</span>
+                          <span class="dx-profile-switch-state">Show selected favorites</span>
+                        </span>
                       </label>
                       <button id="refreshPublicFavorites" class="btn" type="button">Refresh</button>
                     </div>
@@ -4246,11 +4251,11 @@ function fitProfileLayout(){
           if (t?.dataset?.pane) showPane(t.dataset.pane, 0);
         }
       });
-      prev.addEventListener('click', ()=>{
+      prev?.addEventListener('click', ()=>{
         const i = (order.indexOf(current) - 1 + order.length) % order.length;
         showPane(order[i], -1);
       });
-      next.addEventListener('click', ()=>{
+      next?.addEventListener('click', ()=>{
         const i = (order.indexOf(current) + 1) % order.length;
         showPane(order[i], +1);
       });
