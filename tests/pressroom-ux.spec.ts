@@ -182,25 +182,20 @@ function stageHost(page: Page, step: string) {
 }
 
 async function completeWizardToReview(page: Page): Promise<void> {
-  await page.getByRole('button', { name: 'Begin request' }).click();
-  await expect(stageHost(page, 'contact')).toBeVisible();
+  await expect(stageHost(page, 'compose')).toBeVisible();
 
   await page.locator('.dx-press-field', { hasText: 'Contact name' }).locator('input').fill('Alex Tester');
   await page.locator('.dx-press-field', { hasText: 'Contact email' }).locator('input').fill('alex@example.com');
-  await page.getByRole('button', { name: 'Continue' }).click();
-
-  await expect(stageHost(page, 'project')).toBeVisible();
   await page.locator('.dx-press-field', { hasText: 'Project title' }).locator('input').fill('Pressroom V2 Launch Story');
   await page.locator('.dx-press-field', { hasText: 'Project description' }).locator('textarea').fill('Coverage request for release and lifecycle improvements.');
-  await page.getByRole('button', { name: 'Continue' }).click();
 
-  await expect(stageHost(page, 'details')).toBeVisible();
-  await page.locator('.dx-press-field', { hasText: 'Source links' }).locator('input').fill('https://example.com/media');
+  await page.locator('.dx-press-advanced-summary').click();
+  await page.locator('.dx-press-field', { hasText: 'Source links' }).locator('textarea').fill('https://example.com/media');
   await page.locator('.dx-press-field', { hasText: 'Budget (USD)' }).locator('input').fill('2500');
-  await page.locator('.dx-press-field', { hasText: 'Timeline' }).locator('input').fill('Draft in two weeks');
-  await page.locator('.dx-press-field', { hasText: 'Timeframe' }).locator('input').fill('March 2026');
-  await page.getByRole('button', { name: 'Continue' }).click();
+  await page.locator('.dx-press-field', { hasText: 'Preferred timeframe' }).locator('input').fill('March 2026');
+  await page.locator('.dx-press-field', { hasText: 'Timeline (optional)' }).locator('input').fill('Draft in two weeks');
 
+  await page.getByRole('button', { name: 'Continue to review' }).click();
   await expect(stageHost(page, 'review')).toBeVisible();
 }
 
@@ -270,8 +265,7 @@ test('pressroom collapses to mobile single-column with readable controls', async
   await page.goto('/entry/pressroom/', { waitUntil: 'domcontentloaded' });
   await waitReady(page);
 
-  await page.getByRole('button', { name: 'Begin request' }).click();
-  await expect(stageHost(page, 'contact')).toBeVisible();
+  await expect(stageHost(page, 'compose')).toBeVisible();
 
   const mobile = await page.evaluate(() => {
     const shell = document.querySelector('[data-dx-press-shell]') as HTMLElement | null;
@@ -311,8 +305,9 @@ test('pressroom disables begin when monthly quota is exhausted', async ({ page }
   await page.goto('/entry/pressroom/', { waitUntil: 'domcontentloaded' });
   await waitReady(page);
 
-  const begin = page.getByRole('button', { name: 'Begin request' });
-  await expect(begin).toBeDisabled();
+  await expect(stageHost(page, 'compose')).toBeVisible();
+  const cont = page.locator('[data-dx-press-continue]');
+  await expect(cont).toBeDisabled();
   await expect(page.locator('#dex-press')).toContainText('Monthly request limit reached');
 });
 

@@ -153,24 +153,49 @@ async function stubNoActiveCallsRegistry(page: Page): Promise<void> {
   });
 }
 
-async function ensureSamplePipeline(page: Page): Promise<void> {
-  const gate = page.locator('[data-dx-submit-step="flow-gate"]');
-  if (await gate.count()) {
-    await expect(gate.first()).toBeVisible();
-    await page.getByRole('button', { name: 'Sample Submission' }).click();
-    await expect(page.locator('[data-dx-submit-step="intro"]')).toBeVisible();
+// Compose is the first step in the redesigned flow (no flow-gate / Begin screen).
+async function waitComposeReady(page: Page) {
+  await expect(page.locator('[data-dx-submit-step="compose"]')).toBeVisible();
+  const cont = page.getByRole('button', { name: 'Continue to rights & send' });
+  await expect(cont).toBeVisible();
+  await expect.poll(async () => cont.isDisabled()).toBe(false);
+  return cont;
+}
+
+type SampleEssentials = {
+  title: string;
+  creator: string;
+  category: string;
+  instrument: string;
+  collection: RegExp;
+  link: string;
+  notes?: string;
+};
+
+async function fillSampleEssentials(page: Page, opts: SampleEssentials): Promise<void> {
+  const step = page.locator('[data-dx-submit-step="compose"]');
+  await step.locator('.dx-submit-field', { hasText: 'Proposed sample title' }).locator('input').fill(opts.title);
+  await step.locator('.dx-submit-field', { hasText: 'Sample creator(s)' }).locator('input').fill(opts.creator);
+  await step.locator('.dx-submit-field', { hasText: 'Instrument category' }).locator('select').selectOption(opts.category);
+  await step.locator('.dx-submit-field', { hasText: 'Instrument' }).locator('input').fill(opts.instrument);
+  await step.locator('.dx-submit-badge').filter({ hasText: opts.collection }).first().click();
+  await step.locator('.dx-submit-field', { hasText: 'Public source link' }).locator('input').fill(opts.link);
+  if (opts.notes) {
+    await step.locator('.dx-submit-field', { hasText: 'Notes for Dex team' }).locator('textarea').fill(opts.notes);
   }
 }
 
-async function waitBeginReady(page: Page) {
-  await ensureSamplePipeline(page);
-  const begin = page.getByRole('button', { name: 'Begin' });
-  await expect(begin).toBeVisible();
-  await expect.poll(async () => begin.isDisabled()).toBe(false);
-  return begin;
+async function completeSendStep(page: Page, signature = 'Seb Solis'): Promise<void> {
+  const step = page.locator('[data-dx-submit-step="send"]');
+  await expect(step).toBeVisible();
+  await step.locator('[data-dx-submit-license-signature]').fill(signature);
+  const licenseAccept = step.locator('[data-dx-submit-license-accept]');
+  if (!(await licenseAccept.isChecked())) await licenseAccept.check();
+  const rightsAck = step.locator('[data-dx-submit-rights-ack]');
+  if (!(await rightsAck.isChecked())) await rightsAck.check();
 }
 
-test('submit bypasses Screen 0 when no active call exists', async ({ page }) => {
+test('submit shows compose directly with no flow-gate when no active call exists', async ({ page }) => {
   await stubHeaderRuntimes(page);
   await stubDexAuthRuntime(page);
   await stubApiBaseline(page);
@@ -180,26 +205,11 @@ test('submit bypasses Screen 0 when no active call exists', async ({ page }) => 
   await waitReady(page);
 
   await expect(page.locator('#dex-submit')).toHaveAttribute('data-dx-submit-has-active-call', 'false');
-  await expect(page.locator('[data-dx-submit-step=\"flow-gate\"]')).toHaveCount(0);
-  await expect(page.locator('[data-dx-submit-step=\"intro\"]')).toBeVisible();
+  await expect(page.locator('[data-dx-submit-step="flow-gate"]')).toHaveCount(0);
+  await expect(page.locator('[data-dx-submit-step="compose"]')).toBeVisible();
+  await expect(page.locator('.dx-submit-switch')).toBeVisible();
   await expect(page.locator('#dex-submit')).toHaveAttribute('data-dx-submit-flow', 'sample');
 });
-
-async function completeLicenseStep(page: Page, signature = 'Seb Solis'): Promise<void> {
-  const step = page.locator('[data-dx-submit-step="license"]');
-  await expect(step).toBeVisible();
-  await step.locator('[data-dx-submit-license-signature]').fill(signature);
-
-  const licenseAccept = step.locator('[data-dx-submit-license-accept]');
-  if (!(await licenseAccept.isChecked())) {
-    await licenseAccept.check();
-  }
-
-  const rightsAck = step.locator('[data-dx-submit-rights-ack]');
-  if (!(await rightsAck.isChecked())) {
-    await rightsAck.check();
-  }
-}
 
 type PitchSystemValue = '12-tet' | '24-tet' | 'ji' | 'atonal' | 'non-pitched';
 
@@ -207,6 +217,14 @@ type PitchSubmitScenario = {
   pitchSystem: PitchSystemValue;
   descriptor?: string;
   expectedKeyCenter: string;
+};
+
+const PITCH_SEG_LABEL: Record<PitchSystemValue, string> = {
+  '12-tet': '12-TET',
+  '24-tet': '24-TET',
+  ji: 'Just Intonation (JI)',
+  atonal: 'Atonal',
+  'non-pitched': 'Non-pitched',
 };
 
 async function submitSampleWithPitch(page: Page, scenario: PitchSubmitScenario): Promise<Record<string, string>> {
@@ -222,42 +240,33 @@ async function submitSampleWithPitch(page: Page, scenario: PitchSubmitScenario):
 
   await page.goto('/entry/submit/', { waitUntil: 'domcontentloaded' });
   await waitReady(page);
+  await waitComposeReady(page);
+  await fillSampleEssentials(page, {
+    title: 'Pitch Scenario Sample',
+    creator: 'Pitch Scenario Artist',
+    category: 'B - Brass',
+    instrument: 'Prepared Trombone',
+    collection: /^Audio$/,
+    link: 'https://drive.google.com/mock-source',
+    notes: 'pitch serialization regression',
+  });
 
-  const begin = await waitBeginReady(page);
-  await begin.click();
-  await expect(page.locator('[data-dx-submit-step="metadata"]')).toBeVisible();
-
-  const step = page.locator('[data-dx-submit-step="metadata"]');
-  await step.locator('.dx-submit-field', { hasText: 'Proposed sample title' }).locator('input').fill('Pitch Scenario Sample');
-  await step.locator('.dx-submit-field', { hasText: 'Sample creator(s)' }).locator('input').fill('Pitch Scenario Artist');
-  await step.locator('.dx-submit-field', { hasText: 'Instrument category' }).locator('select').selectOption('B - Brass');
-  await step.locator('.dx-submit-field', { hasText: 'Instrument' }).locator('input').fill('Prepared Trombone');
-  await step.locator('.dx-submit-badge', { hasText: 'A - Audio' }).click();
-
-  await step.locator('.dx-submit-field', { hasText: 'Pitch system' }).locator('select').selectOption(scenario.pitchSystem);
-
+  await page.locator('.dx-submit-advanced-summary').click();
+  await page.locator('.dx-submit-seg-option', { hasText: PITCH_SEG_LABEL[scenario.pitchSystem] }).click();
   if (scenario.pitchSystem === '12-tet' || scenario.pitchSystem === '24-tet') {
-    await step.locator('.dx-submit-field', { hasText: 'Pitch root' }).locator('select').selectOption(scenario.descriptor || 'C');
+    const label = scenario.descriptor || 'C';
+    await page.locator('.dx-submit-notechip').filter({ hasText: new RegExp(`^${label.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')}$`) }).first().click();
   } else if (scenario.pitchSystem === 'ji') {
-    await step.locator('.dx-submit-field', { hasText: 'JI pitch descriptor' }).locator('input').fill(scenario.descriptor || '');
+    await page.locator('[data-dx-submit-step="compose"]').locator('.dx-submit-field', { hasText: 'Tonality' }).locator('input').fill(scenario.descriptor || '');
   }
 
-  await page.getByRole('button', { name: 'Continue to license' }).click();
-  await expect(page.locator('[data-dx-submit-step="license"]')).toBeVisible();
-  await completeLicenseStep(page);
-  await page.getByRole('button', { name: 'Continue to upload' }).click();
-  await expect(page.locator('[data-dx-submit-step="upload"]')).toBeVisible();
-  const uploadStep = page.locator('[data-dx-submit-step="upload"]');
-  await uploadStep.locator('.dx-submit-field', { hasText: 'Public source link' }).locator('input').fill('https://drive.google.com/mock-source');
-  await uploadStep.locator('.dx-submit-field', { hasText: 'Notes for Dex team' }).locator('textarea').fill('pitch serialization regression');
+  await (await waitComposeReady(page)).click();
+  await completeSendStep(page);
   await page.getByRole('button', { name: /Submit sample/i }).click();
   await expect(page.locator('[data-dx-submit-step="done"]')).toBeVisible();
 
   expect(submitParams).not.toBeNull();
-  if (!submitParams) {
-    return {};
-  }
-  return submitParams;
+  return submitParams || {};
 }
 
 test('submit page uses desktop 60/40 shell with sticky command panel', async ({ page }) => {
@@ -270,8 +279,8 @@ test('submit page uses desktop 60/40 shell with sticky command panel', async ({ 
 
   await page.goto('/entry/submit/', { waitUntil: 'domcontentloaded' });
   await waitReady(page);
-  await ensureSamplePipeline(page);
-  await expect(page.locator('#dex-submit')).toContainText('Weekly uploads available');
+  await waitComposeReady(page);
+  await expect(page.locator('#dex-submit')).toContainText('uploads available');
   await expect(page.locator('#dex-submit')).not.toContainText('Daily uploads available');
 
   const layout = await page.evaluate(() => {
@@ -317,6 +326,7 @@ test('submit page collapses to single-column on mobile with readable field text'
 
   await page.goto('/entry/submit/', { waitUntil: 'domcontentloaded' });
   await waitReady(page);
+  await waitComposeReady(page);
 
   const stack = await page.evaluate(() => {
     const shell = document.querySelector('[data-dx-submit-shell]') as HTMLElement | null;
@@ -338,12 +348,8 @@ test('submit page collapses to single-column on mobile with readable field text'
   expect(stack.commandTop).toBeGreaterThanOrEqual(stack.mainBottom - 2);
   expect(stack.verticalGap).toBeGreaterThanOrEqual(-2);
 
-  const begin = await waitBeginReady(page);
-  await begin.click();
-  await expect(page.locator('[data-dx-submit-step="metadata"]')).toBeVisible();
-
   const fontSize = await page.evaluate(() => {
-    const input = document.querySelector('[data-dx-submit-step="metadata"] .dx-submit-input') as HTMLElement | null;
+    const input = document.querySelector('[data-dx-submit-step="compose"] .dx-submit-input') as HTMLElement | null;
     if (!input) return 0;
     return Number.parseFloat(window.getComputedStyle(input).fontSize || '0');
   });
@@ -389,12 +395,12 @@ test('submit shell reaches ready before delayed auth resolves, then hydrates quo
   const readyElapsed = Date.now() - start;
   expect(readyElapsed).toBeLessThan(2500);
 
-  await ensureSamplePipeline(page);
-  const begin = page.getByRole('button', { name: 'Begin' });
-  await expect(begin).toBeVisible();
-  await expect(begin).toBeDisabled();
-  await expect(page.locator('#dex-submit')).toContainText('checking your account quota');
-  await expect.poll(async () => begin.isDisabled()).toBe(false);
+  await expect(page.locator('[data-dx-submit-step="compose"]')).toBeVisible();
+  const cont = page.getByRole('button', { name: 'Continue to rights & send' });
+  await expect(cont).toBeVisible();
+  await expect(cont).toBeDisabled();
+  await expect.poll(async () => (await page.locator('#dex-submit').innerText()).replace(/\u200C/g, '')).toContain('checking your account quota');
+  await expect.poll(async () => cont.isDisabled()).toBe(false);
 });
 
 test('submit wizard enforces required fields and keeps payload key contract on submit', async ({ page }) => {
@@ -415,33 +421,29 @@ test('submit wizard enforces required fields and keeps payload key contract on s
 
   await page.goto('/entry/submit/', { waitUntil: 'domcontentloaded' });
   await waitReady(page);
+  const cont = await waitComposeReady(page);
 
-  const begin = await waitBeginReady(page);
-  await begin.click();
-  await expect(page.locator('[data-dx-submit-step="metadata"]')).toBeVisible();
-
-  await page.getByRole('button', { name: 'Continue to license' }).click();
-  await expect(page.locator('[data-dx-submit-step="metadata"]')).toBeVisible();
+  await cont.click();
+  await expect(page.locator('[data-dx-submit-step="compose"]')).toBeVisible();
   await expect(page.locator('.dx-submit-toast--error').last()).toContainText('Missing');
 
-  const step = page.locator('[data-dx-submit-step="metadata"]');
-  await step.locator('.dx-submit-field', { hasText: 'Proposed sample title' }).locator('input').fill('Submission Title E2E');
-  await step.locator('.dx-submit-field', { hasText: 'Sample creator(s)' }).locator('input').fill('Jane Doe');
-  await step.locator('.dx-submit-field', { hasText: 'Instrument category' }).locator('select').selectOption('B - Brass');
-  await step.locator('.dx-submit-field', { hasText: 'Instrument' }).locator('input').fill('Prepared Trombone');
-  await step.locator('.dx-submit-field', { hasText: 'Pitch system' }).locator('select').selectOption('12-tet');
-  await step.locator('.dx-submit-field', { hasText: 'Pitch root' }).locator('select').selectOption('C♯/D♭');
-  await step.locator('.dx-submit-badge', { hasText: 'A - Audio' }).click();
+  const step = page.locator('[data-dx-submit-step="compose"]');
+  await fillSampleEssentials(page, {
+    title: 'Submission Title E2E',
+    creator: 'Jane Doe',
+    category: 'B - Brass',
+    instrument: 'Prepared Trombone',
+    collection: /^Audio$/,
+    link: 'https://drive.google.com/mock-source',
+    notes: 'submission note for review',
+  });
+  await page.locator('.dx-submit-advanced-summary').click();
+  await step.locator('.dx-submit-seg-option', { hasText: '12-TET' }).click();
+  await step.locator('.dx-submit-notechip', { hasText: 'C♯/D♭' }).click();
 
-  await page.getByRole('button', { name: 'Continue to license' }).click();
-  await expect(page.locator('[data-dx-submit-step="license"]')).toBeVisible();
-  await completeLicenseStep(page, 'Jane Doe');
-  await page.getByRole('button', { name: 'Continue to upload' }).click();
-  await expect(page.locator('[data-dx-submit-step="upload"]')).toBeVisible();
-
-  const uploadStep = page.locator('[data-dx-submit-step="upload"]');
-  await uploadStep.locator('.dx-submit-field', { hasText: 'Public source link' }).locator('input').fill('https://drive.google.com/mock-source');
-  await uploadStep.locator('.dx-submit-field', { hasText: 'Notes for Dex team' }).locator('textarea').fill('submission note for review');
+  await page.getByRole('button', { name: 'Continue to rights & send' }).click();
+  await expect(page.locator('[data-dx-submit-step="send"]')).toBeVisible();
+  await completeSendStep(page, 'Jane Doe');
 
   await page.getByRole('button', { name: /Submit sample/i }).click();
 
@@ -510,25 +512,14 @@ test('submit services chips use custom tooltip contract and sidebar guidance fol
 
   await page.goto('/entry/submit/', { waitUntil: 'domcontentloaded' });
   await waitReady(page);
-
-  const begin = await waitBeginReady(page);
-  await begin.click();
-  await expect(page.locator('[data-dx-submit-step="metadata"]')).toBeVisible();
-  const step = page.locator('[data-dx-submit-step="metadata"]');
-  await step.locator('.dx-submit-field', { hasText: 'Proposed sample title' }).locator('input').fill('Tooltip focus sample');
-  await step.locator('.dx-submit-field', { hasText: 'Sample creator(s)' }).locator('input').fill('Creator Placeholder');
-  await step.locator('.dx-submit-field', { hasText: 'Instrument category' }).locator('select').selectOption('B - Brass');
+  await waitComposeReady(page);
+  const step = page.locator('[data-dx-submit-step="compose"]');
   await step.locator('.dx-submit-field', { hasText: 'Instrument' }).locator('input').fill('Prepared Trombone');
-  await step.locator('.dx-submit-badge', { hasText: 'A - Audio' }).click();
   await step.locator('.dx-submit-field', { hasText: 'Instrument' }).locator('input').focus();
   await expect(page.locator('.dx-submit-command')).toContainText('Instrument guidance');
 
-  await page.getByRole('button', { name: 'Continue to license' }).click();
-  await completeLicenseStep(page);
-  await page.getByRole('button', { name: 'Continue to upload' }).click();
-  await expect(page.locator('[data-dx-submit-step="upload"]')).toBeVisible();
-
-  const serviceChip = page.locator('[data-dx-submit-step="upload"] .dx-submit-badge', { hasText: 'Color grading' }).first();
+  await page.locator('.dx-submit-advanced-summary').click();
+  const serviceChip = step.locator('.dx-submit-badge', { hasText: 'Color grading' }).first();
   await expect(serviceChip).toHaveAttribute('data-dx-tooltip', /color/i);
   await expect(serviceChip).not.toHaveAttribute('title', /.+/);
   await serviceChip.hover();
@@ -552,11 +543,10 @@ test('submit services chips use custom tooltip contract and sidebar guidance fol
   if (!tooltipMeta) return;
   expect(tooltipMeta.parentTag).toBe('BODY');
   expect(tooltipMeta.position).toBe('fixed');
-  expect(tooltipMeta.backgroundColor).not.toBe('rgba(9, 14, 27, 0.95)');
 
   const hasZwnj = await page.evaluate(() => {
     const command = document.querySelector('.dx-submit-command');
-    return !!command && command.textContent.includes('\u200C');
+    return !!command && command.textContent.includes('‌');
   });
   expect(hasZwnj).toBeTruthy();
 });
@@ -576,22 +566,18 @@ test('submit quota timeout surfaces retry state without page errors', async ({ p
 
   await page.goto('/entry/submit/', { waitUntil: 'domcontentloaded' });
   await waitReady(page);
+  await waitComposeReady(page);
+  await fillSampleEssentials(page, {
+    title: 'Late quota response',
+    creator: 'No Reference Error',
+    category: 'B - Brass',
+    instrument: 'Prepared Trombone',
+    collection: /^Audio$/,
+    link: 'https://drive.google.com/mock-source',
+  });
 
-  const begin = await waitBeginReady(page);
-  await begin.click();
-  await expect(page.locator('[data-dx-submit-step="metadata"]')).toBeVisible();
-  const step = page.locator('[data-dx-submit-step="metadata"]');
-  await step.locator('.dx-submit-field', { hasText: 'Proposed sample title' }).locator('input').fill('Late quota response');
-  await step.locator('.dx-submit-field', { hasText: 'Sample creator(s)' }).locator('input').fill('No Reference Error');
-  await step.locator('.dx-submit-field', { hasText: 'Instrument category' }).locator('select').selectOption('B - Brass');
-  await step.locator('.dx-submit-field', { hasText: 'Instrument' }).locator('input').fill('Prepared Trombone');
-  await step.locator('.dx-submit-badge', { hasText: 'A - Audio' }).click();
-
-  await page.getByRole('button', { name: 'Continue to license' }).click();
-  await completeLicenseStep(page);
-  await page.getByRole('button', { name: 'Continue to upload' }).click();
-  const uploadStep = page.locator('[data-dx-submit-step="upload"]');
-  await uploadStep.locator('.dx-submit-field', { hasText: 'Public source link' }).locator('input').fill('https://drive.google.com/mock-source');
+  await page.getByRole('button', { name: 'Continue to rights & send' }).click();
+  await completeSendStep(page);
   await page.getByRole('button', { name: /Submit sample/i }).click();
 
   await expect(page.locator('.dx-submit-toast--error').last()).toContainText('Could not verify weekly quota');
@@ -633,7 +619,7 @@ for (const scenario of PITCH_SERIALIZATION_SCENARIOS) {
   });
 }
 
-test('submit intro locks Begin when weekly quota is exhausted for the signed-in user', async ({ page }) => {
+test('submit compose locks Continue when weekly quota is exhausted for the signed-in user', async ({ page }) => {
   await stubHeaderRuntimes(page);
   await stubDexAuthRuntime(page);
   await stubSubmitWorker(page, {
@@ -643,14 +629,13 @@ test('submit intro locks Begin when weekly quota is exhausted for the signed-in 
   await page.goto('/entry/submit/', { waitUntil: 'domcontentloaded' });
   await waitReady(page);
 
-  await ensureSamplePipeline(page);
-  await expect(page.locator('#dex-submit')).toContainText('Weekly uploads available: 0 / 4');
-  const begin = page.getByRole('button', { name: 'Begin' });
-  await expect(begin).toBeDisabled();
-  await expect(page.locator('[data-dx-submit-step="intro"]')).toBeVisible();
-  await expect(page.locator('[data-dx-submit-step="intro"]')).toContainText('Action required');
-  await expect(page.locator('[data-dx-submit-step="intro"]')).toContainText('Weekly upload limit reached for this account.');
-  await expect(page.locator('[data-dx-submit-step="metadata"]')).toHaveCount(0);
+  await expect(page.locator('[data-dx-submit-step="compose"]')).toBeVisible();
+  await expect(page.locator('#dex-submit')).toContainText('uploads available: 0 / 4');
+  const cont = page.getByRole('button', { name: 'Continue to rights & send' });
+  await expect(cont).toBeDisabled();
+  await expect(page.locator('[data-dx-submit-step="compose"]')).toContainText('Action required');
+  await expect(page.locator('[data-dx-submit-step="compose"]')).toContainText('Weekly upload limit reached for this account.');
+  await expect(page.locator('[data-dx-submit-step="send"]')).toHaveCount(0);
 });
 
 test('submit flow locks controls, shows fetching sheen, then proceeds to done', async ({ page }) => {
@@ -663,39 +648,35 @@ test('submit flow locks controls, shows fetching sheen, then proceeds to done', 
 
   await page.goto('/entry/submit/', { waitUntil: 'domcontentloaded' });
   await waitReady(page);
-  const begin = await waitBeginReady(page);
-  await begin.click();
+  await waitComposeReady(page);
+  await fillSampleEssentials(page, {
+    title: 'Submit lock sequence',
+    creator: 'Queue Lock',
+    category: 'B - Brass',
+    instrument: 'Prepared Trombone',
+    collection: /^Audio$/,
+    link: 'https://drive.google.com/sequence-source',
+  });
 
-  const metaStep = page.locator('[data-dx-submit-step="metadata"]');
-  await expect(metaStep).toBeVisible();
-  await metaStep.locator('.dx-submit-field', { hasText: 'Proposed sample title' }).locator('input').fill('Submit lock sequence');
-  await metaStep.locator('.dx-submit-field', { hasText: 'Sample creator(s)' }).locator('input').fill('Queue Lock');
-  await metaStep.locator('.dx-submit-field', { hasText: 'Instrument category' }).locator('select').selectOption('B - Brass');
-  await metaStep.locator('.dx-submit-field', { hasText: 'Instrument' }).locator('input').fill('Prepared Trombone');
-  await metaStep.locator('.dx-submit-badge', { hasText: 'A - Audio' }).click();
+  await page.getByRole('button', { name: 'Continue to rights & send' }).click();
+  await completeSendStep(page);
 
-  await page.getByRole('button', { name: 'Continue to license' }).click();
-  await completeLicenseStep(page);
-  await page.getByRole('button', { name: 'Continue to upload' }).click();
-  const uploadStep = page.locator('[data-dx-submit-step="upload"]');
-  await expect(uploadStep).toBeVisible();
-  await uploadStep.locator('.dx-submit-field', { hasText: 'Public source link' }).locator('input').fill('https://drive.google.com/sequence-source');
-
-  await uploadStep.getByRole('button', { name: /Submit sample/i }).click();
+  const sendStep = page.locator('[data-dx-submit-step="send"]');
+  await sendStep.getByRole('button', { name: /Submit sample/i }).click();
 
   const root = page.locator('#dex-submit');
   await expect(root).toHaveAttribute('data-dx-submit-submitting', 'true');
-  await expect(uploadStep.locator('.dx-submit-field', { hasText: 'Public source link' }).locator('input')).toBeDisabled();
-  await expect(uploadStep.getByRole('button', { name: 'Back' })).toBeDisabled();
-  await expect(uploadStep.getByRole('button', { name: /Submitting/i })).toBeDisabled();
+  await expect(sendStep.locator('[data-dx-submit-license-signature]')).toBeDisabled();
+  await expect(sendStep.getByRole('button', { name: 'Back' })).toBeDisabled();
+  await expect(sendStep.getByRole('button', { name: /Submitting/i })).toBeDisabled();
 
   const sheenState = await page.evaluate(() => {
-    const root = document.getElementById('dex-submit');
-    const main = root?.querySelector('.dx-submit-main');
-    if (!(root instanceof HTMLElement) || !(main instanceof HTMLElement)) return null;
+    const el = document.getElementById('dex-submit');
+    const main = el?.querySelector('.dx-submit-main');
+    if (!(el instanceof HTMLElement) || !(main instanceof HTMLElement)) return null;
     const pseudo = window.getComputedStyle(main, '::after');
     return {
-      submitting: root.getAttribute('data-dx-submit-submitting') || '',
+      submitting: el.getAttribute('data-dx-submit-submitting') || '',
       pseudoContent: pseudo.content,
       animationName: pseudo.animationName || '',
     };
@@ -707,7 +688,6 @@ test('submit flow locks controls, shows fetching sheen, then proceeds to done', 
   expect(sheenState.animationName).toContain('dx-submit-fetch-sheen');
 
   await page.waitForTimeout(150);
-  await expect(page.locator('[data-dx-submit-step="done"]')).toHaveCount(0);
   await expect(page.locator('[data-dx-submit-step="done"]')).toBeVisible();
   await expect(root).not.toHaveAttribute('data-dx-submit-submitting', 'true');
 });

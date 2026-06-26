@@ -141,12 +141,13 @@ import { animate } from 'framer-motion/dom';
   };
 
   const STEPS = [
-    { key: 'intro', title: 'Program Brief', short: 'Brief' },
-    { key: 'metadata', title: 'Submission Metadata', short: 'Meta' },
-    { key: 'license', title: 'License Agreement', short: 'License' },
-    { key: 'upload', title: 'Upload Link + Services', short: 'Upload' },
+    { key: 'compose', title: 'Compose Submission', short: 'Compose' },
+    { key: 'send', title: 'Rights + Send', short: 'Send' },
     { key: 'done', title: 'Submission Complete', short: 'Done' },
   ];
+  const STEP_COMPOSE = 0;
+  const STEP_SEND = 1;
+  const STEP_DONE = 2;
 
   const CATEGORY_OPTIONS = [
     '',
@@ -177,21 +178,21 @@ import { animate } from 'framer-motion/dom';
   const SERVICE_OPTIONS = [
     {
       value: 'chop',
-      label: 'Bucket chop',
+      label: 'Section chops (A–E buckets)',
       locked: true,
-      tooltip: 'Formal section cuts into A/B/C/D/E/X buckets for lookup-ready release packaging.',
+      tooltip: 'We split your piece into labelled sections (A–E, plus X) so it is searchable and release-ready in the library.',
     },
     {
       value: 'credits',
-      label: 'Dex credits roll',
+      label: 'Dex credits card',
       locked: true,
-      tooltip: 'Adds standard Dex attribution card and contribution metadata for the public release.',
+      tooltip: 'Adds the standard Dex attribution card and your contribution metadata to the public release.',
     },
     {
       value: 'render',
-      label: '1080p/MP3 copies',
+      label: 'Preview copies (1080p / MP3)',
       locked: true,
-      tooltip: 'Creates delivery renditions for preview and accessibility while preserving source masters.',
+      tooltip: 'Creates lightweight preview/accessibility versions while preserving your source masters.',
     },
     {
       value: 'grade',
@@ -293,11 +294,48 @@ import { animate } from 'framer-motion/dom';
   const TAG_HINT =
     'Met, Fre, Perc, Sus, Cle, Dis, Mono, Poly, Lou, Qui, Med, Bra, Exc, Sta, Sho, Lon, Oth, Ow, Mid, Hi, Spa';
 
+  // Common scale qualities for the scale-quality combobox (free entry still allowed).
+  const SCALE_QUALITY_SUGGESTIONS = [
+    'major', 'minor', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'locrian',
+    'harmonic minor', 'melodic minor', 'pentatonic', 'blues', 'whole-tone',
+    'chromatic', 'modal', 'maqam', 'raga', 'octatonic', 'microtonal', 'atonal',
+  ];
+
+  // Faceted tag vocabulary. `code` is committed to meta.tags (preserves the
+  // existing short-code CSV contract); `label` is shown to the contributor.
+  const TAG_VOCAB = [
+    { facet: 'Timbre', items: [
+      { code: 'Met', label: 'Metallic' }, { code: 'Bra', label: 'Bright' },
+      { code: 'Cle', label: 'Clean' }, { code: 'Dis', label: 'Distorted' },
+      { code: 'Fre', label: 'Resonant' }, { code: 'Perc', label: 'Percussive' },
+    ] },
+    { facet: 'Texture', items: [
+      { code: 'Mono', label: 'Monophonic' }, { code: 'Poly', label: 'Polyphonic' },
+      { code: 'Sus', label: 'Sustained' }, { code: 'Sta', label: 'Staccato' },
+      { code: 'Exc', label: 'Excited' },
+    ] },
+    { facet: 'Dynamics', items: [
+      { code: 'Lou', label: 'Loud' }, { code: 'Qui', label: 'Quiet' },
+      { code: 'Med', label: 'Medium' },
+    ] },
+    { facet: 'Register', items: [
+      { code: 'Hi', label: 'High' }, { code: 'Mid', label: 'Mid' }, { code: 'Ow', label: 'Low' },
+    ] },
+    { facet: 'Length', items: [
+      { code: 'Sho', label: 'Short' }, { code: 'Lon', label: 'Long' },
+    ] },
+    { facet: 'Space', items: [
+      { code: 'Spa', label: 'Spacious' }, { code: 'Oth', label: 'Other' },
+    ] },
+  ];
+  const TAG_CODE_TO_LABEL = TAG_VOCAB.reduce((acc, facet) => {
+    facet.items.forEach((item) => { acc[item.code.toLowerCase()] = item.label; });
+    return acc;
+  }, {});
+
   const STEP_GUIDANCE = {
-    intro: 'Review the process and quality targets before you start.',
-    metadata: 'Provide enough context for fast review and routing.',
-    license: 'Choose your licensing mode and complete rights attestation before upload handoff.',
-    upload: 'Paste a public link and select optional post-production.',
+    compose: 'Add the essentials, paste your source link, and open Advanced for tuning, tags, and production extras.',
+    send: 'Choose your licensing mode, confirm rights, sign, and send.',
     done: 'Track status in your inbox submission timeline.',
   };
 
@@ -736,8 +774,9 @@ import { animate } from 'framer-motion/dom';
       profileDefaultsLoaded: false,
       profileDefaultsAutoApplied: false,
       flow: startingFlow,
-      pipelineChosen: !!routeFlow.explicitFlow,
+      pipelineChosen: true,
       routeFlowExplicit: !!routeFlow.explicitFlow,
+      ui: { advancedOpen: false },
       routeFlowRequested: {
         flow: routeFlow.flow,
         lane: routeFlow.lane,
@@ -813,7 +852,7 @@ import { animate } from 'framer-motion/dom';
     state.submitError = '';
     state.focusedField = '';
     state.fieldErrors = {};
-    if (state.step > 3) state.step = 0;
+    if (state.step > DRAFT_FORM_STEP_MAX) state.step = 0;
     if (safeFlow === FLOW_CALL) {
       state.meta.callLane = normalizeLane(state.meta.callLane);
       state.meta.callSubcall = normalizeSubcall(state.meta.callSubcall);
@@ -854,7 +893,7 @@ import { animate } from 'framer-motion/dom';
       if (state.__callsRegistryPayload) {
         applyCallsRegistryContract(state.__callsRegistryPayload, { announce: false, updateUrl: false });
       }
-      if (state.flow === FLOW_CALL && state.step === 1) render();
+      if (state.flow === FLOW_CALL && state.step === STEP_COMPOSE) render();
     } catch {}
   }
 
@@ -957,7 +996,7 @@ import { animate } from 'framer-motion/dom';
       }
       const payload = await response.json();
       applyCallsRegistryContract(payload, { announce: true, updateUrl: true });
-      if (state.flow === FLOW_CALL && state.step === 1) render();
+      if (state.flow === FLOW_CALL && state.step === STEP_COMPOSE) render();
     } catch {
       state.callsRegistryLoaded = true;
       state.hasActiveCall = false;
@@ -1088,6 +1127,31 @@ import { animate } from 'framer-motion/dom';
     const direct = text(user.family_name || user.surname || user.last_name, '');
     if (direct) return direct;
     return parseSurnameCandidate(user.name || user.nickname || user.email || '');
+  }
+
+  function authDisplayName() {
+    const user = state && state.authUser && typeof state.authUser === 'object'
+      ? state.authUser
+      : (window.AUTH0_USER && typeof window.AUTH0_USER === 'object' ? window.AUTH0_USER : null);
+    if (!user) return '';
+    const name = text(user.name, '');
+    if (name && !name.includes('@')) return name;
+    const composed = `${text(user.given_name, '')} ${text(user.family_name, '')}`.trim();
+    return composed;
+  }
+
+  // Pre-fill the digital signature from the signed-in name once, when the user
+  // has not typed one and the draft has not supplied one.
+  function prefillSignatureFromAuth() {
+    if (!state || state.signaturePrefilled) return;
+    if (text(state.signatureName)) { state.signaturePrefilled = true; return; }
+    const name = authDisplayName();
+    if (!name) return;
+    state.signatureName = name;
+    state.signaturePrefilled = true;
+    const draft = getFlowDraft(normalizeFlow(state.flow));
+    if (draft) draft.signatureName = name;
+    if (state.step === STEP_SEND) render();
   }
 
   function parsePerformerToken() {
@@ -1935,7 +1999,7 @@ import { animate } from 'framer-motion/dom';
 
   function validateSampleMeta() {
     const errors = {};
-    const required = ['title', 'creator', 'instrument', 'category', 'collectionType'];
+    const required = ['title', 'creator', 'instrument', 'category', 'collectionType', 'link'];
     for (const key of required) {
       const value = state.meta[key];
       if (Array.isArray(value) ? value.length === 0 : !text(value)) errors[key] = 'Required';
@@ -1958,6 +2022,7 @@ import { animate } from 'framer-motion/dom';
     }
     if (!text(state.meta.title)) errors.title = 'Required';
     if (!text(state.meta.creator)) errors.creator = 'Required';
+    if (!text(state.meta.link)) errors.link = 'Required';
 
     if (lane && !errors.callLane) {
       const laneSchema = getCallLaneSchema(lane);
@@ -2076,188 +2141,6 @@ import { animate } from 'framer-motion/dom';
     return wrap;
   }
 
-  function choosePipeline(flowKey) {
-    if (!state) return;
-    if (normalizeFlow(flowKey) === FLOW_CALL && !state.hasActiveCall) {
-      showToast('No active IN DEX call right now. Use Sample Submission.', true);
-      state.pipelineChosen = true;
-      setActiveFlow(FLOW_SAMPLE, {
-        force: true,
-        resetStep: true,
-        refreshQuota: true,
-      });
-      return;
-    }
-    state.pipelineChosen = true;
-    setActiveFlow(flowKey, {
-      force: true,
-      resetStep: true,
-      refreshQuota: true,
-    });
-  }
-
-  function buildFlowGateStep() {
-    const section = create('section', 'dx-submit-stage-card dx-submit-gate-card');
-    section.setAttribute('data-dx-submit-step', 'flow-gate');
-    section.appendChild(create('p', 'dx-submit-kicker', 'Screen 0'));
-    section.appendChild(create('h2', 'dx-submit-title', 'What are you submitting?'));
-    section.appendChild(
-      create(
-        'p',
-        'dx-submit-copy dx-submit-copy--compact',
-        'Choose one pipeline to continue.',
-      ),
-    );
-
-    const actions = create('div', 'dx-submit-stage-actions dx-submit-gate-actions');
-    const sample = create(
-      'button',
-      'cta-btn dx-button-element dx-button-size--md dx-button-element--secondary',
-      'Sample Submission',
-    );
-    sample.type = 'button';
-    sample.addEventListener('click', () => {
-      choosePipeline(FLOW_SAMPLE);
-    });
-
-    const call = create(
-      'button',
-      'cta-btn dx-button-element dx-button-size--md dx-button-element--primary',
-      'IN DEX Call Submission',
-    );
-    call.type = 'button';
-    if (!state.hasActiveCall) {
-      call.disabled = true;
-      call.classList.add('is-disabled');
-    }
-    call.addEventListener('click', () => {
-      choosePipeline(FLOW_CALL);
-    });
-
-    actions.append(sample, call);
-    section.appendChild(actions);
-    if (!state.hasActiveCall) {
-      section.appendChild(create(
-        'p',
-        'dx-submit-copy dx-submit-copy--compact',
-        'No active IN DEX call is open right now. Sample Submission remains available.',
-      ));
-    }
-    return section;
-  }
-
-  function buildIntroStep() {
-    const section = create('section', 'dx-submit-stage-card');
-    section.setAttribute('data-dx-submit-step', 'intro');
-
-    const isCallFlow = state.flow === FLOW_CALL;
-    section.appendChild(create('p', 'dx-submit-kicker', 'Submission Program'));
-    section.appendChild(
-      create(
-        'h2',
-        'dx-submit-title',
-        isCallFlow
-          ? 'Join an IN DEX call. We track routing and decisions end-to-end.'
-          : 'Share source media. We track the journey end-to-end.',
-      ),
-    );
-
-    const lead = create(
-      'p',
-      'dx-submit-copy',
-      isCallFlow
-        ? 'Select your call lane, attach proposal context, and submit one link. Dex reviews within 7 days and posts timeline notes in Messages.'
-        : 'Upload a public master-link and metadata. Dex reviews within 7 days, then routes to revision, acceptance, or release.',
-    );
-    section.appendChild(lead);
-
-    if (isCallFlow) {
-      const routePills = create('div', 'dx-submit-pill-group');
-      const laneId = normalizeLane(state.meta.callLane);
-      if (laneId) routePills.appendChild(create('span', 'dx-submit-pill dx-submit-pill--accent', laneLabel(laneId)));
-      if (laneId === 'in-dex-a' && normalizeSubcall(state.meta.callSubcall)) {
-        routePills.appendChild(create('span', 'dx-submit-pill', `Subcall ${String(state.meta.callSubcall).toUpperCase()}`));
-      }
-      if (text(state.meta.callCycle)) {
-        routePills.appendChild(create('span', 'dx-submit-pill', text(state.meta.callCycle)));
-      }
-      if (routePills.childElementCount > 0) section.appendChild(routePills);
-    }
-
-    const list = create('ul', 'dx-submit-list');
-    const introPoints = isCallFlow
-      ? [
-        'Sent: your call lane proposal + source link received.',
-        'Received/Reviewing: staff validates fit for current call cycle.',
-        'Accepted/Rejected: decision + note appears in your timeline.',
-        'In library: release or follow-up links post when published.',
-      ]
-      : [
-        'Sent: your source link + metadata received.',
-        'Received/Reviewing: staff validates format and attribution.',
-        'Accepted/Rejected: decision + note appears in your timeline.',
-        'In library: final release links appear when published.',
-      ];
-    introPoints.forEach((item) => list.appendChild(create('li', 'dx-submit-list-item', item)));
-    section.appendChild(list);
-
-    const specs = create('div', 'dx-submit-pill-group');
-    (isCallFlow
-      ? ['Lane-specific review', 'Status updates in Messages', 'Original work only', 'One link per submission']
-      : ['4K/24fps preferred', '48kHz / 24-bit WAV preferred', 'Original work only', 'Lower-res accepted']
-    ).forEach((pill) => {
-      specs.appendChild(create('span', 'dx-submit-pill', pill));
-    });
-    section.appendChild(specs);
-
-    if (state.quotaResolved && state.quotaLeft <= 0) {
-      section.appendChild(buildQuotaActionCard());
-    }
-
-    const footer = create('div', 'dx-submit-stage-actions');
-    const switchFlow = create(
-      'button',
-      'cta-btn dx-button-element dx-button-size--sm dx-button-element--secondary',
-      'Change pipeline',
-    );
-    switchFlow.type = 'button';
-    switchFlow.addEventListener('click', () => {
-      state.pipelineChosen = false;
-      state.step = 0;
-      render();
-    });
-
-    const quota = create(
-      'p',
-      'dx-submit-copy dx-submit-copy--compact',
-      quotaSummaryText(),
-    );
-    quota.setAttribute('data-dx-submit-quota', 'true');
-    const begin = create(
-      'button',
-      'cta-btn dx-button-element dx-button-size--md dx-button-element--primary',
-      isCallFlow ? 'Begin call submission' : 'Begin',
-    );
-    begin.type = 'button';
-    begin.setAttribute('data-dx-submit-begin', 'true');
-    const quotaLocked = isQuotaLocked();
-    begin.disabled = quotaLocked;
-    begin.classList.toggle('is-disabled', quotaLocked);
-    begin.setAttribute('aria-disabled', quotaLocked ? 'true' : 'false');
-    begin.addEventListener('click', () => {
-      if (!guardQuotaForProgression(true)) {
-        refreshQuotaCopy();
-        return;
-      }
-      state.step = 1;
-      render();
-    });
-    footer.append(switchFlow, quota, begin);
-    section.appendChild(footer);
-
-    return section;
-  }
-
   function buildQuotaActionCard() {
     const actionCard = create('article', 'dx-submit-action-card');
     actionCard.appendChild(create('p', 'dx-submit-action-kicker', 'Action required'));
@@ -2344,13 +2227,393 @@ import { animate } from 'framer-motion/dom';
     return field;
   }
 
-  function buildCallMetadataStep() {
-    const section = create('section', 'dx-submit-stage-card');
-    section.setAttribute('data-dx-submit-step', 'metadata');
+  // ===== Redesigned compose/send flow =====
 
-    section.appendChild(create('p', 'dx-submit-kicker', 'Step 2'));
-    section.appendChild(create('h2', 'dx-submit-title', 'Call lane metadata for routing and review'));
+  function switchPipeline(flowKey) {
+    if (!state) return;
+    const target = normalizeFlow(flowKey);
+    if (target === normalizeFlow(state.flow)) return;
+    if (target === FLOW_CALL && !state.hasActiveCall) {
+      showToast('No active IN DEX call right now.', true);
+      return;
+    }
+    state.pipelineChosen = true;
+    setActiveFlow(target, { force: true, resetStep: true, refreshQuota: true });
+  }
 
+  function buildPipelineSwitch() {
+    const wrap = create('div', 'dx-submit-switch');
+    wrap.setAttribute('role', 'tablist');
+    wrap.setAttribute('aria-label', 'Submission pipeline');
+    const make = (flowKey, label, disabled) => {
+      const active = normalizeFlow(state.flow) === flowKey;
+      const btn = create('button', 'dx-submit-switch-option', label);
+      btn.type = 'button';
+      btn.setAttribute('role', 'tab');
+      btn.setAttribute('aria-selected', active ? 'true' : 'false');
+      btn.setAttribute('data-flow', flowKey);
+      if (active) btn.classList.add('is-active');
+      if (disabled) {
+        btn.disabled = true;
+        btn.classList.add('is-disabled');
+      } else if (!active) {
+        btn.addEventListener('click', () => switchPipeline(flowKey));
+      }
+      return btn;
+    };
+    wrap.append(
+      make(FLOW_SAMPLE, 'Sample', false),
+      make(FLOW_CALL, 'IN DEX Call', !state.hasActiveCall),
+    );
+    return wrap;
+  }
+
+  // --- Reusable field builders (write straight to state.meta) ---
+  function metaTextField(label, key, placeholder, maxLen, required, type = 'text') {
+    const field = wrapField(label, !!required, key);
+    const input = create('input', 'dx-submit-input');
+    input.type = type;
+    if (maxLen) input.maxLength = maxLen;
+    input.placeholder = placeholder || '';
+    input.value = text(state.meta[key]);
+    input.addEventListener('input', (event) => { state.meta[key] = event.target.value; });
+    bindFieldFocus(input, key);
+    field.appendChild(input);
+    return field;
+  }
+
+  function metaTextareaField(label, key, placeholder) {
+    const field = wrapField(label, false, key);
+    const area = create('textarea', 'dx-submit-input dx-submit-notes');
+    area.rows = 5;
+    area.placeholder = placeholder || '';
+    area.value = text(state.meta[key]);
+    area.addEventListener('input', (event) => { state.meta[key] = event.target.value; });
+    bindFieldFocus(area, key);
+    field.appendChild(area);
+    return field;
+  }
+
+  function metaSelectField(label, key, options, required) {
+    const field = wrapField(label, !!required, key);
+    const select = create('select', 'dx-submit-input');
+    options.forEach((value) => {
+      const option = create('option', '', value || 'Choose category');
+      option.value = value;
+      select.appendChild(option);
+    });
+    select.value = text(state.meta[key]);
+    select.addEventListener('change', (event) => { state.meta[key] = event.target.value; });
+    bindFieldFocus(select, key);
+    field.appendChild(select);
+    return field;
+  }
+
+  function collectionTypeField() {
+    const field = wrapField('Collection type', true, 'collectionType');
+    const group = create('div', 'dx-submit-badge-group');
+    COLLECTION_OPTIONS.forEach((entry) => {
+      group.appendChild(toBadge(
+        entry.label,
+        state.meta.collectionType === entry.value,
+        () => { state.meta.collectionType = entry.value; render(); },
+        false,
+        { focusKey: 'collectionType' },
+      ));
+    });
+    field.appendChild(group);
+    return field;
+  }
+
+  function outputTypesField() {
+    const field = wrapField('Release formats', false, 'outputTypes');
+    const group = create('div', 'dx-submit-badge-group');
+    OUTPUT_OPTIONS.forEach((entry) => {
+      const selected = state.meta.outputTypes.includes(entry.value);
+      group.appendChild(toBadge(entry.label, selected, () => {
+        state.meta.outputTypes = selected
+          ? state.meta.outputTypes.filter((value) => value !== entry.value)
+          : [...state.meta.outputTypes, entry.value];
+        render();
+      }, false, { focusKey: 'outputTypes' }));
+    });
+    field.appendChild(group);
+    return field;
+  }
+
+  function servicesFieldControl() {
+    const field = wrapField('Production services', false, 'services');
+    field.appendChild(create('p', 'dx-submit-copy dx-submit-copy--compact', 'Locked services are always applied. Add optional post-production as needed.'));
+    const group = create('div', 'dx-submit-badge-group');
+    SERVICE_OPTIONS.forEach((entry) => {
+      const selected = state.meta.services.includes(entry.value);
+      group.appendChild(toBadge(
+        entry.locked ? `\u{1F512} ${entry.label}` : entry.label,
+        selected,
+        () => {
+          state.meta.services = selected
+            ? state.meta.services.filter((value) => value !== entry.value)
+            : [...state.meta.services, entry.value];
+          render();
+        },
+        entry.locked,
+        { tooltip: entry.tooltip, focusKey: 'services' },
+      ));
+    });
+    field.appendChild(group);
+    return field;
+  }
+
+  // --- Strengthened controls ---
+  function buildPitchControl() {
+    const system = normalizePitchSystem(state.meta.pitchSystem);
+    state.meta.pitchSystem = system;
+    state.meta.pitchDescriptor = normalizePitchDescriptorForSystem(system, state.meta.pitchDescriptor);
+    syncLegacyPitchFields(state.meta);
+
+    const field = wrapField('Tonality', false, 'pitchSystem');
+    const seg = create('div', 'dx-submit-seg');
+    PITCH_SYSTEM_OPTIONS.forEach((entry) => {
+      const btn = create('button', 'dx-submit-seg-option', entry.label);
+      btn.type = 'button';
+      const active = entry.value === system;
+      if (active) btn.classList.add('is-active');
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      btn.addEventListener('click', () => {
+        state.meta.pitchSystem = normalizePitchSystem(entry.value);
+        state.meta.pitchDescriptor = normalizePitchDescriptorForSystem(state.meta.pitchSystem, state.meta.pitchDescriptor);
+        if (state.meta.pitchSystem === 'atonal' || state.meta.pitchSystem === 'non-pitched') state.meta.pitchDescriptor = '';
+        syncLegacyPitchFields(state.meta);
+        render();
+      });
+      seg.appendChild(btn);
+    });
+    field.appendChild(seg);
+
+    if (isPitchRootDropdownSystem(system)) {
+      field.appendChild(create('p', 'dx-submit-copy dx-submit-copy--compact', 'Root note'));
+      const notes = create('div', 'dx-submit-notechips');
+      getPitchRootOptions(system).forEach((value) => {
+        const chip = create('button', 'dx-submit-notechip', value);
+        chip.type = 'button';
+        if (text(state.meta.pitchDescriptor) === value) chip.classList.add('is-active');
+        chip.addEventListener('click', () => {
+          state.meta.pitchDescriptor = text(state.meta.pitchDescriptor) === value ? '' : value;
+          syncLegacyPitchFields(state.meta);
+          render();
+        });
+        notes.appendChild(chip);
+      });
+      field.appendChild(notes);
+    } else if (system === 'ji') {
+      field.appendChild(create('p', 'dx-submit-copy dx-submit-copy--compact', PITCH_DESCRIPTOR_HINTS.ji));
+      const input = create('input', 'dx-submit-input');
+      input.type = 'text';
+      input.maxLength = 120;
+      input.placeholder = 'Ex: 5/4 on C';
+      input.value = text(state.meta.pitchDescriptor);
+      input.addEventListener('input', (event) => {
+        state.meta.pitchDescriptor = event.target.value;
+        syncLegacyPitchFields(state.meta);
+      });
+      bindFieldFocus(input, 'pitchDescriptor');
+      field.appendChild(input);
+    } else {
+      field.appendChild(create('p', 'dx-submit-copy dx-submit-copy--compact', 'No root note needed for this tonality.'));
+    }
+    return field;
+  }
+
+  function buildScaleQualityControl() {
+    const field = wrapField('Scale quality', false, 'scaleQuality');
+    const input = create('input', 'dx-submit-input');
+    input.type = 'text';
+    input.maxLength = 50;
+    input.placeholder = 'e.g. dorian, maqam, blues…';
+    input.setAttribute('list', 'dx-submit-scale-list');
+    input.value = text(state.meta.scaleQuality);
+    input.addEventListener('input', (event) => { state.meta.scaleQuality = event.target.value; });
+    bindFieldFocus(input, 'scaleQuality');
+    field.appendChild(input);
+    const datalist = create('datalist');
+    datalist.id = 'dx-submit-scale-list';
+    SCALE_QUALITY_SUGGESTIONS.forEach((value) => {
+      const option = create('option');
+      option.value = value;
+      datalist.appendChild(option);
+    });
+    field.appendChild(datalist);
+    return field;
+  }
+
+  function getTagTokens() {
+    return text(state.meta.tags).split(',').map((token) => token.trim()).filter(Boolean);
+  }
+
+  function setTagTokens(tokens) {
+    const seen = new Set();
+    const out = [];
+    tokens.forEach((token) => {
+      const key = token.toLowerCase();
+      if (!seen.has(key)) { seen.add(key); out.push(token); }
+    });
+    state.meta.tags = out.join(', ');
+  }
+
+  function buildTagsControl() {
+    const field = wrapField('Tags', false, 'tags');
+    field.appendChild(create('p', 'dx-submit-copy dx-submit-copy--compact', 'Pick from suggestions or type your own, then press Enter.'));
+
+    const box = create('div', 'dx-submit-tokens');
+    const input = create('input', 'dx-submit-tok-input');
+    input.type = 'text';
+    input.placeholder = 'Add a tag…';
+    bindFieldFocus(input, 'tags');
+
+    const suggest = create('div', 'dx-submit-tag-suggest');
+    const suggestButtons = [];
+
+    function renderSuggestState() {
+      const codes = getTagTokens().map((token) => token.toLowerCase());
+      suggestButtons.forEach((btn) => {
+        const on = codes.includes(String(btn.dataset.code).toLowerCase());
+        btn.classList.toggle('is-selected', on);
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    }
+
+    function renderTokens() {
+      box.querySelectorAll('.dx-submit-tok').forEach((node) => node.remove());
+      getTagTokens().forEach((token) => {
+        const chip = create('span', 'dx-submit-tok');
+        const labelText = TAG_CODE_TO_LABEL[token.toLowerCase()] || token;
+        chip.appendChild(create('span', 'dx-submit-tok-label', labelText));
+        const remove = create('button', 'dx-submit-tok-remove', '×');
+        remove.type = 'button';
+        remove.setAttribute('aria-label', `Remove ${labelText}`);
+        remove.addEventListener('click', () => {
+          setTagTokens(getTagTokens().filter((value) => value.toLowerCase() !== token.toLowerCase()));
+          renderTokens();
+          renderSuggestState();
+        });
+        chip.appendChild(remove);
+        box.insertBefore(chip, input);
+      });
+    }
+
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ',') {
+        event.preventDefault();
+        const value = input.value.trim().replace(/,+$/, '').trim();
+        if (value) {
+          setTagTokens([...getTagTokens(), value]);
+          input.value = '';
+          renderTokens();
+          renderSuggestState();
+        }
+      } else if (event.key === 'Backspace' && !input.value) {
+        const tokens = getTagTokens();
+        if (tokens.length) {
+          tokens.pop();
+          setTagTokens(tokens);
+          renderTokens();
+          renderSuggestState();
+        }
+      }
+    });
+
+    box.appendChild(input);
+    field.appendChild(box);
+
+    TAG_VOCAB.forEach((facet) => {
+      const row = create('div', 'dx-submit-tag-facet');
+      row.appendChild(create('span', 'dx-submit-tag-facet-label', facet.facet));
+      facet.items.forEach((item) => {
+        const btn = create('button', 'dx-submit-tag-opt', item.label);
+        btn.type = 'button';
+        btn.dataset.code = item.code;
+        btn.addEventListener('click', () => {
+          const tokens = getTagTokens();
+          const has = tokens.some((token) => token.toLowerCase() === item.code.toLowerCase());
+          setTagTokens(has
+            ? tokens.filter((token) => token.toLowerCase() !== item.code.toLowerCase())
+            : [...tokens, item.code]);
+          renderTokens();
+          renderSuggestState();
+        });
+        suggestButtons.push(btn);
+        row.appendChild(btn);
+      });
+      suggest.appendChild(row);
+    });
+    field.appendChild(suggest);
+
+    renderTokens();
+    renderSuggestState();
+    return field;
+  }
+
+  // --- Compose bodies ---
+  function buildSampleComposeBody() {
+    const frag = document.createDocumentFragment();
+
+    const defaultsWrap = create('div', 'dx-submit-stage-actions');
+    defaultsWrap.appendChild(create(
+      'p',
+      'dx-submit-copy dx-submit-copy--compact',
+      hasSubmitProfileDefaults()
+        ? 'Profile defaults are available for creator / category / instrument.'
+        : 'Add defaults in Settings → Contribution Profile to speed up repeat submissions.',
+    ));
+    const applyBtn = create('button', 'cta-btn dx-button-element dx-button-size--sm dx-button-element--secondary', 'Apply profile defaults');
+    applyBtn.type = 'button';
+    applyBtn.disabled = !hasSubmitProfileDefaults();
+    applyBtn.classList.toggle('is-disabled', !hasSubmitProfileDefaults());
+    applyBtn.addEventListener('click', () => { if (applySubmitProfileDefaults({ force: true, announce: true })) render(); });
+    defaultsWrap.appendChild(applyBtn);
+    frag.appendChild(defaultsWrap);
+
+    const essentials = create('section', 'dx-submit-group');
+    essentials.appendChild(create('p', 'dx-submit-group-label', 'Essentials'));
+    const grid = create('div', 'dx-submit-grid');
+    grid.append(
+      metaTextField('Proposed sample title', 'title', 'Ex: Prepared Trombone Long Tones', 100, true),
+      metaTextField('Sample creator(s)', 'creator', 'Ex: Jane Doe, John Doe', 2000, true),
+      metaSelectField('Instrument category', 'category', CATEGORY_OPTIONS, true),
+      metaTextField('Instrument', 'instrument', 'Ex: Prepared Trombone', 120, true),
+      collectionTypeField(),
+    );
+    essentials.appendChild(grid);
+    essentials.appendChild(metaTextField('Public source link', 'link', 'https://drive.google.com/...', 0, true, 'url'));
+    frag.appendChild(essentials);
+
+    const advanced = create('details', 'dx-submit-advanced');
+    advanced.open = !!(state.ui && state.ui.advancedOpen);
+    advanced.addEventListener('toggle', () => {
+      if (!state.ui) state.ui = {};
+      state.ui.advancedOpen = advanced.open;
+    });
+    advanced.appendChild(create('summary', 'dx-submit-advanced-summary', 'Advanced — tuning, tags & production'));
+    const advGrid = create('div', 'dx-submit-grid');
+    advGrid.append(
+      metaTextField('BPM', 'bpm', '120', 0, false, 'number'),
+      buildPitchControl(),
+      buildScaleQualityControl(),
+    );
+    advanced.appendChild(advGrid);
+    advanced.appendChild(buildTagsControl());
+    advanced.appendChild(outputTypesField());
+    advanced.appendChild(servicesFieldControl());
+    frag.appendChild(advanced);
+
+    frag.appendChild(metaTextareaField('Notes for Dex team', 'notes', 'Any delivery constraints, context, or edit notes'));
+    return frag;
+  }
+
+  function buildCallComposeBody() {
+    const frag = document.createDocumentFragment();
+    const essentials = create('section', 'dx-submit-group');
+    essentials.appendChild(create('p', 'dx-submit-group-label', 'Call essentials'));
     const grid = create('div', 'dx-submit-grid');
 
     const laneField = wrapField('Call lane', true, 'callLane');
@@ -2359,15 +2622,13 @@ import { animate } from 'framer-motion/dom';
     lanes.forEach((lane) => {
       const laneId = normalizeLane(lane?.id);
       if (!laneId) return;
-      laneGroup.appendChild(
-        toBadge(
-          text(lane?.label, laneId),
-          laneId === normalizeLane(state.meta.callLane),
-          () => updateCallMetaValue('callLane', laneId),
-          !!state.callLaneLocked,
-          { focusKey: 'callLane' },
-        ),
-      );
+      laneGroup.appendChild(toBadge(
+        text(lane?.label, laneId),
+        laneId === normalizeLane(state.meta.callLane),
+        () => updateCallMetaValue('callLane', laneId),
+        !!state.callLaneLocked,
+        { focusKey: 'callLane' },
+      ));
     });
     laneField.appendChild(laneGroup);
     if (!lanes.length) {
@@ -2377,33 +2638,12 @@ import { animate } from 'framer-motion/dom';
     }
     grid.appendChild(laneField);
 
-    const titleField = wrapField('Proposal title', true, 'title');
-    const titleInput = create('input', 'dx-submit-input');
-    titleInput.type = 'text';
-    titleInput.maxLength = 100;
-    titleInput.placeholder = 'Ex: dexFest panel proposal';
-    titleInput.value = state.meta.title;
-    titleInput.addEventListener('input', (event) => {
-      state.meta.title = event.target.value;
-    });
-    bindFieldFocus(titleInput, 'title');
-    titleField.appendChild(titleInput);
-    grid.appendChild(titleField);
+    grid.append(
+      metaTextField('Proposal title', 'title', 'Ex: dexFest panel proposal', 100, true),
+      metaTextField('Proposer / creator', 'creator', 'Ex: Jane Doe', 2000, true),
+    );
 
-    const creatorField = wrapField('Proposer / creator', true, 'creator');
-    const creatorInput = create('input', 'dx-submit-input');
-    creatorInput.type = 'text';
-    creatorInput.maxLength = 2000;
-    creatorInput.placeholder = 'Ex: Jane Doe';
-    creatorInput.value = state.meta.creator;
-    creatorInput.addEventListener('input', (event) => {
-      state.meta.creator = event.target.value;
-    });
-    bindFieldFocus(creatorInput, 'creator');
-    creatorField.appendChild(creatorInput);
-    grid.appendChild(creatorField);
-
-    const cycleField = wrapField('Call cycle');
+    const cycleField = wrapField('Call cycle', false, 'callCycle');
     const cycleInput = create('input', 'dx-submit-input');
     cycleInput.type = 'text';
     cycleInput.maxLength = 120;
@@ -2414,9 +2654,7 @@ import { animate } from 'framer-motion/dom';
       cycleInput.disabled = true;
       cycleInput.classList.add('is-disabled');
     }
-    cycleInput.addEventListener('input', (event) => {
-      state.meta.callCycle = event.target.value;
-    });
+    cycleInput.addEventListener('input', (event) => { state.meta.callCycle = event.target.value; });
     bindFieldFocus(cycleInput, 'callCycle');
     cycleField.appendChild(cycleInput);
     grid.appendChild(cycleField);
@@ -2425,350 +2663,136 @@ import { animate } from 'framer-motion/dom';
     if (laneSchema && text(laneSchema.helper)) {
       grid.appendChild(create('p', 'dx-submit-copy dx-submit-copy--compact', text(laneSchema.helper)));
     }
-    const laneFields = Array.isArray(laneSchema?.fields) ? laneSchema.fields : [];
-    laneFields.forEach((fieldSchema) => {
-      const field = buildCallDynamicField(fieldSchema);
-      if (field) grid.appendChild(field);
+    (Array.isArray(laneSchema?.fields) ? laneSchema.fields : []).forEach((fieldSchema) => {
+      const dyn = buildCallDynamicField(fieldSchema);
+      if (dyn) grid.appendChild(dyn);
     });
 
-    section.appendChild(grid);
+    essentials.appendChild(grid);
+    essentials.appendChild(metaTextField('Public materials link', 'link', 'https://drive.google.com/...', 0, true, 'url'));
+    frag.appendChild(essentials);
+    frag.appendChild(metaTextareaField('Notes for Dex team', 'notes', 'Any constraints, context, or timing notes for this call submission'));
+    return frag;
+  }
+
+  function buildComposeStep() {
+    const section = create('section', 'dx-submit-stage-card dx-submit-compose');
+    section.setAttribute('data-dx-submit-step', 'compose');
+    const isCallFlow = state.flow === FLOW_CALL;
+
+    section.appendChild(create('p', 'dx-submit-kicker', 'Step 1 of 2'));
+    section.appendChild(create('h2', 'dx-submit-title', isCallFlow ? 'Compose your call proposal' : 'Compose your submission'));
+    section.appendChild(buildPipelineSwitch());
+
+    if (state.quotaResolved && state.quotaLeft <= 0) section.appendChild(buildQuotaActionCard());
+
+    section.appendChild(isCallFlow ? buildCallComposeBody() : buildSampleComposeBody());
 
     const actions = create('div', 'dx-submit-stage-actions');
-    const back = create('button', 'cta-btn dx-button-element dx-button-size--sm dx-button-element--secondary', 'Back');
-    back.type = 'button';
-    back.addEventListener('click', () => {
-      state.step = 0;
-      render();
-    });
-
-    const next = create('button', 'cta-btn dx-button-element dx-button-size--md dx-button-element--primary', 'Continue to license');
+    const next = create('button', 'cta-btn dx-button-element dx-button-size--md dx-button-element--primary', 'Continue to rights & send');
     next.type = 'button';
+    next.setAttribute('data-dx-submit-continue', 'compose');
+    const quotaLocked = isQuotaLocked();
+    next.disabled = quotaLocked;
+    next.classList.toggle('is-disabled', quotaLocked);
+    next.setAttribute('aria-disabled', quotaLocked ? 'true' : 'false');
     next.addEventListener('click', () => {
-      if (!guardQuotaForProgression(true)) return;
+      if (!guardQuotaForProgression(true)) { refreshQuotaCopy(); return; }
       if (!validateMeta()) { renderMetaValidationFailure(); return; }
-      state.step = 2;
+      state.step = STEP_SEND;
       render();
     });
-
-    actions.append(back, next);
+    actions.append(next);
     section.appendChild(actions);
-
     return section;
   }
 
-  function buildMetadataStep() {
-    if (state.flow === FLOW_CALL) return buildCallMetadataStep();
-    const section = create('section', 'dx-submit-stage-card');
-    section.setAttribute('data-dx-submit-step', 'metadata');
-
-    section.appendChild(create('p', 'dx-submit-kicker', 'Step 2'));
-    section.appendChild(create('h2', 'dx-submit-title', 'Metadata that powers discoverability and review speed'));
-
-    const defaultsWrap = create('div', 'dx-submit-stage-actions');
-    const defaultsInfo = create(
-      'p',
-      'dx-submit-copy dx-submit-copy--compact',
-      hasSubmitProfileDefaults()
-        ? 'Profile defaults are available for creator/category/instrument.'
-        : 'Add defaults in Settings > Contribution Profile to speed up repeat submissions.',
-    );
-    const defaultsApply = create(
-      'button',
-      'cta-btn dx-button-element dx-button-size--sm dx-button-element--secondary',
-      'Apply profile defaults',
-    );
-    defaultsApply.type = 'button';
-    defaultsApply.disabled = !hasSubmitProfileDefaults();
-    defaultsApply.classList.toggle('is-disabled', !hasSubmitProfileDefaults());
-    defaultsApply.addEventListener('click', () => {
-      const applied = applySubmitProfileDefaults({ force: true, announce: true });
-      if (applied) render();
-    });
-    defaultsWrap.append(defaultsInfo, defaultsApply);
-    section.appendChild(defaultsWrap);
-
-    const grid = create('div', 'dx-submit-grid');
-
-    const titleField = wrapField('Proposed sample title', true, 'title');
-    const titleInput = create('input', 'dx-submit-input');
-    titleInput.type = 'text';
-    titleInput.maxLength = 100;
-    titleInput.placeholder = 'Ex: Prepared Trombone Long Tones';
-    titleInput.value = state.meta.title;
-    titleInput.addEventListener('input', (event) => {
-      state.meta.title = event.target.value;
-    });
-    bindFieldFocus(titleInput, 'title');
-    titleField.appendChild(titleInput);
-    grid.appendChild(titleField);
-
-    const creatorField = wrapField('Sample creator(s)', true, 'creator');
-    const creatorInput = create('input', 'dx-submit-input');
-    creatorInput.type = 'text';
-    creatorInput.maxLength = 2000;
-    creatorInput.placeholder = 'Ex: Jane Doe, John Doe';
-    creatorInput.value = state.meta.creator;
-    creatorInput.addEventListener('input', (event) => {
-      state.meta.creator = event.target.value;
-    });
-    bindFieldFocus(creatorInput, 'creator');
-    creatorField.appendChild(creatorInput);
-    grid.appendChild(creatorField);
-
-    const categoryField = wrapField('Instrument category', true, 'category');
-    const categorySelect = create('select', 'dx-submit-input');
-    CATEGORY_OPTIONS.forEach((value) => {
-      const option = create('option', '', value || 'Choose category');
-      option.value = value;
-      categorySelect.appendChild(option);
-    });
-    categorySelect.value = state.meta.category;
-    categorySelect.addEventListener('change', (event) => {
-      state.meta.category = event.target.value;
-    });
-    bindFieldFocus(categorySelect, 'category');
-    categoryField.appendChild(categorySelect);
-    grid.appendChild(categoryField);
-
-    const instrumentField = wrapField('Instrument', true, 'instrument');
-    const instrumentInput = create('input', 'dx-submit-input');
-    instrumentInput.type = 'text';
-    instrumentInput.maxLength = 120;
-    instrumentInput.placeholder = 'Ex: Prepared Trombone';
-    instrumentInput.value = state.meta.instrument;
-    instrumentInput.addEventListener('input', (event) => {
-      state.meta.instrument = event.target.value;
-    });
-    bindFieldFocus(instrumentInput, 'instrument');
-    instrumentField.appendChild(instrumentInput);
-    grid.appendChild(instrumentField);
-
-    const bpmField = wrapField('BPM');
-    const bpmInput = create('input', 'dx-submit-input');
-    bpmInput.type = 'number';
-    bpmInput.placeholder = '120';
-    bpmInput.value = state.meta.bpm;
-    bpmInput.addEventListener('input', (event) => {
-      state.meta.bpm = event.target.value;
-    });
-    bindFieldFocus(bpmInput, 'bpm');
-    bpmField.appendChild(bpmInput);
-    grid.appendChild(bpmField);
-
-    const currentPitchSystem = normalizePitchSystem(state.meta.pitchSystem);
-    state.meta.pitchSystem = currentPitchSystem;
-    state.meta.pitchDescriptor = normalizePitchDescriptorForSystem(currentPitchSystem, state.meta.pitchDescriptor);
-    syncLegacyPitchFields(state.meta);
-
-    const pitchSystemField = wrapField('Pitch system');
-    const pitchSystemSelect = create('select', 'dx-submit-input');
-    PITCH_SYSTEM_OPTIONS.forEach((entry) => {
-      const option = create('option', '', entry.label);
-      option.value = entry.value;
-      pitchSystemSelect.appendChild(option);
-    });
-    pitchSystemSelect.value = currentPitchSystem;
-    pitchSystemSelect.addEventListener('change', (event) => {
-      state.meta.pitchSystem = normalizePitchSystem(event.target.value);
-      state.meta.pitchDescriptor = normalizePitchDescriptorForSystem(state.meta.pitchSystem, state.meta.pitchDescriptor);
-      if (state.meta.pitchSystem === 'atonal' || state.meta.pitchSystem === 'non-pitched') {
-        state.meta.pitchDescriptor = '';
-      }
-      syncLegacyPitchFields(state.meta);
-      render();
-    });
-    bindFieldFocus(pitchSystemSelect, 'pitchSystem');
-    pitchSystemField.appendChild(pitchSystemSelect);
-    grid.appendChild(pitchSystemField);
-
-    if (isPitchRootDropdownSystem(currentPitchSystem)) {
-      const keyField = wrapField('Pitch root');
-      const keySelect = create('select', 'dx-submit-input');
-      const emptyOption = create('option', '', 'Select pitch root');
-      emptyOption.value = '';
-      keySelect.appendChild(emptyOption);
-      getPitchRootOptions(currentPitchSystem).forEach((value) => {
-        const option = create('option', '', value);
-        option.value = value;
-        keySelect.appendChild(option);
-      });
-      keySelect.value = text(state.meta.pitchDescriptor);
-      keySelect.addEventListener('change', (event) => {
-        state.meta.pitchDescriptor = event.target.value;
-        syncLegacyPitchFields(state.meta);
-      });
-      bindFieldFocus(keySelect, 'pitchDescriptor');
-      keyField.appendChild(keySelect);
-      grid.appendChild(keyField);
-    } else if (currentPitchSystem === 'ji') {
-      const descriptorField = wrapField('JI pitch descriptor');
-      const hint = create('p', 'dx-submit-copy dx-submit-copy--compact', PITCH_DESCRIPTOR_HINTS.ji);
-      const descriptorInput = create('input', 'dx-submit-input');
-      descriptorInput.type = 'text';
-      descriptorInput.maxLength = 120;
-      descriptorInput.placeholder = 'Ex: 5/4 on C';
-      descriptorInput.value = text(state.meta.pitchDescriptor);
-      descriptorInput.addEventListener('input', (event) => {
-        state.meta.pitchDescriptor = event.target.value;
-        syncLegacyPitchFields(state.meta);
-      });
-      bindFieldFocus(descriptorInput, 'pitchDescriptor');
-      descriptorField.append(hint, descriptorInput);
-      grid.appendChild(descriptorField);
-    } else {
-      const quickField = wrapField('Pitch detail');
-      quickField.appendChild(create('p', 'dx-submit-copy dx-submit-copy--compact', 'No key-center descriptor required for this pitch type.'));
-      grid.appendChild(quickField);
-    }
-
-    const scaleField = wrapField('Scale quality');
-    const scaleInput = create('input', 'dx-submit-input');
-    scaleInput.type = 'text';
-    scaleInput.maxLength = 50;
-    scaleInput.placeholder = 'major, minor, modal, maqam, raga...';
-    scaleInput.value = state.meta.scaleQuality;
-    scaleInput.addEventListener('input', (event) => {
-      state.meta.scaleQuality = event.target.value;
-    });
-    bindFieldFocus(scaleInput, 'scaleQuality');
-    scaleField.appendChild(scaleInput);
-    grid.appendChild(scaleField);
-
-    const collectionField = wrapField('Collection type', true, 'collectionType');
-    const collectionGroup = create('div', 'dx-submit-badge-group');
-    COLLECTION_OPTIONS.forEach((entry) => {
-      collectionGroup.appendChild(
-        toBadge(
-          `${entry.value} - ${entry.label}`,
-          state.meta.collectionType === entry.value,
-          () => {
-            state.meta.collectionType = entry.value;
-            render();
-          },
-          false,
-          { focusKey: 'collectionType' },
-        ),
+  function buildReviewSummary() {
+    const box = create('section', 'dx-submit-group dx-submit-review');
+    box.appendChild(create('p', 'dx-submit-group-label', 'Review'));
+    const isCallFlow = state.flow === FLOW_CALL;
+    const rows = isCallFlow
+      ? [
+        ['Lane', laneLabel(normalizeLane(state.meta.callLane)) || '—'],
+        ['Title', text(state.meta.title, '—')],
+        ['Creator', text(state.meta.creator, '—')],
+        ['Source link', text(state.meta.link, '—')],
+      ]
+      : [
+        ['Title', text(state.meta.title, '—')],
+        ['Creator', text(state.meta.creator, '—')],
+        ['Category', text(state.meta.category, '—')],
+        ['Instrument', text(state.meta.instrument, '—')],
+        ['Collection', text(state.meta.collectionType, '—')],
+        ['Source link', text(state.meta.link, '—')],
+      ];
+    const grid = create('div', 'dx-submit-review-grid');
+    rows.forEach(([key, value]) => {
+      const row = create('div', 'dx-submit-review-row');
+      row.append(
+        createSidebarText('span', 'dx-submit-review-key', key),
+        createSidebarText('span', 'dx-submit-review-val', value),
       );
+      grid.appendChild(row);
     });
-    collectionField.appendChild(collectionGroup);
-    grid.appendChild(collectionField);
-
-    const outputField = wrapField('Quality / output types');
-    const outputGroup = create('div', 'dx-submit-badge-group');
-    OUTPUT_OPTIONS.forEach((entry) => {
-      const selected = state.meta.outputTypes.includes(entry.value);
-      outputGroup.appendChild(
-        toBadge(entry.label, selected, () => {
-          if (selected) {
-            state.meta.outputTypes = state.meta.outputTypes.filter((value) => value !== entry.value);
-          } else {
-            state.meta.outputTypes = [...state.meta.outputTypes, entry.value];
-          }
-          render();
-        }, false, { focusKey: 'outputTypes' }),
-      );
-    });
-    outputField.appendChild(outputGroup);
-    grid.appendChild(outputField);
-
-    const tagsField = wrapField('Tags');
-    const tagsHint = create('p', 'dx-submit-copy dx-submit-copy--compact', `Tip: ${TAG_HINT}`);
-    const tagsInput = create('input', 'dx-submit-input');
-    tagsInput.type = 'text';
-    tagsInput.placeholder = 'comma separated';
-    tagsInput.value = state.meta.tags;
-    tagsInput.addEventListener('input', (event) => {
-      state.meta.tags = event.target.value;
-    });
-    bindFieldFocus(tagsInput, 'tags');
-    tagsField.append(tagsHint, tagsInput);
-    grid.appendChild(tagsField);
-
-    section.appendChild(grid);
-
-    const actions = create('div', 'dx-submit-stage-actions');
-    const back = create('button', 'cta-btn dx-button-element dx-button-size--sm dx-button-element--secondary', 'Back');
-    back.type = 'button';
-    back.addEventListener('click', () => {
-      state.step = 0;
-      render();
-    });
-
-    const next = create('button', 'cta-btn dx-button-element dx-button-size--md dx-button-element--primary', 'Continue to license');
-    next.type = 'button';
-    next.addEventListener('click', () => {
-      if (!guardQuotaForProgression(true)) return;
-      if (!validateMeta()) { renderMetaValidationFailure(); return; }
-      state.step = 2;
-      render();
-    });
-
-    actions.append(back, next);
-    section.appendChild(actions);
-
-    return section;
+    box.appendChild(grid);
+    return box;
   }
 
-  function buildLicenseStep() {
-    const section = create('section', 'dx-submit-stage-card');
-    section.setAttribute('data-dx-submit-step', 'license');
+  function buildSendStep() {
+    const section = create('section', 'dx-submit-stage-card dx-submit-send');
+    section.setAttribute('data-dx-submit-step', 'send');
+    const isCallFlow = state.flow === FLOW_CALL;
 
-    section.appendChild(create('p', 'dx-submit-kicker', 'Step 3'));
-    section.appendChild(create('h2', 'dx-submit-title', 'Choose rights model for publication and downstream usage'));
+    section.appendChild(create('p', 'dx-submit-kicker', 'Step 2 of 2'));
+    section.appendChild(create('h2', 'dx-submit-title', 'Rights & send'));
+
+    section.appendChild(buildReviewSummary());
 
     const selected = LICENSE_OPTIONS.find((entry) => entry.id === state.licenseType) || LICENSE_OPTIONS[0];
-
+    const licGroup = create('section', 'dx-submit-group');
+    licGroup.appendChild(create('p', 'dx-submit-group-label', 'License'));
     const optionGrid = create('div', 'dx-submit-license-options');
     LICENSE_OPTIONS.forEach((entry) => {
-      const selectedOption = entry.id === state.licenseType;
-      optionGrid.appendChild(
-        toBadge(entry.label, selectedOption, () => {
-          state.licenseType = entry.id;
-          render();
-        }, false, { focusKey: 'licenseType' }),
-      );
+      optionGrid.appendChild(toBadge(entry.label, entry.id === state.licenseType, () => {
+        state.licenseType = entry.id;
+        render();
+      }, false, { focusKey: 'licenseType' }));
     });
-    section.appendChild(optionGrid);
-
-    const summary = create('p', 'dx-submit-copy', selected.summary);
-    section.appendChild(summary);
-
+    licGroup.appendChild(optionGrid);
+    licGroup.appendChild(create('p', 'dx-submit-copy', selected.summary));
+    const legal = create('details', 'dx-submit-legal');
+    legal.appendChild(create('summary', 'dx-submit-legal-summary', 'Read full license text'));
     const licenseCard = create('article', 'dx-submit-license-card');
-    const pre = create('pre', 'dx-submit-license-pre', selected.copy);
-    licenseCard.appendChild(pre);
-    section.appendChild(licenseCard);
+    licenseCard.appendChild(create('pre', 'dx-submit-license-pre', selected.copy));
+    legal.appendChild(licenseCard);
+    licGroup.appendChild(legal);
+    section.appendChild(licGroup);
+
+    const rightsGroup = create('section', 'dx-submit-group');
+    rightsGroup.appendChild(create('p', 'dx-submit-group-label', 'Rights & signature'));
 
     const agree = create('label', 'dx-submit-checkbox');
-    const checkbox = create('input');
-    checkbox.type = 'checkbox';
-    checkbox.checked = !!state.licenseConfirmed;
-    checkbox.setAttribute('data-dx-submit-license-accept', 'true');
-    checkbox.addEventListener('change', () => {
-      state.licenseConfirmed = checkbox.checked;
-    });
-    bindFieldFocus(checkbox, 'licenseConfirmed');
-    const agreeText = create('span', '', 'I reviewed and accept this license selection.');
-    agree.append(checkbox, agreeText);
-    section.appendChild(agree);
+    const accept = create('input');
+    accept.type = 'checkbox';
+    accept.checked = !!state.licenseConfirmed;
+    accept.setAttribute('data-dx-submit-license-accept', 'true');
+    accept.addEventListener('change', () => { state.licenseConfirmed = accept.checked; });
+    bindFieldFocus(accept, 'licenseConfirmed');
+    agree.append(accept, create('span', '', 'I reviewed and accept this license selection.'));
+    rightsGroup.appendChild(agree);
 
     const rights = create('label', 'dx-submit-checkbox');
     const rightsCheckbox = create('input');
     rightsCheckbox.type = 'checkbox';
     rightsCheckbox.checked = !!state.rightsConfirmed;
     rightsCheckbox.setAttribute('data-dx-submit-rights-ack', 'true');
-    rightsCheckbox.addEventListener('change', () => {
-      state.rightsConfirmed = rightsCheckbox.checked;
-    });
+    rightsCheckbox.addEventListener('change', () => { state.rightsConfirmed = rightsCheckbox.checked; });
     bindFieldFocus(rightsCheckbox, 'rightsConfirmed');
-    const rightsText = create(
-      'span',
-      '',
-      'I confirm this submission is my own original work, or work I am authorized to represent (for example, my band\'s own work), and is not a repost of third-party public-domain material.',
-    );
-    rights.append(rightsCheckbox, rightsText);
-    section.appendChild(rights);
+    rights.append(rightsCheckbox, create('span', '', 'I confirm this submission is my own original work, or work I am authorized to represent (for example, my band\'s own work), and is not a repost of third-party public-domain material.'));
+    rightsGroup.appendChild(rights);
 
-    const signatureField = wrapField('Digital signature (typed full name)', true);
+    const signatureField = wrapField('Digital signature (typed full name)', true, 'signatureName');
     const signatureInput = create('input', 'dx-submit-input');
     signatureInput.type = 'text';
     signatureInput.maxLength = 140;
@@ -2776,175 +2800,33 @@ import { animate } from 'framer-motion/dom';
     signatureInput.placeholder = 'Type your full name';
     signatureInput.value = text(state.signatureName);
     signatureInput.setAttribute('data-dx-submit-license-signature', 'true');
-    signatureInput.addEventListener('input', (event) => {
-      state.signatureName = event.target.value;
-    });
+    signatureInput.addEventListener('input', (event) => { state.signatureName = event.target.value; });
     bindFieldFocus(signatureInput, 'signatureName');
     signatureField.appendChild(signatureInput);
-    section.appendChild(signatureField);
+    rightsGroup.appendChild(signatureField);
+    section.appendChild(rightsGroup);
+
+    if (text(state.submitError)) {
+      section.appendChild(create('p', 'dx-submit-copy dx-submit-copy--compact', state.submitError));
+    }
 
     const actions = create('div', 'dx-submit-stage-actions');
     const back = create('button', 'cta-btn dx-button-element dx-button-size--sm dx-button-element--secondary', 'Back');
     back.type = 'button';
-    back.addEventListener('click', () => {
-      state.step = 1;
-      render();
-    });
-
-    const next = create('button', 'cta-btn dx-button-element dx-button-size--md dx-button-element--primary', 'Continue to upload');
-    next.type = 'button';
-    next.addEventListener('click', () => {
+    back.addEventListener('click', () => { state.step = STEP_COMPOSE; render(); });
+    const submit = create('button', 'cta-btn dx-button-element dx-button-size--md dx-button-element--primary', state.submitting ? 'Submitting…' : (isCallFlow ? 'Submit call' : 'Submit sample'));
+    submit.type = 'button';
+    submit.disabled = state.submitting;
+    submit.setAttribute('data-dx-submit-send', 'true');
+    submit.addEventListener('click', () => {
       if (!guardQuotaForProgression(true)) return;
-      if (!state.licenseConfirmed) {
-        showToast('Please confirm license acceptance.', true);
-        return;
-      }
-      if (!state.rightsConfirmed) {
-        showToast('Please confirm ownership/representation acknowledgment.', true);
-        return;
-      }
-      if (text(state.signatureName).length < 2) {
-        showToast('Enter your full name as digital signature.', true);
-        return;
-      }
-      state.step = 3;
-      render();
-    });
-
-    actions.append(back, next);
-    section.appendChild(actions);
-
-    return section;
-  }
-
-  function buildCallUploadStep() {
-    const section = create('section', 'dx-submit-stage-card');
-    section.setAttribute('data-dx-submit-step', 'upload');
-
-    section.appendChild(create('p', 'dx-submit-kicker', 'Step 4'));
-    section.appendChild(create('h2', 'dx-submit-title', 'Submit materials link and notes for this call lane'));
-
-    const linkField = wrapField('Public materials link', true);
-    const linkInput = create('input', 'dx-submit-input');
-    linkInput.type = 'url';
-    linkInput.placeholder = 'https://drive.google.com/...';
-    linkInput.value = state.meta.link;
-    linkInput.addEventListener('input', (event) => {
-      state.meta.link = event.target.value;
-    });
-    bindFieldFocus(linkInput, 'link');
-    linkField.appendChild(linkInput);
-    section.appendChild(linkField);
-
-    const notesField = wrapField('Notes for Dex team');
-    const notesInput = create('textarea', 'dx-submit-input dx-submit-notes');
-    notesInput.rows = 5;
-    notesInput.placeholder = 'Any constraints, context, or timing notes for this call submission';
-    notesInput.value = state.meta.notes;
-    notesInput.addEventListener('input', (event) => {
-      state.meta.notes = event.target.value;
-    });
-    bindFieldFocus(notesInput, 'notes');
-    notesField.appendChild(notesInput);
-    section.appendChild(notesField);
-
-    if (text(state.submitError)) {
-      section.appendChild(create('p', 'dx-submit-copy dx-submit-copy--compact', state.submitError));
-    }
-
-    const actions = create('div', 'dx-submit-stage-actions');
-    const back = create('button', 'cta-btn dx-button-element dx-button-size--sm dx-button-element--secondary', 'Back');
-    back.type = 'button';
-    back.addEventListener('click', () => {
-      state.step = 2;
-      render();
-    });
-
-    const submit = create('button', 'cta-btn dx-button-element dx-button-size--md dx-button-element--primary', state.submitting ? 'Submitting…' : 'Submit call');
-    submit.type = 'button';
-    submit.disabled = state.submitting;
-    submit.addEventListener('click', () => {
+      if (!state.licenseConfirmed) { showToast('Please confirm license acceptance.', true); return; }
+      if (!state.rightsConfirmed) { showToast('Please confirm ownership/representation acknowledgment.', true); return; }
+      if (text(state.signatureName).length < 2) { showToast('Enter your full name as digital signature.', true); return; }
       submitPayload();
     });
-
     actions.append(back, submit);
     section.appendChild(actions);
-
-    return section;
-  }
-
-  function buildUploadStep() {
-    if (state.flow === FLOW_CALL) return buildCallUploadStep();
-    const section = create('section', 'dx-submit-stage-card');
-    section.setAttribute('data-dx-submit-step', 'upload');
-
-    section.appendChild(create('p', 'dx-submit-kicker', 'Step 4'));
-    section.appendChild(create('h2', 'dx-submit-title', 'Submit source link and optional post-production requests'));
-
-    const linkField = wrapField('Public source link', true);
-    const linkInput = create('input', 'dx-submit-input');
-    linkInput.type = 'url';
-    linkInput.placeholder = 'https://drive.google.com/...';
-    linkInput.value = state.meta.link;
-    linkInput.addEventListener('input', (event) => {
-      state.meta.link = event.target.value;
-    });
-    bindFieldFocus(linkInput, 'link');
-    linkField.appendChild(linkInput);
-    section.appendChild(linkField);
-
-    const serviceField = wrapField('Dex services');
-    const services = create('div', 'dx-submit-badge-group');
-    SERVICE_OPTIONS.forEach((entry) => {
-      const selected = state.meta.services.includes(entry.value);
-      services.appendChild(
-        toBadge(entry.label, selected, () => {
-          if (selected) {
-            state.meta.services = state.meta.services.filter((value) => value !== entry.value);
-          } else {
-            state.meta.services = [...state.meta.services, entry.value];
-          }
-          render();
-        }, entry.locked, { tooltip: entry.tooltip, focusKey: 'services' }),
-      );
-    });
-    serviceField.appendChild(services);
-    section.appendChild(serviceField);
-
-    const notesField = wrapField('Notes for Dex team');
-    const notesInput = create('textarea', 'dx-submit-input dx-submit-notes');
-    notesInput.rows = 5;
-    notesInput.placeholder = 'Any delivery constraints, context, or edit notes';
-    notesInput.value = state.meta.notes;
-    notesInput.addEventListener('input', (event) => {
-      state.meta.notes = event.target.value;
-    });
-    bindFieldFocus(notesInput, 'notes');
-    notesField.appendChild(notesInput);
-    section.appendChild(notesField);
-
-    if (text(state.submitError)) {
-      section.appendChild(create('p', 'dx-submit-copy dx-submit-copy--compact', state.submitError));
-    }
-
-    const actions = create('div', 'dx-submit-stage-actions');
-    const back = create('button', 'cta-btn dx-button-element dx-button-size--sm dx-button-element--secondary', 'Back');
-    back.type = 'button';
-    back.addEventListener('click', () => {
-      state.step = 2;
-      render();
-    });
-
-    const submit = create('button', 'cta-btn dx-button-element dx-button-size--md dx-button-element--primary', state.submitting ? 'Submitting…' : 'Submit sample');
-    submit.type = 'button';
-    submit.disabled = state.submitting;
-    submit.addEventListener('click', () => {
-      submitPayload();
-    });
-
-    actions.append(back, submit);
-    section.appendChild(actions);
-
     return section;
   }
 
@@ -3026,17 +2908,13 @@ import { animate } from 'framer-motion/dom';
   }
 
   function buildStepContent() {
-    if (!state.pipelineChosen) return buildFlowGateStep();
-    if (state.step === 0) return buildIntroStep();
-    if (state.step === 1) return buildMetadataStep();
-    if (state.step === 2) return buildLicenseStep();
-    if (state.step === 3) return buildUploadStep();
+    if (state.step === STEP_COMPOSE) return buildComposeStep();
+    if (state.step === STEP_SEND) return buildSendStep();
     return buildDoneStep();
   }
 
-  function buildChecklist() {
-    const list = create('ul', 'dx-submit-checklist');
-    const checks = state.flow === FLOW_CALL
+  function getRequiredChecks() {
+    return state.flow === FLOW_CALL
       ? [
         ['Title', text(state.meta.title).length > 0],
         ['Creator', text(state.meta.creator).length > 0],
@@ -3050,32 +2928,53 @@ import { animate } from 'framer-motion/dom';
         ['Category', text(state.meta.category).length > 0],
         ['Instrument', text(state.meta.instrument).length > 0],
         ['Collection type', text(state.meta.collectionType).length > 0],
+        ['Source link', text(state.meta.link).length > 0],
       ];
+  }
 
-    checks.forEach(([label, ok]) => {
+  function buildChecklist() {
+    const list = create('ul', 'dx-submit-checklist');
+    getRequiredChecks().forEach(([label, ok]) => {
       const item = createSidebarText('li', 'dx-submit-check-item', label);
       item.classList.add(ok ? 'is-done' : 'is-pending');
       list.appendChild(item);
     });
-
     return list;
   }
 
-  function resolveFocusedGuidance() {
-    if (!state.pipelineChosen) {
-      return {
-        title: 'Choose a pipeline',
-        body: 'Pick Sample Submission for library entries, or IN DEX Call Submission for active call lanes.',
-      };
+  function buildReadinessCard() {
+    const checks = getRequiredChecks();
+    const done = checks.filter(([, ok]) => ok).length;
+    const total = checks.length || 1;
+    const ratio = Math.max(0, Math.min(1, done / total));
+    const card = create('section', 'dx-submit-command-card');
+    card.append(
+      createSidebarText('p', 'dx-submit-kicker', 'Readiness'),
+      createSidebarText('h3', 'dx-submit-command-title', `${done} of ${total} essentials`),
+    );
+    const meter = create('div', 'dx-submit-readiness');
+    const fill = create('span', 'dx-submit-readiness-fill');
+    fill.style.transform = `scaleX(${ratio})`;
+    if (ratio >= 1) meter.classList.add('is-complete');
+    meter.appendChild(fill);
+    card.appendChild(meter);
+
+    if (state.flow !== FLOW_CALL) {
+      const preview = buildGeneratedSubmissionLookup(Math.max(1, Number(state.weeklyUsed || 0) + 1));
+      const lookup = createSidebarText('p', 'dx-submit-copy dx-submit-copy--compact', `Lookup preview: ${preview}`);
+      lookup.classList.add('dx-submit-lookup-preview');
+      card.appendChild(lookup);
     }
+    return card;
+  }
+
+  function resolveFocusedGuidance() {
     const byField = FIELD_GUIDANCE[state.focusedField];
     if (byField) return byField;
-    const stepKey = STEPS[state.step]?.key || 'intro';
+    const stepKey = STEPS[state.step]?.key || 'compose';
     const callStepGuidance = {
-      intro: 'Choose pipeline, lane context, and call cycle before beginning.',
-      metadata: 'Provide lane-fit metadata so adjudication can route without clarification loops.',
-      license: 'Rights acknowledgment and digital signature are required for call submissions.',
-      upload: 'Submit one stable materials link plus notes for adjudicators.',
+      compose: 'Pick your lane, add lane-fit metadata, and attach one stable materials link.',
+      send: 'Rights acknowledgment and digital signature are required for call submissions.',
       done: 'Track call decisions and notes from your Messages timeline.',
     };
     return {
@@ -3087,6 +2986,8 @@ import { animate } from 'framer-motion/dom';
   function buildCommandPanel() {
     const aside = create('aside', 'dx-submit-command dx-submit-surface');
     const isCallFlow = state.flow === FLOW_CALL;
+
+    const readiness = buildReadinessCard();
 
     const cycle = create('section', 'dx-submit-command-card');
     cycle.append(
@@ -3160,36 +3061,7 @@ import { animate } from 'framer-motion/dom';
       createSidebarText('p', 'dx-submit-copy dx-submit-copy--compact', focused.body),
     );
 
-    aside.append(cycle, licenseCard, modeCard, checklist, quality, guide);
-    return aside;
-  }
-
-  function buildFlowGateCommandPanel() {
-    const aside = create('aside', 'dx-submit-command dx-submit-surface dx-submit-command--gate');
-
-    const guide = create('section', 'dx-submit-command-card');
-    guide.append(
-      createSidebarText('p', 'dx-submit-kicker', 'Flow chooser'),
-      createSidebarText('h3', 'dx-submit-command-title', 'Two pipelines'),
-      createSidebarText(
-        'p',
-        'dx-submit-copy dx-submit-copy--compact',
-        'Sample Submission is for catalog/library entries. IN DEX Call Submission is for active call lanes.',
-      ),
-    );
-
-    const tracker = create('section', 'dx-submit-command-card');
-    tracker.append(
-      createSidebarText('p', 'dx-submit-kicker', 'Shared tracker'),
-      createSidebarText('h3', 'dx-submit-command-title', 'One messages timeline'),
-      createSidebarText(
-        'p',
-        'dx-submit-copy dx-submit-copy--compact',
-        'Both pipelines route status updates to Messages with sent, received, reviewing, and decision states.',
-      ),
-    );
-
-    aside.append(guide, tracker);
+    aside.append(readiness, cycle, licenseCard, modeCard, checklist, quality, guide);
     return aside;
   }
 
@@ -3197,33 +3069,28 @@ import { animate } from 'framer-motion/dom';
     if (!(liveRoot instanceof HTMLElement) || !state) return;
     const current = liveRoot.querySelector('.dx-submit-command');
     if (!(current instanceof HTMLElement)) return;
-    const next = state.pipelineChosen ? buildCommandPanel() : buildFlowGateCommandPanel();
-    current.replaceWith(next);
+    current.replaceWith(buildCommandPanel());
   }
 
   function refreshQuotaCopy() {
     if (!(liveRoot instanceof HTMLElement) || !state) return;
-    const quota = liveRoot.querySelector('[data-dx-submit-quota]');
-    if (quota instanceof HTMLElement) {
-      quota.textContent = quotaSummaryText();
-    }
-    const begin = liveRoot.querySelector('[data-dx-submit-begin]');
-    if (begin instanceof HTMLButtonElement) {
+    const continueBtn = liveRoot.querySelector('[data-dx-submit-continue]');
+    if (continueBtn instanceof HTMLButtonElement) {
       const quotaLocked = isQuotaLocked();
-      begin.disabled = quotaLocked;
-      begin.classList.toggle('is-disabled', quotaLocked);
-      begin.setAttribute('aria-disabled', quotaLocked ? 'true' : 'false');
+      continueBtn.disabled = quotaLocked;
+      continueBtn.classList.toggle('is-disabled', quotaLocked);
+      continueBtn.setAttribute('aria-disabled', quotaLocked ? 'true' : 'false');
     }
 
-    const intro = liveRoot.querySelector('[data-dx-submit-step="intro"]');
-    if (intro instanceof HTMLElement) {
-      const existingCard = intro.querySelector('.dx-submit-action-card');
+    const compose = liveRoot.querySelector('[data-dx-submit-step="compose"]');
+    if (compose instanceof HTMLElement) {
+      const existingCard = compose.querySelector('.dx-submit-action-card');
       if (state.quotaResolved && state.quotaLeft <= 0) {
         if (!(existingCard instanceof HTMLElement)) {
-          const footer = intro.querySelector('.dx-submit-stage-actions');
+          const body = compose.querySelector('.dx-submit-switch');
           const card = buildQuotaActionCard();
-          if (footer instanceof HTMLElement) intro.insertBefore(card, footer);
-          else intro.appendChild(card);
+          if (body instanceof HTMLElement && body.nextSibling) compose.insertBefore(card, body.nextSibling);
+          else compose.appendChild(card);
         }
       } else if (existingCard instanceof HTMLElement) {
         existingCard.remove();
@@ -3267,13 +3134,12 @@ import { animate } from 'framer-motion/dom';
   }
 
   function buildLayout() {
-    const pipelineChosen = !!state.pipelineChosen;
-    const currentStep = pipelineChosen ? (STEPS[state.step]?.key || 'intro') : 'flow-gate';
+    const currentStep = STEPS[state.step]?.key || 'compose';
+    const isCallFlow = state.flow === FLOW_CALL;
     const shell = create('div', 'dx-submit-shell');
-    shell.classList.toggle('is-flow-gate', !pipelineChosen);
     shell.setAttribute('data-dx-submit-shell', 'true');
     shell.setAttribute('data-dx-submit-current-step', currentStep);
-    shell.setAttribute('data-dx-submit-pipeline-choice', pipelineChosen ? 'selected' : 'pending');
+    shell.setAttribute('data-dx-submit-pipeline-choice', 'selected');
     shell.setAttribute('data-dx-submit-flow', normalizeFlow(state.flow));
     shell.setAttribute('data-dx-submit-lane', normalizeLane(state.meta?.callLane || ''));
     shell.setAttribute('data-dx-submit-has-active-call', state.hasActiveCall ? 'true' : 'false');
@@ -3284,20 +3150,15 @@ import { animate } from 'framer-motion/dom';
 
     const main = create('section', 'dx-submit-main dx-submit-surface');
     const heading = create('header', 'dx-submit-heading');
-    const isCallFlow = state.flow === FLOW_CALL;
     heading.append(
-      create('p', 'dx-submit-kicker', pipelineChosen ? (isCallFlow ? 'Submit Calls' : 'Submit Samples') : 'Submit'),
-      create('h1', 'dx-submit-heading-title', pipelineChosen ? 'Intake + Tracker' : 'Choose Pipeline'),
+      create('p', 'dx-submit-kicker', isCallFlow ? 'Submit Calls' : 'Submit Samples'),
+      create('h1', 'dx-submit-heading-title', isCallFlow ? 'Call intake + tracker' : 'Sample intake + tracker'),
       create(
         'p',
         'dx-submit-copy dx-submit-copy--compact',
-        pipelineChosen
-          ? (
-            isCallFlow
-              ? 'Submit lane-ready call proposals. Follow status from sent to in-library in Messages.'
-              : 'Upload once. Follow status from sent to in-library in Messages.'
-          )
-          : 'Pick the path that matches your submission. You can switch pipelines before sending.',
+        isCallFlow
+          ? 'Submit lane-ready call proposals. Follow status from sent to in-library in Messages.'
+          : 'Compose once, sign, send. Follow status from sent to in-library in Messages.',
       ),
     );
 
@@ -3306,10 +3167,10 @@ import { animate } from 'framer-motion/dom';
     stageWrap.appendChild(buildStepContent());
 
     main.appendChild(heading);
-    if (pipelineChosen) main.appendChild(buildProgressHeader());
+    main.appendChild(buildProgressHeader());
     main.appendChild(stageWrap);
 
-    shell.append(main, pipelineChosen ? buildCommandPanel() : buildFlowGateCommandPanel());
+    shell.append(main, buildCommandPanel());
     return shell;
   }
 
@@ -3515,7 +3376,7 @@ import { animate } from 'framer-motion/dom';
           }
           state.quotaResolved = true;
           clearActiveStoredDrafts();
-          state.step = 4;
+          state.step = STEP_DONE;
           render();
           showToast(state.flow === FLOW_CALL ? 'Call submitted' : 'Submitted');
           void refreshAchievementsAfterSubmit();
@@ -3638,6 +3499,7 @@ import { animate } from 'framer-motion/dom';
         reconcileDraftsForSub(sub);
       }
       state.authUser = await resolveAuthUser(Math.min(AUTH_TIMEOUT_MS, 2200));
+      prefillSignatureFromAuth();
       await hydrateSubmitProfileDefaults({ force: !!opts.forceLive });
       const verified = await refreshWeeklyQuotaFromSheet({
         useCache: true,
@@ -3733,7 +3595,7 @@ import { animate } from 'framer-motion/dom';
     if (!detail) return;
     state.profileDefaults = normalizeSubmitProfileDefaults(detail);
     state.profileDefaultsLoaded = true;
-    if (state.step === 1) {
+    if (state.step === STEP_COMPOSE) {
       render();
     }
   });

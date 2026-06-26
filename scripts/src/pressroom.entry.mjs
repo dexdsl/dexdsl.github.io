@@ -24,13 +24,23 @@ import { animate } from 'framer-motion/dom';
   const DEFAULT_MONTHLY_LIMIT = 1;
 
   const STEPS = [
-    { key: 'intro', title: 'Program Brief', short: 'Brief' },
-    { key: 'contact', title: 'Contact', short: 'Contact' },
-    { key: 'project', title: 'Project', short: 'Project' },
-    { key: 'details', title: 'Details', short: 'Details' },
+    { key: 'compose', title: 'Compose Request', short: 'Compose' },
     { key: 'review', title: 'Review + Send', short: 'Review' },
     { key: 'done', title: 'Done', short: 'Done' },
   ];
+  const STEP_COMPOSE = 0;
+  const STEP_REVIEW = 1;
+  const STEP_DONE = 2;
+  const REQUIRED_FIELDS = [
+    ['name', 'Enter your contact name.'],
+    ['email', 'Enter a contact email.'],
+    ['project', 'Enter a project title.'],
+    ['desc', 'Add a project description.'],
+    ['links', 'Add at least one source link.'],
+    ['budget', 'Enter a budget estimate.'],
+    ['timeframe', 'Enter a preferred timeframe.'],
+  ];
+  const ADVANCED_FIELDS = new Set(['links', 'budget', 'timeline', 'timeframe']);
 
   const STATUS_ORDER = ['submitted', 'triage', 'in_review', 'needs_info', 'approved', 'closed'];
   const STATUS_LABELS = {
@@ -276,6 +286,7 @@ import { animate } from 'framer-motion/dom';
       authResolved: false,
       apiBase: config.apiBase,
       form: createInitialForm(),
+      ui: { advancedOpen: false },
       stepError: '',
       fieldErrors: {},
       submitError: '',
@@ -734,31 +745,15 @@ import { animate } from 'framer-motion/dom';
     return banner;
   }
 
-  // Returns a per-field error map for the given step (empty when valid).
-  function validateStepFields(index) {
+  // Returns a per-field error map for all required fields (empty when valid).
+  // The compose step gathers every field, so validation is gathered too.
+  function validateAllRequired() {
     const errors = {};
     if (!state) return errors;
-    if (index === 1) {
-      if (!text(state.form.name)) errors.name = 'Enter your contact name.';
-      if (!text(state.form.email)) errors.email = 'Enter a contact email.';
-    }
-    if (index === 2) {
-      if (!text(state.form.project)) errors.project = 'Enter a project title.';
-      if (!text(state.form.desc)) errors.desc = 'Add a project description.';
-    }
-    if (index === 3) {
-      if (!text(state.form.links)) errors.links = 'Add at least one source link.';
-      if (!text(state.form.budget)) errors.budget = 'Enter a budget estimate.';
-      if (!text(state.form.timeframe)) errors.timeframe = 'Enter a preferred timeframe.';
+    for (const [key, message] of REQUIRED_FIELDS) {
+      if (!text(state.form[key])) errors[key] = message;
     }
     return errors;
-  }
-
-  // Back-compat summary string (used for the banner + submit guard).
-  function validateStep(index) {
-    const errors = validateStepFields(index);
-    const keys = Object.keys(errors);
-    return keys.length ? 'Complete the required fields before continuing.' : '';
   }
 
   function setStep(nextStep) {
@@ -780,11 +775,13 @@ import { animate } from 'framer-motion/dom';
 
   function goNext() {
     if (!state) return;
-    const errors = validateStepFields(state.step);
+    const errors = validateAllRequired();
     const keys = Object.keys(errors);
     if (keys.length) {
       state.fieldErrors = errors;
       state.stepError = 'Complete the required fields before continuing.';
+      // Make sure the disclosure that holds an invalid field is open.
+      if (state.ui) state.ui.advancedOpen = state.ui.advancedOpen || keys.some((k) => ADVANCED_FIELDS.has(k));
       renderStep();
       const firstInvalid = liveRoot?.querySelector('.dx-press-field.has-error .dx-press-input');
       if (firstInvalid instanceof HTMLElement) {
@@ -793,7 +790,7 @@ import { animate } from 'framer-motion/dom';
       return;
     }
     state.fieldErrors = {};
-    setStep(state.step + 1);
+    setStep(STEP_REVIEW);
   }
 
   function goPrev() {
@@ -971,10 +968,12 @@ import { animate } from 'framer-motion/dom';
   async function submitRequest() {
     if (!state || state.isSubmitting) return;
 
-    const validationError = validateStep(3);
-    if (validationError) {
-      state.stepError = validationError;
-      setStep(3);
+    const errors = validateAllRequired();
+    if (Object.keys(errors).length) {
+      state.fieldErrors = errors;
+      state.stepError = 'Complete the required fields before continuing.';
+      if (state.ui) state.ui.advancedOpen = true;
+      setStep(STEP_COMPOSE);
       return;
     }
 
@@ -1049,20 +1048,19 @@ import { animate } from 'framer-motion/dom';
     animateProgressFill();
   }
 
-  function renderIntroStep(hostCard) {
-    hostCard.appendChild(
-      create(
-        'p',
-        'dx-press-copy',
-        'Submit editorial pitches, collaboration requests, and campaign proposals. One request per calendar month per account.',
-      ),
-    );
+  function pressTextField(label, key, placeholder, opts = {}) {
+    const input = createInput(opts.type || 'text', state.form[key], placeholder, (event) => { state.form[key] = event.target.value; });
+    if (opts.autocomplete) input.autocomplete = opts.autocomplete;
+    return createField(label, input, { required: !!opts.required, fieldKey: key });
+  }
 
-    const bullets = create('ul', 'dx-press-bullets');
-    bullets.appendChild(create('li', '', 'Include public links to source material.'));
-    bullets.appendChild(create('li', '', 'Budget and timeframe improve triage speed.'));
-    bullets.appendChild(create('li', '', 'Status updates appear in the lifecycle panel below.'));
-    hostCard.appendChild(bullets);
+  function pressTextareaField(label, key, placeholder, required) {
+    const input = createTextarea(state.form[key], placeholder, (event) => { state.form[key] = event.target.value; });
+    return createField(label, input, { required: !!required, fieldKey: key });
+  }
+
+  function renderComposeStep(hostCard) {
+    hostCard.appendChild(create('p', 'dx-press-copy', 'Submit editorial pitches, collaboration requests, and campaign proposals. One request per calendar month per account.'));
 
     if (!state.auth0Sub) {
       hostCard.appendChild(createErrorBanner('Sign in to start a PressRoom request.'));
@@ -1072,106 +1070,42 @@ import { animate } from 'framer-motion/dom';
       hostCard.appendChild(createErrorBanner('Monthly request limit reached for this account.'));
     }
 
-    const footer = create('div', 'dx-press-nav');
-    const begin = createButton('Begin request', 'primary', () => {
-      if (!canBegin()) return;
-      setStep(1);
-    });
-    begin.disabled = !canBegin();
-    footer.appendChild(begin);
-    hostCard.appendChild(footer);
-  }
-
-  function renderContactStep(hostCard) {
-    hostCard.appendChild(create('p', 'dx-press-copy', 'Provide primary contact details for editorial follow-up.'));
-
+    const essentials = create('section', 'dx-press-group');
+    essentials.appendChild(create('p', 'dx-press-group-label', 'Essentials'));
     const grid = create('div', 'dx-press-grid');
+    grid.append(
+      pressTextField('Contact name', 'name', 'Your name', { required: true, autocomplete: 'name' }),
+      pressTextField('Contact email', 'email', 'name@example.com', { required: true, type: 'email', autocomplete: 'email' }),
+    );
+    essentials.appendChild(grid);
+    essentials.appendChild(pressTextField('Project title', 'project', 'Project title', { required: true }));
+    essentials.appendChild(pressTextareaField('Project description', 'desc', 'Scope, goals, and the editorial angle or support you want.', true));
+    hostCard.appendChild(essentials);
 
-    const nameInput = createInput('text', state.form.name, 'Your name', (event) => {
-      state.form.name = event.target.value;
-    });
-    nameInput.autocomplete = 'name';
-    grid.appendChild(createField('Contact name', nameInput, { required: true, fieldKey: 'name' }));
+    const advanced = create('details', 'dx-press-advanced');
+    advanced.open = !!(state.ui && state.ui.advancedOpen);
+    advanced.addEventListener('toggle', () => { if (!state.ui) state.ui = {}; state.ui.advancedOpen = advanced.open; });
+    advanced.appendChild(create('summary', 'dx-press-advanced-summary', 'Links, budget & scheduling'));
+    advanced.appendChild(pressTextareaField('Source links', 'links', 'One link per line — public, clearly named.', true));
+    const advGrid = create('div', 'dx-press-grid');
+    advGrid.append(
+      pressTextField('Budget (USD)', 'budget', '$2,500', { required: true }),
+      pressTextField('Preferred timeframe', 'timeframe', 'Desired release window', { required: true }),
+      pressTextField('Timeline (optional)', 'timeline', 'Milestones and deadlines'),
+    );
+    advanced.appendChild(advGrid);
+    hostCard.appendChild(advanced);
 
-    const emailInput = createInput('email', state.form.email, 'name@example.com', (event) => {
-      state.form.email = event.target.value;
-    });
-    emailInput.autocomplete = 'email';
-    grid.appendChild(createField('Contact email', emailInput, { required: true, fieldKey: 'email' }));
-
-    hostCard.appendChild(grid);
-
-    if (state.stepError) {
-      hostCard.appendChild(createErrorBanner(state.stepError));
-    }
-
-    const footer = create('div', 'dx-press-nav');
-    footer.appendChild(createButton('Back', 'secondary', goPrev));
-    footer.appendChild(createButton('Continue', 'primary', goNext));
-    hostCard.appendChild(footer);
-  }
-
-  function renderProjectStep(hostCard) {
-    hostCard.appendChild(create('p', 'dx-press-copy', 'Describe what you want coverage or support for.'));
-
-    const grid = create('div', 'dx-press-grid dx-press-grid--single');
-
-    const projectInput = createInput('text', state.form.project, 'Project title', (event) => {
-      state.form.project = event.target.value;
-    });
-    grid.appendChild(createField('Project title', projectInput, { required: true, fieldKey: 'project' }));
-
-    const descInput = createTextarea(state.form.desc, 'Scope, goals, and requested editorial angle.', (event) => {
-      state.form.desc = event.target.value;
-    });
-    grid.appendChild(createField('Project description', descInput, { required: true, fieldKey: 'desc' }));
-
-    hostCard.appendChild(grid);
-
-    if (state.stepError) {
-      hostCard.appendChild(createErrorBanner(state.stepError));
-    }
+    if (state.stepError) hostCard.appendChild(createErrorBanner(state.stepError));
 
     const footer = create('div', 'dx-press-nav');
-    footer.appendChild(createButton('Back', 'secondary', goPrev));
-    footer.appendChild(createButton('Continue', 'primary', goNext));
-    hostCard.appendChild(footer);
-  }
-
-  function renderDetailsStep(hostCard) {
-    hostCard.appendChild(create('p', 'dx-press-copy', 'Add source links, budget context, and scheduling details.'));
-
-    const grid = create('div', 'dx-press-grid');
-
-    const linksInput = createInput('url', state.form.links, 'https://drive.google.com/...', (event) => {
-      state.form.links = event.target.value;
-    });
-    grid.appendChild(createField('Source links', linksInput, { required: true, fieldKey: 'links' }));
-
-    const budgetInput = createInput('text', state.form.budget, '$2,500', (event) => {
-      state.form.budget = event.target.value;
-    });
-    grid.appendChild(createField('Budget (USD)', budgetInput, { required: true, fieldKey: 'budget' }));
-
-    const timelineInput = createInput('text', state.form.timeline, 'Milestones and deadlines', (event) => {
-      state.form.timeline = event.target.value;
-    });
-    grid.appendChild(createField('Timeline', timelineInput));
-
-    const timeframeInput = createInput('text', state.form.timeframe, 'Desired release window', (event) => {
-      state.form.timeframe = event.target.value;
-    });
-    grid.appendChild(createField('Timeframe', timeframeInput, { required: true, fieldKey: 'timeframe' }));
-
-    hostCard.appendChild(grid);
-
-    if (state.stepError) {
-      hostCard.appendChild(createErrorBanner(state.stepError));
+    const cont = createButton('Continue to review', 'primary', goNext);
+    cont.setAttribute('data-dx-press-continue', 'compose');
+    if (!canBegin()) {
+      cont.disabled = true;
+      cont.classList.add('is-disabled');
     }
-
-    const footer = create('div', 'dx-press-nav');
-    footer.appendChild(createButton('Back', 'secondary', goPrev));
-    footer.appendChild(createButton('Continue', 'primary', goNext));
+    footer.appendChild(cont);
     hostCard.appendChild(footer);
   }
 
@@ -1257,14 +1191,8 @@ import { animate } from 'framer-motion/dom';
 
     card.appendChild(create('h2', 'dx-press-title', step.title));
 
-    if (step.key === 'intro') {
-      renderIntroStep(card);
-    } else if (step.key === 'contact') {
-      renderContactStep(card);
-    } else if (step.key === 'project') {
-      renderProjectStep(card);
-    } else if (step.key === 'details') {
-      renderDetailsStep(card);
+    if (step.key === 'compose') {
+      renderComposeStep(card);
     } else if (step.key === 'review') {
       renderReviewStep(card);
     } else {
@@ -1409,6 +1337,20 @@ import { animate } from 'framer-motion/dom';
     heading.appendChild(create('p', 'dx-press-copy dx-press-copy--compact', getQuotaDetailText()));
     refs.command.appendChild(heading);
 
+    const checks = requiredChecklist();
+    const done = checks.filter((item) => item.done).length;
+    const total = checks.length || 1;
+    const readinessCard = create('section', 'dx-press-command-card');
+    readinessCard.appendChild(create('h4', 'dx-press-command-card-title', 'Readiness'));
+    readinessCard.appendChild(create('p', 'dx-press-command-copy', `${done} of ${total} required complete`));
+    const meter = create('div', 'dx-press-readiness');
+    if (done >= total) meter.classList.add('is-complete');
+    const fill = create('span', 'dx-press-readiness-fill');
+    fill.style.transform = `scaleX(${Math.max(0, Math.min(1, done / total))})`;
+    meter.appendChild(fill);
+    readinessCard.appendChild(meter);
+    refs.command.appendChild(readinessCard);
+
     const quotaCard = create('section', 'dx-press-command-card');
     quotaCard.appendChild(create('h4', 'dx-press-command-card-title', 'Monthly quota'));
     quotaCard.appendChild(create('p', 'dx-press-command-copy', `${state.monthlyRemaining} remaining of ${state.monthlyLimit}`));
@@ -1480,7 +1422,7 @@ import { animate } from 'framer-motion/dom';
     main.appendChild(progressWrap);
 
     const stageHost = create('section', 'dx-press-stage-host');
-    stageHost.setAttribute('data-dx-press-step', 'intro');
+    stageHost.setAttribute('data-dx-press-step', 'compose');
     main.appendChild(stageHost);
 
     const history = create('section', 'dx-press-history');

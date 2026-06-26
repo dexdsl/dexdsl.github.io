@@ -634,3 +634,305 @@
     opacity: 0.34;
   }
 }
+
+/* ===== Redesigned compose/send flow ===== */
+
+/* Inline pipeline switch (replaces the flow-gate screen) */
+#dex-submit .dx-submit-switch {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid var(--dx-submit-field-rim);
+  background: var(--dx-submit-panel);
+}
+
+#dex-submit .dx-submit-switch-option {
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  padding: 7px 16px;
+  font: 700 12px var(--font-heading, "Stretch Pro", sans-serif);
+  letter-spacing: 0.03em;
+  background: transparent;
+  color: var(--dx-submit-muted);
+  cursor: pointer;
+}
+
+#dex-submit .dx-submit-switch-option.is-active {
+  background: linear-gradient(130deg, var(--dx-submit-accent), var(--dx-submit-accent-2));
+  color: #fff;
+}
+
+#dex-submit .dx-submit-switch-option.is-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Section grouping inside the single sheet */
+#dex-submit .dx-submit-group {
+  display: grid;
+  gap: 12px;
+  padding: 14px 0;
+  border-top: 1px solid var(--dx-submit-line);
+}
+
+#dex-submit .dx-submit-group:first-of-type {
+  border-top: 0;
+  padding-top: 4px;
+}
+
+#dex-submit .dx-submit-group-label {
+  margin: 0;
+  font: 700 11px var(--font-heading, "Stretch Pro", sans-serif);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dx-submit-muted);
+}
+
+/* Progressive disclosure (Advanced + legal) */
+#dex-submit .dx-submit-advanced,
+#dex-submit .dx-submit-legal {
+  border-top: 1px solid var(--dx-submit-line);
+  padding-top: 12px;
+  display: grid;
+  gap: 12px;
+}
+
+#dex-submit .dx-submit-advanced-summary,
+#dex-submit .dx-submit-legal-summary {
+  cursor: pointer;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 700 13px var(--font-heading, "Stretch Pro", sans-serif);
+  letter-spacing: 0.02em;
+  color: var(--dx-submit-ink);
+}
+
+#dex-submit .dx-submit-advanced-summary::-webkit-details-marker,
+#dex-submit .dx-submit-legal-summary::-webkit-details-marker {
+  display: none;
+}
+
+#dex-submit .dx-submit-advanced-summary::before,
+#dex-submit .dx-submit-legal-summary::before {
+  content: "+";
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1px solid var(--dx-submit-field-rim);
+  font-size: 14px;
+  line-height: 1;
+}
+
+#dex-submit details[open] > .dx-submit-advanced-summary::before,
+#dex-submit details[open] > .dx-submit-legal-summary::before {
+  content: "–";
+}
+
+/* Pitch system segmented control */
+#dex-submit .dx-submit-seg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+#dex-submit .dx-submit-seg-option {
+  appearance: none;
+  border: 1px solid var(--dx-submit-field-rim);
+  border-radius: 8px;
+  padding: 7px 12px;
+  font: 600 12px var(--font-mono, "Courier Prime", monospace);
+  background: var(--dx-submit-field);
+  color: var(--dx-submit-ink);
+  cursor: pointer;
+}
+
+#dex-submit .dx-submit-seg-option.is-active {
+  border-color: transparent;
+  background: linear-gradient(130deg, rgba(255, 25, 16, 0.22), rgba(255, 152, 16, 0.2));
+}
+
+/* Pitch root note chips */
+#dex-submit .dx-submit-notechips {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(58px, 1fr));
+  gap: 6px;
+}
+
+#dex-submit .dx-submit-notechip {
+  appearance: none;
+  border: 1px solid var(--dx-submit-field-rim);
+  border-radius: 8px;
+  padding: 9px 6px;
+  min-height: 40px;
+  font: 600 13px var(--font-mono, "Courier Prime", monospace);
+  background: var(--dx-submit-field);
+  color: var(--dx-submit-ink);
+  cursor: pointer;
+}
+
+#dex-submit .dx-submit-notechip.is-active {
+  border-color: transparent;
+  background: linear-gradient(130deg, var(--dx-submit-accent), var(--dx-submit-accent-2));
+  color: #fff;
+}
+
+/* Tag token input */
+#dex-submit .dx-submit-tokens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--dx-submit-field-rim);
+  background: var(--dx-submit-field);
+}
+
+#dex-submit .dx-submit-tok {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px 4px 10px;
+  border-radius: 999px;
+  background: linear-gradient(130deg, rgba(255, 25, 16, 0.22), rgba(255, 152, 16, 0.2));
+  font: 600 12px var(--font-mono, "Courier Prime", monospace);
+  color: var(--dx-submit-ink);
+}
+
+#dex-submit .dx-submit-tok-remove {
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  width: 18px;
+  height: 18px;
+  line-height: 1;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.18);
+  color: var(--dx-submit-ink);
+}
+
+#dex-submit .dx-submit-tok-input {
+  flex: 1 1 120px;
+  min-width: 120px;
+  border: 0;
+  background: transparent;
+  color: var(--dx-submit-ink);
+  font: 600 14px var(--font-mono, "Courier Prime", monospace);
+  outline: none;
+}
+
+#dex-submit .dx-submit-tag-suggest {
+  display: grid;
+  gap: 8px;
+}
+
+#dex-submit .dx-submit-tag-facet {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+#dex-submit .dx-submit-tag-facet-label {
+  font: 700 10px var(--font-heading, "Stretch Pro", sans-serif);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dx-submit-muted);
+  min-width: 64px;
+}
+
+#dex-submit .dx-submit-tag-opt {
+  appearance: none;
+  border: 1px solid var(--dx-submit-field-rim);
+  border-radius: 999px;
+  padding: 5px 10px;
+  font: 600 12px var(--font-mono, "Courier Prime", monospace);
+  background: var(--dx-submit-field);
+  color: var(--dx-submit-ink);
+  cursor: pointer;
+}
+
+#dex-submit .dx-submit-tag-opt.is-selected {
+  border-color: transparent;
+  background: linear-gradient(130deg, rgba(255, 25, 16, 0.22), rgba(255, 152, 16, 0.2));
+}
+
+/* Readiness meter (command panel) */
+#dex-submit .dx-submit-readiness {
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--dx-submit-track);
+}
+
+#dex-submit .dx-submit-readiness-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: left center;
+  transform: scaleX(0);
+  background: linear-gradient(130deg, var(--dx-submit-accent), var(--dx-submit-accent-2));
+  transition: transform 220ms cubic-bezier(.2, .7, .2, 1);
+}
+
+#dex-submit .dx-submit-readiness.is-complete .dx-submit-readiness-fill {
+  background: linear-gradient(130deg, #18b46c, #34c759);
+}
+
+#dex-submit .dx-submit-lookup-preview {
+  font-family: var(--font-mono, "Courier Prime", monospace);
+  letter-spacing: 0.02em;
+}
+
+/* Review summary */
+#dex-submit .dx-submit-review-grid {
+  display: grid;
+  gap: 6px;
+}
+
+#dex-submit .dx-submit-review-row {
+  display: grid;
+  grid-template-columns: minmax(96px, 130px) minmax(0, 1fr);
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px dashed var(--dx-submit-line);
+}
+
+#dex-submit .dx-submit-review-row:last-child {
+  border-bottom: 0;
+}
+
+#dex-submit .dx-submit-review-key {
+  font: 700 11px var(--font-heading, "Stretch Pro", sans-serif);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dx-submit-muted);
+}
+
+#dex-submit .dx-submit-review-val {
+  font: 600 13px var(--font-mono, "Courier Prime", monospace);
+  color: var(--dx-submit-ink);
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 560px) {
+  #dex-submit .dx-submit-switch {
+    display: flex;
+    width: 100%;
+  }
+
+  #dex-submit .dx-submit-switch-option {
+    flex: 1 1 0;
+  }
+
+  #dex-submit .dx-submit-review-row {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}

@@ -43,7 +43,7 @@ function verifySubmitRuntime() {
     'submit_call',
     'CALLS_REGISTRY_URL',
     'applyCallsRegistryContract',
-    'buildCallMetadataStep',
+    'buildCallComposeBody',
   ]);
 }
 

@@ -239,7 +239,10 @@ test('profile routes inherit /submit canonical shell geometry and glass', async 
       expect(Math.abs(routeMetrics.rootWidthPx - baseline.rootWidthPx)).toBeLessThanOrEqual(14);
       expect(Math.abs(routeMetrics.footerWidthPx - baseline.footerWidthPx)).toBeLessThanOrEqual(14);
       expect(Math.abs(routeMetrics.rootTopGapPx - baseline.rootTopGapPx)).toBeLessThanOrEqual(48);
-      if (routePath === '/entry/settings/' && breakpoint.width >= 980) {
+      if (routePath === '/entry/settings/') {
+        // Settings is a single overflow-contained flex sheet at every width
+        // (the inner .grid scrolls, not the root), so it intentionally does not
+        // mirror the submit baseline's visible root overflow.
         expect(['auto', 'scroll', 'overlay']).not.toContain(routeMetrics.rootOverflowY);
       } else {
         expect(routeMetrics.rootOverflow).toBe(baseline.rootOverflow);

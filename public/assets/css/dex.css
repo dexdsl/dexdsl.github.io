@@ -1781,7 +1781,7 @@ body.dx-route-profile-protected :is(
   --dx-blackglass-bg: linear-gradient(145deg, rgba(15, 16, 21, 0.66) 0%, rgba(9, 10, 14, 0.52) 100%);
   --dx-blackglass-rim: rgba(255, 255, 255, 0.14);
   --dx-blackglass-shadow: 0 18px 42px rgba(0, 0, 0, 0.42);
-  --dx-blackglass-backdrop: blur(22px) saturate(135%);
+  --dx-blackglass-backdrop: blur(24px) saturate(170%);
   --dx-blackglass-ink: #f3f3f4;
   --dx-blackglass-muted: rgba(255, 255, 255, 0.62);
   --dx-blackglass-faint: rgba(255, 255, 255, 0.40);

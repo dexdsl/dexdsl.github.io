@@ -70,8 +70,8 @@ async function stubCallsRegistry(page: Page): Promise<void> {
   });
 }
 
-async function completeLicenseStep(page: Page, signature = 'Call Submitter'): Promise<void> {
-  const step = page.locator('[data-dx-submit-step="license"]');
+async function completeSendStep(page: Page, signature = 'Call Submitter'): Promise<void> {
+  const step = page.locator('[data-dx-submit-step="send"]');
   await expect(step).toBeVisible();
   await step.locator('[data-dx-submit-license-signature]').fill(signature);
 
@@ -86,49 +86,40 @@ async function completeLicenseStep(page: Page, signature = 'Call Submitter'): Pr
   }
 }
 
-test('call deep link boots call flow and submits via quota_call + submit_call actions', async ({ page }) => {
+const WORKER = 'https://dex-api.spring-fog-8edd.workers.dev';
+const CORS = {
+  'access-control-allow-origin': '*',
+  'access-control-allow-methods': 'GET,POST,PATCH,OPTIONS',
+  'access-control-allow-headers': 'authorization,content-type',
+};
+
+test('call deep link boots call flow and submits via the worker submit_call payload', async ({ page }) => {
   await stubHeaderRuntimes(page);
   await stubDexAuthRuntime(page);
   await stubCallsRegistry(page);
 
-  const seenActions: string[] = [];
+  let quotaKind = '';
   let submitParams: Record<string, string> | null = null;
 
-  await page.route('https://script.google.com/macros/**', async (route) => {
-    const url = new URL(route.request().url());
-    const action = String(url.searchParams.get('action') || '').toLowerCase();
-    const callback = String(url.searchParams.get('callback') || '').trim();
-    seenActions.push(action);
-
-    if (!callback) {
-      await route.fulfill({ status: 400, contentType: 'text/plain', body: 'Missing callback' });
+  // Calls route through the same worker as samples (no Google Apps Script).
+  await page.route(`${WORKER}/**`, async (route) => {
+    const req = route.request();
+    const method = req.method().toUpperCase();
+    const url = new URL(req.url());
+    if (method === 'OPTIONS') {
+      await route.fulfill({ status: 204, headers: CORS });
       return;
     }
-
-    if (action === 'quota_call') {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/javascript',
-        body: `${callback}(${JSON.stringify({ status: 'ok', weeklyLimit: 2, weeklyUsed: 0, weeklyRemaining: 2 })});`,
-      });
-      return;
+    const json = (body: unknown) => route.fulfill({ status: 200, headers: CORS, contentType: 'application/json', body: JSON.stringify(body) });
+    if (url.pathname === '/me/submissions/quota') {
+      quotaKind = url.searchParams.get('kind') || '';
+      return json({ weeklyLimit: 2, weeklyUsed: 0, weeklyRemaining: 2 });
     }
-
-    if (action === 'submit_call') {
-      submitParams = Object.fromEntries(url.searchParams.entries());
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/javascript',
-        body: `${callback}(${JSON.stringify({ status: 'ok', row: 88, submissionId: 'sub_call_88', weeklyLimit: 2, weeklyUsed: 1, weeklyRemaining: 1, submissionKind: 'call' })});`,
-      });
-      return;
+    if (url.pathname === '/me/submissions' && method === 'POST') {
+      submitParams = req.postDataJSON();
+      return json({ status: 'ok', row: 88, submissionId: 'sub_call_88', weeklyUsed: 1, weeklyRemaining: 1, submissionKind: 'call' });
     }
-
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/javascript',
-      body: `${callback}(${JSON.stringify({ status: 'ok' })});`,
-    });
+    return json({ ok: true });
   });
 
   await page.goto('/entry/submit/?flow=call&lane=in-dex-a&subcall=b&cycle=IN%20DEX%20A2026.9&via=call', { waitUntil: 'domcontentloaded' });
@@ -136,33 +127,23 @@ test('call deep link boots call flow and submits via quota_call + submit_call ac
 
   await expect(page.locator('#dex-submit')).toHaveAttribute('data-dx-submit-flow', 'call');
   await expect(page.locator('#dex-submit')).toHaveAttribute('data-dx-submit-lane', 'in-dex-a');
-  await expect(page.locator('#dex-submit')).toContainText('Begin call submission');
+  await expect(page.locator('[data-dx-submit-step="compose"]')).toBeVisible();
 
-  await page.getByRole('button', { name: 'Begin call submission' }).click();
-  await expect(page.locator('[data-dx-submit-step="metadata"]')).toBeVisible();
+  const compose = page.locator('[data-dx-submit-step="compose"]');
+  await compose.locator('.dx-submit-field', { hasText: 'Proposal title' }).locator('input').fill('IN DEX A call proposal');
+  await compose.locator('.dx-submit-field', { hasText: 'Proposer / creator' }).locator('input').fill('Call Submitter');
+  await compose.locator('.dx-submit-field', { hasText: 'Subcall' }).locator('select').selectOption('b');
+  await compose.locator('.dx-submit-field', { hasText: 'Proposal format' }).locator('select').selectOption('act');
+  await compose.locator('.dx-submit-field', { hasText: 'Public materials link' }).locator('input').fill('https://drive.google.com/mock-call-source');
+  await compose.locator('.dx-submit-field', { hasText: 'Notes for Dex team' }).locator('textarea').fill('call note');
 
-  const meta = page.locator('[data-dx-submit-step="metadata"]');
-  await meta.locator('.dx-submit-field', { hasText: 'Proposal title' }).locator('input').fill('IN DEX A call proposal');
-  await meta.locator('.dx-submit-field', { hasText: 'Proposer / creator' }).locator('input').fill('Call Submitter');
-  await meta.locator('.dx-submit-field', { hasText: 'Subcall' }).locator('select').selectOption('b');
-  await meta.locator('.dx-submit-field', { hasText: 'Proposal format' }).locator('select').selectOption('act');
-
-  await page.getByRole('button', { name: 'Continue to license' }).click();
-  await completeLicenseStep(page, 'Call Submitter');
-  await page.getByRole('button', { name: 'Continue to upload' }).click();
-
-  const upload = page.locator('[data-dx-submit-step="upload"]');
-  await upload.locator('.dx-submit-field', { hasText: 'Public materials link' }).locator('input').fill('https://drive.google.com/mock-call-source');
-  await upload.locator('.dx-submit-field', { hasText: 'Notes for Dex team' }).locator('textarea').fill('call note');
+  await page.getByRole('button', { name: 'Continue to rights & send' }).click();
+  await completeSendStep(page, 'Call Submitter');
   await page.getByRole('button', { name: 'Submit call' }).click();
 
   await expect(page.locator('[data-dx-submit-step="done"]')).toContainText('Call submission received');
 
-  expect(seenActions).toContain('quota_call');
-  expect(seenActions).toContain('submit_call');
-  expect(seenActions).not.toContain('quota');
-  expect(seenActions).not.toContain('submit');
-
+  expect(quotaKind).toBe('call');
   expect(submitParams).not.toBeNull();
   if (!submitParams) return;
   expect(submitParams.action).toBe('submit_call');
@@ -173,4 +154,5 @@ test('call deep link boots call flow and submits via quota_call + submit_call ac
   expect(submitParams.submissionKind).toBe('call');
   expect(submitParams.licenseAccepted).toBe('yes');
   expect(submitParams.rightsAcknowledged).toBe('yes');
+  expect(submitParams.digitalSignatureName).toBe('Call Submitter');
 });
