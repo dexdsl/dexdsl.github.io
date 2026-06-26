@@ -1,6 +1,6 @@
 {
   "version": "catalog-editorial-v1",
-  "updatedAt": "2026-06-22T06:04:15.944Z",
+  "updatedAt": "2026-06-26T05:22:59.285Z",
   "manifest": [
     {
       "entry_id": "2-organs-midori-ataka",
@@ -10,6 +10,8 @@
       "season": "S1",
       "performer": "midori ataka",
       "instrument": "TWO ORGANS",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     },
     {
@@ -20,6 +22,8 @@
       "season": "S2",
       "performer": "Aidan Yeats",
       "instrument": "GUITAR AND VOICE",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     },
     {
@@ -30,6 +34,8 @@
       "season": "S1",
       "performer": "tyler jordan",
       "instrument": "AMPLIFIED KNIVES",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     },
     {
@@ -40,6 +46,8 @@
       "season": "S2",
       "performer": "Cameron Church",
       "instrument": "AMPLIFIED PRINTER",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     },
     {
@@ -50,6 +58,8 @@
       "season": "S1",
       "performer": "sam pluta",
       "instrument": "FE‌EDBACK TELEVISIONS",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     },
     {
@@ -60,6 +70,8 @@
       "season": "S2",
       "performer": "Anant Shah",
       "instrument": "ant shah",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     },
     {
@@ -70,6 +82,8 @@
       "season": "S2",
       "performer": "Andrew Chanover",
       "instrument": "ELECTRIC GUITAR",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     },
     {
@@ -80,6 +94,8 @@
       "season": "S2",
       "performer": "Paul Yorke, Sofi Jacquez",
       "instrument": "AS THOUGH I’M SLIP‌PING",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "draft"
     },
     {
@@ -90,6 +106,8 @@
       "season": "S2",
       "performer": "Arlo Tomecek, Max Coleman",
       "instrument": "BAS‌SO‌ON + ELECTRONICS WITH GENERATIVE VIDEO",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     },
     {
@@ -100,6 +118,8 @@
       "season": "S2",
       "performer": "Bojun Zhang",
       "instrument": "MODULAR SYNTH",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     },
     {
@@ -110,6 +130,8 @@
       "season": "S1",
       "performer": "emmanuel losa",
       "instrument": "CEL‌LO",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     },
     {
@@ -120,6 +142,8 @@
       "season": "S1",
       "performer": "paul* hermansen",
       "instrument": "CYBERNETIC SCAT",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     },
     {
@@ -130,6 +154,8 @@
       "season": "S2",
       "performer": "mann, chris",
       "instrument": "DHOLAK AND ELECTRONICS",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "draft"
     },
     {
@@ -140,6 +166,8 @@
       "season": "S1",
       "performer": "ethan bailey-gould",
       "instrument": "ELECTRIC GUITAR + pedals",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     },
     {
@@ -150,6 +178,8 @@
       "season": "S1",
       "performer": "cameron church",
       "instrument": "PREPARED HAM‌MERED DULCIMER + DIGITAL SIGNAL PROCES‌SOR",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     },
     {
@@ -160,6 +190,8 @@
       "season": "S2",
       "performer": "Jakob Heinemann",
       "instrument": "SPLINTERINGS for DOUBLE BAS‌S",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     },
     {
@@ -170,6 +202,8 @@
       "season": "S2",
       "performer": "Ben Giroux",
       "instrument": "MULTIPLE PERCUS‌SION",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     },
     {
@@ -180,6 +214,8 @@
       "season": "S1",
       "performer": "jared murphy",
       "instrument": "NO IMPUT MIXING BOARD",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     },
     {
@@ -190,6 +226,8 @@
       "season": "S1",
       "performer": "suarez-solis, sebastian",
       "instrument": "PREPARED BAS‌S VIOL",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     },
     {
@@ -200,6 +238,8 @@
       "season": "S1",
       "performer": "suarez-solis, sebastian",
       "instrument": "PREPARED HARPSICHORD",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     },
     {
@@ -210,6 +250,8 @@
       "season": "S2",
       "performer": "Sky Macklay",
       "instrument": "PREPARED OBOE",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     },
     {
@@ -220,6 +262,8 @@
       "season": "S2",
       "performer": "Matt LeVeque",
       "instrument": "SNARE DRUM",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     },
     {
@@ -230,6 +274,8 @@
       "season": "S2",
       "performer": "Grant Johnson",
       "instrument": "THIS IS A TANGIBLE SPACE for MULTIMEDIA",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     },
     {
@@ -240,6 +286,8 @@
       "season": "S2",
       "performer": "Tim Feeney",
       "instrument": "Prepared Floor Tom",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     },
     {
@@ -250,6 +298,8 @@
       "season": "S1",
       "performer": "qiujiang levi lu",
       "instrument": "VOICE W/ EVERYDAY OBJECT MANIPULATION",
+      "image_src": "",
+      "image_alt_raw": "",
       "status": "active"
     }
   ],

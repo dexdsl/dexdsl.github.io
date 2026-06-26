@@ -1,0 +1,143 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner:
+    - generic [ref=e2]:
+      - link "Skip to Content" [ref=e3] [cursor=pointer]:
+        - /url: index.html#page
+      - generic [ref=e5]:
+        - generic [ref=e7]:
+          - link "YouTube" [ref=e8] [cursor=pointer]:
+            - /url: https://www.youtube.com/channel/UCo5B4ztNwaErXhQlGyNhMDQ
+            - img [ref=e9]
+          - link "Instagram" [ref=e11] [cursor=pointer]:
+            - /url: http://instagram.com/dexdsl
+            - img [ref=e12]
+          - link "TikTok" [ref=e14] [cursor=pointer]:
+            - /url: https://www.tiktok.com/@dexdsl
+            - img [ref=e15]
+          - link "Twitter" [ref=e17] [cursor=pointer]:
+            - /url: https://twitter.com/dexdsl
+            - img [ref=e18]
+        - generic [ref=e20]:
+          - link "dex digital sample library" [ref=e23] [cursor=pointer]:
+            - /url: /
+            - img "dex digital sample library" [ref=e24]
+          - navigation [ref=e25]:
+            - link "CATALOG" [ref=e27] [cursor=pointer]:
+              - /url: /catalog/
+            - link "IN DEX" [ref=e29] [cursor=pointer]:
+              - /url: /call/
+            - link "DEX NOTES" [ref=e31] [cursor=pointer]:
+              - /url: /dexnotes/
+            - link "ABOUT" [ref=e33] [cursor=pointer]:
+              - /url: /about/
+        - link "D‍DONATE" [ref=e36] [cursor=pointer]:
+          - /url: /donate/
+  - main [ref=e39]:
+    - complementary [ref=e41]:
+      - generic [ref=e42]:
+        - generic [ref=e43]:
+          - heading "Inbox 3" [level=1] [ref=e44]:
+            - text: Inbox
+            - generic [ref=e45]: "3"
+          - paragraph [ref=e46]: Submissions, Pressroom, and account messages — one board.
+        - generic [ref=e47]:
+          - tablist "Filter by source" [ref=e48]:
+            - tab "All" [selected] [ref=e49] [cursor=pointer]
+            - tab "Submissions" [ref=e50] [cursor=pointer]
+            - tab "Pressroom" [ref=e51] [cursor=pointer]
+            - tab "System" [ref=e52] [cursor=pointer]
+          - generic [ref=e53] [cursor=pointer]:
+            - checkbox "Archived" [ref=e54]
+            - text: Archived
+          - button "Mark all read" [ref=e55] [cursor=pointer]
+      - generic [ref=e56]:
+        - generic [ref=e57]:
+          - generic [ref=e58]:
+            - paragraph [ref=e59]: Needs you
+            - generic [ref=e60]: "2"
+          - generic [ref=e61]:
+            - button "System · billing Unread Payment failed Your latest payment attempt failed. Update your billing method. 5d ago critical" [ref=e62] [cursor=pointer]:
+              - generic [ref=e63]:
+                - paragraph [ref=e64]: System · billing
+                - generic "Unread" [ref=e65]
+              - heading "Payment failed" [level=3] [ref=e66]
+              - paragraph [ref=e67]: Your latest payment attempt failed. Update your billing method.
+              - generic [ref=e68]:
+                - generic [ref=e69]: 5d ago
+                - generic [ref=e70]: critical
+            - button "Pressroom · pressroom Unread Pressroom Launch Story (req-press-01) Press request received and queued for triage. 2/26/2026, 4:00:00 AM info" [ref=e71] [cursor=pointer]:
+              - generic [ref=e72]:
+                - paragraph [ref=e73]: Pressroom · pressroom
+                - generic "Unread" [ref=e74]
+              - heading "Pressroom Launch Story (req-press-01)" [level=3] [ref=e75]
+              - paragraph [ref=e76]: Press request received and queued for triage.
+              - generic [ref=e77]:
+                - generic [ref=e78]: 2/26/2026, 4:00:00 AM
+                - generic [ref=e79]: info
+        - generic [ref=e80]:
+          - generic [ref=e81]:
+            - paragraph [ref=e82]: In progress
+            - generic [ref=e83]: "3"
+          - generic [ref=e84]:
+            - button "System · polls Poll closed A poll you interacted with has closed and results are available. 6d ago info" [ref=e85] [cursor=pointer]:
+              - paragraph [ref=e87]: System · polls
+              - heading "Poll closed" [level=3] [ref=e88]
+              - paragraph [ref=e89]: A poll you interacted with has closed and results are available.
+              - generic [ref=e90]:
+                - generic [ref=e91]: 6d ago
+                - generic [ref=e92]: info
+            - button "Submission · Sample · submissions Unread Brass Session (SUB12-B.Pre Do A2026) Please share one dry alternate take. 2/26/2026, 1:00:00 AM Reviewing" [ref=e93] [cursor=pointer]:
+              - generic [ref=e94]:
+                - paragraph [ref=e95]: Submission · Sample · submissions
+                - generic "Unread" [ref=e96]
+              - heading "Brass Session (SUB12-B.Pre Do A2026)" [level=3] [ref=e97]
+              - paragraph [ref=e98]: Please share one dry alternate take.
+              - generic [ref=e105]:
+                - generic [ref=e106]: 2/26/2026, 1:00:00 AM
+                - generic [ref=e107]: Reviewing
+            - button "Submission · Sample · submissions Organ Session (SUB08-K.Org Do AV2026) Accepted for the next release set. 2/24/2026, 2:30:00 AM Accepted" [ref=e108] [cursor=pointer]:
+              - paragraph [ref=e110]: Submission · Sample · submissions
+              - heading "Organ Session (SUB08-K.Org Do AV2026)" [level=3] [ref=e111]
+              - paragraph [ref=e112]: Accepted for the next release set.
+              - generic [ref=e119]:
+                - generic [ref=e120]: 2/24/2026, 2:30:00 AM
+                - generic [ref=e121]: Accepted
+        - generic [ref=e122]:
+          - generic [ref=e123]:
+            - paragraph [ref=e124]: Resolved
+            - generic [ref=e125]: "0"
+          - paragraph [ref=e127]: Nothing here
+  - contentinfo [ref=e129]:
+    - generic [ref=e130]:
+      - img "Dex Footer Logo (black)" [ref=e133]
+      - generic [ref=e134]:
+        - text: © 2023–2026 DEX CO-OP CORP (EIN 92-3509152)
+        - text: dba Dex Digital Sample Library. All rights reserved.
+      - link "View Dex Digital Sample Library's Candid (GuideStar) profile" [ref=e136] [cursor=pointer]:
+        - /url: https://app.candid.org/profile/15083758/dex-digital-sample-library-92-3509152
+        - img "Candid (GuideStar) Transparency Seal" [ref=e137]
+      - generic [ref=e138]:
+        - generic [ref=e139]:
+          - link "YouTube" [ref=e140] [cursor=pointer]:
+            - /url: https://www.youtube.com/dexdsl
+            - img [ref=e141]
+          - link "Instagram" [ref=e143] [cursor=pointer]:
+            - /url: https://instagram.com/dexdsl
+            - img [ref=e144]
+          - link "TikTok" [ref=e146] [cursor=pointer]:
+            - /url: https://www.tiktok.com/@dexdsl
+            - img [ref=e147]
+          - link "Twitter" [ref=e149] [cursor=pointer]:
+            - /url: https://twitter.com/dexdsl
+            - img [ref=e150]
+        - navigation [ref=e152]:
+          - link "Privacy" [ref=e153] [cursor=pointer]:
+            - /url: /privacy
+          - link "Contact" [ref=e154] [cursor=pointer]:
+            - /url: /contact
+          - link "Copyright" [ref=e155] [cursor=pointer]:
+            - /url: /copyright
+```

@@ -930,11 +930,12 @@
       #dex-msg .dx-msg-title{margin:0;font-family:'Stretch Pro','Typefesse',var(--dx-mono),sans-serif;font-size:clamp(1.3rem,3vw,1.8rem);letter-spacing:.01em;text-transform:uppercase;display:flex;align-items:center;gap:10px;}
       #dex-msg .dx-msg-sub{margin:4px 0 0;color:var(--dx-msg-muted);font-size:.82rem;}
       #dex-msg .dx-msg-controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;flex:0 0 auto;}
-      /* segmented source filter — the modern pills */
-      #dex-msg .dx-msg-seg{display:inline-flex;padding:3px;gap:2px;border:1px solid var(--dx-msg-line);border-radius:999px;background:rgba(255,255,255,.05);}
-      #dex-msg .dx-msg-seg-btn{appearance:none;border:0;background:transparent;color:var(--dx-msg-muted);border-radius:999px;padding:6px 13px;font:inherit;font-size:.74rem;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:color .18s ease,background .18s ease;}
-      #dex-msg .dx-msg-seg-btn:hover{color:var(--dx-msg-ink);}
-      #dex-msg .dx-msg-seg-btn.is-active{background:var(--dx-msg-accent);color:#fff;box-shadow:0 2px 10px rgba(0,0,0,.28);}
+      /* source filter — matches the settings tab pills (individual bordered
+         pills, 4px radius, gradient-filled active), not a segmented box. */
+      #dex-msg .dx-msg-seg{display:inline-flex;flex-wrap:wrap;padding:0;gap:8px;border:0;border-radius:0;background:transparent;}
+      #dex-msg .dx-msg-seg-btn{appearance:none;min-height:38px;border:1px solid var(--dx-msg-line);background:rgba(255,255,255,.1);color:var(--dx-msg-ink);border-radius:4px;padding:.42rem .8rem;font:700 clamp(11px,1vw,12px) 'Stretch Pro','Typefesse',sans-serif;letter-spacing:.02em;text-transform:uppercase !important;cursor:pointer;transition:color .18s ease,background .18s ease,border-color .18s ease;}
+      #dex-msg .dx-msg-seg-btn:hover{background:rgba(255,255,255,.16);}
+      #dex-msg .dx-msg-seg-btn.is-active{border-color:transparent;background:linear-gradient(130deg,var(--dx-msg-accent),#ff9810);color:#fff;box-shadow:none;}
       #dex-msg .dx-msg-btn{appearance:none;border:1px solid var(--dx-msg-line-strong);background:rgba(255,255,255,.06);color:var(--dx-msg-ink);border-radius:999px;padding:7px 13px;font:inherit;font-size:.74rem;letter-spacing:.03em;text-transform:uppercase;line-height:1;cursor:pointer;transition:background .18s ease,border-color .18s ease;}
       #dex-msg .dx-msg-btn:hover{background:rgba(255,255,255,.12);}
       #dex-msg .dx-msg-btn:disabled{opacity:.45;cursor:not-allowed;}

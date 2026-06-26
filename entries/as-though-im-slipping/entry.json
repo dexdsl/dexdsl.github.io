@@ -6,8 +6,8 @@
     "artistName": "Paul Yorke, Sofi Jacquez"
   },
   "lifecycle": {
-    "publishedAt": "2026-06-22T06:04:15.875Z",
-    "updatedAt": "2026-06-22T06:04:15.875Z"
+    "publishedAt": "2026-06-26T05:22:59.218Z",
+    "updatedAt": "2026-06-26T05:22:59.218Z"
   },
   "video": {
     "mode": "url",
@@ -94,7 +94,12 @@
       "fileSpecs": {},
       "recordingIndexBundleRef": "bundle:recording-index:P.Ens. JaYo AV2024 S2:all",
       "recordingIndexPdfRef": "asset:as-though-im-slipping-recording-index-pdf",
-      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1RE91PASFDrycJ_Nm1KW7bRLDs44UT-Vik1xr15BUjLQ/edit?gid=0#gid=0"
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1RE91PASFDrycJ_Nm1KW7bRLDs44UT-Vik1xr15BUjLQ/edit?gid=0#gid=0",
+      "selectedBuckets": [
+        "A",
+        "B",
+        "C"
+      ]
     },
     "fileSpecs": {
       "bitDepth": 24,

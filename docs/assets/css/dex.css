@@ -2545,19 +2545,19 @@ body.dx-route-profile-protected [data-dx-settings-host-section="true"] .section-
     padding-right: var(--dx-settings-shell-gap, var(--dx-profile-home-header-gap, 14px)) !important;
     padding-bottom: var(--dx-settings-shell-gap, var(--dx-profile-home-header-gap, 14px)) !important;
     scrollbar-width: thin !important;
-    scrollbar-color: rgba(0, 0, 0, 0.24) rgba(255, 255, 255, 0.08) !important;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent !important;
   }
 
   #dex-settings[data-dx-settings-pane="membership"] #settingsMembershipAsideRail::-webkit-scrollbar,
   #dex-settings[data-dx-settings-pane="notifs"] #settingsMembershipAsideRail::-webkit-scrollbar {
-    width: 10px;
+    width: 6px;
   }
 
   #dex-settings[data-dx-settings-pane="membership"] #settingsMembershipAsideRail::-webkit-scrollbar-thumb,
   #dex-settings[data-dx-settings-pane="notifs"] #settingsMembershipAsideRail::-webkit-scrollbar-thumb {
     border-radius: 999px;
-    border: 2px solid rgba(255, 255, 255, 0.64);
-    background: rgba(0, 0, 0, 0.24);
+    border: 0;
+    background: rgba(255, 255, 255, 0.3);
   }
 
   #dex-settings #pane-membership,
@@ -2592,19 +2592,19 @@ body.dx-route-profile-protected [data-dx-settings-host-section="true"] .section-
     padding-right: var(--dx-settings-shell-gap, var(--dx-profile-home-header-gap, 14px)) !important;
     padding-bottom: var(--dx-settings-shell-gap, var(--dx-profile-home-header-gap, 14px)) !important;
     scrollbar-width: thin !important;
-    scrollbar-color: rgba(0, 0, 0, 0.24) rgba(255, 255, 255, 0.08) !important;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent !important;
   }
 
   #dex-settings[data-dx-settings-pane="membership"] #pane-membership::-webkit-scrollbar,
   #dex-settings[data-dx-settings-pane="notifs"] #pane-notifs::-webkit-scrollbar {
-    width: 10px;
+    width: 6px;
   }
 
   #dex-settings[data-dx-settings-pane="membership"] #pane-membership::-webkit-scrollbar-thumb,
   #dex-settings[data-dx-settings-pane="notifs"] #pane-notifs::-webkit-scrollbar-thumb {
     border-radius: 999px;
-    border: 2px solid rgba(255, 255, 255, 0.64);
-    background: rgba(0, 0, 0, 0.24);
+    border: 0;
+    background: rgba(255, 255, 255, 0.3);
   }
 
   #dex-settings[data-dx-settings-pane="notifs"] #pane-notifs #notCard {
@@ -2631,13 +2631,13 @@ body.dx-route-profile-protected [data-dx-settings-host-section="true"] .section-
   }
 
   #dex-settings[data-dx-settings-pane="notifs"] #pane-notifs #notCard .dx-not-scroll::-webkit-scrollbar {
-    width: 10px;
+    width: 6px;
   }
 
   #dex-settings[data-dx-settings-pane="notifs"] #pane-notifs #notCard .dx-not-scroll::-webkit-scrollbar-thumb {
     border-radius: 999px;
-    border: 2px solid rgba(255, 255, 255, 0.64);
-    background: rgba(0, 0, 0, 0.24);
+    border: 0;
+    background: rgba(255, 255, 255, 0.3);
   }
 
   #dex-settings[data-fit-profile="1"] .grid,
@@ -2677,19 +2677,19 @@ body.dx-route-profile-protected [data-dx-settings-host-section="true"] .section-
     padding-right: 6px !important;
     padding-bottom: var(--dx-settings-shell-gap, var(--dx-profile-home-header-gap, 14px)) !important;
     scrollbar-width: thin !important;
-    scrollbar-color: rgba(0, 0, 0, 0.24) rgba(255, 255, 255, 0.08) !important;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent !important;
   }
 
   #dex-settings[data-fit-profile="1"] #pane-profile .profile-col-left::-webkit-scrollbar,
   #dex-settings[data-dx-settings-pane="profile"] #pane-profile .profile-col-left::-webkit-scrollbar {
-    width: 10px;
+    width: 6px;
   }
 
   #dex-settings[data-fit-profile="1"] #pane-profile .profile-col-left::-webkit-scrollbar-thumb,
   #dex-settings[data-dx-settings-pane="profile"] #pane-profile .profile-col-left::-webkit-scrollbar-thumb {
     border-radius: 999px;
-    border: 2px solid rgba(255, 255, 255, 0.64);
-    background: rgba(0, 0, 0, 0.24);
+    border: 0;
+    background: rgba(255, 255, 255, 0.3);
   }
 
   #dex-settings[data-fit-profile="1"] #pane-profile .profile-col-right,
@@ -2726,19 +2726,19 @@ body.dx-route-profile-protected [data-dx-settings-host-section="true"] .section-
     scrollbar-gutter: stable both-edges !important;
     padding-right: 6px !important;
     scrollbar-width: thin !important;
-    scrollbar-color: rgba(0, 0, 0, 0.24) rgba(255, 255, 255, 0.08) !important;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent !important;
   }
 
   #dex-settings[data-fit-profile="1"] #pane-profile #securityCard .list::-webkit-scrollbar,
   #dex-settings[data-dx-settings-pane="profile"] #pane-profile #securityCard .list::-webkit-scrollbar {
-    width: 10px;
+    width: 6px;
   }
 
   #dex-settings[data-fit-profile="1"] #pane-profile #securityCard .list::-webkit-scrollbar-thumb,
   #dex-settings[data-dx-settings-pane="profile"] #pane-profile #securityCard .list::-webkit-scrollbar-thumb {
     border-radius: 999px;
-    border: 2px solid rgba(255, 255, 255, 0.64);
-    background: rgba(0, 0, 0, 0.24);
+    border: 0;
+    background: rgba(255, 255, 255, 0.3);
   }
 
   #dex-settings[data-fit-profile="1"] #pane-profile #dangerCard,

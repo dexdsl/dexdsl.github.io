@@ -2837,10 +2837,40 @@ a.dx-contrib-card-main:hover .dx-contrib-card-title{ text-decoration:underline; 
   #dex-settings #pane-account .profile-col-right{
     border-left:1px solid var(--glass-brd);
     padding-left:clamp(18px, 2.2vw, 32px);
+    /* Security + Danger zone scroll independently of the main body. */
+    position:sticky;
+    top:0;
+    align-self:start;
+    max-height:var(--dx-profile-pin-max-h, calc(100vh - 180px));
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    padding-right:6px;
   }
 }
 #dex-settings #pane-account .profile-col{
   gap:clamp(20px, 2.4vw, 34px);
+}
+/* Thin scroll-line for the body + account sidebar scroll containers (dex.css
+   styles the membership/notifs scroll areas; these two are styled here). */
+#dex-settings .grid,
+#dex-settings #pane-account .profile-col-right{
+  scrollbar-width:thin;
+  scrollbar-color:rgba(255,255,255,.3) transparent;
+}
+#dex-settings .grid::-webkit-scrollbar,
+#dex-settings #pane-account .profile-col-right::-webkit-scrollbar{
+  width:6px;
+  height:6px;
+}
+#dex-settings .grid::-webkit-scrollbar-track,
+#dex-settings #pane-account .profile-col-right::-webkit-scrollbar-track{
+  background:transparent;
+}
+#dex-settings .grid::-webkit-scrollbar-thumb,
+#dex-settings #pane-account .profile-col-right::-webkit-scrollbar-thumb{
+  border:0;
+  border-radius:999px;
+  background:rgba(255,255,255,.3);
 }
 #dex-settings[data-dx-settings-profile-ready="true"] [data-dx-settings-profile="v1"] .dx-profile-stack{
   gap:0;
@@ -3003,13 +3033,48 @@ body.dx-route-profile-protected #dex-settings .savebar{
   background:rgba(10,12,16,.64) !important;
   box-shadow:none !important;
 }
-body.dx-route-profile-protected #dex-settings #dxMembershipV3Root :is(.dx-memv3-card, .dx-memv3-status, .dx-memv3-tier, .dx-memv3-plan-panel, .dx-memv3-tier-composer){
+/* Membership: only the black-glass shell is the surface. Flatten the section
+   cards/boxes (Membership & Billing, Want to support, Billing history, and the
+   status rows box) to transparent — they read as sections of the one sheet,
+   separated by dividers rather than nested cards. */
+body.dx-route-profile-protected #dex-settings #dxMembershipV3Root :is(.dx-memv3-card, .dx-memv3-status, .dx-memv3-plan-panel){
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  -webkit-backdrop-filter:none !important;
+  backdrop-filter:none !important;
+}
+/* Thin divider between the membership card and the billing-history card. */
+body.dx-route-profile-protected #dex-settings #dxMembershipV3Root > .dx-memv3-card + .dx-memv3-card{
+  border-top:1px solid var(--glass-brd) !important;
+  padding-top:clamp(14px, 1.8vw, 22px) !important;
+}
+/* Status rows keep light dashed dividers on the dark sheet. */
+body.dx-route-profile-protected #dex-settings #dxMembershipV3Root .dx-memv3-status-row{
+  border-bottom-color:var(--glass-brd) !important;
+}
+/* Plan-picker tiles keep a subtle surface so they read as selectable options. */
+body.dx-route-profile-protected #dex-settings #dxMembershipV3Root :is(.dx-memv3-tier, .dx-memv3-tier-composer){
   border-color:var(--glass-brd) !important;
   border-radius:4px !important;
   background:rgba(255,255,255,.08) !important;
   box-shadow:none !important;
   -webkit-backdrop-filter:none !important;
   backdrop-filter:none !important;
+}
+/* Why-Membership sidebar: dark-theme the inner chrome (icon tiles + Personal
+   focus card were still scoped for the light surface). */
+body.dx-route-profile-protected #dex-settings #asideWhy .dx-why-icon{
+  border-color:var(--glass-brd) !important;
+  background:rgba(255,255,255,.1) !important;
+}
+body.dx-route-profile-protected #dex-settings #asideWhy .dx-why-personal{
+  border-color:var(--glass-brd) !important;
+  background:rgba(255,255,255,.06) !important;
+}
+body.dx-route-profile-protected #dex-settings #asideWhy :is(.dx-why-copy span, .dx-why-personal-sub, .dx-why-personal-label){
+  color:var(--dx-blackglass-muted, rgba(255,255,255,.66)) !important;
 }
 body.dx-route-profile-protected #dex-settings :is(h1,h2,h3,h4,p,label,span,strong,em,small,li,dt,dd,code,.sub,.note,.meta,.dx-profile-kicker,.dx-profile-meta-value){
   color:var(--dx-blackglass-ink, #f3f3f4) !important;

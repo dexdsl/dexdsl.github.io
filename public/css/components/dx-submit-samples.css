@@ -637,29 +637,34 @@
 
 /* ===== Redesigned compose/send flow ===== */
 
-/* Inline pipeline switch (replaces the flow-gate screen) */
+/* Inline pipeline switch — matches the settings tab pills (individual bordered
+   pills, 4px radius, gradient-filled active), not a segmented box. */
 #dex-submit .dx-submit-switch {
   display: inline-flex;
-  gap: 4px;
-  padding: 4px;
-  border-radius: 999px;
-  border: 1px solid var(--dx-submit-field-rim);
-  background: var(--dx-submit-panel);
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 #dex-submit .dx-submit-switch-option {
   appearance: none;
-  border: 0;
-  border-radius: 999px;
-  padding: 7px 16px;
-  font: 700 12px var(--font-heading, "Stretch Pro", sans-serif);
-  letter-spacing: 0.03em;
-  background: transparent;
-  color: var(--dx-submit-muted);
+  min-height: 38px;
+  padding: 0.48rem 0.9rem;
+  border: 1px solid var(--dx-submit-line);
+  border-radius: 4px;
+  font: 700 clamp(11px, 1vw, 12px) var(--font-heading, "Stretch Pro", sans-serif);
+  letter-spacing: 0.02em;
+  text-transform: uppercase !important;
+  background: var(--dx-submit-field);
+  color: var(--dx-submit-ink);
   cursor: pointer;
 }
 
 #dex-submit .dx-submit-switch-option.is-active {
+  border-color: transparent;
   background: linear-gradient(130deg, var(--dx-submit-accent), var(--dx-submit-accent-2));
   color: #fff;
 }
