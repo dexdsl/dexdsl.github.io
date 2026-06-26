@@ -97,9 +97,12 @@ function verifyRuntimeMarkers() {
     'buildPollsHref',
     '--dx-polls-ink:#f3f3f4',
     'color:var(--dx-polls-ink);mix-blend-mode:normal',
-    '.dx-poll-card:hover .dx-poll-question{color:var(--dx-polls-accent);mix-blend-mode:normal',
-    '.dx-polls-detail > .dx-polls-section-label',
-    '.dx-polls-detail > .dx-polls-empty',
+    '.dx-poll-card:hover .dx-poll-question{color:var(--dx-polls-accent)!important;mix-blend-mode:normal',
+    // Poll detail + voting now lives in a black-glass modal instead of a sticky column.
+    "id = 'dx-polls-modal'",
+    'data-dx-pm-close',
+    'data-dx-poll-vote',
+    'function openPollModal',
   ];
   for (const marker of required) {
     if (!source.includes(marker)) {

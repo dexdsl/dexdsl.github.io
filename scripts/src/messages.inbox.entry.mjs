@@ -927,7 +927,7 @@
         background:linear-gradient(145deg,rgba(17,18,24,.92) 0%,rgba(10,11,15,.86) 100%);border:1px solid var(--dx-blackglass-rim,var(--dx-msg-line-strong));border-radius:var(--dx-header-glass-radius,12px);
         box-shadow:var(--dx-blackglass-shadow,0 18px 42px rgba(0,0,0,.42));backdrop-filter:var(--dx-blackglass-backdrop,blur(22px) saturate(135%));-webkit-backdrop-filter:var(--dx-blackglass-backdrop,blur(22px) saturate(135%));padding:clamp(16px,2.1vw,26px);}
       #dex-msg .dx-msg-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;flex:0 0 auto;}
-      #dex-msg .dx-msg-title{margin:0;font-family:'Stretch Pro','Typefesse',var(--dx-mono),sans-serif;font-size:clamp(1.3rem,3vw,1.8rem);letter-spacing:.01em;text-transform:uppercase;display:flex;align-items:center;gap:10px;}
+      #dex-msg .dx-msg-title{margin:0;font-family:'Stretch Pro','Typefesse',var(--dx-mono),sans-serif;font-size:clamp(1.3rem,3vw,1.8rem);letter-spacing:.01em;text-transform:uppercase;display:flex;align-items:center;gap:10px;color:var(--dx-msg-ink) !important;}
       #dex-msg .dx-msg-sub{margin:4px 0 0;color:var(--dx-msg-muted);font-size:.82rem;}
       #dex-msg .dx-msg-controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;flex:0 0 auto;}
       /* source filter — matches the settings tab pills (individual bordered

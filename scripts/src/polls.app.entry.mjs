@@ -392,7 +392,8 @@
         --dx-polls-ink:#f3f3f4;
         --dx-polls-muted:rgba(255,255,255,.66);
         --dx-polls-faint:rgba(255,255,255,.42);
-        --dx-polls-accent:#ff2d13;
+        --dx-polls-accent:var(--dx-accent-solid,#ff5b3a);
+        --dx-polls-accent-grad:var(--dx-accent-gradient,linear-gradient(90deg,#ff1910,#ff6a00));
         width:var(--dx-header-frame-width);
         max-width:var(--dx-header-frame-width);
         margin:0 auto;
@@ -435,24 +436,32 @@
       /* Scrolling body — the only region that scrolls; ends stay fixed against head/footer */
       .dx-polls-body{
         flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;
-        display:grid;grid-template-columns:minmax(0,1fr) minmax(290px,32%);
-        gap:clamp(18px,2.4vw,40px);
+        display:block;
         padding-top:var(--dx-polls-gap);
-        align-items:start;
       }
       .dx-polls-body::-webkit-scrollbar{width:9px}
       .dx-polls-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:9px}
       .dx-polls-col{min-height:0}
-      .dx-polls-col--detail{
-        position:sticky;top:0;align-self:start;
-        border-left:1px solid var(--dx-polls-line);
-        padding-left:clamp(16px,2vw,32px);
-      }
 
       .dx-polls-section + .dx-polls-section{margin-top:28px}
       .dx-polls-section--current{display:grid;gap:10px}
       .dx-polls-section--current .dx-polls-list{gap:4px}
-      .dx-polls-section--current .dx-poll-card{padding-block:clamp(18px,2.1vw,28px)}
+      .dx-polls-section--current .dx-poll-card{
+        border:1px solid var(--dx-polls-line)!important;border-radius:16px;
+        padding:clamp(20px,2.3vw,30px) clamp(20px,2.3vw,28px);
+        background:linear-gradient(150deg,rgba(255,255,255,.055),rgba(255,255,255,.018));
+        cursor:pointer;
+        transition:transform .28s var(--dx-motion-ease-standard,cubic-bezier(.22,.8,.24,1)),border-color .28s ease,box-shadow .28s ease;
+      }
+      .dx-polls-section--current .dx-poll-card::after{
+        content:"";position:absolute;inset:0;border-radius:16px;padding:1px;
+        background:var(--dx-polls-accent-grad);
+        -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+        -webkit-mask-composite:xor;mask-composite:exclude;
+        opacity:0;transition:opacity .28s ease;pointer-events:none;
+      }
+      .dx-polls-section--current .dx-poll-card:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(0,0,0,.32)}
+      .dx-polls-section--current .dx-poll-card:hover::after{opacity:.9}
       .dx-polls-section--current .dx-poll-question{font-size:clamp(1.22rem,2vw,1.72rem)}
       .dx-polls-archive-drawer{
         margin-top:clamp(20px,2.2vw,28px);
@@ -490,8 +499,6 @@
       }
       .dx-polls-archive-panel{padding:0 0 clamp(12px,1.5vw,18px)}
       .dx-polls-section-label{margin:0 0 4px;font-family:var(--font-body);font-size:.66rem;text-transform:uppercase;letter-spacing:.16em;color:var(--dx-polls-muted)}
-      .dx-polls-detail > .dx-polls-section-label,
-      .dx-polls-detail > .dx-polls-empty{color:var(--dx-polls-muted);mix-blend-mode:normal;isolation:auto;text-shadow:none}
 
       .dx-polls-list{display:grid;gap:0}
       .dx-poll-card{
@@ -501,12 +508,14 @@
       }
       .dx-poll-card:first-child{border-top:0}
       .dx-poll-card.is-locked{opacity:.72}
-      .dx-poll-card:hover .dx-poll-question{color:var(--dx-polls-accent);mix-blend-mode:normal;isolation:auto}
+      .dx-poll-card:hover .dx-poll-question{color:var(--dx-polls-accent)!important;mix-blend-mode:normal;isolation:auto}
       .dx-poll-card-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
       .dx-poll-chip{font-family:var(--font-body);font-size:.62rem;text-transform:uppercase;letter-spacing:.14em;color:var(--dx-polls-muted)}
-      .dx-poll-chip.is-accent{color:var(--dx-polls-accent)}
+      .dx-poll-chip.is-accent{color:var(--dx-polls-accent);display:inline-flex;align-items:center;gap:7px}
+      .dx-poll-chip.is-accent::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--dx-polls-accent-grad);box-shadow:0 0 8px 1px rgba(255,90,40,.6);animation:dxPollPulse 2s ease-in-out infinite}
       .dx-poll-chip.is-members{color:var(--dx-polls-ink)}
-      .dx-poll-question{position:relative;margin:0;font-family:var(--font-heading);font-size:clamp(1rem,1.3vw,1.18rem);line-height:1.16;letter-spacing:.01em;text-transform:uppercase;transition:color .15s ease}
+      .dx-poll-question{position:relative;margin:0;font-family:var(--font-heading);font-size:clamp(1rem,1.3vw,1.18rem);line-height:1.16;letter-spacing:.01em;text-transform:uppercase;color:var(--dx-polls-ink)!important;transition:color .15s ease}
+      @keyframes dxPollPulse{0%,100%{opacity:1}50%{opacity:.4}}
       .dx-poll-meta{margin:0;font-family:var(--font-body);font-size:.76rem;color:var(--dx-polls-muted)}
       .dx-poll-actions{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-top:2px}
       .dx-poll-action,
@@ -523,28 +532,12 @@
       .dx-polls-empty{margin:14px 0 0;font-family:var(--font-body);font-size:.82rem;color:var(--dx-polls-muted)}
       .dx-polls-error{margin:0 0 6px;padding:10px 0;font-family:var(--font-body);font-size:.82rem;color:#a31410}
 
-      .dx-polls-detail{display:grid;gap:12px;align-content:start}
-      .dx-polls-detail .dx-poll-question{font-family:var(--font-heading);font-size:clamp(1.15rem,1.8vw,1.5rem);line-height:1.12}
-      .dx-polls-detail-grid{display:grid;gap:0;margin-top:2px}
-      .dx-poll-option{
-        display:grid;gap:7px;cursor:pointer;text-align:left;border:0;background:none;width:100%;
-        padding:13px 0;border-top:1px solid var(--dx-polls-line);
-      }
-      .dx-poll-option:first-child{border-top:0}
-      .dx-poll-option[disabled]{cursor:default}
-      .dx-poll-option.is-selected .dx-poll-option-title{color:var(--dx-polls-accent)}
-      .dx-poll-option-title{font-family:var(--font-body);font-size:.84rem;letter-spacing:.02em;color:var(--dx-polls-ink)}
-      .dx-poll-bar{position:relative;height:2px;background:var(--dx-polls-line);overflow:hidden}
-      .dx-poll-bar-fill{height:100%;width:0;background:var(--dx-polls-accent);transition:width .25s var(--dx-motion-ease-standard,cubic-bezier(.22,.8,.24,1))}
-      .dx-poll-row-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;font-family:var(--font-body);font-size:.72rem;color:var(--dx-polls-muted)}
-      .dx-poll-published{margin-top:2px;padding-top:12px;border-top:1px solid var(--dx-polls-line)}
       .dx-poll-trend{margin:0;font-family:var(--font-body);font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;color:var(--dx-polls-muted)}
       .dx-poll-trend-line{margin:4px 0 0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9rem;letter-spacing:.04em;color:var(--dx-polls-ink)}
       .dx-polls-loading{opacity:.6}
       @media (max-width:980px){
         .dx-polls-shell{height:auto;overflow:visible}
-        .dx-polls-body{grid-template-columns:1fr;overflow:visible}
-        .dx-polls-col--detail{position:static;border-left:0;border-top:1px solid var(--dx-polls-line);padding-left:0;padding-top:var(--dx-polls-gap)}
+        .dx-polls-body{overflow:visible}
       }
     `;
     document.head.appendChild(style);
@@ -616,28 +609,134 @@
     `;
   }
 
-  function buildDetailPanel(detail) {
-    if (!detail) {
-      return `
-        <div class="dx-polls-detail">
-          <p class="dx-polls-section-label">Detail</p>
-          <h2 class="dx-poll-question">Select a poll</h2>
-          <p class="dx-polls-empty">Choose a poll to see live results, published snapshots, and vote state.</p>
-        </div>
-      `;
-    }
+  // ---- Poll modal (black-glass surface, matching the messages / download modal) ----
+  const POLL_MODAL_STYLE_ID = 'dx-polls-modal-style';
+  let pollModalKeyHandler = null;
+  let pollModalLastFocus = null;
+  let pollModalAnimTimer = 0;
 
-    if (detail.locked) {
-      return `
-        <div class="dx-polls-detail">
-          <p class="dx-polls-section-label">Members poll</p>
-          <h2 class="dx-poll-question">Sign in required</h2>
-          <p class="dx-polls-empty">This poll is for members only.</p>
-          <div class="dx-poll-actions">
-            <button type="button" class="dx-poll-link is-primary" data-dx-poll-signin="true">Sign in to continue →</button>
-          </div>
+  function ensurePollModalStyles() {
+    if (document.getElementById(POLL_MODAL_STYLE_ID)) return;
+    const style = document.createElement('style');
+    style.id = POLL_MODAL_STYLE_ID;
+    style.textContent = `
+      #dx-polls-modal{position:fixed;inset:0;z-index:2147483000;display:none;align-items:center;justify-content:center;padding:clamp(12px,3vw,40px);font-family:var(--font-body);}
+      #dx-polls-modal[data-open='true']{display:flex;}
+      #dx-polls-modal .dx-pm-backdrop{position:absolute;inset:0;background:rgba(6,7,10,.64);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;transition:opacity .34s ease;}
+      #dx-polls-modal[data-anim='in'] .dx-pm-backdrop{opacity:1;}
+      #dx-polls-modal .dx-pm-card{position:relative;z-index:1;width:min(620px,100%);max-height:min(88dvh,880px);display:flex;flex-direction:column;
+        color:var(--dx-blackglass-ink,#f3f3f4);
+        background:var(--dx-blackglass-bg,linear-gradient(145deg,rgba(15,16,21,.92),rgba(9,10,14,.88)));
+        border:1px solid var(--dx-blackglass-rim,rgba(255,255,255,.16));border-radius:18px;
+        box-shadow:0 40px 100px rgba(0,0,0,.6);
+        backdrop-filter:var(--dx-blackglass-backdrop,blur(24px) saturate(170%));-webkit-backdrop-filter:var(--dx-blackglass-backdrop,blur(24px) saturate(170%));
+        overflow:hidden;opacity:0;transform:translateY(24px) scale(.96);
+        transition:opacity .42s var(--dx-motion-ease-standard,cubic-bezier(.22,.8,.24,1)),transform .44s var(--dx-motion-ease-standard,cubic-bezier(.22,.8,.24,1));}
+      #dx-polls-modal[data-anim='in'] .dx-pm-card{opacity:1;transform:none;}
+      #dx-polls-modal[data-anim='out'] .dx-pm-card{opacity:0;transform:translateY(12px) scale(.985);transition-duration:.22s;}
+      #dx-polls-modal[data-anim='out'] .dx-pm-backdrop{opacity:0;transition-duration:.22s;}
+      #dx-polls-modal .dx-pm-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--dx-polls-accent-grad,linear-gradient(90deg,#ff1910,#ff6a00));}
+      #dx-polls-modal .dx-pm-head{position:relative;flex:0 0 auto;padding:24px 26px 16px;border-bottom:1px solid var(--dx-blackglass-line,rgba(255,255,255,.14));}
+      #dx-polls-modal .dx-pm-chips{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding-right:44px;}
+      #dx-polls-modal .dx-pm-chip{font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dx-blackglass-faint,rgba(255,255,255,.4));}
+      #dx-polls-modal .dx-pm-chip.is-open{color:#fff;display:inline-flex;align-items:center;gap:7px;}
+      #dx-polls-modal .dx-pm-chip.is-open::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--dx-polls-accent-grad,linear-gradient(90deg,#ff1910,#ff6a00));box-shadow:0 0 10px 1px rgba(255,90,40,.7);animation:dxPmPulse 2s ease-in-out infinite;}
+      #dx-polls-modal .dx-pm-chip.is-members{color:#fff;}
+      #dx-polls-modal .dx-pm-title{margin:14px 0 0;font-family:var(--font-heading);text-transform:uppercase;font-size:clamp(1.25rem,2.6vw,1.75rem);line-height:1.08;letter-spacing:.01em;color:#fff;}
+      #dx-polls-modal .dx-pm-meta{margin:9px 0 0;font-size:.78rem;color:var(--dx-blackglass-muted,rgba(255,255,255,.62));}
+      #dx-polls-modal .dx-pm-close{position:absolute;top:18px;right:18px;width:36px;height:36px;border-radius:999px;border:1px solid var(--dx-blackglass-line-strong,rgba(255,255,255,.26));background:rgba(255,255,255,.06);color:#fff;font-size:1.15rem;line-height:1;cursor:pointer;transition:background .18s ease,transform .3s var(--dx-motion-ease-standard,cubic-bezier(.22,.8,.24,1));}
+      #dx-polls-modal .dx-pm-close:hover{background:rgba(255,255,255,.14);transform:rotate(90deg);}
+      #dx-polls-modal .dx-pm-body{flex:1 1 auto;min-height:0;overflow-y:auto;padding:18px 26px;display:flex;flex-direction:column;gap:14px;}
+      #dx-polls-modal .dx-pm-body::-webkit-scrollbar{width:8px}
+      #dx-polls-modal .dx-pm-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:8px}
+      #dx-polls-modal .dx-pm-hint{margin:0;font-size:.76rem;color:var(--dx-blackglass-muted,rgba(255,255,255,.62));padding:11px 13px;border:1px dashed var(--dx-blackglass-line-strong,rgba(255,255,255,.26));border-radius:10px;}
+      #dx-polls-modal .dx-pm-empty{margin:auto;padding:40px 0;color:var(--dx-blackglass-muted,rgba(255,255,255,.62));font-size:.85rem;text-align:center;}
+      #dx-polls-modal .dx-pm-options{display:grid;gap:9px;}
+      #dx-polls-modal .dx-poll-option{display:grid;gap:10px;cursor:pointer;text-align:left;width:100%;border:0;
+        padding:14px 16px;border:1px solid var(--dx-blackglass-line,rgba(255,255,255,.14));border-radius:13px;background:rgba(255,255,255,.04);
+        transition:border-color .2s ease,background .2s ease,transform .2s ease;
+        opacity:0;transform:translateY(10px);animation:dxPmOptIn .46s var(--dx-motion-ease-standard,cubic-bezier(.22,.8,.24,1)) forwards;}
+      #dx-polls-modal .dx-poll-option:hover:not([disabled]){background:rgba(255,255,255,.08);border-color:var(--dx-blackglass-line-strong,rgba(255,255,255,.26));transform:translateY(-1px);}
+      #dx-polls-modal .dx-poll-option.is-selected{border-color:transparent;background:rgba(255,90,40,.13);box-shadow:0 0 0 1px rgba(255,90,40,.45);}
+      #dx-polls-modal .dx-poll-option[disabled]{cursor:default;}
+      #dx-polls-modal .dx-poll-option-title{display:flex;align-items:center;gap:8px;font-size:.92rem;letter-spacing:.01em;color:var(--dx-blackglass-ink,#f3f3f4);}
+      #dx-polls-modal .dx-poll-option.is-selected .dx-poll-option-title::before{content:"✓";font-size:.72rem;color:#fff;width:16px;height:16px;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:var(--dx-polls-accent-grad,linear-gradient(90deg,#ff1910,#ff6a00));}
+      #dx-polls-modal .dx-poll-bar{position:relative;height:6px;border-radius:6px;background:rgba(255,255,255,.1);overflow:hidden;}
+      #dx-polls-modal .dx-poll-bar-fill{height:100%;width:0;border-radius:6px;background:var(--dx-polls-accent-grad,linear-gradient(90deg,#ff1910,#ff6a00));transition:width .62s var(--dx-motion-ease-standard,cubic-bezier(.22,.8,.24,1));}
+      #dx-polls-modal .dx-poll-row-foot{display:flex;align-items:center;justify-content:space-between;font-size:.72rem;color:var(--dx-blackglass-muted,rgba(255,255,255,.62));}
+      #dx-polls-modal .dx-poll-published{padding:13px 15px;border:1px solid var(--dx-blackglass-line,rgba(255,255,255,.14));border-radius:12px;background:rgba(255,255,255,.03);}
+      #dx-polls-modal .dx-poll-published .dx-poll-meta{margin:0;font-size:.76rem;color:var(--dx-blackglass-muted,rgba(255,255,255,.62));}
+      #dx-polls-modal .dx-poll-published .dx-poll-meta + .dx-poll-meta{margin-top:5px;}
+      #dx-polls-modal .dx-poll-trend-line{margin:6px 0 0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:1rem;letter-spacing:.05em;color:#fff;}
+      #dx-polls-modal .dx-pm-foot{flex:0 0 auto;border-top:1px solid var(--dx-blackglass-line,rgba(255,255,255,.14));padding:15px 26px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+      #dx-polls-modal .dx-pm-total{font-size:.78rem;color:var(--dx-blackglass-muted,rgba(255,255,255,.62));}
+      #dx-polls-modal .dx-pm-total strong{color:#fff;font-weight:600;}
+      #dx-polls-modal .dx-pm-signin{appearance:none;border:0;cursor:pointer;font-family:var(--font-body);font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;color:#fff;background:none;padding:0;}
+      #dx-polls-modal .dx-pm-signin:hover{color:var(--dx-polls-accent,#ff5b3a);}
+      @keyframes dxPmOptIn{to{opacity:1;transform:none;}}
+      @keyframes dxPmPulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+      @media (max-width:640px){#dx-polls-modal .dx-pm-card{max-height:92dvh;}}
+      @media (prefers-reduced-motion:reduce){
+        #dx-polls-modal .dx-pm-card,#dx-polls-modal .dx-pm-backdrop{transition-duration:.001ms !important;}
+        #dx-polls-modal .dx-poll-option{animation-duration:.001ms !important;opacity:1 !important;transform:none !important;}
+        #dx-polls-modal .dx-poll-bar-fill{transition-duration:.001ms !important;}
+        #dx-polls-modal .dx-pm-chip.is-open::before{animation:none !important;}
+        #dx-polls-modal .dx-pm-close:hover{transform:none !important;}
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function ensurePollModalEl() {
+    let el = document.getElementById('dx-polls-modal');
+    if (el) return el;
+    ensurePollModalStyles();
+    el = document.createElement('div');
+    el.id = 'dx-polls-modal';
+    el.setAttribute('aria-hidden', 'true');
+    el.innerHTML = `
+      <div class="dx-pm-backdrop" data-dx-pm-close="1"></div>
+      <div class="dx-pm-card" role="dialog" aria-modal="true" aria-label="Poll" tabindex="-1">
+        <div class="dx-pm-head">
+          <button type="button" class="dx-pm-close" data-dx-pm-close="1" aria-label="Close">×</button>
+          <div class="dx-pm-chips" data-dx-pm-chips></div>
+          <h2 class="dx-pm-title" data-dx-pm-title></h2>
+          <p class="dx-pm-meta" data-dx-pm-meta></p>
         </div>
-      `;
+        <div class="dx-pm-body" data-dx-pm-body></div>
+        <div class="dx-pm-foot" data-dx-pm-foot></div>
+      </div>`;
+    document.body.appendChild(el);
+    el.addEventListener('click', async (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      if (target.closest('[data-dx-pm-close]')) { closePollModal(); return; }
+      if (target.closest('[data-dx-poll-signin]')) { event.preventDefault(); await promptSignIn(); return; }
+      const voteBtn = target.closest('[data-dx-poll-vote]');
+      if (voteBtn) {
+        const optionIndex = Number(voteBtn.getAttribute('data-dx-poll-vote'));
+        await vote(optionIndex);
+        renderPollModalContent({ animateBars: true });
+      }
+    });
+    return el;
+  }
+
+  function pollModalContent(detail) {
+    if (!detail || detail.loading) {
+      return { chips: '<span class="dx-pm-chip">Loading</span>', title: 'Loading poll…', meta: '', body: '<p class="dx-pm-empty">Loading…</p>', foot: '' };
+    }
+    if (detail.error) {
+      return { chips: '<span class="dx-pm-chip">Error</span>', title: 'Unable to load poll', meta: '', body: `<p class="dx-pm-empty">${htmlEscape(detail.error)}</p>`, foot: '' };
+    }
+    if (detail.locked) {
+      return {
+        chips: '<span class="dx-pm-chip is-members">Members only</span>',
+        title: 'Sign in required',
+        meta: 'This poll is open to members.',
+        body: '<p class="dx-pm-hint">Sign in to view this members-only poll and cast your vote.</p>',
+        foot: '<span class="dx-pm-total"></span><button type="button" class="dx-pm-signin" data-dx-poll-signin="true">Sign in →</button>',
+      };
     }
 
     const poll = detail.poll;
@@ -652,54 +751,141 @@
       const pct = results.total > 0 ? Math.round((votes / results.total) * 100) : 0;
       const selected = results.viewerVote === index;
       return `
-        <button type="button" class="dx-poll-option${selected ? ' is-selected' : ''}" data-dx-poll-vote="${index}" ${closed || state.busyVote ? 'disabled' : ''}>
+        <button type="button" class="dx-poll-option${selected ? ' is-selected' : ''}" data-dx-poll-vote="${index}" style="animation-delay:${index * 55}ms" ${closed || state.busyVote ? 'disabled' : ''}>
           <span class="dx-poll-option-title">${htmlEscape(label)}</span>
-          <div class="dx-poll-bar"><div class="dx-poll-bar-fill" style="width:${pct}%"></div></div>
-          <div class="dx-poll-row-foot"><span>${votes} votes</span><span>${pct}%</span></div>
+          <div class="dx-poll-bar"><div class="dx-poll-bar-fill" data-pct="${pct}" style="width:0"></div></div>
+          <div class="dx-poll-row-foot"><span>${votes} ${votes === 1 ? 'vote' : 'votes'}</span><span>${pct}%</span></div>
         </button>
       `;
     }).join('');
 
-    const snapshot = results.publishedSnapshot && typeof results.publishedSnapshot === 'object'
-      ? results.publishedSnapshot
-      : null;
+    const snapshot = results.publishedSnapshot && typeof results.publishedSnapshot === 'object' ? results.publishedSnapshot : null;
     const snapshotMarkup = snapshot
-      ? `
-          <div class="dx-poll-published">
+      ? `<div class="dx-poll-published">
             <p class="dx-poll-meta">Official snapshot v${htmlEscape(String(snapshot.version || '1'))}${snapshot.publishedAt ? ` • ${htmlEscape(formatDate(snapshot.publishedAt))}` : ''}</p>
             ${snapshot.summaryMarkdown ? `<p class="dx-poll-meta">${htmlEscape(String(snapshot.summaryMarkdown).slice(0, 280))}</p>` : ''}
-          </div>
-        `
+          </div>`
       : '';
-
     const trendMarkup = Array.isArray(detail.trend) && detail.trend.length
-      ? `
-          <div class="dx-poll-published">
-            <p class="dx-poll-meta">Trend (90d / day)</p>
+      ? `<div class="dx-poll-published">
+            <p class="dx-poll-meta">Trend · 90 days</p>
             <p class="dx-poll-trend-line">${htmlEscape(sparkline(detail.trend))}</p>
-          </div>
-        `
+          </div>`
+      : '';
+    const hint = !state.authSnapshot.authenticated && !closed
+      ? '<p class="dx-pm-hint">Sign in to cast your vote — results stay visible either way.</p>'
       : '';
 
-    return `
-      <div class="dx-polls-detail">
-        <div class="dx-poll-card-head">
-          <span class="dx-poll-chip ${closed ? '' : 'is-accent'}">${closed ? 'Closed' : 'Open'}</span>
-          <span class="dx-poll-chip">${htmlEscape(results.mode || 'live')}</span>
-          ${poll.visibility === 'members' ? '<span class="dx-poll-chip is-members">Members only</span>' : ''}
-        </div>
-        <h2 class="dx-poll-question">${htmlEscape(poll.question)}</h2>
-        <p class="dx-poll-meta">${closed ? `Closed ${htmlEscape(formatDate(poll.closeAt))}` : `Closes ${htmlEscape(formatDate(poll.closeAt))} · ${htmlEscape(relativeClose(poll.closeAt))}`}</p>
-        ${!state.authSnapshot.authenticated ? '<p class="dx-polls-empty">Sign in to vote. Results remain visible.</p>' : ''}
-        ${snapshotMarkup}
-        ${trendMarkup}
-        <div class="dx-polls-detail-grid">${optionsHtml}</div>
-        <div class="dx-polls-pager">
-          <span class="dx-poll-meta">${results.total} total votes</span>
-          <a class="dx-poll-link" href="${htmlEscape(buildPollsHref(state.tab, ''))}" data-dx-poll-clear="true" data-dx-hover-variant="none" data-dx-motion-exclude="true" data-dx-soft-nav-skip="true">← Back</a>
-        </div>
-      </div>
-    `;
+    return {
+      chips: `
+        <span class="dx-pm-chip ${closed ? '' : 'is-open'}">${closed ? 'Closed' : 'Open'}</span>
+        <span class="dx-pm-chip">${htmlEscape(results.mode || 'live')}</span>
+        ${poll.visibility === 'members' ? '<span class="dx-pm-chip is-members">Members only</span>' : ''}`,
+      title: poll.question,
+      meta: closed
+        ? `Closed ${formatDate(poll.closeAt)}`
+        : `Closes ${formatDate(poll.closeAt)} · ${relativeClose(poll.closeAt)}`,
+      body: `${hint}${snapshotMarkup}${trendMarkup}<div class="dx-pm-options">${optionsHtml}</div>`,
+      foot: `<span class="dx-pm-total"><strong>${results.total}</strong> total ${results.total === 1 ? 'vote' : 'votes'}</span>
+        ${!state.authSnapshot.authenticated && !closed ? '<button type="button" class="dx-pm-signin" data-dx-poll-signin="true">Sign in →</button>' : ''}`,
+    };
+  }
+
+  function animatePollBars(el) {
+    const fills = el.querySelectorAll('.dx-poll-bar-fill[data-pct]');
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      fills.forEach((fill) => {
+        const pct = Math.max(0, Math.min(100, Number(fill.getAttribute('data-pct')) || 0));
+        fill.style.width = `${pct}%`;
+      });
+    }));
+  }
+
+  function renderPollModalContent({ animateBars = true } = {}) {
+    const el = document.getElementById('dx-polls-modal');
+    if (!el) return;
+    const content = pollModalContent(state.detail);
+    el.querySelector('[data-dx-pm-chips]').innerHTML = content.chips;
+    el.querySelector('[data-dx-pm-title]').textContent = content.title;
+    const metaEl = el.querySelector('[data-dx-pm-meta]');
+    metaEl.textContent = content.meta;
+    metaEl.style.display = content.meta ? '' : 'none';
+    el.querySelector('[data-dx-pm-body]').innerHTML = content.body;
+    el.querySelector('[data-dx-pm-foot]').innerHTML = content.foot;
+    if (animateBars) animatePollBars(el);
+  }
+
+  function openPollOverlay() {
+    const el = ensurePollModalEl();
+    if (el.getAttribute('data-open') === 'true') return el;
+    if (pollModalAnimTimer) { clearTimeout(pollModalAnimTimer); pollModalAnimTimer = 0; }
+    pollModalLastFocus = document.activeElement;
+    el.setAttribute('data-open', 'true');
+    el.setAttribute('aria-hidden', 'false');
+    try { el.__dxPrevOverflow = document.body.style.overflow; document.body.style.overflow = 'hidden'; } catch {}
+    requestAnimationFrame(() => requestAnimationFrame(() => el.setAttribute('data-anim', 'in')));
+    if (!pollModalKeyHandler) {
+      pollModalKeyHandler = (event) => { if (event.key === 'Escape') closePollModal(); };
+      document.addEventListener('keydown', pollModalKeyHandler);
+    }
+    const card = el.querySelector('.dx-pm-card');
+    if (card) try { card.focus(); } catch {}
+    return el;
+  }
+
+  async function openPollModal(pollId, { push = true } = {}) {
+    const id = text(pollId);
+    if (!id) return;
+    const alreadyOpen = state.pollId === id && document.getElementById('dx-polls-modal')?.getAttribute('data-open') === 'true';
+    state.pollId = id;
+    if (push) writeRoute({ tab: state.tab, pollId: id }, false);
+    openPollOverlay();
+    const cached = state.detailCache.get(id);
+    if (cached && (Date.now() - cached.cachedAt) <= DETAIL_POLL_CACHE_TTL_MS) {
+      state.detail = cached.value;
+    } else if (!alreadyOpen) {
+      state.detail = { loading: true };
+    }
+    renderPollModalContent({ animateBars: true });
+    try {
+      await fetchDetail(id);
+    } catch (error) {
+      state.detail = { error: error instanceof Error ? error.message : String(error) };
+    }
+    if (state.pollId !== id) return; // closed or switched while loading
+    renderPollModalContent({ animateBars: true });
+  }
+
+  function closePollModal({ push = true } = {}) {
+    state.pollId = '';
+    const el = document.getElementById('dx-polls-modal');
+    if (push) writeRoute({ tab: state.tab, pollId: '' }, false);
+    if (!el || el.getAttribute('data-open') !== 'true') {
+      if (el) { el.removeAttribute('data-open'); el.removeAttribute('data-anim'); }
+      return;
+    }
+    el.setAttribute('data-anim', 'out');
+    if (pollModalKeyHandler) { document.removeEventListener('keydown', pollModalKeyHandler); pollModalKeyHandler = null; }
+    try { document.body.style.overflow = el.__dxPrevOverflow || ''; } catch {}
+    if (pollModalAnimTimer) clearTimeout(pollModalAnimTimer);
+    pollModalAnimTimer = window.setTimeout(() => {
+      el.removeAttribute('data-open');
+      el.removeAttribute('data-anim');
+      el.setAttribute('aria-hidden', 'true');
+      pollModalAnimTimer = 0;
+    }, 240);
+    if (pollModalLastFocus && typeof pollModalLastFocus.focus === 'function') {
+      try { pollModalLastFocus.focus(); } catch {}
+    }
+  }
+
+  function syncModalFromState() {
+    if (state.pollId) {
+      openPollOverlay();
+      renderPollModalContent({ animateBars: true });
+    } else {
+      closePollModal({ push: false });
+    }
   }
 
   function render(root) {
@@ -772,7 +958,6 @@
         ${state.error ? `<p class="dx-polls-error">${htmlEscape(state.error)}</p>` : ''}
         <div class="dx-polls-body">
           <div class="dx-polls-col dx-polls-col--list">${listBody}</div>
-          <aside class="dx-polls-col dx-polls-col--detail">${buildDetailPanel(state.detail)}</aside>
         </div>
       </section>
     `;
@@ -891,14 +1076,21 @@
       });
     });
 
-    root.querySelectorAll('[data-dx-poll-vote]').forEach((button) => {
-      button.addEventListener('click', async () => {
-        const optionIndex = Number(button.getAttribute('data-dx-poll-vote'));
-        await vote(optionIndex);
-        render(root);
-        bindActions(root);
+    // Opening a poll surfaces the black-glass modal instead of navigating.
+    const listCol = root.querySelector('.dx-polls-col--list');
+    if (listCol) {
+      listCol.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+        if (target.closest('[data-dx-poll-signin]')) return;
+        const opener = target.closest('[data-dx-poll-open]') || target.closest('.dx-poll-card[data-dx-poll-id]');
+        if (!opener) return;
+        const pollId = opener.getAttribute('data-dx-poll-open') || opener.getAttribute('data-dx-poll-id');
+        if (!pollId) return;
+        event.preventDefault();
+        openPollModal(pollId).catch(() => {});
       });
-    });
+    }
 
     const archiveDrawer = root.querySelector('[data-dx-polls-archive-drawer]');
     if (archiveDrawer) {
@@ -951,6 +1143,7 @@
       state.loading = false;
       render(root);
       bindActions(root);
+      syncModalFromState();
     }
   }
 
@@ -1032,7 +1225,21 @@
     queueBoot().catch(() => {});
   }, { once: true });
   window.addEventListener('popstate', () => {
-    queueBoot().catch(() => {});
+    const root = getRootElement();
+    if (!root) return;
+    const route = parseRoute(root);
+    // A tab change rebuilds the list; otherwise just sync the modal so back/forward
+    // open and close it without reloading the whole route.
+    if (route.tab !== state.tab) {
+      queueBoot().catch(() => {});
+      return;
+    }
+    if (route.pollId === state.pollId) return;
+    if (route.pollId) {
+      openPollModal(route.pollId, { push: false }).catch(() => {});
+    } else {
+      closePollModal({ push: false });
+    }
   });
 
   if (document.readyState === 'loading') {

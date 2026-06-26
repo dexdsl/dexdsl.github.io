@@ -132,30 +132,37 @@ test('polls soft routing keeps URL and rendered route synchronized', async ({ pa
   await expect(page).toHaveURL(/\/polls\/?$/);
   await expect(pollsRoot.getByRole('heading', { level: 1, name: 'Polls' })).toBeVisible();
 
+  // Opening a poll surfaces the black-glass modal (appended to <body>) and writes the route.
   await pollsRoot
     .locator('article.dx-poll-card', { hasText: openPoll.question })
     .getByRole('link', { name: 'View Poll' })
     .click();
   await expect(page).toHaveURL(new RegExp(`/polls/${openPoll.id}/?$`));
-  await expectPollsReady();
-  await expect(pollsRoot.getByRole('heading', { level: 2, name: openPoll.question })).toBeVisible();
+  const openModal = page.locator('#dx-polls-modal[data-open="true"]');
+  await expect(openModal).toBeVisible();
+  await expect(openModal.getByRole('heading', { level: 2, name: openPoll.question })).toBeVisible();
 
-  await pollsRoot.getByRole('link', { name: '← Back' }).click();
+  // Dismissing via the close control restores the list route.
+  await openModal.locator('.dx-pm-close').click();
   await expect(page).toHaveURL(/\/polls\/?$/);
-  await expectPollsReady();
+  await expect(page.locator('#dx-polls-modal[data-open="true"]')).toHaveCount(0);
   await expect(pollsRoot.getByRole('heading', { level: 1, name: 'Polls' })).toBeVisible();
 
+  // Closed polls live in the archive drawer — expand it, then open the modal.
+  await pollsRoot.locator('details.dx-polls-archive-drawer > summary').click();
   await pollsRoot
     .locator('article.dx-poll-card', { hasText: closedPoll.question })
     .getByRole('link', { name: 'View Poll' })
     .click();
   await expect(page).toHaveURL(new RegExp(`/polls/${closedPoll.id}/?$`));
-  await expectPollsReady();
-  await expect(pollsRoot.getByRole('heading', { level: 2, name: closedPoll.question })).toBeVisible();
+  await expect(
+    page.locator('#dx-polls-modal[data-open="true"]').getByRole('heading', { level: 2, name: closedPoll.question }),
+  ).toBeVisible();
 
+  // Browser back closes the modal and returns to the list URL.
   await page.goBack();
   await expect(page).toHaveURL(/\/polls\/?$/);
-  await expectPollsReady();
+  await expect(page.locator('#dx-polls-modal[data-open="true"]')).toHaveCount(0);
   await expect(pollsRoot.getByRole('heading', { level: 1, name: 'Polls' })).toBeVisible();
 });
 
