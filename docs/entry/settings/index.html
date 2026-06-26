@@ -2962,6 +2962,15 @@ body.dx-route-profile-protected #dex-settings{
   --muted: var(--dx-blackglass-muted, rgba(255,255,255,.66)) !important;
   padding-top:clamp(14px, 2vw, 26px) !important;
   padding-bottom:clamp(14px, 2vw, 26px) !important;
+  /* Restore symmetric horizontal padding (dex.css zeroes padding-inline on the
+     protected route roots; settings' root IS the sheet, so it needs the gutter
+     back for the header, tabs, panes and the context sidebar). */
+  padding-left:clamp(18px, 2.2vw, 30px) !important;
+  padding-right:clamp(18px, 2.2vw, 30px) !important;
+  /* Stop short of the footer (the shared shell-height ran ~12px under it). */
+  height:calc(var(--dx-profile-shell-height, 70vh) - clamp(16px, 2.4vh, 26px)) !important;
+  min-height:0 !important;
+  max-height:calc(var(--dx-profile-shell-height, 70vh) - clamp(16px, 2.4vh, 26px)) !important;
   color:var(--dx-blackglass-ink, #f3f3f4) !important;
 }
 body.dx-route-profile-protected #dex-settings .hdr{

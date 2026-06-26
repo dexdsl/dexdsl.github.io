@@ -16,9 +16,17 @@ const PROFILE_ROUTES = [
   '/entry/achievements/',
 ] as const;
 
-// Favorites intentionally uses a flat, typographic surface (no inset glass cards),
-// so it is exempt from the canonical glass-card skin assertions below.
-const FLAT_SURFACE_ROUTES = new Set<string>(['/entry/favorites/']);
+// Routes whose glass lives on the unified sheet rather than submit-style inset
+// cards, so they are exempt from the inset-card skin + vertical-rhythm
+// assertions below (they still must match frame width and surface backdrop):
+//  - favorites: a flat, typographic surface (no inset cards, taller top rhythm)
+//  - settings / achievements: single black-glass sheets with inner cards
+//    flattened to dividers (no inset-card radius by design)
+const FLAT_SURFACE_ROUTES = new Set<string>([
+  '/entry/favorites/',
+  '/entry/settings/',
+  '/entry/achievements/',
+]);
 
 const CARD_SELECTORS: Record<string, string[]> = {
   '/entry/submit/': ['#dex-submit .dx-submit-main'],
@@ -238,7 +246,11 @@ test('profile routes inherit /submit canonical shell geometry and glass', async 
       expect(routeMetrics.footerWidthPx).toBeGreaterThan(0);
       expect(Math.abs(routeMetrics.rootWidthPx - baseline.rootWidthPx)).toBeLessThanOrEqual(14);
       expect(Math.abs(routeMetrics.footerWidthPx - baseline.footerWidthPx)).toBeLessThanOrEqual(14);
-      expect(Math.abs(routeMetrics.rootTopGapPx - baseline.rootTopGapPx)).toBeLessThanOrEqual(48);
+      // Inset-card routes share submit's vertical rhythm; the flat/unified-sheet
+      // routes have their own top spacing and are exempt.
+      if (!FLAT_SURFACE_ROUTES.has(routePath)) {
+        expect(Math.abs(routeMetrics.rootTopGapPx - baseline.rootTopGapPx)).toBeLessThanOrEqual(48);
+      }
       if (routePath === '/entry/settings/') {
         // Settings is a single overflow-contained flex sheet at every width
         // (the inner .grid scrolls, not the root), so it intentionally does not
