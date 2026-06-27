@@ -3056,10 +3056,12 @@ body.dx-route-profile-protected #dex-settings #dxMembershipV3Root .dx-memv3-stat
 }
 /* Plan-picker tiles keep a subtle surface so they read as selectable options. */
 body.dx-route-profile-protected #dex-settings #dxMembershipV3Root :is(.dx-memv3-tier, .dx-memv3-tier-composer){
-  border-color:var(--glass-brd) !important;
-  border-radius:4px !important;
-  background:rgba(255,255,255,.08) !important;
-  box-shadow:none !important;
+  border-color:var(--dx-mem-tier-edge, var(--glass-brd)) !important;
+  border-radius:14px !important;
+  background:var(--dx-mem-tier-surface, rgba(255,255,255,.08)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.14),
+    0 18px 38px rgba(0,0,0,.22) !important;
   -webkit-backdrop-filter:none !important;
   backdrop-filter:none !important;
 }
@@ -3148,6 +3150,123 @@ body.dx-route-profile-protected #dex-settings :is(h1,h2,h3,h4,p,label,span,stron
     /* Loader overlay sits above the unified sheet while [data-dx-fetch-state="loading"]. */
     body.dx-route-profile-protected #dex-settings #dx-settings-loading-shell{
       z-index:60 !important;
+    }
+
+    /* Desktop account layout has two true scroll owners. The shell and grid
+       stay fixed while the profile body and security rail move independently. */
+    @media (min-width: 980px){
+      body.dx-route-profile-protected #dex-settings > .grid{
+        overflow:hidden !important;
+      }
+      body.dx-route-profile-protected #dex-settings > .grid > main,
+      body.dx-route-profile-protected #dex-settings > .grid > aside{
+        height:100% !important;
+        min-height:0 !important;
+      }
+      body.dx-route-profile-protected #dex-settings > .grid > main{
+        overflow:hidden !important;
+      }
+      body.dx-route-profile-protected #dex-settings #pane-account,
+      body.dx-route-profile-protected #dex-settings #pane-public{
+        height:100% !important;
+        min-height:0 !important;
+        overflow:hidden !important;
+      }
+      body.dx-route-profile-protected #dex-settings #pane-account .twocol,
+      body.dx-route-profile-protected #dex-settings #pane-public .twocol{
+        height:100% !important;
+        min-height:0 !important;
+        align-items:stretch !important;
+        overflow:hidden !important;
+      }
+      body.dx-route-profile-protected #dex-settings #pane-account :is(.profile-col-left,.profile-col-right),
+      body.dx-route-profile-protected #dex-settings #pane-public .profile-col-left{
+        height:100% !important;
+        min-height:0 !important;
+        max-height:none !important;
+        overflow-y:auto !important;
+        overflow-x:hidden !important;
+        overscroll-behavior:contain !important;
+        scrollbar-gutter:stable !important;
+        box-sizing:border-box !important;
+        padding-right:6px !important;
+      }
+      body.dx-route-profile-protected #dex-settings #pane-account .profile-col-right{
+        position:static !important;
+        top:auto !important;
+        align-self:stretch !important;
+      }
+    }
+
+    /* Newsletter metadata is part of the dark settings surface, not a stack of
+       white form fields. Values get the visual weight; labels remain quiet. */
+    body.dx-route-profile-protected #dex-settings #pane-notifs #notCard .dx-newsletter-block{
+      border:1px solid rgba(255,255,255,.14) !important;
+      border-radius:14px !important;
+      padding:clamp(14px,1.8vw,20px) !important;
+      background:
+        radial-gradient(120% 140% at 0% 0%, rgba(255,92,47,.09), transparent 46%),
+        linear-gradient(145deg, rgba(255,255,255,.065), rgba(255,255,255,.022)) !important;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.09),
+        0 18px 38px rgba(0,0,0,.18) !important;
+    }
+    body.dx-route-profile-protected #dex-settings #pane-notifs #notCard .dx-newsletter-head h3{
+      font-size:clamp(1.15rem,2vw,1.6rem) !important;
+      line-height:1 !important;
+    }
+    body.dx-route-profile-protected #dex-settings #pane-notifs #notCard .dx-newsletter-meta-row{
+      align-items:flex-start !important;
+      min-width:0 !important;
+      padding:11px 12px !important;
+      border:1px solid rgba(255,255,255,.12) !important;
+      border-radius:10px !important;
+      background:rgba(5,7,11,.38) !important;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.05) !important;
+      font-family:var(--font-body,monospace) !important;
+    }
+    body.dx-route-profile-protected #dex-settings #pane-notifs #notCard .dx-newsletter-meta-label{
+      color:var(--dx-blackglass-faint,rgba(255,255,255,.46)) !important;
+      font-size:.62rem !important;
+      font-weight:700 !important;
+      letter-spacing:.1em !important;
+      line-height:1.35 !important;
+      text-transform:uppercase !important;
+    }
+    body.dx-route-profile-protected #dex-settings #pane-notifs #notCard .dx-newsletter-meta-row > :last-child{
+      min-width:0 !important;
+      max-width:70% !important;
+      overflow-wrap:anywhere !important;
+      color:var(--dx-blackglass-ink,#f3f3f4) !important;
+      font-size:.76rem !important;
+      font-weight:700 !important;
+      line-height:1.35 !important;
+      text-align:right !important;
+    }
+    body.dx-route-profile-protected #dex-settings #pane-notifs #notCard .dx-newsletter-state-badge{
+      border-color:rgba(255,255,255,.22) !important;
+      background:rgba(255,255,255,.08) !important;
+    }
+    body.dx-route-profile-protected #dex-settings #pane-notifs #notCard .dx-newsletter-state-badge[data-state="active"]{
+      border-color:rgba(99,216,151,.4) !important;
+      background:rgba(52,148,95,.14) !important;
+      color:#a8edc6 !important;
+    }
+    body.dx-route-profile-protected #dex-settings #pane-notifs #notCard .dx-newsletter-state-badge[data-state="pending_confirmation"]{
+      border-color:rgba(255,189,75,.4) !important;
+      background:rgba(181,116,12,.14) !important;
+      color:#ffd68a !important;
+    }
+    body.dx-route-profile-protected #dex-settings #pane-notifs #notCard .dx-newsletter-actions .cta-secondary{
+      border:1px solid rgba(255,255,255,.18) !important;
+      background:rgba(255,255,255,.07) !important;
+      color:var(--dx-blackglass-ink,#f3f3f4) !important;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.08) !important;
+    }
+    body.dx-route-profile-protected #dex-settings #pane-notifs #notCard .dx-newsletter-actions .dx-newsletter-action--danger{
+      border-color:rgba(255,102,102,.34) !important;
+      background:rgba(148,28,38,.14) !important;
+      color:#ffc1c5 !important;
     }
 
   </style>
@@ -3253,18 +3372,28 @@ body.dx-route-profile-protected #dex-settings :is(h1,h2,h3,h4,p,label,span,stron
 
                 <section class="dx-profile-subcard" data-dx-profile-panel="public-profile" data-dx-public-profile-card="true">
                   <div class="dx-profile-public-head">
-                    <div>
+                    <div class="dx-profile-public-intro">
                       <p class="dx-profile-kicker">Public profile</p>
                       <p class="note">Opt in to a member page at <span id="publicProfileUrlText">/u/handle/</span>.</p>
                     </div>
-                    <label class="dx-profile-switch" for="profilePublicToggle" data-dx-public-toggle="true">
-                      <input id="profilePublicToggle" type="checkbox" aria-describedby="profilePublicHint">
-                      <span class="dx-profile-switch-rail" aria-hidden="true"><span></span></span>
-                      <span class="dx-profile-switch-copy">
-                        <span class="dx-profile-switch-label">Profile visibility</span>
-                        <span id="profilePublicState" class="dx-profile-switch-state">Private</span>
-                      </span>
-                    </label>
+                    <div class="dx-profile-privacy-controls" role="group" aria-label="Public profile visibility">
+                      <label class="dx-profile-switch" for="profilePublicToggle" data-dx-public-toggle="true">
+                        <input id="profilePublicToggle" type="checkbox" aria-describedby="profilePublicHint">
+                        <span class="dx-profile-switch-rail" aria-hidden="true"><span></span></span>
+                        <span class="dx-profile-switch-copy">
+                          <span class="dx-profile-switch-label">Profile visibility</span>
+                          <span id="profilePublicState" class="dx-profile-switch-state">Private</span>
+                        </span>
+                      </label>
+                      <label class="dx-profile-switch" for="profileFavoritesPublicToggle">
+                        <input id="profileFavoritesPublicToggle" type="checkbox">
+                        <span class="dx-profile-switch-rail" aria-hidden="true"><span></span></span>
+                        <span class="dx-profile-switch-copy">
+                          <span class="dx-profile-switch-label">Favorites visibility</span>
+                          <span class="dx-profile-switch-state">Selected favorites</span>
+                        </span>
+                      </label>
+                    </div>
                   </div>
                   <p id="profilePublicHint" class="note dx-profile-public-hint">Private until visible is enabled.</p>
                   <div class="dx-profile-default-grid dx-profile-public-grid">
@@ -3339,14 +3468,10 @@ body.dx-route-profile-protected #dex-settings :is(h1,h2,h3,h4,p,label,span,stron
                   </div>
                   <div class="field">
                     <div class="dx-profile-row-head">
-                      <label class="dx-profile-switch" for="profileFavoritesPublicToggle">
-                        <input id="profileFavoritesPublicToggle" type="checkbox">
-                        <span class="dx-profile-switch-rail" aria-hidden="true"><span></span></span>
-                        <span class="dx-profile-switch-copy">
-                          <span class="dx-profile-switch-label">Public favorites</span>
-                          <span class="dx-profile-switch-state">Show selected favorites</span>
-                        </span>
-                      </label>
+                      <div class="dx-profile-row-title">
+                        <span class="label">Public favorites</span>
+                        <span class="note">Choose which saved entries appear when favorites visibility is on.</span>
+                      </div>
                       <button id="refreshPublicFavorites" class="btn" type="button">Refresh</button>
                     </div>
                     <div id="profilePublicFavoritesList" class="dx-profile-list" aria-live="polite">
@@ -5693,7 +5818,7 @@ if (profileRuntime && typeof profileRuntime.attach === 'function') {
     }
     if (S.newsletterLastActionValue instanceof Element) {
       if (newsletterModel.lastActionAt) {
-        const actionLabel = String(newsletterModel.lastActionLabel || 'Action email');
+        const actionLabel = String(newsletterModel.lastActionLabel || 'Newsletter email');
         S.newsletterLastActionValue.textContent = `${actionLabel} · ${formatDateTime(newsletterModel.lastActionAt)}`;
       } else {
         S.newsletterLastActionValue.textContent = '—';
@@ -5706,11 +5831,12 @@ if (profileRuntime && typeof profileRuntime.attach === 'function') {
     syncNewsletterActions();
   }
 
-  function applyNewsletterModel(next = {}) {
+  function applyNewsletterModel(next = {}, options = {}) {
+    const replaceAudit = options && options.replaceAudit === true;
     const normalizedState = normalizeNewsletterState(next.state || newsletterModel.state || 'unsubscribed');
     const nextEmail = isLikelyEmail(next.email || newsletterModel.email);
-    const nextLastActionAt = toIsoTime(next.lastActionAt || newsletterModel.lastActionAt);
-    const nextUpdatedAt = toIsoTime(next.updatedAt || newsletterModel.updatedAt);
+    const nextLastActionAt = toIsoTime(replaceAudit ? next.lastActionAt : (next.lastActionAt || newsletterModel.lastActionAt));
+    const nextUpdatedAt = toIsoTime(replaceAudit ? next.updatedAt : (next.updatedAt || newsletterModel.updatedAt));
     const nextCooldownUntil = Math.max(
       0,
       toEpochMs(next.cooldownUntil || newsletterModel.cooldownUntil),
@@ -5718,9 +5844,11 @@ if (profileRuntime && typeof profileRuntime.attach === 'function') {
 
     newsletterModel.state = normalizedState;
     newsletterModel.email = nextEmail || newsletterModel.email || '';
-    newsletterModel.lastActionAt = nextLastActionAt || newsletterModel.lastActionAt || '';
-    newsletterModel.lastActionLabel = String(next.lastActionLabel || newsletterModel.lastActionLabel || '').trim();
-    newsletterModel.updatedAt = nextUpdatedAt || newsletterModel.updatedAt || '';
+    newsletterModel.lastActionAt = replaceAudit ? nextLastActionAt : (nextLastActionAt || newsletterModel.lastActionAt || '');
+    newsletterModel.lastActionLabel = String(
+      replaceAudit ? (next.lastActionLabel || '') : (next.lastActionLabel || newsletterModel.lastActionLabel || ''),
+    ).trim();
+    newsletterModel.updatedAt = replaceAudit ? nextUpdatedAt : (nextUpdatedAt || newsletterModel.updatedAt || '');
     newsletterModel.cooldownUntil = nextCooldownUntil;
     newsletterModel.requestId = String(next.requestId || newsletterModel.requestId || '').trim();
     newsletterModel.suppressedReason = String(next.suppressedReason || newsletterModel.suppressedReason || '').trim();
@@ -5788,10 +5916,13 @@ if (profileRuntime && typeof profileRuntime.attach === 'function') {
     applyNewsletterModel({ email: '' });
   }
 
-  function normalizeNewsletterResponse(payload, fallbackState, fallbackActionLabel) {
+  function normalizeNewsletterResponse(payload, fallbackState, fallbackActionLabel = '') {
     const body = payload && typeof payload === 'object' ? payload : {};
     const retryAfterSeconds = Math.max(0, Math.min(7200, Number(body.retryAfterSeconds) || 0));
     const retryCooldownUntil = retryAfterSeconds > 0 ? Date.now() + retryAfterSeconds * 1000 : 0;
+    const explicitActionLabel = String(
+      body.lastActionLabel || body.last_action_label || body.lastAction || body.last_action || fallbackActionLabel || '',
+    ).trim();
     return {
       ok: body.ok !== false,
       state: normalizeNewsletterState(body.state || fallbackState),
@@ -5804,10 +5935,10 @@ if (profileRuntime && typeof profileRuntime.attach === 'function') {
         toEpochMs(body.cooldownUntil || body.cooldownEndsAt),
         retryCooldownUntil,
       ),
-      lastActionAt: toIsoTime(body.lastActionSentAt || body.lastActionAt || Date.now()),
-      updatedAt: toIsoTime(body.updatedAt || body.lastUpdatedAt || Date.now()),
+      lastActionAt: toIsoTime(body.lastActionSentAt || body.last_action_sent_at || body.lastActionAt || body.last_action_at),
+      updatedAt: toIsoTime(body.updatedAt || body.updated_at || body.lastUpdatedAt || body.last_updated_at),
       suppressedReason: String(body.suppressedReason || body.reason || '').trim(),
-      lastActionLabel: fallbackActionLabel || '',
+      lastActionLabel: explicitActionLabel,
     };
   }
 
@@ -5895,9 +6026,16 @@ if (profileRuntime && typeof profileRuntime.attach === 'function') {
         __skipAuthGuard: true,
       });
 
-      const normalized = normalizeNewsletterResponse(payload, newsletterModel.state, newsletterModel.lastActionLabel);
+      const normalized = normalizeNewsletterResponse(payload, newsletterModel.state);
       normalized.email = isLikelyEmail(payload?.email) || email || newsletterModel.email;
-      applyNewsletterModel(normalized);
+      if (
+        !normalized.lastActionLabel
+        && normalized.lastActionAt
+        && normalized.lastActionAt === newsletterModel.lastActionAt
+      ) {
+        normalized.lastActionLabel = newsletterModel.lastActionLabel;
+      }
+      applyNewsletterModel(normalized, { replaceAudit: true });
       setNewsletterCooldown('refresh', NEWSLETTER_REFRESH_COOLDOWN_MS);
       if (announce) {
         const label = NEWSLETTER_STATE_LABELS[normalizeNewsletterState(normalized.state)] || 'Updated';
@@ -5908,7 +6046,6 @@ if (profileRuntime && typeof profileRuntime.attach === 'function') {
       if (isCompatFallbackStatus(error)) {
         applyNewsletterModel({
           email: newsletterModel.email || resolveNewsletterEmailFromUi(),
-          updatedAt: Date.now(),
         });
         if (announce) {
           setNewsletterStatus('Newsletter status endpoint is not available yet. You can still request action links.');
@@ -5996,7 +6133,7 @@ if (profileRuntime && typeof profileRuntime.attach === 'function') {
         ...response,
         email,
         lastActionLabel: NEWSLETTER_ACTION_LABELS[normalizedAction] || '',
-      });
+      }, { replaceAudit: true });
       setNewsletterStatus(response.message || NEWSLETTER_SUCCESS_MESSAGE[normalizedAction] || 'Newsletter action completed.');
       void refreshNewsletterStatus({ announce: false, force: true, skipCooldown: true });
     } catch (error) {

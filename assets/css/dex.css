@@ -1985,8 +1985,8 @@ body.dx-route-profile-protected #dex-achv :is(
   color: var(--dx-blackglass-ink) !important;
 }
 body.dx-route-profile-protected #dex-achv .dx-achievement-card {
-  background: var(--dx-blackglass-bg) !important;
-  border-color: var(--dx-blackglass-rim) !important;
+  background: var(--dx-achievement-card-bg, var(--dx-blackglass-bg)) !important;
+  border-color: var(--dx-achievement-card-border, var(--dx-blackglass-rim)) !important;
   -webkit-backdrop-filter: var(--dx-blackglass-backdrop) !important;
   backdrop-filter: var(--dx-blackglass-backdrop) !important;
 }
@@ -2408,7 +2408,7 @@ body.dx-route-profile-protected [data-dx-settings-host-section="true"] .section-
 
 /* Keep profile footer pinned for desktop/tablet profile routes (>900px). */
 @media (min-width: 901px) and (max-width: 1200px) {
-  body.dx-route-profile-protected :is(#dex-submit, #dex-msg, #dex-press, #dex-settings) {
+  body.dx-route-profile-protected :is(#dex-submit, #dex-msg, #dex-press, #dex-achv, #dex-settings) {
     height: var(--dx-profile-shell-height) !important;
     min-height: var(--dx-profile-shell-height) !important;
     max-height: var(--dx-profile-shell-height) !important;
@@ -2418,6 +2418,7 @@ body.dx-route-profile-protected [data-dx-settings-host-section="true"] .section-
     .dx-block:has(#dex-submit),
     .dx-block:has(#dex-msg),
     .dx-block:has(#dex-press),
+    .dx-block:has(#dex-achv),
     .dx-block:has(#dex-settings)
   ) {
     height: var(--dx-profile-shell-height) !important;
@@ -2428,10 +2429,12 @@ body.dx-route-profile-protected [data-dx-settings-host-section="true"] .section-
     .dx-block-content:has(#dex-submit),
     .dx-block-content:has(#dex-msg),
     .dx-block-content:has(#dex-press),
+    .dx-block-content:has(#dex-achv),
     .dx-block-content:has(#dex-settings),
     .dx-code-container:has(#dex-submit),
     .dx-code-container:has(#dex-msg),
     .dx-code-container:has(#dex-press),
+    .dx-code-container:has(#dex-achv),
     .dx-code-container:has(#dex-settings)
   ) {
     height: 100% !important;
@@ -2484,7 +2487,7 @@ body.dx-route-profile-protected [data-dx-settings-host-section="true"] .section-
     padding-bottom: 0 !important;
   }
 
-  body.dx-route-profile-protected :is(#dex-submit, #dex-msg, #dex-press, #dex-settings) {
+  body.dx-route-profile-protected :is(#dex-submit, #dex-msg, #dex-press, #dex-achv, #dex-settings) {
     padding-bottom: 0 !important;
     margin-bottom: 0 !important;
   }
@@ -2801,6 +2804,52 @@ body.dx-route-profile-protected [data-dx-settings-host-section="true"] .section-
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
+  }
+
+  /* The current settings route split the old #pane-profile into Account and
+     Public Profile panes. Keep the shell fixed and give each account column
+     its own scroll owner so the security rail never drives the profile body. */
+  #dex-settings[data-dx-settings-pane="profile"] .grid {
+    overflow: hidden !important;
+  }
+
+  #dex-settings[data-dx-settings-pane="profile"] .grid > main {
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #dex-settings[data-dx-settings-pane="profile"] :is(#pane-account, #pane-public) {
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #dex-settings[data-dx-settings-pane="profile"] :is(#pane-account, #pane-public) .twocol {
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    align-items: stretch !important;
+    overflow: hidden !important;
+  }
+
+  #dex-settings[data-dx-settings-pane="profile"] #pane-account :is(.profile-col-left, .profile-col-right),
+  #dex-settings[data-dx-settings-pane="profile"] #pane-public .profile-col-left {
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior-y: contain !important;
+    scrollbar-gutter: stable !important;
+    box-sizing: border-box !important;
+    padding-right: 6px !important;
+  }
+
+  #dex-settings[data-dx-settings-pane="profile"] #pane-account .profile-col-right {
+    position: static !important;
+    top: auto !important;
+    align-self: stretch !important;
   }
 }
 

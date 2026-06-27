@@ -1,0 +1,231 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner:
+    - generic [ref=e2]:
+      - link "Skip to Content" [ref=e3] [cursor=pointer]:
+        - /url: index.html#page
+      - generic [ref=e5]:
+        - generic [ref=e7]:
+          - link "YouTube" [ref=e8] [cursor=pointer]:
+            - /url: https://www.youtube.com/channel/UCo5B4ztNwaErXhQlGyNhMDQ
+            - img [ref=e9]
+          - link "Instagram" [ref=e11] [cursor=pointer]:
+            - /url: http://instagram.com/dexdsl
+            - img [ref=e12]
+          - link "TikTok" [ref=e14] [cursor=pointer]:
+            - /url: https://www.tiktok.com/@dexdsl
+            - img [ref=e15]
+          - link "Twitter" [ref=e17] [cursor=pointer]:
+            - /url: https://twitter.com/dexdsl
+            - img [ref=e18]
+        - generic [ref=e20]:
+          - link "dex digital sample library" [ref=e23] [cursor=pointer]:
+            - /url: /
+            - img "dex digital sample library" [ref=e24]
+          - navigation [ref=e25]:
+            - link "CATALOG" [ref=e27] [cursor=pointer]:
+              - /url: /catalog/
+            - link "IN DEX" [ref=e29] [cursor=pointer]:
+              - /url: /call/
+            - link "DEX NOTES" [ref=e31] [cursor=pointer]:
+              - /url: /dexnotes/
+            - link "ABOUT" [ref=e33] [cursor=pointer]:
+              - /url: /about/
+        - link "DONATE" [ref=e36] [cursor=pointer]:
+          - /url: /donate/
+  - generic [ref=e39]:
+    - main [ref=e40]:
+      - article [ref=e41]:
+        - generic [ref=e51]:
+          - generic "Account settings" [ref=e52]:
+            - heading "Set‌tings" [level=1] [ref=e53]
+            - paragraph [ref=e54]: Manage your profile, membership, and notifications.
+          - tablist "Settings sections" [ref=e56]:
+            - tab "ACCOUNT" [selected] [ref=e57] [cursor=pointer]
+            - tab "PUBLIC PROFILE" [ref=e58] [cursor=pointer]
+            - tab "MEMBERSHIP" [ref=e59] [cursor=pointer]
+            - tab "NOTIFICATIONS" [ref=e60] [cursor=pointer]
+          - generic [ref=e61]:
+            - main [ref=e62]:
+              - tabpanel "ACCOUNT" [ref=e63]:
+                - generic [ref=e64]:
+                  - generic [ref=e65]:
+                    - generic [ref=e66]:
+                      - generic [ref=e67]:
+                        - heading "Iden‍ntity" [level=2] [ref=e68]
+                        - generic [ref=e69]: Synced
+                      - generic [ref=e70]:
+                        - generic [ref=e71]:
+                          - paragraph [ref=e72]: Public identity
+                          - generic [ref=e73]:
+                            - img "Profile V1" [ref=e74]
+                            - generic [ref=e75]:
+                              - generic [ref=e76]: Profile V1
+                              - paragraph [ref=e77]: This is how your profile identity appears across Dex surfaces.
+                        - generic [ref=e78]:
+                          - paragraph [ref=e79]: Account identity
+                          - generic [ref=e80]:
+                            - generic [ref=e81]:
+                              - generic [ref=e82]: Email
+                              - generic [ref=e83]:
+                                - generic [ref=e84]: profile-v1@example.com
+                                - generic [ref=e85]: Unverified
+                            - generic [ref=e86]:
+                              - generic [ref=e87]: Last sync
+                              - generic [ref=e88]: 6/27/2026, 1:19:21 AM
+                        - generic [ref=e89]:
+                          - paragraph [ref=e90]: Provider connection
+                          - generic [ref=e91]:
+                            - generic [ref=e92]:
+                              - generic [ref=e93]: Provider
+                              - generic [ref=e94]: Email/Password
+                            - generic [ref=e95]:
+                              - generic [ref=e96]: Connection
+                              - generic [ref=e97]: Healthy
+                          - button "Refresh from provider" [ref=e99] [cursor=pointer]
+                      - paragraph [ref=e100]: We never store your password or provider profile photo. Identity comes from your connected auth provider.
+                    - generic [ref=e101]:
+                      - heading "Contribution profile" [level=2] [ref=e103]
+                      - generic [ref=e104]:
+                        - generic [ref=e105]:
+                          - paragraph [ref=e106]: Public credits
+                          - generic [ref=e107]:
+                            - generic [ref=e108]: Primary credit name
+                            - textbox "Primary credit name" [ref=e109]:
+                              - /placeholder: How your name appears in credits
+                              - text: Profile V1
+                          - generic [ref=e110]:
+                            - generic [ref=e111]: Credit aliases
+                            - listbox "Credit aliases" [ref=e112]:
+                              - textbox "Credit aliases" [ref=e113]:
+                                - /placeholder: Add alias and press Enter
+                            - paragraph [ref=e114]: Use aliases only when you publish under multiple names.
+                        - generic [ref=e115]:
+                          - paragraph [ref=e116]: Roles
+                          - generic [ref=e117]:
+                            - generic [ref=e118]: Role tags
+                            - group "Select roles" [ref=e119]:
+                              - button "Composer" [ref=e120] [cursor=pointer]
+                              - button "Performer" [pressed] [ref=e121] [cursor=pointer]
+                              - button "Improviser" [ref=e122] [cursor=pointer]
+                              - button "Producer" [ref=e123] [cursor=pointer]
+                              - button "Engineer" [ref=e124] [cursor=pointer]
+                              - button "Arranger" [ref=e125] [cursor=pointer]
+                              - button "Conductor" [ref=e126] [cursor=pointer]
+                              - button "Editor" [ref=e127] [cursor=pointer]
+                              - button "Video" [ref=e128] [cursor=pointer]
+                              - button "Sound Design" [ref=e129] [cursor=pointer]
+                              - button "Other" [ref=e130] [cursor=pointer]
+                          - generic [ref=e131]:
+                            - generic [ref=e132]: Primary role
+                            - combobox "Primary role" [ref=e133]:
+                              - option "No primary role"
+                              - option "Performer" [selected]
+                        - generic [ref=e134]:
+                          - paragraph [ref=e135]: Instruments and mediums
+                          - generic [ref=e136]:
+                            - generic [ref=e137]: Instruments / mediums
+                            - listbox "Instruments" [ref=e138]:
+                              - generic [ref=e139]:
+                                - generic [ref=e140]: Cello
+                                - button "Remove" [ref=e141] [cursor=pointer]: ×
+                              - textbox "Type and press Enter" [ref=e142]
+                          - generic [ref=e143]:
+                            - generic [ref=e144]: Primary instrument
+                            - combobox "Primary instrument" [ref=e145]:
+                              - option "No primary instrument"
+                              - option "Cello" [selected]
+                        - generic [ref=e146]:
+                          - paragraph [ref=e147]: Submit defaults
+                          - generic [ref=e148]:
+                            - generic [ref=e149]:
+                              - generic [ref=e150]: Creator
+                              - textbox "Creator" [ref=e151]:
+                                - /placeholder: Default creator name(s)
+                                - text: Profile V1
+                            - generic [ref=e152]:
+                              - generic [ref=e153]: Category
+                              - combobox "Category" [ref=e154]:
+                                - option "Choose category"
+                                - option "V - Voice + Body"
+                                - option "K - Keyboards"
+                                - option "B - Brass"
+                                - option "E - Electronics"
+                                - option "S - Strings" [selected]
+                                - option "W - Winds"
+                                - option "P - Percussion"
+                                - option "X - Other"
+                            - generic [ref=e155]:
+                              - generic [ref=e156]: Instrument
+                              - textbox "Instrument" [ref=e157]:
+                                - /placeholder: Default instrument label
+                                - text: Cello
+                          - generic [ref=e158]:
+                            - button "Use recent submission" [ref=e159] [cursor=pointer]
+                            - button "Use top instrument" [ref=e160] [cursor=pointer]
+                        - generic [ref=e161]:
+                          - paragraph [ref=e162]: Profile insights
+                          - paragraph [ref=e163]: No submission history yet. Your profile defaults will still drive submit prefill.
+                          - group "Contribution insights"
+                  - generic [ref=e164]:
+                    - generic [ref=e165]:
+                      - heading "Security" [level=2] [ref=e166]
+                      - generic [ref=e167]:
+                        - generic [ref=e168]:
+                          - generic [ref=e169]: Last sign-in
+                          - generic [ref=e170]: —
+                        - generic [ref=e171]:
+                          - generic [ref=e172]: Auth provider
+                          - generic [ref=e173]: Email/Password
+                        - generic [ref=e174]:
+                          - generic [ref=e175]: Email verification
+                          - generic [ref=e176]: Unverified
+                        - generic [ref=e177]:
+                          - generic [ref=e178]: This session
+                          - button "Sign out" [ref=e179] [cursor=pointer]
+                        - generic [ref=e180]:
+                          - generic [ref=e181]: Other sessions
+                          - button "Sign out others" [ref=e182] [cursor=pointer]
+                        - generic [ref=e183]:
+                          - generic [ref=e184]: Re-authenticate
+                          - button "Re-authenticate" [ref=e185] [cursor=pointer]
+                      - paragraph [ref=e186]
+                    - generic [ref=e187]:
+                      - heading "Dan‍nger zone" [level=2] [ref=e188]
+                      - paragraph [ref=e189]: Delete your account (requires no active membership).
+                      - button "Delete account" [ref=e190] [cursor=pointer]
+            - complementary "Context"
+    - contentinfo
+  - contentinfo [ref=e193]:
+    - generic [ref=e194]:
+      - img "Dex Footer Logo (black)" [ref=e197]
+      - generic [ref=e198]:
+        - text: © 2023–2026 DEX CO-OP CORP (EIN 92-3509152)
+        - text: dba Dex Digital Sample Library. All rights reserved.
+      - link "View Dex Digital Sample Library's Candid (GuideStar) profile" [ref=e200] [cursor=pointer]:
+        - /url: https://app.candid.org/profile/15083758/dex-digital-sample-library-92-3509152
+        - img "Candid (GuideStar) Transparency Seal" [ref=e201]
+      - generic [ref=e202]:
+        - generic [ref=e203]:
+          - link "YouTube" [ref=e204] [cursor=pointer]:
+            - /url: https://www.youtube.com/dexdsl
+            - img [ref=e205]
+          - link "Instagram" [ref=e207] [cursor=pointer]:
+            - /url: https://instagram.com/dexdsl
+            - img [ref=e208]
+          - link "TikTok" [ref=e210] [cursor=pointer]:
+            - /url: https://www.tiktok.com/@dexdsl
+            - img [ref=e211]
+          - link "Twitter" [ref=e213] [cursor=pointer]:
+            - /url: https://twitter.com/dexdsl
+            - img [ref=e214]
+        - navigation [ref=e216]:
+          - link "Privacy" [ref=e217] [cursor=pointer]:
+            - /url: /privacy
+          - link "Contact" [ref=e218] [cursor=pointer]:
+            - /url: /contact
+          - link "Copyright" [ref=e219] [cursor=pointer]:
+            - /url: /copyright
+```

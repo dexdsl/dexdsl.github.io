@@ -628,6 +628,80 @@
   }
 }
 
+/* Achievement-grade tier materials. Each plan keeps the same geometry and
+   interaction, but gets a distinct metal/ink surface so the chooser reads as
+   a set of collectible plates instead of generic pricing cards. */
+:is(#dxMembershipV3Root, #dxMembershipModal) .dx-memv3-tier[data-tier="S"] {
+  --dx-mem-tier-edge: rgba(210, 160, 104, 0.38);
+  --dx-mem-tier-accent: linear-gradient(180deg, #d9aa70, #76502d);
+  --dx-mem-tier-glow: rgba(205, 143, 78, 0.18);
+  --dx-mem-tier-surface:
+    radial-gradient(110% 95% at 12% 0%, rgba(219, 165, 104, 0.2), transparent 48%),
+    linear-gradient(145deg, rgba(77, 58, 42, 0.68), rgba(10, 11, 14, 0.92) 72%),
+    #090a0d;
+}
+
+:is(#dxMembershipV3Root, #dxMembershipModal) .dx-memv3-tier[data-tier="M"] {
+  --dx-mem-tier-edge: rgba(143, 182, 213, 0.4);
+  --dx-mem-tier-accent: linear-gradient(180deg, #b8d5e7, #557f9c);
+  --dx-mem-tier-glow: rgba(99, 166, 210, 0.18);
+  --dx-mem-tier-surface:
+    radial-gradient(110% 95% at 12% 0%, rgba(123, 188, 226, 0.2), transparent 48%),
+    linear-gradient(145deg, rgba(39, 67, 83, 0.72), rgba(8, 10, 15, 0.94) 72%),
+    #080a0f;
+}
+
+:is(#dxMembershipV3Root, #dxMembershipModal) .dx-memv3-tier[data-tier="L"] {
+  --dx-mem-tier-edge: rgba(222, 179, 104, 0.46);
+  --dx-mem-tier-accent: linear-gradient(180deg, #f0cf87, #9e662f);
+  --dx-mem-tier-glow: rgba(221, 155, 63, 0.2);
+  --dx-mem-tier-surface:
+    radial-gradient(110% 95% at 12% 0%, rgba(231, 177, 82, 0.22), transparent 47%),
+    radial-gradient(90% 120% at 100% 100%, rgba(108, 51, 116, 0.22), transparent 58%),
+    linear-gradient(145deg, rgba(73, 46, 66, 0.72), rgba(10, 8, 14, 0.95) 72%),
+    #0a080e;
+}
+
+:is(#dxMembershipV3Root, #dxMembershipModal) .dx-memv3-tier[data-tier] {
+  border-color: var(--dx-mem-tier-edge) !important;
+  background: var(--dx-mem-tier-surface) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5),
+    0 18px 38px rgba(0, 0, 0, 0.24) !important;
+}
+
+:is(#dxMembershipV3Root, #dxMembershipModal) .dx-memv3-tier[data-tier]::before {
+  background:
+    linear-gradient(112deg, transparent 18%, rgba(255, 255, 255, 0.14) 42%, transparent 66%),
+    radial-gradient(circle at 18% 0%, var(--dx-mem-tier-glow), transparent 46%);
+}
+
+:is(#dxMembershipV3Root, #dxMembershipModal) .dx-memv3-tier[data-tier]::after {
+  background: var(--dx-mem-tier-accent);
+}
+
+@media (hover: hover) {
+  :is(#dxMembershipV3Root, #dxMembershipModal) .dx-memv3-tier[data-tier]:hover {
+    border-color: color-mix(in srgb, var(--dx-mem-tier-edge) 76%, white) !important;
+    background: var(--dx-mem-tier-surface) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.18),
+      0 25px 52px rgba(0, 0, 0, 0.34),
+      0 0 32px var(--dx-mem-tier-glow) !important;
+  }
+}
+
+:is(#dxMembershipV3Root, #dxMembershipModal) .dx-memv3-tier[data-tier][aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--dx-mem-tier-edge) 70%, white) !important;
+  background: var(--dx-mem-tier-surface) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 0 0 1px var(--dx-mem-tier-edge),
+    0 22px 52px rgba(0, 0, 0, 0.34),
+    0 0 38px var(--dx-mem-tier-glow) !important;
+}
+
 /* Membership plan modal
    Uses the same black-glass overlay language as the Messages and Polls dialogs,
    while keeping the plan composer outside the settings rail so it cannot clip. */

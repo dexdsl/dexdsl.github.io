@@ -24,7 +24,7 @@
   const TOKEN_TIMEOUT_MS = 2600;
   const API_TIMEOUT_MS = 9000;
   const HISTORY_PAGE_SIZE = 40;
-  const BADGES_PER_PAGE = 8;
+  const DEFAULT_BADGES_PER_PAGE = 8;
   const FOCUS_BADGE_PARAM = 'badge';
 
   const DEFAULT_API_BASE = 'https://dex-api.spring-fog-8edd.workers.dev';
@@ -47,6 +47,24 @@
     'secret-release': 'archive-box-arrow-down.svg',
     vault: 'key.svg',
   };
+  const CATEGORY_SHADER_COLORS = {
+    submissions: [1.0, 0.25, 0.08],
+    releases: [0.12, 0.68, 1.0],
+    license: [0.28, 0.96, 0.68],
+    polls: [0.67, 0.33, 1.0],
+    calls: [1.0, 0.28, 0.58],
+    favorites: [1.0, 0.16, 0.28],
+    profile: [0.2, 0.72, 1.0],
+    secret: [0.64, 0.7, 0.94],
+    general: [1.0, 0.35, 0.12],
+  };
+  const TIER_SHADER_COLORS = {
+    bronze: [0.78, 0.36, 0.15],
+    silver: [0.72, 0.8, 0.92],
+    gold: [1.0, 0.66, 0.1],
+    legend: [0.68, 0.36, 1.0],
+  };
+  const INSPECT_DEFAULT_ROTATION = Object.freeze({ x: -5, y: -8 });
 
   function toText(value, fallback = '') {
     const text = String(value ?? '').trim();
@@ -236,6 +254,41 @@
     return { pct, c, dash };
   }
 
+  function badgeDisplayTitle(badge) {
+    return badge.secret && !badge.unlocked ? 'CLASSIFIED' : badge.title;
+  }
+
+  function badgeDisplayDescription(badge) {
+    return badge.secret && !badge.unlocked
+      ? `Clue: ${badge.clueGrowlix || '???'}`
+      : badge.description;
+  }
+
+  function badgeStatusLabel(badge) {
+    if (badge.secret && !badge.unlocked) return 'Signal encrypted';
+    if (badge.unlocked) return badge.newly ? 'Newly unlocked' : 'Unlocked';
+    return `Progress ${Math.min(badge.progress, badge.threshold)} / ${badge.threshold}`;
+  }
+
+  function badgePointsLabel(badge) {
+    return badge.secret && !badge.unlocked ? 'Points hidden' : `${badge.points} pts`;
+  }
+
+  function badgeCategoryLabel(badge) {
+    return badge.secret && !badge.unlocked ? 'Secret vault' : badge.category;
+  }
+
+  function badgeUnlockDateLabel(badge) {
+    if (!badge.unlockedAt) return badge.unlocked ? 'Recorded in the Dex archive' : 'Not yet unlocked';
+    const parsed = new Date(badge.unlockedAt);
+    if (Number.isNaN(parsed.getTime())) return 'Recorded in the Dex archive';
+    return `Unlocked ${parsed.toLocaleDateString(undefined, {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })}`;
+  }
+
   function normalizeBadge(raw, state) {
     const item = raw && typeof raw === 'object' ? raw : {};
     const id = toText(item.id).toLowerCase();
@@ -263,6 +316,7 @@
       newly,
       cardState,
       secret,
+      unlockedAt: toText(item.unlockedAt || item.unlocked_at || item.earnedAt || item.earned_at, ''),
       clueGrowlix: toText(item.clueGrowlix, '???'),
       claimable: Boolean(item.claimable) || id === 'vault-easter-egg',
     };
@@ -270,10 +324,8 @@
 
   function renderBadgeCard(badge) {
     const ring = progressStroke(badge.progress, badge.threshold);
-    const title = badge.secret && !badge.unlocked ? 'CLASSIFIED' : badge.title;
-    const description = badge.secret && !badge.unlocked
-      ? `Clue: ${badge.clueGrowlix || '???'}`
-      : badge.description;
+    const title = badgeDisplayTitle(badge);
+    const description = badgeDisplayDescription(badge);
 
     const claimButton = badge.secret && !badge.unlocked && badge.claimable
       ? `<button type="button" class="dx-button-element dx-button-element--secondary dx-button-size--sm dx-achievement-claim" data-dx-achievement-claim="${htmlEscape(badge.id)}" data-dx-motion-include="true">Claim</button>`
@@ -285,35 +337,387 @@
         data-dx-achievement-id="${htmlEscape(badge.id)}"
         data-dx-achievement-state="${htmlEscape(badge.cardState)}"
         data-dx-achievement-secret="${badge.secret ? 'true' : 'false'}"
+        data-dx-achievement-category="${htmlEscape(badge.category)}"
+        data-dx-achievement-tier="${htmlEscape(badge.tier)}"
+        data-dx-achievement-open="${htmlEscape(badge.id)}"
+        style="--dx-achievement-progress: ${ring.pct}%;"
         data-dx-motion-include="true"
       >
+        <button
+          type="button"
+          class="dx-achievement-open-target"
+          data-dx-achievement-open="${htmlEscape(badge.id)}"
+          aria-haspopup="dialog"
+          aria-label="Inspect achievement: ${htmlEscape(title)}"
+        ></button>
+        <span class="dx-achievement-material" aria-hidden="true"></span>
         <div class="dx-achievement-card-top">
+          <span class="dx-achievement-category">${htmlEscape(badgeCategoryLabel(badge))}</span>
           <span class="dx-achievement-tier">${htmlEscape(badge.tier.toUpperCase())}</span>
           ${badge.newly ? '<span class="dx-achievement-new">NEW</span>' : ''}
         </div>
-        <div class="dx-achievement-glyph-wrap" style="--dx-achievement-progress: ${ring.pct}%;">
-          ${badgeGlyphSvg(badge.glyph, { silhouette: badge.secret && !badge.unlocked })}
+        <div class="dx-achievement-crest" aria-hidden="true">
+          <span class="dx-achievement-crest-rim"></span>
+          <div class="dx-achievement-glyph-wrap">
+            ${badgeGlyphSvg(badge.glyph, { silhouette: badge.secret && !badge.unlocked })}
+          </div>
+          <span class="dx-achievement-crest-mark">${badge.secret && !badge.unlocked ? 'DX-?' : 'DX'}</span>
         </div>
-        <h3 class="dx-achievement-title">${htmlEscape(title)}</h3>
-        <p class="dx-achievement-desc">${htmlEscape(description)}</p>
+        <div class="dx-achievement-copy">
+          <h3 class="dx-achievement-title">${htmlEscape(title)}</h3>
+          <p class="dx-achievement-desc">${htmlEscape(description)}</p>
+        </div>
+        <div class="dx-achievement-progress" aria-hidden="true">
+          <span></span>
+        </div>
         <div class="dx-achievement-meta">
-          <span>${badge.unlocked ? 'Unlocked' : `Progress ${Math.min(badge.progress, badge.threshold)}/${badge.threshold}`}</span>
-          <span>${badge.points} pts</span>
+          <span>${htmlEscape(badgeStatusLabel(badge))}</span>
+          <span>${htmlEscape(badgePointsLabel(badge))}</span>
         </div>
         ${claimButton}
       </article>
     `;
   }
 
+  function renderInspectPlate(badge) {
+    const ring = progressStroke(badge.progress, badge.threshold);
+    const title = badgeDisplayTitle(badge);
+    const description = badgeDisplayDescription(badge);
+    const isClassified = badge.secret && !badge.unlocked;
+    const progressRecord = isClassified
+      ? 'Unlock criteria remain classified.'
+      : badge.unlocked
+        ? 'Achievement complete.'
+        : `${Math.min(badge.progress, badge.threshold)} of ${badge.threshold} recorded.`;
+
+    return `
+      <div
+        class="dx-achievement-inspect-object${badge.newly ? ' is-cinematic' : ''}"
+        data-dx-achievement-inspect-object
+        data-dx-achievement-state="${htmlEscape(badge.cardState)}"
+        data-dx-achievement-category="${htmlEscape(badge.category)}"
+        data-dx-achievement-tier="${htmlEscape(badge.tier)}"
+        style="--dx-achievement-progress: ${ring.pct}%;"
+        role="group"
+        aria-label="3D achievement object: ${htmlEscape(title)}"
+        tabindex="0"
+      >
+        <div class="dx-achievement-inspect-plate" data-dx-achievement-inspect-plate>
+          <section class="dx-achievement-inspect-face dx-achievement-inspect-front">
+            <canvas class="dx-achievement-inspect-shader" data-dx-achievement-inspect-shader aria-hidden="true"></canvas>
+            <span class="dx-achievement-inspect-foil" aria-hidden="true"></span>
+            <header class="dx-achievement-inspect-head">
+              <span>${htmlEscape(badgeCategoryLabel(badge))}</span>
+              <span>${htmlEscape(badge.tier.toUpperCase())}</span>
+            </header>
+            <div class="dx-achievement-inspect-crest" aria-hidden="true">
+              <span class="dx-achievement-inspect-crest-rim"></span>
+              <span class="dx-achievement-inspect-glyph">
+                ${badgeGlyphSvg(badge.glyph, { silhouette: isClassified })}
+              </span>
+              <span class="dx-achievement-inspect-monogram">${isClassified ? 'DX-?' : 'DX'}</span>
+            </div>
+            <div class="dx-achievement-inspect-copy">
+              <p class="dx-achievement-inspect-kicker">${htmlEscape(badgeStatusLabel(badge))}</p>
+              <h2 id="dx-achievement-inspect-title">${htmlEscape(title)}</h2>
+              <p>${htmlEscape(description)}</p>
+            </div>
+            <div class="dx-achievement-inspect-meter" aria-hidden="true"><span></span></div>
+            <footer class="dx-achievement-inspect-foot">
+              <span>${htmlEscape(badgePointsLabel(badge))}</span>
+              <span>${htmlEscape(badgeUnlockDateLabel(badge))}</span>
+            </footer>
+          </section>
+          <section class="dx-achievement-inspect-face dx-achievement-inspect-back" aria-label="Achievement record">
+            <div class="dx-achievement-inspect-back-seal" aria-hidden="true">DX</div>
+            <p class="dx-achievement-inspect-kicker">Archive record</p>
+            <h3>${htmlEscape(title)}</h3>
+            <dl>
+              <div><dt>Category</dt><dd>${htmlEscape(badgeCategoryLabel(badge))}</dd></div>
+              <div><dt>Tier</dt><dd>${htmlEscape(badge.tier)}</dd></div>
+              <div><dt>Status</dt><dd>${htmlEscape(badgeStatusLabel(badge))}</dd></div>
+              <div><dt>Record</dt><dd>${htmlEscape(progressRecord)}</dd></div>
+            </dl>
+            <p class="dx-achievement-inspect-back-id">${isClassified ? 'DEX-ACHV-CLASSIFIED' : htmlEscape(badge.id)}</p>
+          </section>
+        </div>
+      </div>
+    `;
+  }
+
+  function createInspectorShader(canvas, badge) {
+    if (!(canvas instanceof HTMLCanvasElement)) return null;
+    const fallback = () => {
+      canvas.setAttribute('data-dx-shader-state', 'fallback');
+      return null;
+    };
+
+    let gl = null;
+    try {
+      gl = canvas.getContext('webgl', {
+        alpha: true,
+        antialias: false,
+        depth: false,
+        premultipliedAlpha: true,
+        powerPreference: 'low-power',
+      });
+    } catch {
+      return fallback();
+    }
+    if (!gl) return fallback();
+
+    const vertexSource = `
+      attribute vec2 a_position;
+      varying vec2 v_uv;
+      void main() {
+        v_uv = a_position * 0.5 + 0.5;
+        gl_Position = vec4(a_position, 0.0, 1.0);
+      }
+    `;
+    const fragmentSource = `
+      precision highp float;
+      varying vec2 v_uv;
+      uniform float u_time;
+      uniform vec2 u_pointer;
+      uniform vec3 u_category;
+      uniform vec3 u_tier;
+      uniform float u_unlocked;
+      uniform float u_secret;
+
+      float hash(vec2 p) {
+        return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+      }
+
+      float noise(vec2 p) {
+        vec2 i = floor(p);
+        vec2 f = fract(p);
+        f = f * f * (3.0 - 2.0 * f);
+        return mix(
+          mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
+          mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x),
+          f.y
+        );
+      }
+
+      void main() {
+        vec2 uv = v_uv;
+        vec2 pointer = clamp(u_pointer, 0.0, 1.0);
+        float time = u_time * 0.12;
+        float grain = noise(uv * vec2(22.0, 15.0) + time);
+        float micro = noise(uv * vec2(96.0, 64.0));
+        float diagonal = uv.x * 0.92 + uv.y * 0.42;
+        float travel = fract(diagonal + time * 0.11 + pointer.x * 0.24);
+        float foil = pow(max(0.0, 1.0 - abs(travel - 0.5) * 2.0), 5.0);
+        float bands = 0.5 + 0.5 * sin((diagonal * 12.0 + grain * 1.8 + time) * 6.28318);
+        float spot = exp(-10.0 * distance(uv, pointer));
+        float edge = smoothstep(0.64, 0.98, distance(uv, vec2(0.5)) * 1.42);
+
+        vec3 rainbow = vec3(
+          0.5 + 0.5 * sin(6.28318 * (bands + 0.00)),
+          0.5 + 0.5 * sin(6.28318 * (bands + 0.33)),
+          0.5 + 0.5 * sin(6.28318 * (bands + 0.67))
+        );
+        vec3 metal = mix(u_tier, u_category, 0.28 + grain * 0.3);
+        vec3 color = mix(metal, rainbow, foil * (0.42 + u_unlocked * 0.42));
+        color += u_category * spot * 0.56;
+        color += vec3(0.7, 0.78, 0.92) * edge * 0.2;
+        color += (micro - 0.5) * 0.065;
+
+        float alpha = 0.035 + foil * 0.2 + spot * 0.18 + edge * 0.08;
+        alpha *= mix(0.72, 1.0, u_unlocked);
+        alpha *= mix(1.0, 0.72, u_secret);
+        gl_FragColor = vec4(color, clamp(alpha, 0.0, 0.5));
+      }
+    `;
+
+    function compile(type, source) {
+      const shader = gl.createShader(type);
+      if (!shader) return null;
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        gl.deleteShader(shader);
+        return null;
+      }
+      return shader;
+    }
+
+    const vertex = compile(gl.VERTEX_SHADER, vertexSource);
+    const fragment = compile(gl.FRAGMENT_SHADER, fragmentSource);
+    if (!vertex || !fragment) return fallback();
+
+    const program = gl.createProgram();
+    if (!program) return fallback();
+    gl.attachShader(program, vertex);
+    gl.attachShader(program, fragment);
+    gl.linkProgram(program);
+    gl.deleteShader(vertex);
+    gl.deleteShader(fragment);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      gl.deleteProgram(program);
+      return fallback();
+    }
+
+    const buffer = gl.createBuffer();
+    if (!buffer) {
+      gl.deleteProgram(program);
+      return fallback();
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+      -1, -1,
+      1, -1,
+      -1, 1,
+      1, 1,
+    ]), gl.STATIC_DRAW);
+    gl.useProgram(program);
+
+    const position = gl.getAttribLocation(program, 'a_position');
+    gl.enableVertexAttribArray(position);
+    gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+
+    const uniforms = {
+      time: gl.getUniformLocation(program, 'u_time'),
+      pointer: gl.getUniformLocation(program, 'u_pointer'),
+      category: gl.getUniformLocation(program, 'u_category'),
+      tier: gl.getUniformLocation(program, 'u_tier'),
+      unlocked: gl.getUniformLocation(program, 'u_unlocked'),
+      secret: gl.getUniformLocation(program, 'u_secret'),
+    };
+    const categoryColor = CATEGORY_SHADER_COLORS[badge.category] || CATEGORY_SHADER_COLORS.general;
+    const tierColor = TIER_SHADER_COLORS[badge.tier] || TIER_SHADER_COLORS.silver;
+    gl.uniform3fv(uniforms.category, categoryColor);
+    gl.uniform3fv(uniforms.tier, tierColor);
+    gl.uniform1f(uniforms.unlocked, badge.unlocked ? 1 : 0);
+    gl.uniform1f(uniforms.secret, badge.secret && !badge.unlocked ? 1 : 0);
+
+    let pointer = [0.5, 0.42];
+    let frame = 0;
+    let running = true;
+    let observer = null;
+    const reduced = Boolean(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+    function resize() {
+      const rect = canvas.getBoundingClientRect();
+      const ratio = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
+      const width = Math.max(1, Math.round(rect.width * ratio));
+      const height = Math.max(1, Math.round(rect.height * ratio));
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+      }
+      gl.viewport(0, 0, width, height);
+    }
+
+    function draw(now) {
+      if (!running) return;
+      resize();
+      gl.useProgram(program);
+      gl.uniform1f(uniforms.time, Math.max(0, Number(now) || 0) / 1000);
+      gl.uniform2fv(uniforms.pointer, pointer);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      if (!reduced && !document.hidden) frame = window.requestAnimationFrame(draw);
+    }
+
+    if (typeof ResizeObserver === 'function') {
+      observer = new ResizeObserver(resize);
+      observer.observe(canvas);
+    }
+    canvas.setAttribute('data-dx-shader-state', 'ready');
+    frame = window.requestAnimationFrame(draw);
+
+    return {
+      setPointer(x, y) {
+        pointer = [clamp(0, 1, Number(x) || 0), clamp(0, 1, Number(y) || 0)];
+        if (reduced) draw(0);
+      },
+      dispose() {
+        running = false;
+        if (frame) window.cancelAnimationFrame(frame);
+        if (observer) observer.disconnect();
+        gl.deleteBuffer(buffer);
+        gl.deleteProgram(program);
+      },
+    };
+  }
+
+  function updateInspectorTransform(state) {
+    const object = state.root.querySelector('[data-dx-achievement-inspect-object]');
+    if (!(object instanceof HTMLElement)) return;
+    object.style.setProperty('--dx-inspect-rotate-x', `${state.inspector.rotationX}deg`);
+    object.style.setProperty('--dx-inspect-rotate-y', `${state.inspector.rotationY}deg`);
+  }
+
+  function resetInspectorRotation(state) {
+    state.inspector.rotationX = INSPECT_DEFAULT_ROTATION.x;
+    state.inspector.rotationY = INSPECT_DEFAULT_ROTATION.y;
+    updateInspectorTransform(state);
+  }
+
+  function closeBadgeInspector(state) {
+    const dialog = state.root.querySelector('[data-dx-achievement-inspector]');
+    if (!(dialog instanceof HTMLDialogElement)) return;
+    if (dialog.open) dialog.close();
+  }
+
+  function openBadgeInspector(state, badgeId, opener = null) {
+    const badge = state.badges.find((item) => item.id === badgeId);
+    const dialog = state.root.querySelector('[data-dx-achievement-inspector]');
+    const viewport = state.root.querySelector('[data-dx-achievement-inspect-viewport]');
+    if (!badge || !(dialog instanceof HTMLDialogElement) || !(viewport instanceof HTMLElement)) return;
+
+    if (state.inspector.shader) {
+      state.inspector.shader.dispose();
+      state.inspector.shader = null;
+    }
+    state.inspector.badgeId = badge.id;
+    state.inspector.opener = opener instanceof HTMLElement ? opener : null;
+    viewport.innerHTML = renderInspectPlate(badge);
+    dialog.setAttribute('aria-label', `Inspect achievement: ${badgeDisplayTitle(badge)}`);
+    dialog.setAttribute('data-dx-achievement-state', badge.cardState);
+    dialog.setAttribute('data-dx-achievement-category', badge.category);
+    dialog.setAttribute('data-dx-achievement-tier', badge.tier);
+    resetInspectorRotation(state);
+
+    try {
+      if (!dialog.open) dialog.showModal();
+    } catch {
+      dialog.setAttribute('open', '');
+    }
+
+    window.requestAnimationFrame(() => {
+      dialog.classList.add('is-visible');
+      const object = viewport.querySelector('[data-dx-achievement-inspect-object]');
+      const canvas = viewport.querySelector('[data-dx-achievement-inspect-shader]');
+      if (canvas instanceof HTMLCanvasElement) {
+        state.inspector.shader = createInspectorShader(canvas, badge);
+      }
+      if (object instanceof HTMLElement) object.focus({ preventScroll: true });
+    });
+  }
+
+  function responsiveBadgePageSize(state) {
+    const rect = state.root.getBoundingClientRect();
+    const width = Math.max(0, rect.width || window.innerWidth || 0);
+    const height = Math.max(0, rect.height || window.innerHeight || 0);
+    if (width <= 640) return 3;
+    if (width <= 900) return 6;
+    if (height > 0 && height < 520) return 4;
+    return DEFAULT_BADGES_PER_PAGE;
+  }
+
   function getPaginatedBadgeRows(state, page, cards) {
-    const totalPages = Math.max(1, Math.ceil(cards.length / BADGES_PER_PAGE));
+    const pageSize = responsiveBadgePageSize(state);
+    state.badgePageSize = pageSize;
+    const totalPages = Math.max(1, Math.ceil(cards.length / pageSize));
     const current = clamp(0, totalPages - 1, Number(state.badgePages[page]) || 0);
     state.badgePages[page] = current;
-    const start = current * BADGES_PER_PAGE;
+    const start = current * pageSize;
     return {
+      pageSize,
       totalPages,
       current,
-      visible: cards.slice(start, start + BADGES_PER_PAGE),
+      visible: cards.slice(start, start + pageSize),
     };
   }
 
@@ -322,15 +726,15 @@
     const prevDisabled = current <= 0 ? ' disabled aria-disabled="true"' : '';
     const nextDisabled = current >= totalPages - 1 ? ' disabled aria-disabled="true"' : '';
     return `
-      <button type="button" class="carousel-nav prev" data-dx-achievements-badge-page-prev="${htmlEscape(page)}" aria-label="Previous achievements page"${prevDisabled}></button>
-      <button type="button" class="carousel-nav next" data-dx-achievements-badge-page-next="${htmlEscape(page)}" aria-label="Next achievements page"${nextDisabled}></button>
+      <button type="button" class="carousel-nav prev dx-pagenav-arrow dx-pagenav-arrow--prev dx-pagenav-arrow--on-dark" data-dx-achievements-badge-page-prev="${htmlEscape(page)}" aria-label="Previous achievements page"${prevDisabled}></button>
+      <button type="button" class="carousel-nav next dx-pagenav-arrow dx-pagenav-arrow--next dx-pagenav-arrow--on-dark" data-dx-achievements-badge-page-next="${htmlEscape(page)}" aria-label="Next achievements page"${nextDisabled}></button>
     `;
   }
 
   function renderBadgeGridPage(state, page, cards) {
     const rows = getPaginatedBadgeRows(state, page, cards);
     return `
-      <div class="dx-achievements-carousel-frame" data-dx-achievements-pager="${htmlEscape(page)}" data-dx-achievements-pager-index="${rows.current}" data-dx-achievements-pager-total="${rows.totalPages}">
+      <div class="dx-achievements-carousel-frame" data-dx-achievements-pager="${htmlEscape(page)}" data-dx-achievements-pager-index="${rows.current}" data-dx-achievements-pager-total="${rows.totalPages}" data-dx-achievements-page-size="${rows.pageSize}">
         ${renderBadgeSideControls(page, rows.totalPages, rows.current)}
         <div class="dx-achievements-grid" data-dx-achievements-grid-page="${htmlEscape(page)}">${rows.visible.map(renderBadgeCard).join('')}</div>
       </div>
@@ -689,13 +1093,13 @@
         if (target.secret) {
           const secretCards = state.badges.filter((badge) => badge.secret);
           const secretIndex = secretCards.findIndex((badge) => badge.id === badgeIdFromQuery);
-          state.badgePages[PAGE_SECRET] = Math.max(0, Math.floor(secretIndex / BADGES_PER_PAGE));
+          state.badgePages[PAGE_SECRET] = Math.max(0, Math.floor(secretIndex / responsiveBadgePageSize(state)));
           renderSecretVault(state);
           switchPage(state, PAGE_SECRET);
         } else {
           const publicCards = state.badges.filter((badge) => !badge.secret);
           const publicIndex = publicCards.findIndex((badge) => badge.id === badgeIdFromQuery);
-          state.badgePages[PAGE_OVERVIEW] = Math.max(0, Math.floor(publicIndex / BADGES_PER_PAGE));
+          state.badgePages[PAGE_OVERVIEW] = Math.max(0, Math.floor(publicIndex / responsiveBadgePageSize(state)));
           renderOverview(state);
           switchPage(state, PAGE_OVERVIEW);
         }
@@ -712,6 +1116,102 @@
     if (markSeenButton instanceof HTMLButtonElement) {
       markSeenButton.hidden = state.newlyUnlockedSet.size === 0;
     }
+  }
+
+  function bindInspectorEvents(state) {
+    const dialog = state.root.querySelector('[data-dx-achievement-inspector]');
+    const closeButton = state.root.querySelector('[data-dx-achievement-inspector-close]');
+    if (!(dialog instanceof HTMLDialogElement)) return;
+
+    if (closeButton instanceof HTMLButtonElement) {
+      closeButton.addEventListener('click', () => closeBadgeInspector(state));
+    }
+
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) closeBadgeInspector(state);
+    });
+
+    dialog.addEventListener('close', () => {
+      dialog.classList.remove('is-visible');
+      state.inspector.dragging = false;
+      state.inspector.pointerId = null;
+      if (state.inspector.shader) {
+        state.inspector.shader.dispose();
+        state.inspector.shader = null;
+      }
+      const opener = state.inspector.opener;
+      state.inspector.opener = null;
+      if (opener && opener.isConnected) {
+        window.requestAnimationFrame(() => opener.focus({ preventScroll: true }));
+      }
+    });
+
+    dialog.addEventListener('pointerdown', (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      const object = target ? target.closest('[data-dx-achievement-inspect-object]') : null;
+      if (!(object instanceof HTMLElement)) return;
+      state.inspector.dragging = true;
+      state.inspector.pointerId = event.pointerId;
+      state.inspector.startX = event.clientX;
+      state.inspector.startY = event.clientY;
+      state.inspector.startRotationX = state.inspector.rotationX;
+      state.inspector.startRotationY = state.inspector.rotationY;
+      object.classList.add('is-dragging');
+      try {
+        object.setPointerCapture(event.pointerId);
+      } catch {}
+      event.preventDefault();
+    });
+
+    dialog.addEventListener('pointermove', (event) => {
+      const object = dialog.querySelector('[data-dx-achievement-inspect-object]');
+      if (!(object instanceof HTMLElement)) return;
+      const rect = object.getBoundingClientRect();
+      const px = rect.width > 0 ? clamp(0, 1, (event.clientX - rect.left) / rect.width) : 0.5;
+      const py = rect.height > 0 ? clamp(0, 1, 1 - ((event.clientY - rect.top) / rect.height)) : 0.5;
+      if (state.inspector.shader) state.inspector.shader.setPointer(px, py);
+      object.style.setProperty('--dx-inspect-light-x', `${px * 100}%`);
+      object.style.setProperty('--dx-inspect-light-y', `${(1 - py) * 100}%`);
+
+      if (!state.inspector.dragging || state.inspector.pointerId !== event.pointerId) return;
+      const deltaX = event.clientX - state.inspector.startX;
+      const deltaY = event.clientY - state.inspector.startY;
+      state.inspector.rotationY = state.inspector.startRotationY + deltaX * 0.48;
+      state.inspector.rotationX = clamp(-34, 34, state.inspector.startRotationX - deltaY * 0.36);
+      updateInspectorTransform(state);
+      event.preventDefault();
+    });
+
+    const endDrag = (event) => {
+      if (!state.inspector.dragging) return;
+      if (state.inspector.pointerId !== null && event.pointerId !== state.inspector.pointerId) return;
+      state.inspector.dragging = false;
+      state.inspector.pointerId = null;
+      const object = dialog.querySelector('[data-dx-achievement-inspect-object]');
+      if (object instanceof HTMLElement) object.classList.remove('is-dragging');
+    };
+    dialog.addEventListener('pointerup', endDrag);
+    dialog.addEventListener('pointercancel', endDrag);
+
+    dialog.addEventListener('dblclick', (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target || !target.closest('[data-dx-achievement-inspect-object]')) return;
+      resetInspectorRotation(state);
+    });
+
+    dialog.addEventListener('keydown', (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target || !target.closest('[data-dx-achievement-inspect-object]')) return;
+      const step = event.shiftKey ? 24 : 12;
+      if (event.key === 'ArrowLeft') state.inspector.rotationY -= step;
+      else if (event.key === 'ArrowRight') state.inspector.rotationY += step;
+      else if (event.key === 'ArrowUp') state.inspector.rotationX = clamp(-34, 34, state.inspector.rotationX - step * 0.6);
+      else if (event.key === 'ArrowDown') state.inspector.rotationX = clamp(-34, 34, state.inspector.rotationX + step * 0.6);
+      else if (event.key === 'Home') resetInspectorRotation(state);
+      else return;
+      updateInspectorTransform(state);
+      event.preventDefault();
+    });
   }
 
   function bindEvents(state) {
@@ -747,6 +1247,62 @@
         markSeenButton.disabled = false;
       });
     }
+
+    bindInspectorEvents(state);
+
+    if (typeof ResizeObserver === 'function') {
+      let resizeFrame = 0;
+      state.layoutObserver = new ResizeObserver(() => {
+        if (resizeFrame) return;
+        resizeFrame = window.requestAnimationFrame(() => {
+          resizeFrame = 0;
+          const nextSize = responsiveBadgePageSize(state);
+          if (nextSize === state.badgePageSize || !state.summary) return;
+          state.badgePageSize = nextSize;
+          renderOverview(state);
+          renderSecretVault(state);
+        });
+      });
+      state.layoutObserver.observe(state.root);
+    }
+
+    state.root.addEventListener('pointermove', (event) => {
+      if (event.pointerType === 'touch') return;
+      const target = event.target instanceof Element ? event.target : null;
+      const card = target ? target.closest('.dx-achievement-card') : null;
+      if (!(card instanceof HTMLElement)) return;
+      const rect = card.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) return;
+      const x = clamp(0, 1, (event.clientX - rect.left) / rect.width);
+      const y = clamp(0, 1, (event.clientY - rect.top) / rect.height);
+      card.style.setProperty('--dx-card-light-x', `${x * 100}%`);
+      card.style.setProperty('--dx-card-light-y', `${y * 100}%`);
+      card.style.setProperty('--dx-card-tilt-x', `${(0.5 - y) * 2.4}deg`);
+      card.style.setProperty('--dx-card-tilt-y', `${(x - 0.5) * 3.2}deg`);
+    });
+
+    state.root.addEventListener('pointerout', (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      const card = target ? target.closest('.dx-achievement-card') : null;
+      if (!(card instanceof HTMLElement)) return;
+      const related = event.relatedTarget instanceof Node ? event.relatedTarget : null;
+      if (related && card.contains(related)) return;
+      card.style.removeProperty('--dx-card-light-x');
+      card.style.removeProperty('--dx-card-light-y');
+      card.style.removeProperty('--dx-card-tilt-x');
+      card.style.removeProperty('--dx-card-tilt-y');
+    });
+
+    state.root.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      const target = event.target instanceof Element ? event.target : null;
+      const card = target ? target.closest('[data-dx-achievement-open]') : null;
+      if (!(card instanceof HTMLElement) || target instanceof HTMLButtonElement) return;
+      const badgeId = toText(card.getAttribute('data-dx-achievement-open'), '').toLowerCase();
+      if (!badgeId) return;
+      openBadgeInspector(state, badgeId, card);
+      event.preventDefault();
+    });
 
     state.root.addEventListener('click', (event) => {
       const target = event.target instanceof Element ? event.target : null;
@@ -793,7 +1349,13 @@
         state.badgePages[page] = (Number(state.badgePages[page]) || 0) + 1;
         if (page === PAGE_SECRET) renderSecretVault(state);
         else renderOverview(state);
+        return;
       }
+      const card = target.closest('[data-dx-achievement-open]');
+      if (!(card instanceof HTMLElement)) return;
+      const badgeId = toText(card.getAttribute('data-dx-achievement-open'), '').toLowerCase();
+      if (!badgeId) return;
+      openBadgeInspector(state, badgeId, card);
     });
   }
 
@@ -834,6 +1396,13 @@
         </div>
         <div class="dx-achievements-toast-stack" data-dx-achievements-toasts></div>
       </div>
+      <dialog class="dx-achievement-inspector" data-dx-achievement-inspector aria-modal="true">
+        <button type="button" class="dx-achievement-inspector-close" data-dx-achievement-inspector-close aria-label="Close achievement viewer">Close</button>
+        <div class="dx-achievement-inspector-stage">
+          <div class="dx-achievement-inspect-viewport" data-dx-achievement-inspect-viewport></div>
+        </div>
+        <p class="dx-achievement-inspector-hint">Drag to rotate · Arrow keys inspect · Double-click resets · Esc closes</p>
+      </dialog>
     `;
   }
 
@@ -867,6 +1436,21 @@
         token: '',
         user: null,
       },
+      inspector: {
+        badgeId: '',
+        opener: null,
+        shader: null,
+        dragging: false,
+        pointerId: null,
+        startX: 0,
+        startY: 0,
+        startRotationX: INSPECT_DEFAULT_ROTATION.x,
+        startRotationY: INSPECT_DEFAULT_ROTATION.y,
+        rotationX: INSPECT_DEFAULT_ROTATION.x,
+        rotationY: INSPECT_DEFAULT_ROTATION.y,
+      },
+      badgePageSize: DEFAULT_BADGES_PER_PAGE,
+      layoutObserver: null,
     };
 
     bindEvents(state);

@@ -44,6 +44,7 @@ async function stubAuth(page: Page): Promise<void> {
 
 test('settings profile v1 saves contribution payload with extended fields', async ({ page }) => {
   await stubAuth(page);
+  await page.setViewportSize({ width: 1200, height: 700 });
 
   const patchPayloads: Array<Record<string, unknown>> = [];
 
@@ -151,6 +152,19 @@ test('settings profile v1 saves contribution payload with extended fields', asyn
 
   await expect(page.locator('[data-dx-profile-identity-card="true"]')).toBeVisible();
   await expect(page.locator('[data-dx-contrib-profile-card="true"]')).toBeVisible();
+  const accountScrollOwners = await page.locator('#dex-settings').evaluate((root) => {
+    const grid = root.querySelector(':scope > .grid');
+    const left = root.querySelector('#pane-account .profile-col-left');
+    const right = root.querySelector('#pane-account .profile-col-right');
+    return {
+      grid: grid ? getComputedStyle(grid).overflowY : '',
+      left: left ? getComputedStyle(left).overflowY : '',
+      right: right ? getComputedStyle(right).overflowY : '',
+    };
+  });
+  expect(accountScrollOwners.grid).toBe('hidden');
+  expect(['auto', 'scroll', 'overlay']).toContain(accountScrollOwners.left);
+  expect(['auto', 'scroll', 'overlay']).toContain(accountScrollOwners.right);
 
   await page.fill('#creditNameInput', 'Profile V1 Updated');
   await page.fill('#creditAliasInput', 'Profile Alias');
@@ -360,6 +374,15 @@ test('settings public profile saves opt-in payloads, validates handles, claims c
   await page.goto('/entry/settings/', { waitUntil: 'domcontentloaded' });
 
   await expect(page.locator('[data-dx-public-profile-card="true"]')).toBeVisible();
+  await expect(page.locator('.dx-profile-privacy-controls > .dx-profile-switch')).toHaveCount(2);
+  await expect(page.locator('#profileFavoritesPublicToggle').locator('xpath=ancestor::label[1]')).toContainText(
+    'Favorites visibility',
+  );
+  const privacySurface = await page.locator('.dx-profile-privacy-controls > .dx-profile-switch').first().evaluate((node) => {
+    const style = getComputedStyle(node);
+    return { backgroundImage: style.backgroundImage, color: style.color };
+  });
+  expect(privacySurface.backgroundImage).not.toBe('none');
   await expect(page.locator('#profilePublicToggle')).toBeChecked();
   await expect(page.locator('#profileHandleInput')).toHaveValue('saved-handle');
   await expect(page.locator('#profileBioInput')).toHaveValue('Saved public bio');

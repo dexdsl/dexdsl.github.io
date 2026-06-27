@@ -708,6 +708,18 @@ test('settings notifications exposes newsletter controls, tooltips, and internal
   await expect(page.locator('#notifNewsletterUnsubToken')).toHaveCount(0);
   await expect(page.locator('#notifNewsletterEmailValue')).toContainText('messages-e2e@example.com');
   await expect(page.locator('#notifNewsletterStateBadge')).toContainText(/active/i);
+  await expect(page.locator('#notifNewsletterLastActionValue')).toContainText('Newsletter email');
+  await expect(page.locator('#notifNewsletterUpdatedValue')).not.toHaveText('—');
+  const newsletterSurface = await page.locator('#notifNewsletterBlock').evaluate((node) => {
+    const block = getComputedStyle(node);
+    const row = getComputedStyle(node.querySelector('.dx-newsletter-meta-row') as Element);
+    return {
+      blockBackground: block.backgroundImage,
+      rowBackground: row.backgroundColor,
+    };
+  });
+  expect(newsletterSurface.blockBackground).not.toBe('none');
+  expect(newsletterSurface.rowBackground).not.toBe('rgba(255, 255, 255, 0.68)');
   await expect(page.locator('#notifNewsletterActions [data-dx-newsletter-action="manage"]')).toBeVisible();
   await expect(page.locator('#notifNewsletterActions [data-dx-newsletter-action="pause"]')).toBeVisible();
   await expect(page.locator('#notifNewsletterActions [data-dx-newsletter-action="unsubscribe"]')).toBeVisible();
@@ -715,6 +727,7 @@ test('settings notifications exposes newsletter controls, tooltips, and internal
 
   await page.click('#notifNewsletterActions [data-dx-newsletter-action="manage"]');
   await expect(page.locator('#notifNewsletterStatusLine')).toContainText(/manage-subscription link sent|check your inbox/i);
+  await expect(page.locator('#notifNewsletterLastActionValue')).toContainText(/manage/i);
   await expect.poll(() => newsletterHits.includes('action:manage:messages-e2e@example.com')).toBe(true);
   await page.click('#notifNewsletterActions [data-dx-newsletter-action="manage"]');
   await expect(page.locator('#notifNewsletterBlock .dx-newsletter-toast')).toContainText(/please wait .* before requesting another newsletter email/i);
@@ -954,6 +967,14 @@ test('settings membership v3 shows current-membership actions for active and pay
   await expect(membershipModal.locator('#dxMemV3Selection')).toContainText('Archivist');
   await expect(membershipModal.locator('#dxMemV3Selection')).toContainText('Monthly');
   await expect(membershipModal.locator('#dxMemV3Selection')).toContainText('$14.99');
+  const tierMaterials = await membershipModal.locator('.dx-memv3-tier').evaluateAll((nodes) =>
+    nodes.map((node) => ({
+      tier: node.getAttribute('data-tier'),
+      background: getComputedStyle(node).backgroundImage,
+    })),
+  );
+  expect(new Set(tierMaterials.map((item) => item.background)).size).toBe(3);
+  expect(tierMaterials.every((item) => item.background !== 'none')).toBe(true);
   await membershipModal.locator('[data-interval="year"]').click();
   await membershipModal.locator('[data-tier="S"]').click();
   await membershipModal.locator('#dxMemV3Cover').check();
@@ -1044,6 +1065,19 @@ test('messages inbox merges system + submissions and supports read/archive actio
   // All sources merge into one kanban board (2 submissions + 1 pressroom + 2 system).
   await expect(page.locator('.dx-msg-card')).toHaveCount(5);
   const submissionCard = page.locator('.dx-msg-card[data-source-type="submission"]').first();
+  const headingClamp = await submissionCard.locator('.dx-msg-heading').evaluate((node) => {
+    const style = getComputedStyle(node);
+    return {
+      display: style.display,
+      lineClamp: style.getPropertyValue('-webkit-line-clamp'),
+      overflow: style.overflow,
+      overflowWrap: style.overflowWrap,
+    };
+  });
+  expect(['-webkit-box', 'flow-root']).toContain(headingClamp.display);
+  expect(headingClamp.lineClamp).toBe('2');
+  expect(headingClamp.overflow).toBe('hidden');
+  expect(headingClamp.overflowWrap).toBe('anywhere');
   const submissionTitle = String(await submissionCard.locator('.dx-msg-heading').textContent() || '').trim();
   expect(submissionTitle).toContain('Brass Session');
   const lookupMatch = submissionTitle.match(/\((SUB\d{2}-[A-Z]\.[A-Za-z]{3}\s+[A-Za-z][A-Za-z\-']*\s+(?:A|V|AV|O)\d{4})\)$/);
