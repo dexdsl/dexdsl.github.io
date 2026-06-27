@@ -2,6 +2,9 @@ import { animate } from 'framer-motion/dom';
 import Fuse from 'fuse.js';
 import { bindDexButtonMotion, bindPaginationMotion, prefersReducedMotion, revealStagger } from './shared/dx-motion.entry.mjs';
 import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry.mjs';
+import { deriveAuthority, protectName } from '../lib/performer-authority.mjs';
+import { parseLookup, normalizeLookup } from '../lib/lookup-authority.mjs';
+import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
 
 (() => {
   if (typeof window === 'undefined') return;
@@ -36,8 +39,6 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
   let seasonsModel = null;
   let fuse = null;
   let state = { ...DEFAULT_STATE };
-  let blobRaf = 0;
-  let blobResizeHandler = null;
   let drawerOpen = false;
   let seasonCarouselSeason = '';
   let seasonCarouselIndexes = new Map();
@@ -71,125 +72,66 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
     return false;
   }
 
-  function ensureGooeyMesh() {
-    let wrapper = document.getElementById('gooey-mesh-wrapper');
-    if (wrapper) return wrapper;
-
-    wrapper = document.createElement('div');
-    wrapper.id = 'gooey-mesh-wrapper';
-
-    const stage = create('div', 'gooey-stage');
-    const blobStyles = [
-      '--d:36vmax;--g1a:#ff5f6d;--g1b:#ffc371;--g2a:#47c9e5;--g2b:#845ef7',
-      '--d:32vmax;--g1a:#7F00FF;--g1b:#E100FF;--g2a:#00DBDE;--g2b:#FC00FF',
-      '--d:33vmax;--g1a:#FFD452;--g1b:#FFB347;--g2a:#FF8456;--g2b:#FF5E62',
-      '--d:37vmax;--g1a:#13F1FC;--g1b:#0470DC;--g2a:#A1FFCE;--g2b:#FAFFD1',
-      '--d:27vmax;--g1a:#F9516D;--g1b:#FF9A44;--g2a:#FA8BFF;--g2b:#6F7BF7',
-    ];
-
-    blobStyles.forEach((styleValue) => {
-      const blob = create('div', 'gooey-blob');
-      blob.setAttribute('style', styleValue);
-      stage.appendChild(blob);
-    });
-    wrapper.appendChild(stage);
-
-    const svgNs = 'http://www.w3.org/2000/svg';
-    const svg = document.createElementNS(svgNs, 'svg');
-    svg.setAttribute('id', 'goo-filter');
-    svg.setAttribute('aria-hidden', 'true');
-    const defs = document.createElementNS(svgNs, 'defs');
-    const filter = document.createElementNS(svgNs, 'filter');
-    filter.setAttribute('id', 'goo');
-    const blur = document.createElementNS(svgNs, 'feGaussianBlur');
-    blur.setAttribute('in', 'SourceGraphic');
-    blur.setAttribute('stdDeviation', '15');
-    blur.setAttribute('result', 'blur');
-    const matrix = document.createElementNS(svgNs, 'feColorMatrix');
-    matrix.setAttribute('in', 'blur');
-    matrix.setAttribute('mode', 'matrix');
-    matrix.setAttribute('values', '1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 18 -8');
-    matrix.setAttribute('result', 'goo');
-    const blend = document.createElementNS(svgNs, 'feBlend');
-    blend.setAttribute('in', 'SourceGraphic');
-    blend.setAttribute('in2', 'goo');
-    blend.setAttribute('mode', 'normal');
-    filter.appendChild(blur);
-    filter.appendChild(matrix);
-    filter.appendChild(blend);
-    defs.appendChild(filter);
-    svg.appendChild(defs);
-    wrapper.appendChild(svg);
-
-    document.body.appendChild(wrapper);
-    return wrapper;
-  }
-
-  function startBlobMotion() {
-    const mesh = ensureGooeyMesh();
-    if (!mesh || prefersReducedMotion()) return;
-
-    const blobs = Array.from(mesh.querySelectorAll('.gooey-blob'));
-    if (!blobs.length) return;
-
-    const w = () => window.innerWidth;
-    const h = () => window.innerHeight;
-
-    blobs.forEach((el) => {
-      const speed = 60 + Math.random() * 60;
-      const angle = Math.random() * Math.PI * 2;
-      el._rad = el.offsetWidth / 2;
-      el._x = w() / 2;
-      el._y = h() / 2;
-      el._vx = Math.cos(angle) * speed * 0.25;
-      el._vy = Math.sin(angle) * speed * 0.25;
-    });
-
-    if (blobRaf) cancelAnimationFrame(blobRaf);
-    let last = performance.now();
-    const tick = (now) => {
-      const dt = (now - last) / 1000;
-      last = now;
-      blobs.forEach((el) => {
-        el._x += el._vx * dt;
-        el._y += el._vy * dt;
-        if (el._x - el._rad <= 0 && el._vx < 0) el._vx *= -1;
-        if (el._x + el._rad >= w() && el._vx > 0) el._vx *= -1;
-        if (el._y - el._rad <= 0 && el._vy < 0) el._vy *= -1;
-        if (el._y + el._rad >= h() && el._vy > 0) el._vy *= -1;
-        el.style.transform = `translate(${el._x}px,${el._y}px) translate(-50%,-50%)`;
-      });
-      blobRaf = requestAnimationFrame(tick);
-    };
-    blobRaf = requestAnimationFrame(tick);
-
-    if (blobResizeHandler) window.removeEventListener('resize', blobResizeHandler);
-    blobResizeHandler = () => {
-      blobs.forEach((el) => {
-        el._x = Math.min(Math.max(el._rad, el._x), w() - el._rad);
-        el._y = Math.min(Math.max(el._rad, el._y), h() - el._rad);
-      });
-    };
-    window.addEventListener('resize', blobResizeHandler);
-  }
-
-  function stopBlobMotion() {
-    if (blobRaf) {
-      cancelAnimationFrame(blobRaf);
-      blobRaf = 0;
-    }
-    if (blobResizeHandler) {
-      window.removeEventListener('resize', blobResizeHandler);
-      blobResizeHandler = null;
-    }
-  }
-
   function text(value) {
     return String(value ?? '');
   }
 
   function normalize(value) {
     return text(value).toLowerCase();
+  }
+
+  // Standardized performer name (MARC/LCNAF "Surname, Forename"). Prefers the
+  // authority fields baked into the catalog data; falls back to deriving on the
+  // fly so the page is correct even against un-normalized data.
+  function performerHeading(entry) {
+    const baked = text(entry?.performer_display).trim();
+    if (baked) return baked;
+    return deriveAuthority(entry?.performer_raw, entry?.performer_norm).performer_display || text(entry?.performer_raw);
+  }
+
+  // Lowercased authority sort key — used to collocate name variants into one
+  // group ("Cameron Church" / "cameron church" → "church, cameron").
+  function performerSortKey(entry) {
+    const baked = text(entry?.performer_norm).trim();
+    if (baked) return baked;
+    return deriveAuthority(entry?.performer_raw, entry?.performer_norm).performer_norm || normalize(entry?.performer_raw);
+  }
+
+  // Re-derivation guard: re-compute the performer + lookup authority for every
+  // loaded entry, so the page is correct against raw/stale/partly-normalized data
+  // without depending on the `catalog:performers:normalize` script having run.
+  // The raw forms (performer_raw, lookup_raw) remain the source of truth; the
+  // derived fields are overwritten idempotently.
+  function normalizeLoadedEntry(entry) {
+    if (!entry || typeof entry !== 'object') return entry;
+    const authority = deriveAuthority(entry.performer_raw, entry.performer_norm);
+    if (authority.performer_display) entry.performer_display = authority.performer_display;
+    if (authority.performer_norm) entry.performer_norm = authority.performer_norm;
+    if (authority.performers && authority.performers.length) entry.performers = authority.performers;
+
+    const lookupNorm = normalizeLookup(entry.lookup_raw);
+    if (lookupNorm) entry.lookup_norm = lookupNorm;
+    const parsed = parseLookup(entry.lookup_raw, { performers: entry.performers });
+    if (parsed.valid) {
+      entry.lookup = {
+        family: parsed.family,
+        family_label: parsed.familyLabel,
+        instrument: parsed.instrument,
+        cutter: parsed.cutter,
+        medium: parsed.medium,
+        medium_label: parsed.mediumLabel,
+        year: parsed.year,
+        season: parsed.season,
+      };
+    }
+    return entry;
+  }
+
+  function normalizeLoadedModel(loaded) {
+    if (loaded && Array.isArray(loaded.entries)) {
+      loaded.entries = loaded.entries.map(normalizeLoadedEntry);
+    }
+    return loaded;
   }
 
   function create(tag, className, textValue = null) {
@@ -263,9 +205,9 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 2.05rem;
-        min-width: 2.05rem;
-        height: 2.05rem;
+        width: 2.4rem;
+        min-width: 2.4rem;
+        height: 2.4rem;
         padding: 0;
         border-radius: 999px;
         overflow: visible;
@@ -276,14 +218,23 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 1.15rem;
-        height: 1.15rem;
+        width: 1.4rem;
+        height: 1.4rem;
         pointer-events: none;
+        transition: transform 200ms cubic-bezier(0.22, 0.8, 0.24, 1);
+      }
+
+      .dx-catalog-index-row:hover .dx-fav-heart-icon {
+        transform: scale(1.14);
+      }
+
+      .dx-fav-heart-btn:hover .dx-fav-heart-icon {
+        transform: scale(1.28);
       }
 
       .dx-fav-heart-svg {
-        width: 1.15rem;
-        height: 1.15rem;
+        width: 1.4rem;
+        height: 1.4rem;
         stroke: currentColor;
       }
 
@@ -952,14 +903,14 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
   function sortEntries(entries) {
     const sorter = {
       alpha: (a, b) => {
-        const performerCmp = text(a.performer_raw).localeCompare(text(b.performer_raw));
+        const performerCmp = performerSortKey(a).localeCompare(performerSortKey(b));
         if (performerCmp !== 0) return performerCmp;
         return text(a.title_raw).localeCompare(text(b.title_raw));
       },
       recent: (a, b) => {
         const seasonCmp = text(b.season).localeCompare(text(a.season));
         if (seasonCmp !== 0) return seasonCmp;
-        return text(a.performer_raw).localeCompare(text(b.performer_raw));
+        return performerSortKey(a).localeCompare(performerSortKey(b));
       },
       lookup: (a, b) => text(a.lookup_raw).localeCompare(text(b.lookup_raw)),
     };
@@ -1020,13 +971,17 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
 
   function groupEntries(entries) {
     if (state.mode === 'performer') {
+      // Group by the authority sort key so name variants collocate; label the
+      // group with the standardized "Surname, Forename" heading.
       const groups = new Map();
       for (const entry of entries) {
-        const key = text(entry.performer_raw || 'Unknown performer');
-        if (!groups.has(key)) groups.set(key, []);
-        groups.get(key).push(entry);
+        const key = performerSortKey(entry) || 'zzzz';
+        if (!groups.has(key)) groups.set(key, { label: performerHeading(entry) || 'Unknown performer', items: [] });
+        groups.get(key).items.push(entry);
       }
-      return Array.from(groups.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+      return Array.from(groups.entries())
+        .sort((a, b) => a[0].localeCompare(b[0]))
+        .map(([, group]) => [group.label, group.items]);
     }
 
     if (state.mode === 'instrument') {
@@ -1195,8 +1150,8 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
       });
       actions.appendChild(clear);
 
-      const guide = openCta('/catalog/how/#dex-how', 'Lookup guide', 'secondary');
-      const symbols = openCta('/catalog/symbols/#list-of-identifiers', 'List of symbols', 'secondary');
+      const guide = openCta('/catalog/guide/', 'Lookup guide', 'secondary');
+      const symbols = openCta('/catalog/guide/#list-of-identifiers', 'List of symbols', 'secondary');
       actions.append(guide, symbols);
       drawer.appendChild(actions);
 
@@ -1212,7 +1167,7 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
     const title = create('h1', 'dx-catalog-index-hero-title', 'CATALOG');
     const subtitle = create('div', 'dx-catalog-index-hero-subtitle');
 
-    const guide = openCta('/catalog/how/#dex-how', 'Lookup guide', 'secondary');
+    const guide = openCta('/catalog/guide/', 'Lookup guide', 'secondary');
     const random = create('button', 'dx-button-element dx-button-size--sm dx-button-element--secondary', 'Random entry');
     random.type = 'button';
     random.addEventListener('click', () => {
@@ -1266,7 +1221,7 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
     }
 
     const copy = create('div', 'dx-catalog-index-season-copy');
-    copy.appendChild(create('h3', 'dx-catalog-index-season-performer', text(entry.performer_raw || 'Unknown performer')));
+    copy.appendChild(create('h3', 'dx-catalog-index-season-performer', protectName(performerHeading(entry))));
     copy.appendChild(create('p', 'dx-catalog-index-season-title', text(entry.title_raw || 'Untitled')));
 
     const open = openCta(href, protectedAllCaps('View collection'), 'primary');
@@ -1530,6 +1485,80 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
       pageCarousel(event.key === 'ArrowLeft' ? -1 : 1);
     });
 
+    // Scroll/swipe paging. The carousel is an infinite, re-rendering pager (not a
+    // native scroll container), so we can't hand it to the browser's scroll. We
+    // resolve the conundrum by axis, with a per-gesture LOCK: a wheel/swipe
+    // gesture commits to 'x' or 'y' on its first decisive frame and stays there
+    // until a short idle. Vertical (or undecided) gestures are never touched, so
+    // page scroll over the carousel is never stolen by trackpad jitter; only a
+    // clearly-horizontal gesture advances the pager. CSS touch-action: pan-y on
+    // the gutter mirrors this for touch.
+    const WHEEL_STEP = 40; // accumulated horizontal px before advancing a page
+    const WHEEL_COOLDOWN_MS = 280;
+    const WHEEL_IDLE_MS = 160; // gap that ends a gesture and clears the axis lock
+    let wheelAccum = 0;
+    let wheelReadyAt = 0;
+    let wheelAxis = null;
+    let wheelIdleTimer = 0;
+    gutter.addEventListener('wheel', (event) => {
+      const horizontal = event.shiftKey ? event.deltaY : event.deltaX;
+      const vertical = event.shiftKey ? 0 : event.deltaY;
+      const absX = Math.abs(horizontal);
+      const absY = Math.abs(vertical);
+
+      if (wheelIdleTimer) clearTimeout(wheelIdleTimer);
+      wheelIdleTimer = window.setTimeout(() => { wheelAxis = null; wheelAccum = 0; }, WHEEL_IDLE_MS);
+
+      // Commit the gesture axis once movement is decisive. Horizontal needs a
+      // clear lead so a mostly-vertical scroll never locks to 'x'.
+      if (!wheelAxis) {
+        if (absX > absY * 1.2 && absX > 6) wheelAxis = 'x';
+        else if (absY > 0) wheelAxis = 'y';
+      }
+      if (wheelAxis !== 'x') return; // vertical / undecided → page scrolls freely
+
+      event.preventDefault();
+      const now = Date.now();
+      if (now < wheelReadyAt) return;
+      wheelAccum += horizontal;
+      if (Math.abs(wheelAccum) < WHEEL_STEP) return;
+      const direction = wheelAccum > 0 ? 1 : -1;
+      wheelAccum = 0;
+      wheelReadyAt = now + WHEEL_COOLDOWN_MS;
+      pageCarousel(direction);
+    }, { passive: false });
+
+    const SWIPE_THRESHOLD = 44;
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchActive = false;
+    let touchAxis = '';
+    gutter.addEventListener('touchstart', (event) => {
+      if (event.touches.length !== 1) { touchActive = false; return; }
+      touchStartX = event.touches[0].clientX;
+      touchStartY = event.touches[0].clientY;
+      touchActive = true;
+      touchAxis = '';
+    }, { passive: true });
+    gutter.addEventListener('touchmove', (event) => {
+      if (!touchActive || event.touches.length !== 1) return;
+      const dx = event.touches[0].clientX - touchStartX;
+      const dy = event.touches[0].clientY - touchStartY;
+      if (!touchAxis && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+        touchAxis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+      }
+      // Horizontal swipe drives the pager; vertical falls through to page scroll.
+      if (touchAxis === 'x') event.preventDefault();
+    }, { passive: false });
+    gutter.addEventListener('touchend', (event) => {
+      if (!touchActive) return;
+      touchActive = false;
+      if (touchAxis !== 'x') return;
+      const dx = event.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) < SWIPE_THRESHOLD) return;
+      pageCarousel(dx < 0 ? 1 : -1);
+    }, { passive: false });
+
     renderTabs();
     renderTrack();
 
@@ -1577,29 +1606,52 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
 
   function renderEntryRow(entry) {
     const row = create('article', 'dx-catalog-index-row');
+    const href = text(entry.entry_href || '#');
+    const rowTitle = text(entry.title_raw || entry.lookup_raw || 'entry');
 
     const code = create('p', 'dx-catalog-index-row-code', text(entry.lookup_raw || '—'));
     const title = create('h4', 'dx-catalog-index-row-title', text(entry.title_raw || 'Untitled'));
-    const performer = create('p', 'dx-catalog-index-row-performer', text(entry.performer_raw || ''));
+    const performer = create('p', 'dx-catalog-index-row-performer', protectName(performerHeading(entry)));
     const meta = create('p', 'dx-catalog-index-row-meta', [
       text(entry.season || ''),
       ...(entry.instrument_family || []),
     ].filter(Boolean).join(' · '));
 
-    const open = createEntryOpenArrowCta(text(entry.entry_href || '#'));
+    const open = createEntryOpenArrowCta(href);
     const favorite = createEntryFavoriteButton(entry);
 
     const textWrap = create('div', 'dx-catalog-index-row-text');
     textWrap.append(title, performer, meta);
 
     const actions = create('div', 'dx-catalog-index-row-actions');
-    actions.style.display = 'flex';
-    actions.style.flexWrap = 'wrap';
-    actions.style.gap = '0.42rem';
-    actions.style.alignItems = 'center';
     actions.append(favorite, open);
 
-    row.append(code, textWrap, actions);
+    // Stretched-link overlay: the whole row becomes a click target for the entry
+    // page, layered behind the favorite/open controls so those still work. Kept
+    // out of the tab order (the explicit arrow link is the keyboard affordance).
+    const overlay = create('a', 'dx-catalog-index-row-link');
+    overlay.href = href;
+    overlay.tabIndex = -1;
+    overlay.setAttribute('aria-hidden', 'true');
+    overlay.setAttribute('aria-label', `Open ${rowTitle}`);
+
+    row.append(overlay, code, textWrap, actions);
+
+    // Debounced hover: only commit the ink-fill wash once the pointer settles, so
+    // skimming the list doesn't flash every row it passes over.
+    let hoverTimer = 0;
+    const clearHover = () => {
+      if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = 0; }
+      row.classList.remove('is-hovering');
+    };
+    row.addEventListener('pointerenter', (event) => {
+      if (event.pointerType === 'touch') return;
+      if (hoverTimer) clearTimeout(hoverTimer);
+      hoverTimer = window.setTimeout(() => { row.classList.add('is-hovering'); }, 80);
+    });
+    row.addEventListener('pointerleave', clearHover);
+    row.addEventListener('pointercancel', clearHover);
+
     return row;
   }
 
@@ -1634,7 +1686,7 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
 
     groups.forEach(([label, items]) => {
       const group = create('section', 'dx-catalog-index-group');
-      const groupTitle = create('h4', 'dx-catalog-index-group-title', label);
+      const groupTitle = create('h4', 'dx-catalog-index-group-title', protectName(label));
       group.appendChild(groupTitle);
 
       const rows = create('div', 'dx-catalog-index-group-rows');
@@ -1743,7 +1795,7 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
         loadJson(SEARCH_URL),
         loadOptionalJson(SEASONS_URL),
       ]);
-      model = loadedModel;
+      model = normalizeLoadedModel(loadedModel);
       searchModel = loadedSearch;
       seasonsModel = normalizeSeasonConfig(loadedSeasons || { seasons: [] });
       fuse = buildFuse();

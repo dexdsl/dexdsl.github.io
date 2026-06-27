@@ -33,6 +33,14 @@ const BUILD_TARGETS = [
       path.join(ROOT, 'docs', 'assets', 'js', 'catalog.symbols.js'),
     ],
   },
+  {
+    entry: path.join(ROOT, 'scripts', 'src', 'catalog.guide.entry.mjs'),
+    publicOut: path.join(ROOT, 'public', 'assets', 'js', 'catalog.guide.js'),
+    mirrors: [
+      path.join(ROOT, 'assets', 'js', 'catalog.guide.js'),
+      path.join(ROOT, 'docs', 'assets', 'js', 'catalog.guide.js'),
+    ],
+  },
 ];
 
 async function ensureDir(filePath) {

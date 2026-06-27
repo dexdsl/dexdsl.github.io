@@ -34,7 +34,11 @@
   margin-right: calc(50% - 50vw);
   min-height: var(--dx-prof-shell-height);
   display: flex;
-  align-items: stretch;
+  /* flex-start (not stretch) so the shell takes its natural content height and
+     can grow past the frame — the page then scrolls instead of an internal
+     scrollbar burying the contributions. The shell keeps its own min-height so a
+     short profile still fills the frame. */
+  align-items: flex-start;
   justify-content: center;
   color: var(--dx-prof-ink);
 }
@@ -63,10 +67,12 @@
 #dex-profile .dx-prof-shell {
   width: var(--dx-prof-frame);
   max-width: var(--dx-prof-frame);
-  height: var(--dx-prof-shell-height);
-  max-height: var(--dx-prof-shell-height);
-  min-height: 0;
-  margin: 0 auto;
+  /* min-height fills the frame for short profiles; the shell grows naturally for
+     tall ones (no fixed height / internal scroll). margin-bottom reserves space
+     for the fixed footer so the last contributions clear it when the page scrolls
+     — and keeps short profiles from triggering any scroll at all. */
+  min-height: var(--dx-prof-shell-height);
+  margin: 0 auto var(--dx-prof-footer-space, 0px);
   box-sizing: border-box;
   color: var(--dx-prof-ink);
   font-family: var(--font-body, "Courier Prime", monospace);
@@ -89,6 +95,7 @@
 #dex-profile .dx-prof-name,
 #dex-profile .dx-prof-section-title,
 #dex-profile .dx-prof-card-title,
+#dex-profile .dx-prof-collection-title,
 #dex-profile .dx-prof-link,
 #dex-profile .dx-prof-avatar-initials,
 #dex-profile .dx-prof-notfound h1 {
@@ -210,6 +217,26 @@
   margin-right: 10px;
 }
 
+#dex-profile .dx-prof-roles,
+#dex-profile .dx-prof-instruments {
+  font-family: var(--font-body, monospace);
+  font-size: 0.7rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--dx-prof-ink);
+}
+
+#dex-profile .dx-prof-instruments {
+  color: var(--dx-prof-muted);
+}
+
+#dex-profile .dx-prof-roles::before,
+#dex-profile .dx-prof-instruments::before {
+  content: "/";
+  color: var(--dx-prof-faint);
+  margin-right: 10px;
+}
+
 #dex-profile .dx-prof-bio {
   margin: 8px 0 0;
   font-size: clamp(0.94rem, 1.2vw, 1.08rem);
@@ -267,11 +294,11 @@
 #dex-profile .dx-prof-body {
   flex: 1 1 auto;
   min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
+  /* Flow naturally — the page scrolls when content overflows the frame, instead
+     of an internal scrollbar hiding the contributions below the fold. */
+  overflow: visible;
   display: grid;
   gap: clamp(18px, 2.4vw, 34px);
-  padding-right: clamp(2px, 0.6vw, 8px);
 }
 
 #dex-profile .dx-prof-body::-webkit-scrollbar {
@@ -450,6 +477,111 @@
 #dex-profile a.dx-prof-card:hover .dx-prof-card-arrow {
   color: var(--dx-prof-accent);
   transform: translateX(3px);
+}
+
+/* Contribution cards mirror the catalog season-carousel slide: image on top,
+   title headline, supporting meta, full-width primary CTA. */
+#dex-profile .dx-prof-collection-card {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-width: 0;
+  border: 1px solid var(--dx-prof-line);
+  border-radius: min(var(--dx-prof-radius), 12px);
+  background: rgba(255, 255, 255, 0.05);
+  color: inherit;
+  text-decoration: none;
+  overflow: hidden;
+  /* No transform/box-shadow lift: this grid lives inside the .dx-prof-body
+     scroll container, where a lift would grow the scroll area (scrollbar flash)
+     and clip the card edges. Hover is a contained border/background shift only. */
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+#dex-profile .dx-prof-collection-card:hover,
+#dex-profile .dx-prof-collection-card:focus-within {
+  border-color: var(--dx-prof-line-strong);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+#dex-profile .dx-prof-collection-media {
+  display: block;
+  aspect-ratio: 5 / 3;
+  overflow: hidden;
+  border-bottom: 1px solid var(--dx-prof-line);
+}
+
+#dex-profile .dx-prof-collection-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.01);
+  transition: transform 0.32s var(--dx-motion-ease-standard, cubic-bezier(0.22, 0.8, 0.24, 1));
+}
+
+#dex-profile .dx-prof-collection-card:hover .dx-prof-collection-media img {
+  transform: scale(1.06);
+}
+
+#dex-profile .dx-prof-collection-media--fallback {
+  position: relative;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(145deg, rgba(8, 12, 20, 0.88), rgba(28, 35, 52, 0.72)),
+    radial-gradient(circle at 24% 18%, rgba(255, 45, 19, 0.34), transparent 32%),
+    radial-gradient(circle at 76% 80%, rgba(255, 106, 0, 0.32), transparent 34%);
+}
+
+#dex-profile .dx-prof-collection-code {
+  font-family: var(--font-body, monospace);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+#dex-profile .dx-prof-collection-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: clamp(12px, 1.5vw, 16px);
+}
+
+#dex-profile .dx-prof-collection-title {
+  margin: 0;
+  font-family: var(--font-heading, "Stretch Pro", sans-serif);
+  font-size: clamp(0.95rem, 1.3vw, 1.12rem);
+  line-height: 1.08;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  color: var(--dx-prof-ink);
+  overflow-wrap: anywhere;
+}
+
+#dex-profile .dx-prof-collection-lookup {
+  font-family: var(--font-body, monospace);
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  color: var(--dx-prof-muted);
+}
+
+#dex-profile .dx-prof-collection-role {
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dx-prof-accent);
+}
+
+/* Visuals (gradient, sheen, sizing) come from .dx-button-element--primary; this
+   only handles layout — full width, pinned to the bottom of the copy column. */
+#dex-profile .dx-prof-collection-cta {
+  align-self: stretch;
+  width: 100%;
+  margin-top: auto;
 }
 
 #dex-profile .dx-prof-empty {

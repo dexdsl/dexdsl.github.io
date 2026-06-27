@@ -34,6 +34,13 @@
     return '';
   }
 
+  // Uppercase + ZWNJ between repeated capitals so the Stretch Pro heading face
+  // doesn't fuse "LL"/"SS" ligatures (matches the catalog's protectedAllCaps).
+  const ZWNJ = '‌';
+  function protectedAllCaps(value) {
+    return toText(value).toUpperCase().replace(/([A-Z])\1/g, `$1${ZWNJ}$1`);
+  }
+
   function getApiBase() {
     const raw = toText(window.DEX_API_BASE_URL || window.DEX_API_ORIGIN || DEFAULT_API_BASE, DEFAULT_API_BASE);
     return raw.replace(/\/+$/, '');
@@ -327,8 +334,40 @@
       : `<div class="${cls}">${inner}</div>`;
   }
 
+  // Contributions reuse the catalog carousel card language: a media image on
+  // top, the entry title as the headline, lookup/role as supporting meta, and a
+  // full-width primary "VIEW COLLECTION" CTA. Falls back to a gradient tile +
+  // lookup code when the catalog has no artwork (mirrors the season carousel).
   function renderContributionCard(ref, catalog) {
-    return renderEntryCard(ref, catalog);
+    const meta = catalogMetaFor(ref, catalog);
+    const lookup = toText(ref?.lookup || ref?.entry_lookup || ref?.entryLookupNumber || ref?.lookupNumber || meta.lookup);
+    const title = toText(ref?.title || meta.title) || lookup || 'Catalog entry';
+    const href = normalizePath(ref?.href || ref?.entryHref || ref?.entryUrl || meta.href);
+    const role = toText(ref.role);
+    const imageSrc = toText(ref?.imageSrc || ref?.image_src || ref?.thumbnailSrc || ref?.thumbnail || meta.imageSrc);
+    const imageAlt = toText(ref?.imageAlt || ref?.image_alt || ref?.image_alt_raw || meta.imageAlt || title);
+    // Structured like the catalog slide: the media and the CTA are the discrete
+    // links (not the whole card), so the CTA can be a real dx-button-element that
+    // picks up the shared sheen + proximity magnetism (interactive-hover.js scans
+    // the data-dx-motion="interactive" scope on the grid).
+    const mediaInner = imageSrc
+      ? `<img src="${htmlEscape(imageSrc)}" alt="${htmlEscape(imageAlt)}" loading="lazy" decoding="async">`
+      : `<span class="dx-prof-collection-code">${htmlEscape(lookup || 'DEX')}</span>`;
+    const mediaCls = `dx-prof-collection-media${imageSrc ? '' : ' dx-prof-collection-media--fallback'}`;
+    const media = href
+      ? `<a class="${mediaCls}" href="${htmlEscape(href)}" aria-label="${htmlEscape(title)}">${mediaInner}</a>`
+      : `<span class="${mediaCls}"${imageSrc ? '' : ' aria-hidden="true"'}>${mediaInner}</span>`;
+    const cta = href
+      ? `<a class="dx-button-element dx-button-size--sm dx-button-element--primary dx-prof-collection-cta" href="${htmlEscape(href)}">${htmlEscape(protectedAllCaps('View collection'))}</a>`
+      : '';
+    const copy =
+      `<div class="dx-prof-collection-copy">` +
+      `<span class="dx-prof-collection-title">${htmlEscape(title)}</span>` +
+      (lookup ? `<span class="dx-prof-collection-lookup">${htmlEscape(lookup)}</span>` : '') +
+      (role ? `<span class="dx-prof-collection-role">${htmlEscape(role)}</span>` : '') +
+      cta +
+      `</div>`;
+    return `<div class="dx-prof-collection-card">${media}${copy}</div>`;
   }
 
   function favoriteRecordFromRef(ref, catalog) {
@@ -401,6 +440,18 @@
     if (toText(profile.location)) meta.push(`<span>${htmlEscape(profile.location)}</span>`);
     if (toText(profile.pronouns)) meta.push(`<span class="dx-prof-pronouns">${htmlEscape(profile.pronouns)}</span>`);
 
+    // Roles and instruments are identity labels, not catalog badges — render them
+    // as plain text in the meta row alongside pronouns (primary entry first).
+    const labelGroup = (items, primary, className) => {
+      const list = Array.isArray(items) ? items.filter(Boolean) : [];
+      if (!list.length) return;
+      const lead = toText(primary);
+      const ordered = lead && list.includes(lead) ? [lead, ...list.filter((v) => v !== lead)] : list;
+      meta.push(`<span class="${className}">${ordered.map((v) => htmlEscape(v)).join(' · ')}</span>`);
+    };
+    labelGroup(profile.roles, profile.role_primary, 'dx-prof-roles');
+    labelGroup(profile.instruments, profile.instrument_primary, 'dx-prof-instruments');
+
     const links = Array.isArray(profile.links) ? profile.links : [];
     const linksHtml = links.length
       ? `<div class="dx-prof-links">${links
@@ -410,7 +461,7 @@
 
     const contributions = Array.isArray(profile.contributions) ? profile.contributions : [];
     const contribHtml = contributions.length
-      ? `<div class="dx-prof-grid">${contributions.map((c) => renderContributionCard(c, catalog)).join('')}</div>`
+      ? `<div class="dx-prof-grid" data-dx-motion="interactive">${contributions.map((c) => renderContributionCard(c, catalog)).join('')}</div>`
       : '<p class="dx-prof-empty">No public contributions yet.</p>';
 
     const favorites = Array.isArray(profile.favorites) ? profile.favorites : [];
@@ -425,9 +476,6 @@
              .join('')}</div>
          </section>`
       : '';
-
-    const rolesHtml = renderChips(profile.roles, profile.role_primary);
-    const instrHtml = renderChips(profile.instruments, profile.instrument_primary);
 
     return `
       <section class="dx-prof-shell">
@@ -444,7 +492,6 @@
           </div>
         </header>
         <div class="dx-prof-body">
-          ${(rolesHtml || instrHtml) ? `<section class="dx-prof-section dx-prof-section--chips">${rolesHtml}${instrHtml}</section>` : ''}
           <section class="dx-prof-section">
             <div class="dx-prof-section-head">
               <p class="dx-prof-section-label">Public record</p>

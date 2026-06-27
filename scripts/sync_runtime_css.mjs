@@ -124,6 +124,10 @@ const SYNC_MAP = [
     targets: ['css/components/dx-catalog-how.css', 'docs/css/components/dx-catalog-how.css'],
   },
   {
+    source: 'public/css/components/dx-catalog-guide.css',
+    targets: ['css/components/dx-catalog-guide.css', 'docs/css/components/dx-catalog-guide.css'],
+  },
+  {
     source: 'public/css/components/dx-catalog-symbols.css',
     targets: ['css/components/dx-catalog-symbols.css', 'docs/css/components/dx-catalog-symbols.css'],
   },

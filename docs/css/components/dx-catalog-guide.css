@@ -1,0 +1,317 @@
+/* Catalog guide — single-page lookup + symbols reference (/catalog/guide/). */
+#dex-guide {
+  --dxg-ink: #11141c;
+  --dxg-muted: #4a5366;
+  --dxg-faint: rgba(20, 26, 40, 0.5);
+  --dxg-line: rgba(20, 26, 40, 0.1);
+  --dxg-line-strong: rgba(20, 26, 40, 0.18);
+  --dxg-surface: rgba(255, 255, 255, 0.66);
+  --dxg-surface-2: rgba(255, 255, 255, 0.82);
+  --dxg-radius: var(--dx-radius-md, 14px);
+  --dxg-accent: var(--dex-accent, #ff1910);
+  --dxg-gradient: linear-gradient(120deg, #ff1910, #ff7a10 55%, #ff9810);
+  --dxg-mono: var(--font-mono, "Courier Prime", monospace);
+  --dxg-head: var(--font-heading, "Stretch Pro", sans-serif);
+}
+
+/* Background is the shared site gooey-mesh (base.css + dx-catalog-index.css,
+   started by dx-gooey-mesh.entry.mjs). This file only themes the guide content
+   that sits above it — translucent light surfaces, matching the catalog. */
+#dex-guide {
+  display: block;
+  color: var(--dxg-ink);
+}
+
+/* Fill the .dx-catalog-page frame so the content aligns to the same width as the
+   fixed header and footer. */
+.dx-guide {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  margin: 0 auto;
+  padding-block: clamp(8px, 1.6vw, 20px) clamp(36px, 7vw, 88px);
+  display: grid;
+  gap: clamp(18px, 2.6vw, 30px);
+}
+
+#dex-guide .dx-guide-title,
+#dex-guide .dx-guide-section-title,
+#dex-guide .dx-guide-part-title,
+#dex-guide .dx-guide-sym-group-title {
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "clig" 0, "dlig" 0, "hlig" 0, "calt" 0;
+}
+
+/* ---- Hero ---- */
+.dx-guide-hero { display: grid; gap: 10px; padding: clamp(6px, 1vw, 14px) 2px; }
+.dx-guide-kicker,
+.dx-guide-section-kicker {
+  margin: 0;
+  font-family: var(--dxg-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dxg-muted);
+}
+.dx-guide-title {
+  margin: 0;
+  font-family: var(--dxg-head);
+  font-size: clamp(2.2rem, 7vw, 4.6rem);
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--dxg-ink);
+}
+.dx-guide-lede {
+  margin: 0;
+  max-width: 60ch;
+  font-size: clamp(0.96rem, 1.3vw, 1.12rem);
+  line-height: 1.55;
+  color: var(--dxg-muted);
+}
+
+/* ---- Cards ---- */
+.dx-guide-card {
+  padding: clamp(18px, 2.6vw, 32px);
+  border: 1px solid var(--dxg-line);
+  border-radius: var(--dxg-radius);
+  background: var(--dxg-surface);
+  box-shadow: 0 18px 50px rgba(15, 22, 40, 0.1);
+  -webkit-backdrop-filter: blur(20px) saturate(125%);
+  backdrop-filter: blur(20px) saturate(125%);
+  display: grid;
+  gap: clamp(14px, 2vw, 22px);
+}
+.dx-guide-section-title {
+  margin: 0;
+  font-family: var(--dxg-head);
+  font-size: clamp(1.3rem, 2.4vw, 2rem);
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--dxg-ink);
+}
+
+/* ---- Anatomy specimen ---- */
+.dx-guide-specimen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: clamp(14px, 2vw, 22px);
+  border-radius: calc(var(--dxg-radius) - 2px);
+  background: var(--dxg-surface-2);
+  border: 1px solid var(--dxg-line);
+}
+.dx-guide-seg {
+  appearance: none;
+  cursor: pointer;
+  font-family: var(--dxg-mono);
+  font-size: clamp(0.86rem, 1.5vw, 1.12rem);
+  font-weight: 700;
+  color: var(--dxg-ink);
+  background: rgba(20, 26, 40, 0.04);
+  border: 1px solid var(--dxg-line-strong);
+  border-radius: 9px;
+  padding: 8px 12px;
+  transition: transform 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+.dx-guide-seg[data-part="1"].is-active,
+.dx-guide-seg[data-part="2"].is-active,
+.dx-guide-seg[data-part="3"].is-active,
+.dx-guide-seg[data-part="4"].is-active {
+  color: #fff;
+  background: var(--dxg-gradient);
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(255, 60, 20, 0.28);
+}
+
+.dx-guide-parts {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+}
+.dx-guide-part {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--dxg-line);
+  border-radius: 12px;
+  background: var(--dxg-surface-2);
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.dx-guide-part.is-active {
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(15, 22, 40, 0.14), inset 0 0 0 1.5px var(--dxg-accent);
+}
+.dx-guide-part-n {
+  width: 30px; height: 30px;
+  display: grid; place-items: center;
+  border-radius: 999px;
+  font-family: var(--dxg-mono);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #fff;
+  background: var(--dxg-gradient);
+}
+.dx-guide-part-copy { display: grid; gap: 6px; align-content: start; }
+.dx-guide-part-title {
+  margin: 0;
+  font-family: var(--dxg-head);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  color: var(--dxg-ink);
+}
+.dx-guide-part-tag {
+  justify-self: start;
+  font-family: var(--dxg-mono);
+  font-size: 0.72rem;
+  color: var(--dxg-accent);
+  background: rgba(255, 60, 20, 0.08);
+  border-radius: 6px;
+  padding: 2px 7px;
+}
+.dx-guide-part-body { margin: 0; font-size: 0.84rem; line-height: 1.5; color: var(--dxg-muted); }
+
+/* ---- Decoder ---- */
+.dx-guide-input-wrap { display: grid; gap: 6px; }
+.dx-guide-input-hint {
+  font-family: var(--dxg-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dxg-muted);
+}
+.dx-guide-input {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--dxg-mono);
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  font-weight: 700;
+  color: var(--dxg-ink);
+  background: var(--dxg-surface-2);
+  border: 1px solid var(--dxg-line-strong);
+  border-radius: 11px;
+  padding: 12px 14px;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.dx-guide-input:focus {
+  outline: none;
+  border-color: var(--dxg-accent);
+  box-shadow: 0 0 0 3px rgba(255, 60, 20, 0.16);
+}
+.dx-guide-examples { display: flex; flex-wrap: wrap; gap: 8px; }
+.dx-guide-example {
+  cursor: pointer;
+  font-family: var(--dxg-mono);
+  font-size: 0.74rem;
+  color: var(--dxg-muted);
+  background: rgba(20, 26, 40, 0.04);
+  border: 1px solid var(--dxg-line);
+  border-radius: 999px;
+  padding: 5px 11px;
+  transition: color 0.16s ease, border-color 0.16s ease, background-color 0.16s ease;
+}
+.dx-guide-example:hover { color: var(--dxg-ink); border-color: var(--dxg-line-strong); background: rgba(20, 26, 40, 0.07); }
+
+.dx-guide-decode-empty { margin: 0; color: var(--dxg-faint); font-size: 0.9rem; }
+.dx-guide-decode-result { display: grid; gap: 12px; }
+.dx-guide-decode-status {
+  margin: 0;
+  font-family: var(--dxg-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.is-valid .dx-guide-decode-status { color: #0a8f4f; }
+.is-invalid .dx-guide-decode-status { color: var(--dxg-accent); }
+.dx-guide-decode-issues { margin: 0; padding-left: 1.1rem; color: var(--dxg-muted); font-size: 0.86rem; line-height: 1.5; }
+.dx-guide-decode-grammar { margin: 0; font-size: 0.8rem; color: var(--dxg-muted); }
+.dx-guide-decode-grammar code { font-family: var(--dxg-mono); }
+
+.dx-guide-facets {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr));
+}
+.dx-guide-facet {
+  display: grid;
+  gap: 3px;
+  padding: 12px;
+  border: 1px solid var(--dxg-line);
+  border-radius: 11px;
+  background: var(--dxg-surface-2);
+}
+.dx-guide-facet-label {
+  font-family: var(--dxg-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dxg-muted);
+}
+.dx-guide-facet-value { font-family: var(--dxg-head); font-size: 1.15rem; text-transform: uppercase; color: var(--dxg-ink); }
+.dx-guide-facet-sub { font-family: var(--dxg-mono); font-size: 0.68rem; color: var(--dxg-faint); }
+
+/* ---- Symbols tray ---- */
+.dx-guide-symbols-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.dx-guide-filter-wrap { flex: 1 1 220px; max-width: 320px; }
+.dx-guide-filter {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--dxg-mono);
+  font-size: 0.86rem;
+  color: var(--dxg-ink);
+  background: var(--dxg-surface-2);
+  border: 1px solid var(--dxg-line-strong);
+  border-radius: 999px;
+  padding: 9px 14px;
+}
+.dx-guide-filter:focus { outline: none; border-color: var(--dxg-accent); box-shadow: 0 0 0 3px rgba(255, 60, 20, 0.14); }
+
+.dx-guide-sym-groups { display: grid; gap: clamp(16px, 2vw, 24px); }
+.dx-guide-sym-group { display: grid; gap: 10px; }
+.dx-guide-sym-group-title {
+  margin: 0;
+  font-family: var(--dxg-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dxg-muted);
+}
+.dx-guide-sym-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
+}
+.dx-guide-sym {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 9px 12px;
+  border: 1px solid var(--dxg-line);
+  border-radius: 10px;
+  background: var(--dxg-surface-2);
+  transition: border-color 0.16s ease, transform 0.16s ease;
+}
+.dx-guide-sym:hover { border-color: var(--dxg-line-strong); transform: translateY(-1px); }
+.dx-guide-sym-code {
+  font-family: var(--dxg-mono);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--dxg-accent);
+  flex: none;
+}
+.dx-guide-sym-label { font-size: 0.8rem; line-height: 1.3; color: var(--dxg-muted); }
+.dx-guide-empty { margin: 0; color: var(--dxg-faint); font-size: 0.88rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dx-guide-seg, .dx-guide-part, .dx-guide-sym, .dx-guide-example { transition: none; }
+}

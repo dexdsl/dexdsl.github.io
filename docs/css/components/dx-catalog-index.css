@@ -295,6 +295,9 @@
 .dx-catalog-index-season-gutter {
   display: grid;
   gap: 0.72rem;
+  /* Vertical pans scroll the page natively; horizontal intent is handled in JS
+     to advance the infinite pager (see renderSeasonCarousel). */
+  touch-action: pan-y;
 }
 
 .dx-catalog-index-season-revealer {
@@ -693,15 +696,78 @@ select.dx-catalog-index-select {
 }
 
 .dx-catalog-index-row {
+  position: relative;
+  isolation: isolate;
   display: grid;
   gap: 0.56rem;
   grid-template-columns: 1fr;
-  padding: 0.7rem 0;
+  padding: 0.7rem 0.6rem;
   border-bottom: 1px solid rgba(25, 31, 43, 0.08);
+  cursor: pointer;
 }
 
 .dx-catalog-index-row:last-child {
   border-bottom: 0;
+}
+
+/* Ink-fill wash: a solid brand gradient that wipes edge-to-edge from the left on
+   (debounced) hover and flips the row text white as it passes — signalling the
+   whole row is a click target for the entry page. Bleeds past the content
+   padding so it spans the full row, and sits below the text (z-index: -1 inside
+   the isolated row). */
+.dx-catalog-index-row::before {
+  content: "";
+  position: absolute;
+  inset: 0 -0.6rem;
+  z-index: -1;
+  background: linear-gradient(
+    90deg,
+    var(--dex-accent, #ff1910) 0%,
+    #ff5a17 48%,
+    #ff9810 100%
+  );
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 460ms cubic-bezier(0.22, 0.8, 0.24, 1);
+  pointer-events: none;
+}
+
+.dx-catalog-index-row.is-hovering::before {
+  transform: scaleX(1);
+}
+
+/* Text flips to white as the ink wipes across (eased to roughly track the wipe). */
+.dx-catalog-index-row.is-hovering,
+.dx-catalog-index-row.is-hovering .dx-catalog-index-row-code,
+.dx-catalog-index-row.is-hovering .dx-catalog-index-row-title,
+.dx-catalog-index-row.is-hovering .dx-catalog-index-row-performer,
+.dx-catalog-index-row.is-hovering .dx-catalog-index-row-meta,
+.dx-catalog-index-row.is-hovering .dx-catalog-index-row-open {
+  color: #fff;
+}
+
+.dx-catalog-index-row-code,
+.dx-catalog-index-row-title,
+.dx-catalog-index-row-performer,
+.dx-catalog-index-row-meta,
+.dx-catalog-index-row-open {
+  transition: color 360ms ease;
+}
+
+/* Stretched link covers the whole row; the favorite/open controls layer above. */
+.dx-catalog-index-row-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.dx-catalog-index-row-actions {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42rem;
+  align-items: center;
 }
 
 .dx-catalog-index-row-code {
@@ -733,10 +799,10 @@ select.dx-catalog-index-select {
    dx-button-element--secondary skin before catalog.index.js injects the heart style. */
 .dx-catalog-index-row-favorite {
   justify-self: start;
-  min-width: 2.05rem;
-  width: 2.05rem;
-  min-height: 2.05rem;
-  height: 2.05rem;
+  min-width: 2.4rem;
+  width: 2.4rem;
+  min-height: 2.4rem;
+  height: 2.4rem;
   padding: 0 !important;
   border: 0 !important;
   background: none !important;
@@ -750,10 +816,10 @@ select.dx-catalog-index-select {
 
 .dx-catalog-index-row-open {
   justify-self: start;
-  min-width: 2.05rem;
-  width: 2.05rem;
-  min-height: 2.05rem;
-  height: 2.05rem;
+  min-width: 2.4rem;
+  width: 2.4rem;
+  min-height: 2.4rem;
+  height: 2.4rem;
   padding: 0 !important;
   border: 0 !important;
   background: none !important;
@@ -766,10 +832,20 @@ select.dx-catalog-index-select {
 }
 
 .dx-catalog-index-row-open .dx-catalog-index-row-open-svg {
-  width: 1.05rem;
-  height: 1.05rem;
+  width: 1.4rem;
+  height: 1.4rem;
   display: block;
   flex: none;
+  transition: transform 200ms cubic-bezier(0.22, 0.8, 0.24, 1);
+}
+
+/* Icons grow when the pointer is over the row (or directly over the control). */
+.dx-catalog-index-row:hover .dx-catalog-index-row-open-svg {
+  transform: scale(1.14);
+}
+
+.dx-catalog-index-row-open:hover .dx-catalog-index-row-open-svg {
+  transform: scale(1.28);
 }
 
 .dx-catalog-index-row-open .dx-catalog-index-row-open-svg path {
@@ -842,6 +918,22 @@ select.dx-catalog-index-select {
   }
 
   .dx-catalog-index-season-slide {
+    transition: none;
+  }
+
+  .dx-catalog-index-row::before {
+    transition: none;
+  }
+
+  .dx-catalog-index-row.is-hovering::before {
+    transform: scaleX(1);
+  }
+
+  .dx-catalog-index-row-code,
+  .dx-catalog-index-row-title,
+  .dx-catalog-index-row-performer,
+  .dx-catalog-index-row-meta,
+  .dx-catalog-index-row-open {
     transition: none;
   }
 }
