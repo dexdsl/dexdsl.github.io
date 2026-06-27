@@ -176,7 +176,9 @@ async function fillSampleEssentials(page: Page, opts: SampleEssentials): Promise
   const step = page.locator('[data-dx-submit-step="compose"]');
   await step.locator('.dx-submit-field', { hasText: 'Proposed sample title' }).locator('input').fill(opts.title);
   await step.locator('.dx-submit-field', { hasText: 'Sample creator(s)' }).locator('input').fill(opts.creator);
-  await step.locator('.dx-submit-field', { hasText: 'Instrument category' }).locator('select').selectOption(opts.category);
+  const categoryField = step.locator('.dx-submit-field', { hasText: 'Instrument category' });
+  await categoryField.locator('.dx-submit-dropdown-toggle').click();
+  await categoryField.locator(`.dx-submit-dropdown-option[data-value="${opts.category}"]`).click();
   await step.locator('.dx-submit-field', { hasText: 'Instrument' }).locator('input').fill(opts.instrument);
   await step.locator('.dx-submit-badge').filter({ hasText: opts.collection }).first().click();
   await step.locator('.dx-submit-field', { hasText: 'Public source link' }).locator('input').fill(opts.link);
@@ -195,6 +197,13 @@ async function completeSendStep(page: Page, signature = 'Seb Solis'): Promise<vo
   if (!(await rightsAck.isChecked())) await rightsAck.check();
 }
 
+// Default every test to a no-active-call registry so the sample compose flow is
+// shown directly. Tests that exercise the lane gate register their own active
+// calls.registry route in-body, which takes precedence over this default.
+test.beforeEach(async ({ page }) => {
+  await stubNoActiveCallsRegistry(page);
+});
+
 test('submit shows compose directly with no flow-gate when no active call exists', async ({ page }) => {
   await stubHeaderRuntimes(page);
   await stubDexAuthRuntime(page);
@@ -209,6 +218,43 @@ test('submit shows compose directly with no flow-gate when no active call exists
   await expect(page.locator('[data-dx-submit-step="compose"]')).toBeVisible();
   await expect(page.locator('.dx-submit-switch')).toBeVisible();
   await expect(page.locator('#dex-submit')).toHaveAttribute('data-dx-submit-flow', 'sample');
+});
+
+test('submit shows the lane gate when an active IN DEX call exists and routes the chosen lane', async ({ page }) => {
+  await stubHeaderRuntimes(page);
+  await stubDexAuthRuntime(page);
+  await stubSubmitWorker(page);
+  await page.route('**/data/calls.registry.json', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        version: 'calls-registry-v1',
+        updatedAt: '2026-03-05T00:00:00.000Z',
+        sequenceGroup: 'inDex',
+        activeCallId: 'in-dex-a-2026-9',
+        calls: [
+          { id: 'in-dex-a-2026-9', status: 'active', lane: 'in-dex-a', year: 2026, sequence: 9, cycleCode: 'A2026.9', cycleLabel: 'IN DEX A2026.9', title: 'Test Active A lane' },
+        ],
+      }),
+    });
+  });
+
+  await page.goto('/entry/submit/', { waitUntil: 'domcontentloaded' });
+  await waitReady(page);
+
+  // Step 0: the lane gate is the only thing shown (no compose, no command rail).
+  const gate = page.locator('[data-dx-submit-step="flow-gate"]');
+  await expect(gate).toBeVisible();
+  await expect(page.locator('[data-dx-submit-step="compose"]')).toHaveCount(0);
+  await expect(gate.locator('.dx-submit-gate-card', { hasText: 'Sample submission' })).toBeVisible();
+  await expect(gate.locator('.dx-submit-gate-card', { hasText: 'IN DEX A' })).toBeVisible();
+
+  // Choosing a lane commits the pipeline and drops into that lane's compose.
+  await gate.locator('.dx-submit-gate-card', { hasText: 'IN DEX A' }).click();
+  await expect(page.locator('[data-dx-submit-step="compose"]')).toBeVisible();
+  await expect(page.locator('#dex-submit')).toHaveAttribute('data-dx-submit-flow', 'call');
+  await expect(page.locator('[data-dx-submit-shell]')).toHaveAttribute('data-dx-submit-lane', 'in-dex-a');
 });
 
 type PitchSystemValue = '12-tet' | '24-tet' | 'ji' | 'atonal' | 'non-pitched';

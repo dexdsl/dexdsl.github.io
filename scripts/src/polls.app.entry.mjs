@@ -644,8 +644,8 @@
       #dx-polls-modal .dx-pm-chip.is-members{color:#fff;}
       #dx-polls-modal .dx-pm-title{margin:14px 0 0;font-family:var(--font-heading);text-transform:uppercase;font-size:clamp(1.25rem,2.6vw,1.75rem);line-height:1.08;letter-spacing:.01em;color:#fff;}
       #dx-polls-modal .dx-pm-meta{margin:9px 0 0;font-size:.78rem;color:var(--dx-blackglass-muted,rgba(255,255,255,.62));}
-      #dx-polls-modal .dx-pm-close{position:absolute;top:18px;right:18px;width:36px;height:36px;border-radius:999px;border:1px solid var(--dx-blackglass-line-strong,rgba(255,255,255,.26));background:rgba(255,255,255,.06);color:#fff;font-size:1.15rem;line-height:1;cursor:pointer;transition:background .18s ease,transform .3s var(--dx-motion-ease-standard,cubic-bezier(.22,.8,.24,1));}
-      #dx-polls-modal .dx-pm-close:hover{background:rgba(255,255,255,.14);transform:rotate(90deg);}
+      #dx-polls-modal .dx-pm-close{position:absolute;top:18px;right:18px;width:34px;height:34px;border-radius:999px;border:1px solid var(--dx-blackglass-line-strong,rgba(255,255,255,.26));background:rgba(255,255,255,.06);color:var(--dx-blackglass-ink,#f3f3f4);font-size:1.1rem;line-height:1;cursor:pointer;transition:background .18s ease,border-color .18s ease;}
+      #dx-polls-modal .dx-pm-close:hover{background:rgba(255,255,255,.14);border-color:var(--dx-blackglass-rim,rgba(255,255,255,.32));}
       #dx-polls-modal .dx-pm-body{flex:1 1 auto;min-height:0;overflow-y:auto;padding:18px 26px;display:flex;flex-direction:column;gap:14px;}
       #dx-polls-modal .dx-pm-body::-webkit-scrollbar{width:8px}
       #dx-polls-modal .dx-pm-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:8px}
@@ -681,7 +681,6 @@
         #dx-polls-modal .dx-poll-option{animation-duration:.001ms !important;opacity:1 !important;transform:none !important;}
         #dx-polls-modal .dx-poll-bar-fill{transition-duration:.001ms !important;}
         #dx-polls-modal .dx-pm-chip.is-open::before{animation:none !important;}
-        #dx-polls-modal .dx-pm-close:hover{transform:none !important;}
       }
     `;
     document.head.appendChild(style);

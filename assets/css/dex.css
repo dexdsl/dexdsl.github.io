@@ -1612,7 +1612,12 @@ body.dx-route-profile-protected :is(
 body.dx-route-profile-protected :is(#dex-submit .dx-submit-command, #dex-press .dx-press-command) {
   position: sticky !important;
   top: var(--dx-profile-pin-top) !important;
-  max-height: var(--dx-profile-pin-max-h) !important;
+  /* Fill the fixed shell row and scroll internally. The old
+     --dx-profile-pin-max-h only subtracted the header (not the footer), so the
+     rail overran the footer and never engaged its own scroll. */
+  align-self: stretch !important;
+  min-height: 0 !important;
+  max-height: 100% !important;
 }
 
 @media (max-width: 1100px) {

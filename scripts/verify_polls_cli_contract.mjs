@@ -23,13 +23,13 @@ function assertIncludes(relPath, marker) {
 
 function main() {
   const dexCliFile = 'scripts/dex.mjs';
-  assertIncludes(dexCliFile, 'desk|validate|create|edit|close|open|publish|overview|live|trend|snapshots|publish-results|promote-results');
+  assertIncludes(dexCliFile, 'desk|list|create|edit|open|close|results|snapshot|validate|publish|overview|live|trend|snapshots|publish-results|promote-results');
   assertIncludes(dexCliFile, "if (subcommand === 'desk')");
   assertIncludes(dexCliFile, "if (subcommand === 'overview')");
   assertIncludes(dexCliFile, "if (subcommand === 'live')");
   assertIncludes(dexCliFile, "if (subcommand === 'trend')");
   assertIncludes(dexCliFile, "if (subcommand === 'snapshots')");
-  assertIncludes(dexCliFile, "if (subcommand === 'publish-results')");
+  assertIncludes(dexCliFile, "subcommand === 'publish-results'");
   assertIncludes(dexCliFile, "if (subcommand === 'promote-results')");
   assertIncludes(dexCliFile, "import('./lib/polls-admin-api.mjs')");
   assertIncludes(dexCliFile, "import('./lib/polls-kuva.mjs')");

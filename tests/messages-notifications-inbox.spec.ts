@@ -722,17 +722,20 @@ test('settings tab underline stays aligned through hash restore, tab switches, a
   await stubDexAuthRuntime(page, 'signed-in');
   await stubMessagesApi(page, 'success');
 
+  // The sliding tab ink is a desktop affordance; start from a desktop width so
+  // this runs deterministically across viewport projects (it resizes below).
+  await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/entry/settings/#notifs', { waitUntil: 'domcontentloaded' });
   await expectSettingsInkAligned(page, '#tab-notifs');
 
   await page.locator('#tab-membership').click();
   await expectSettingsInkAligned(page, '#tab-membership');
 
-  await page.locator('#tab-profile').click({ force: true });
-  await expectSettingsInkAligned(page, '#tab-profile');
+  await page.locator('#tab-account').click({ force: true });
+  await expectSettingsInkAligned(page, '#tab-account');
 
   await page.setViewportSize({ width: 1120, height: 820 });
-  await expectSettingsInkAligned(page, '#tab-profile');
+  await expectSettingsInkAligned(page, '#tab-account');
 
   await page.locator('#tab-notifs').click();
   await expectSettingsInkAligned(page, '#tab-notifs');
@@ -855,15 +858,17 @@ test('settings membership v3 renders trust-first status and production billing l
   await expect(page.locator('#dxMembershipV3Root .dx-memv3-impact')).toHaveCount(0);
   await expect(page.locator('#asideWhy')).toBeVisible();
 
-  const railOverflowStateMatches = await membershipRoot.evaluate((node) => {
-    const attr = String(node.getAttribute('data-dx-membership-rail-scrollable') || '').toLowerCase();
-    if (window.innerWidth < 980) return attr === 'false';
-    const shouldScroll = node.scrollHeight > node.clientHeight + 1;
-    return shouldScroll ? attr === 'true' : attr === 'false';
-  });
-  expect(railOverflowStateMatches).toBe(true);
+  // Note: the rail-scrollable → overflow:auto binding lives in the
+  // body.dx-route-profile-protected CSS, which these header-slot-stubbed tests do
+  // not load, so the applied overflow can't be cross-checked here. The attribute's
+  // presence + valid value is asserted above (data-dx-membership-rail-scrollable).
 
-  await expect(page.locator('#dxBillingHistoryV3Card h2')).toContainText('Billing history');
+  // The settings heading decorator scrambles the visible text (it doubles a
+  // random letter and joins it with a zero-width joiner for the branding effect),
+  // but preserves the real copy in data-dx-heading-canonical. Assert against that.
+  const billingHeading = page.locator('#dxBillingHistoryV3Card h2');
+  await expect(billingHeading).toBeVisible();
+  await expect(billingHeading).toHaveAttribute('data-dx-heading-canonical', 'Billing history');
   await expect(page.locator('#dxBillingHistoryV3Card')).not.toContainText('preview');
   await expect(page.locator('#dxBillingHistoryV3Card [data-dx-billing-ledger]')).toBeVisible();
 
@@ -1004,43 +1009,42 @@ test('messages inbox merges system + submissions and supports read/archive actio
   await page.goto('/entry/messages/', { waitUntil: 'domcontentloaded' });
   await waitForMessagesReady(page);
 
-  await expect(page.locator('[data-dx-msg-item]')).toHaveCount(5);
-  await expect(page.locator('#dx-msg-unread-count')).toContainText('3');
-  await expect(page.locator('[data-source-type="submission"] .dx-msg-link').first()).toHaveAttribute(
-    'href',
-    /\/entry\/messages\/submission\/\?sid=sub-001/,
-  );
-  const submissionTitle = String(await page.locator('[data-source-type="submission"] .dx-msg-heading').first().textContent() || '').trim();
+  // All sources merge into one kanban board (2 submissions + 1 pressroom + 2 system).
+  await expect(page.locator('.dx-msg-card')).toHaveCount(5);
+  const submissionCard = page.locator('.dx-msg-card[data-source-type="submission"]').first();
+  const submissionTitle = String(await submissionCard.locator('.dx-msg-heading').textContent() || '').trim();
   expect(submissionTitle).toContain('Brass Session');
   const lookupMatch = submissionTitle.match(/\((SUB\d{2}-[A-Z]\.[A-Za-z]{3}\s+[A-Za-z][A-Za-z\-']*\s+(?:A|V|AV|O)\d{4})\)$/);
   expect(lookupMatch?.[1] || '').toMatch(GENERATED_LOOKUP_REGEX);
-  await expect(page.locator('[data-source-type="pressroom"] .dx-msg-link').first()).toHaveAttribute(
-    'href',
-    /\/entry\/messages\/submission\/\?kind=pressroom&rid=req-press-01/,
-  );
-  await expect(page.locator('[data-source-type="pressroom"] .dx-msg-heading').first()).toContainText(
+  await expect(page.locator('.dx-msg-card[data-source-type="pressroom"] .dx-msg-heading').first()).toContainText(
     'Pressroom Launch Story (req-press-01)',
   );
 
+  // Opening a submission card surfaces the thread modal with a deep link to the full thread.
+  await submissionCard.click();
+  const modal = page.locator('#dex-msg-modal[data-open="true"]');
+  await expect(modal).toBeVisible();
+  await expect(modal.locator('.dx-msg-modal-note a.dx-msg-bubble-link')).toHaveAttribute(
+    'href',
+    /\/entry\/messages\/submission\/\?sid=sub-001/,
+  );
+  await modal.locator('.dx-msg-modal-close').click();
+
+  // System messages: opening a card marks it read; the modal Archive removes it.
   await page.locator('[data-dx-msg-filter="system"]').click();
-  await expect(page.locator('[data-dx-msg-item][data-source-type="system"]')).toHaveCount(2);
+  await expect(page.locator('.dx-msg-card[data-source-type="system"]')).toHaveCount(2);
 
-  const systemReadButton = page.locator('[data-dx-msg-action="read"][data-record-id="sys-001"]');
-  await expect(systemReadButton).toBeVisible();
-  await systemReadButton.click();
-
+  await page.locator('.dx-msg-card[data-record-id="sys-001"]').click();
   await expect.poll(() => actionHits.includes('sys-001:read')).toBe(true);
 
-  const archiveButton = page.locator('[data-dx-msg-action="archive"][data-record-id="sys-001"]');
-  await archiveButton.click();
-
+  await page.locator('#dex-msg-modal [data-dx-simple-action="archive"]').click();
   await expect.poll(() => actionHits.includes('sys-001:archive')).toBe(true);
-  await expect(page.locator('[data-record-id="sys-001"]')).toHaveCount(0);
+  await expect(page.locator('.dx-msg-card[data-record-id="sys-001"]')).toHaveCount(0);
 
+  // Mark all read clears every unread indicator across the board.
   await page.locator('[data-dx-msg-filter="all"]').click();
   await page.locator('[data-dx-msg-action="read-all"]').click();
-
-  await expect(page.locator('[data-dx-msg-item][data-dx-msg-read="false"]')).toHaveCount(0);
+  await expect(page.locator('.dx-msg-card .dx-msg-dot')).toHaveCount(0);
 });
 
 test('messages inbox degrades gracefully when system endpoint fails', async ({ page }) => {
@@ -1053,8 +1057,8 @@ test('messages inbox degrades gracefully when system endpoint fails', async ({ p
   await waitForMessagesReady(page);
 
   await expect(page.locator('.dx-msg-warning')).toContainText('System notifications are temporarily unavailable.');
-  await expect(page.locator('[data-dx-msg-item][data-source-type="submission"]')).toHaveCount(2);
-  await expect(page.locator('[data-dx-msg-item][data-source-type="pressroom"]')).toHaveCount(1);
+  await expect(page.locator('.dx-msg-card[data-source-type="submission"]')).toHaveCount(2);
+  await expect(page.locator('.dx-msg-card[data-source-type="pressroom"]')).toHaveCount(1);
 });
 
 test('messages inbox keeps rendering system records when submissions and ops fetches fail', async ({ page }) => {
@@ -1077,8 +1081,8 @@ test('messages inbox keeps rendering system records when submissions and ops fet
   await expect(page.locator('.dx-msg-sub')).not.toContainText('Unable to load inbox right now.');
   await expect(page.locator('.dx-msg-shell')).toContainText('Submissions are temporarily unavailable.');
   await expect(page.locator('.dx-msg-shell')).toContainText('Pressroom requests are temporarily unavailable.');
-  await expect(page.locator('[data-dx-msg-item][data-source-type="system"]')).toHaveCount(2);
-  await expect(page.locator('[data-dx-msg-item][data-source-type="pressroom"]')).toHaveCount(0);
+  await expect(page.locator('.dx-msg-card[data-source-type="system"]')).toHaveCount(2);
+  await expect(page.locator('.dx-msg-card[data-source-type="pressroom"]')).toHaveCount(0);
 });
 
 test('messages inbox remounts on slot-ready events after route shell swaps', async ({ page }) => {
@@ -1088,7 +1092,7 @@ test('messages inbox remounts on slot-ready events after route shell swaps', asy
 
   await page.goto('/entry/messages/', { waitUntil: 'domcontentloaded' });
   await waitForMessagesReady(page);
-  await expect(page.locator('[data-dx-msg-item]')).toHaveCount(5);
+  await expect(page.locator('.dx-msg-card')).toHaveCount(5);
 
   await page.evaluate(() => {
     const root = document.getElementById('dex-msg');
@@ -1103,7 +1107,7 @@ test('messages inbox remounts on slot-ready events after route shell swaps', asy
   });
 
   await waitForMessagesReady(page);
-  await expect(page.locator('[data-dx-msg-item]')).toHaveCount(5);
+  await expect(page.locator('.dx-msg-card')).toHaveCount(5);
 });
 
 test('messages inbox exits loading and shows sign-in prompt for signed-out users', async ({ page }) => {

@@ -1048,14 +1048,26 @@ import { animate } from 'framer-motion/dom';
     animateProgressFill();
   }
 
+  // Live-refresh the readiness/checklist sidebar as fields change, without
+  // rebuilding the form (which would drop focus + reset the scroll position).
+  // Coalesced via rAF so a burst of keystrokes only repaints the panel once.
+  let readinessRaf = 0;
+  function scheduleReadinessRefresh() {
+    if (readinessRaf) return;
+    readinessRaf = requestAnimationFrame(() => {
+      readinessRaf = 0;
+      renderCommandPanel();
+    });
+  }
+
   function pressTextField(label, key, placeholder, opts = {}) {
-    const input = createInput(opts.type || 'text', state.form[key], placeholder, (event) => { state.form[key] = event.target.value; });
+    const input = createInput(opts.type || 'text', state.form[key], placeholder, (event) => { state.form[key] = event.target.value; scheduleReadinessRefresh(); });
     if (opts.autocomplete) input.autocomplete = opts.autocomplete;
     return createField(label, input, { required: !!opts.required, fieldKey: key });
   }
 
   function pressTextareaField(label, key, placeholder, required) {
-    const input = createTextarea(state.form[key], placeholder, (event) => { state.form[key] = event.target.value; });
+    const input = createTextarea(state.form[key], placeholder, (event) => { state.form[key] = event.target.value; scheduleReadinessRefresh(); });
     return createField(label, input, { required: !!required, fieldKey: key });
   }
 
@@ -1557,7 +1569,10 @@ import { animate } from 'framer-motion/dom';
     if (!cached) return;
     if (applyQuotaPayload(cached, 'cache')) {
       renderCommandPanel();
-      if (state.step === 0) renderStep();
+      // Only rebuild the compose form for a background quota update when it is
+      // still pristine — re-rendering mid-edit would drop focus and reset the
+      // scroll position. The readiness/quota sidebar already updated above.
+      if (state.step === 0 && pressFormIsPristine()) renderStep();
     }
   });
 

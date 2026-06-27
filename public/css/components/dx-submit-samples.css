@@ -352,6 +352,228 @@
   display: none;
 }
 
+/* Custom dropdown — replaces the OS-native <select> popup with a dark-glass
+   listbox that matches the form chrome. The toggle reuses .dx-submit-input. */
+#dex-submit .dx-submit-dropdown {
+  position: relative;
+}
+
+#dex-submit .dx-submit-dropdown-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  text-align: left;
+  cursor: pointer;
+}
+
+#dex-submit .dx-submit-dropdown-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#dex-submit .dx-submit-dropdown-value.is-placeholder {
+  color: var(--dx-submit-muted, rgba(255, 255, 255, 0.6));
+}
+
+#dex-submit .dx-submit-dropdown-chevron {
+  flex: 0 0 auto;
+  opacity: 0.7;
+  font-size: 0.8em;
+  transition: transform 0.2s ease;
+}
+
+#dex-submit .dx-submit-dropdown.is-open .dx-submit-dropdown-chevron {
+  transform: rotate(180deg);
+}
+
+#dex-submit .dx-submit-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 40;
+  max-height: 280px;
+  overflow-y: auto;
+  display: grid;
+  gap: 2px;
+  padding: 6px;
+  border-radius: 12px;
+  border: 1px solid var(--dx-blackglass-rim, rgba(255, 255, 255, 0.16));
+  background: var(--dx-blackglass-bg, linear-gradient(145deg, rgba(20, 21, 27, 0.97), rgba(13, 14, 18, 0.95)));
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  backdrop-filter: blur(20px) saturate(150%);
+  animation: dx-submit-dropdown-in 0.16s ease-out;
+}
+
+/* The element-level display above outranks the UA [hidden] rule, so close it
+   explicitly — otherwise the menu stays painted over the controls below it. */
+#dex-submit .dx-submit-dropdown-menu[hidden] {
+  display: none;
+}
+
+@keyframes dx-submit-dropdown-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
+
+#dex-submit .dx-submit-dropdown-menu::-webkit-scrollbar {
+  width: 8px;
+}
+
+#dex-submit .dx-submit-dropdown-menu::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+}
+
+#dex-submit .dx-submit-dropdown-option {
+  appearance: none;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-family: var(--font-mono, "Courier Prime", monospace);
+  font-size: 14px;
+  line-height: 1.3;
+  color: var(--dx-blackglass-ink, #f3f3f4);
+}
+
+#dex-submit .dx-submit-dropdown-option:hover,
+#dex-submit .dx-submit-dropdown-option:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+  outline: none;
+}
+
+#dex-submit .dx-submit-dropdown-option.is-selected {
+  background: rgba(255, 90, 40, 0.16);
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #dex-submit .dx-submit-dropdown-menu {
+    animation: none;
+  }
+  #dex-submit .dx-submit-dropdown-chevron {
+    transition: none;
+  }
+}
+
+/* Step 0 lane gate — full-shell chooser (no command rail), large cards. */
+#dex-submit .dx-submit-shell--gate {
+  grid-template-columns: 1fr;
+}
+
+#dex-submit .dx-submit-gate {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(18px, 2.4vw, 30px);
+  min-height: 0;
+  overflow-y: auto;
+}
+
+#dex-submit .dx-submit-gate .dx-submit-heading-title {
+  font-size: clamp(1.7rem, 3.4vw, 2.6rem);
+}
+
+#dex-submit .dx-submit-gate-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(248px, 1fr));
+  gap: clamp(12px, 1.5vw, 18px);
+}
+
+#dex-submit .dx-submit-gate-card {
+  appearance: none;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: clamp(18px, 2vw, 26px);
+  border-radius: 16px;
+  border: 1px solid var(--dx-submit-field-rim);
+  background: var(--dx-submit-field);
+  color: var(--dx-submit-ink);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#dex-submit .dx-submit-gate-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--dx-accent-grad-start, #ff1910), var(--dx-accent-grad-end, #ff6a00));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+#dex-submit .dx-submit-gate-card:hover,
+#dex-submit .dx-submit-gate-card:focus-visible {
+  transform: translateY(-3px);
+  outline: none;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
+}
+
+#dex-submit .dx-submit-gate-card:hover::after,
+#dex-submit .dx-submit-gate-card:focus-visible::after {
+  opacity: 0.9;
+}
+
+#dex-submit .dx-submit-gate-kicker {
+  font-family: var(--font-heading, "Stretch Pro", sans-serif);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dx-submit-muted);
+}
+
+#dex-submit .dx-submit-gate-title {
+  font-family: var(--font-heading, "Stretch Pro", sans-serif);
+  font-size: clamp(1.15rem, 1.7vw, 1.45rem);
+  line-height: 1.08;
+  color: var(--dx-submit-ink);
+}
+
+#dex-submit .dx-submit-gate-body {
+  font-family: var(--font-mono, "Courier Prime", monospace);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--dx-submit-muted);
+}
+
+#dex-submit .dx-submit-gate-meta {
+  font-family: var(--font-mono, "Courier Prime", monospace);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--dx-submit-muted);
+  opacity: 0.85;
+}
+
+#dex-submit .dx-submit-gate-cta {
+  margin-top: auto;
+  padding-top: 6px;
+  font-family: var(--font-heading, "Stretch Pro", sans-serif);
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  color: var(--dx-accent-solid, #ff5b3a);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #dex-submit .dx-submit-gate-card {
+    transition: none;
+  }
+}
+
 #dex-submit .dx-submit-badge-group,
 #dex-submit .dx-submit-license-options,
 #dex-submit .dx-submit-pill-group {

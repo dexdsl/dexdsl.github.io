@@ -132,8 +132,12 @@ test('call deep link boots call flow and submits via the worker submit_call payl
   const compose = page.locator('[data-dx-submit-step="compose"]');
   await compose.locator('.dx-submit-field', { hasText: 'Proposal title' }).locator('input').fill('IN DEX A call proposal');
   await compose.locator('.dx-submit-field', { hasText: 'Proposer / creator' }).locator('input').fill('Call Submitter');
-  await compose.locator('.dx-submit-field', { hasText: 'Subcall' }).locator('select').selectOption('b');
-  await compose.locator('.dx-submit-field', { hasText: 'Proposal format' }).locator('select').selectOption('act');
+  const subcallField = compose.locator('.dx-submit-field', { hasText: 'Subcall' });
+  await subcallField.locator('.dx-submit-dropdown-toggle').click();
+  await subcallField.locator('.dx-submit-dropdown-option[data-value="b"]').click();
+  const formatField = compose.locator('.dx-submit-field', { hasText: 'Proposal format' });
+  await formatField.locator('.dx-submit-dropdown-toggle').click();
+  await formatField.locator('.dx-submit-dropdown-option[data-value="act"]').click();
   await compose.locator('.dx-submit-field', { hasText: 'Public materials link' }).locator('input').fill('https://drive.google.com/mock-call-source');
   await compose.locator('.dx-submit-field', { hasText: 'Notes for Dex team' }).locator('textarea').fill('call note');
 

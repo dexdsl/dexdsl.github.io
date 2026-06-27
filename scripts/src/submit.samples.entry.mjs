@@ -774,7 +774,9 @@ import { animate } from 'framer-motion/dom';
       profileDefaultsLoaded: false,
       profileDefaultsAutoApplied: false,
       flow: startingFlow,
-      pipelineChosen: true,
+      // Explicit deep links (?flow=…) skip the lane gate; a plain visit shows the
+      // lane chooser once we know active calls exist (see applyCallsRegistryContract).
+      pipelineChosen: !!routeFlow.explicitFlow,
       routeFlowExplicit: !!routeFlow.explicitFlow,
       ui: { advancedOpen: false },
       routeFlowRequested: {
@@ -996,7 +998,9 @@ import { animate } from 'framer-motion/dom';
       }
       const payload = await response.json();
       applyCallsRegistryContract(payload, { announce: true, updateUrl: true });
-      if (state.flow === FLOW_CALL && state.step === STEP_COMPOSE) render();
+      // Re-render when the lane gate should now appear (active calls just loaded
+      // and the user hasn't chosen yet) or when on the call compose step.
+      if (!state.pipelineChosen || (state.flow === FLOW_CALL && state.step === STEP_COMPOSE)) render();
     } catch {
       state.callsRegistryLoaded = true;
       state.hasActiveCall = false;
@@ -2176,6 +2180,96 @@ import { animate } from 'framer-motion/dom';
     }
   }
 
+  // Custom accessible single-select dropdown that replaces native <select>.
+  // Renders a styled toggle + a dark-glass listbox (keyboard + outside-click
+  // aware) so the open menu matches the form chrome instead of the OS popup.
+  function createDropdown({ value = '', placeholder = 'Choose…', options = [], onChange, fieldKey = '' } = {}) {
+    const normalized = (Array.isArray(options) ? options : [])
+      .map((entry) => ({ value: text(entry?.value, ''), label: text(entry?.label, text(entry?.value, '')) }))
+      .filter((entry) => entry.value !== '' || entry.label);
+    const selectable = normalized.filter((entry) => entry.value !== '');
+    let current = text(value, '');
+    let open = false;
+
+    const root = create('div', 'dx-submit-dropdown');
+    root.setAttribute('data-dx-dropdown', 'true');
+
+    const toggle = create('button', 'dx-submit-input dx-submit-dropdown-toggle');
+    toggle.type = 'button';
+    toggle.setAttribute('aria-haspopup', 'listbox');
+    toggle.setAttribute('aria-expanded', 'false');
+    const valueEl = create('span', 'dx-submit-dropdown-value');
+    const chevron = create('span', 'dx-submit-dropdown-chevron', '▾');
+    chevron.setAttribute('aria-hidden', 'true');
+    toggle.append(valueEl, chevron);
+
+    const menu = create('div', 'dx-submit-dropdown-menu');
+    menu.setAttribute('role', 'listbox');
+    menu.hidden = true;
+
+    const labelFor = (val) => {
+      const found = normalized.find((entry) => entry.value === val);
+      return found ? found.label : '';
+    };
+    const syncLabel = () => {
+      const label = labelFor(current);
+      valueEl.textContent = label || placeholder;
+      valueEl.classList.toggle('is-placeholder', !label);
+    };
+    const onDocPointer = (event) => { if (!root.contains(event.target)) setOpen(false); };
+    const onKeydown = (event) => {
+      const items = Array.from(menu.querySelectorAll('.dx-submit-dropdown-option'));
+      const index = items.indexOf(document.activeElement);
+      if (event.key === 'Escape') { event.preventDefault(); setOpen(false); toggle.focus(); }
+      else if (event.key === 'ArrowDown') { event.preventDefault(); (items[index + 1] || items[0])?.focus(); }
+      else if (event.key === 'ArrowUp') { event.preventDefault(); (items[index - 1] || items[items.length - 1])?.focus(); }
+      else if ((event.key === 'Enter' || event.key === ' ') && index >= 0) { event.preventDefault(); pick(items[index].getAttribute('data-value')); }
+    };
+    function buildMenu() {
+      menu.innerHTML = '';
+      selectable.forEach((entry) => {
+        const option = create('button', 'dx-submit-dropdown-option', entry.label);
+        option.type = 'button';
+        option.setAttribute('role', 'option');
+        option.setAttribute('data-value', entry.value);
+        const isSel = entry.value === current;
+        option.setAttribute('aria-selected', isSel ? 'true' : 'false');
+        if (isSel) option.classList.add('is-selected');
+        option.addEventListener('click', () => pick(entry.value));
+        menu.appendChild(option);
+      });
+    }
+    function setOpen(next) {
+      if (next === open) return;
+      open = next;
+      menu.hidden = !next;
+      toggle.setAttribute('aria-expanded', next ? 'true' : 'false');
+      root.classList.toggle('is-open', next);
+      if (next) {
+        buildMenu();
+        document.addEventListener('pointerdown', onDocPointer, true);
+        document.addEventListener('keydown', onKeydown, true);
+        const sel = menu.querySelector('.is-selected') || menu.querySelector('.dx-submit-dropdown-option');
+        if (sel instanceof HTMLElement) sel.focus();
+      } else {
+        document.removeEventListener('pointerdown', onDocPointer, true);
+        document.removeEventListener('keydown', onKeydown, true);
+      }
+    }
+    function pick(val) {
+      current = text(val, '');
+      syncLabel();
+      setOpen(false);
+      try { toggle.focus(); } catch {}
+      if (typeof onChange === 'function') onChange(current);
+    }
+    toggle.addEventListener('click', () => setOpen(!open));
+    if (fieldKey) bindFieldFocus(toggle, fieldKey);
+    syncLabel();
+    root.append(toggle, menu);
+    return root;
+  }
+
   function buildCallDynamicField(fieldSchema) {
     const schema = fieldSchema && typeof fieldSchema === 'object' ? fieldSchema : {};
     const fieldKey = text(schema.key, '');
@@ -2187,24 +2281,14 @@ import { animate } from 'framer-motion/dom';
     const currentValue = text(state.meta[fieldKey], '');
 
     if (type === 'select') {
-      const select = create('select', 'dx-submit-input');
-      const prompt = create('option', '', `Choose ${label.toLowerCase()}`);
-      prompt.value = '';
-      select.appendChild(prompt);
-      const options = Array.isArray(schema.options) ? schema.options : [];
-      options.forEach((entry) => {
-        const value = text(entry?.value, '');
-        if (!value) return;
-        const option = create('option', '', text(entry?.label, value));
-        option.value = value;
-        select.appendChild(option);
+      const dropdown = createDropdown({
+        value: currentValue,
+        placeholder: `Choose ${label.toLowerCase()}`,
+        options: Array.isArray(schema.options) ? schema.options : [],
+        fieldKey,
+        onChange: (val) => updateCallMetaValue(fieldKey, val),
       });
-      select.value = currentValue;
-      select.addEventListener('change', (event) => {
-        updateCallMetaValue(fieldKey, event.target.value);
-      });
-      bindFieldFocus(select, fieldKey);
-      field.appendChild(select);
+      field.appendChild(dropdown);
       return field;
     }
 
@@ -2296,16 +2380,14 @@ import { animate } from 'framer-motion/dom';
 
   function metaSelectField(label, key, options, required) {
     const field = wrapField(label, !!required, key);
-    const select = create('select', 'dx-submit-input');
-    options.forEach((value) => {
-      const option = create('option', '', value || 'Choose category');
-      option.value = value;
-      select.appendChild(option);
+    const dropdown = createDropdown({
+      value: text(state.meta[key]),
+      placeholder: options.find((value) => !value) != null ? `Choose ${label.toLowerCase()}` : 'Choose…',
+      options: options.map((value) => ({ value, label: value || `Choose ${label.toLowerCase()}` })),
+      fieldKey: key,
+      onChange: (val) => { state.meta[key] = val; },
     });
-    select.value = text(state.meta[key]);
-    select.addEventListener('change', (event) => { state.meta[key] = event.target.value; });
-    bindFieldFocus(select, key);
-    field.appendChild(select);
+    field.appendChild(dropdown);
     return field;
   }
 
@@ -3133,7 +3215,90 @@ import { animate } from 'framer-motion/dom';
     });
   }
 
+  // Commit a lane choice from the step-0 gate, then drop into that lane's compose.
+  function chooseLane(flowKey, laneId) {
+    if (!state) return;
+    state.pipelineChosen = true;
+    const flow = normalizeFlow(flowKey);
+    if (flow === FLOW_CALL) {
+      const callDraft = getFlowDraft(FLOW_CALL);
+      callDraft.meta.callLane = normalizeLane(laneId);
+      setActiveFlow(FLOW_CALL, { force: true, resetStep: true, refreshQuota: true });
+    } else {
+      setActiveFlow(FLOW_SAMPLE, { force: true, resetStep: true, refreshQuota: true });
+    }
+  }
+
+  function buildGateCard({ kicker, title, body, meta, onChoose }) {
+    const card = create('button', 'dx-submit-gate-card');
+    card.type = 'button';
+    card.setAttribute('data-dx-submit-gate-choice', 'true');
+    card.append(
+      create('span', 'dx-submit-gate-kicker', kicker),
+      create('span', 'dx-submit-gate-title', title),
+      create('span', 'dx-submit-gate-body', body),
+    );
+    if (meta) card.appendChild(create('span', 'dx-submit-gate-meta', meta));
+    card.appendChild(create('span', 'dx-submit-gate-cta', 'Choose →'));
+    if (typeof onChoose === 'function') card.addEventListener('click', onChoose);
+    return card;
+  }
+
+  // Step 0 — the lane chooser. Shown full-shell (no command rail / progress) so a
+  // submitter explicitly picks where their work is going before composing.
+  function buildFlowGate() {
+    const shell = create('div', 'dx-submit-shell dx-submit-shell--gate');
+    shell.setAttribute('data-dx-submit-shell', 'true');
+    shell.setAttribute('data-dx-submit-current-step', 'flow-gate');
+    shell.setAttribute('data-dx-submit-pipeline-choice', 'pending');
+    shell.setAttribute('data-dx-submit-flow', normalizeFlow(state.flow));
+    shell.setAttribute('data-dx-submit-has-active-call', state.hasActiveCall ? 'true' : 'false');
+    shell.setAttribute('data-dx-submit-active-call-count', String(Math.max(0, Number(state.activeCallCount || 0))));
+
+    const main = create('section', 'dx-submit-main dx-submit-surface dx-submit-gate');
+    main.setAttribute('data-dx-submit-step', 'flow-gate');
+
+    const heading = create('header', 'dx-submit-heading');
+    heading.append(
+      create('p', 'dx-submit-kicker', 'Submit'),
+      create('h1', 'dx-submit-heading-title', 'Where are you submitting?'),
+      create(
+        'p',
+        'dx-submit-copy',
+        'Pick a lane to begin. Each one routes your work to the right queue and reviewers — you can switch later.',
+      ),
+    );
+    main.appendChild(heading);
+
+    const grid = create('div', 'dx-submit-gate-grid');
+    grid.appendChild(buildGateCard({
+      kicker: 'Open library',
+      title: 'Sample submission',
+      body: 'Add a recording to the Dex library. We split it into labelled A–E sections (plus X) so it is searchable and release-ready.',
+      meta: 'Always open · weekly quota applies',
+      onChoose: () => chooseLane(FLOW_SAMPLE, ''),
+    }));
+
+    getAvailableCallLanes().forEach((lane) => {
+      const laneId = normalizeLane(lane?.id);
+      if (!laneId) return;
+      const cycle = text(state.activeCallCycleByLane?.[laneId], '');
+      grid.appendChild(buildGateCard({
+        kicker: 'IN DEX call',
+        title: text(lane?.label, laneLabel(laneId)),
+        body: text(lane?.helper, 'Lane-specific call proposal routed to the IN DEX panel.'),
+        meta: cycle ? `Active cycle · ${cycle}` : 'Active call',
+        onChoose: () => chooseLane(FLOW_CALL, laneId),
+      }));
+    });
+
+    main.appendChild(grid);
+    shell.appendChild(main);
+    return shell;
+  }
+
   function buildLayout() {
+    if (!state.pipelineChosen && state.hasActiveCall) return buildFlowGate();
     const currentStep = STEPS[state.step]?.key || 'compose';
     const isCallFlow = state.flow === FLOW_CALL;
     const shell = create('div', 'dx-submit-shell');
