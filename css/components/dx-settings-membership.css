@@ -746,8 +746,8 @@
   display: flex;
   flex-direction: column;
   width: min(940px, 100%);
-  height: min(94dvh, 820px);
-  max-height: min(94dvh, 940px);
+  height: min(820px, calc(100dvh - 52px));
+  max-height: calc(100dvh - 52px);
   overflow: hidden;
   color: var(--dx-mem-modal-ink);
   background: var(
@@ -1365,7 +1365,8 @@
 
   #dxMembershipModal .dx-memv3-modal-card {
     width: 100%;
-    max-height: 94dvh;
+    height: auto;
+    max-height: calc(100dvh - 8px);
     border-radius: 18px 18px 0 0;
     transform: translateY(42px) scale(0.985);
   }
@@ -1447,6 +1448,114 @@
 
   #dxMembershipModal .dx-memv3-modal-commit p {
     text-align: center;
+  }
+}
+
+/* WebGL tier material. The canvas reuses the achievements holographic mesh
+   renderer; the CSS foil is deliberately static and only supplies depth when
+   WebGL is unavailable. */
+#dxMembershipModal .dx-memv3-tier {
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+  min-height: 214px;
+  perspective: 700px;
+}
+
+#dxMembershipModal .dx-memv3-tier > :not(.dx-memv3-tier-mesh):not(.dx-memv3-tier-mesh-foil) {
+  position: relative;
+  z-index: 2;
+}
+
+#dxMembershipModal .dx-memv3-tier-mesh,
+#dxMembershipModal .dx-memv3-tier-mesh-foil {
+  border-radius: inherit;
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+#dxMembershipModal .dx-memv3-tier-mesh {
+  height: 100%;
+  mix-blend-mode: screen;
+  opacity: 0.92;
+  width: 100%;
+  z-index: 0;
+}
+
+#dxMembershipModal .dx-memv3-tier-mesh[data-dx-shader-state="fallback"] {
+  display: none;
+}
+
+#dxMembershipModal .dx-memv3-tier-mesh-foil {
+  background:
+    repeating-linear-gradient(
+      112deg,
+      transparent 0 14px,
+      rgba(255, 255, 255, 0.018) 15px,
+      transparent 17px 25px
+    ),
+    radial-gradient(circle at 14% 0%, var(--dx-mem-tier-glow), transparent 48%);
+  mix-blend-mode: screen;
+  opacity: 0.48;
+  z-index: 1;
+}
+
+/* Retire the previous sliding pseudo-element sheen. Selection and hover now
+   increase the live shader response without sweeping a flat gradient through
+   the card. */
+#dxMembershipModal .dx-memv3-tier[data-tier]::before,
+#dxMembershipModal .dx-memv3-tier[data-tier]:hover::before,
+#dxMembershipModal .dx-memv3-tier[data-tier][aria-pressed="true"]::before {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent 42%),
+    radial-gradient(circle at 18% 0%, var(--dx-mem-tier-glow), transparent 48%);
+  opacity: 0.34;
+  transform: none;
+  transition: opacity 220ms ease;
+  z-index: 1;
+}
+
+#dxMembershipModal .dx-memv3-tier[data-tier]:hover::before,
+#dxMembershipModal .dx-memv3-tier[data-tier][aria-pressed="true"]::before {
+  opacity: 0.52;
+  transform: none;
+}
+
+#dxMembershipModal .dx-memv3-tier[data-tier]::after {
+  z-index: 3;
+}
+
+#dxMembershipModal .dx-memv3-tier-price-wrap {
+  flex-wrap: nowrap;
+  min-width: 0;
+  width: 100%;
+}
+
+#dxMembershipModal .dx-memv3-tier-price {
+  flex: 0 1 auto;
+  font-size: clamp(1.65rem, 2.35vw, 2.35rem);
+  min-width: 0;
+  white-space: nowrap;
+}
+
+#dxMembershipModal .dx-memv3-tier-period {
+  flex: 0 0 auto;
+}
+
+#dxMembershipModal .dx-memv3-tier-impact,
+#dxMembershipModal .dx-memv3-tier-savings {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 760px) {
+  #dxMembershipModal .dx-memv3-tier {
+    min-height: 192px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #dxMembershipModal .dx-memv3-tier-mesh {
+    opacity: 0.68;
   }
 }
 

@@ -883,8 +883,24 @@ test('settings membership v3 renders trust-first status and production billing l
   const membershipModal = page.locator('#dxMembershipModal');
   await expect(membershipModal).toBeVisible();
   await expect(membershipModal).toHaveAttribute('aria-hidden', 'false');
+  expect(await membershipModal.evaluate((node) => node.parentElement === document.body)).toBe(true);
+  const modalPosition = await membershipModal.locator('.dx-memv3-modal-card').evaluate((node) => {
+    const rect = node.getBoundingClientRect();
+    return {
+      top: rect.top,
+      bottom: rect.bottom,
+      viewportHeight: window.innerHeight,
+    };
+  });
+  expect(modalPosition.top).toBeGreaterThanOrEqual(8);
+  expect(modalPosition.bottom).toBeLessThanOrEqual(modalPosition.viewportHeight - 8);
   await expect(membershipModal.locator('[role="dialog"]')).toHaveAttribute('aria-modal', 'true');
   await expect(membershipModal.locator('#dxMemV3TierComposer')).toBeVisible();
+  await expect(membershipModal.locator('.dx-memv3-tier-mesh')).toHaveCount(3);
+  const shaderStates = await membershipModal.locator('.dx-memv3-tier-mesh').evaluateAll((nodes) =>
+    nodes.map((node) => node.getAttribute('data-dx-shader-state')),
+  );
+  expect(shaderStates.every((state) => state === 'ready' || state === 'fallback')).toBe(true);
   await expect(page.locator('#dxMembershipV3Root')).toHaveAttribute('data-dx-tier-panel-open', 'true');
   await expect(membershipModal.locator('#dxMemV3ComposerCheckout')).toBeVisible();
   await expect(membershipModal.locator('#dxMemV3ComposerCheckout')).toContainText('Start membership');
@@ -976,6 +992,10 @@ test('settings membership v3 shows current-membership actions for active and pay
   expect(new Set(tierMaterials.map((item) => item.background)).size).toBe(3);
   expect(tierMaterials.every((item) => item.background !== 'none')).toBe(true);
   await membershipModal.locator('[data-interval="year"]').click();
+  const annualPriceFit = await membershipModal.locator('.dx-memv3-tier-price-wrap').evaluateAll((nodes) =>
+    nodes.every((node) => node.scrollWidth <= node.clientWidth + 1),
+  );
+  expect(annualPriceFit).toBe(true);
   await membershipModal.locator('[data-tier="S"]').click();
   await membershipModal.locator('#dxMemV3Cover').check();
   await expect(membershipModal.locator('#dxMemV3Selection')).toContainText('Steward');

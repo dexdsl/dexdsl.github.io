@@ -166,6 +166,20 @@ test('settings profile v1 saves contribution payload with extended fields', asyn
   expect(['auto', 'scroll', 'overlay']).toContain(accountScrollOwners.left);
   expect(['auto', 'scroll', 'overlay']).toContain(accountScrollOwners.right);
 
+  await expect(page.locator('[data-dx-account-dropdown-for]')).toHaveCount(3);
+  const accountFieldMaterials = await page.locator('#creditAliasTokens, #creditNameInput, .dx-account-dropdown-toggle')
+    .evaluateAll((nodes) => nodes.map((node) => {
+      const style = getComputedStyle(node);
+      return {
+        background: style.backgroundImage,
+        color: style.color,
+        blur: style.backdropFilter || style.webkitBackdropFilter,
+      };
+    }));
+  expect(accountFieldMaterials.every((item) => item.background !== 'none')).toBe(true);
+  expect(accountFieldMaterials.every((item) => item.color === 'rgb(243, 243, 244)')).toBe(true);
+  expect(accountFieldMaterials.every((item) => item.blur.includes('blur'))).toBe(true);
+
   await page.fill('#creditNameInput', 'Profile V1 Updated');
   await page.fill('#creditAliasInput', 'Profile Alias');
   await page.press('#creditAliasInput', 'Enter');
@@ -372,6 +386,7 @@ test('settings public profile saves opt-in payloads, validates handles, claims c
   });
 
   await page.goto('/entry/settings/', { waitUntil: 'domcontentloaded' });
+  await page.locator('#tab-public').click();
 
   await expect(page.locator('[data-dx-public-profile-card="true"]')).toBeVisible();
   await expect(page.locator('.dx-profile-privacy-controls > .dx-profile-switch')).toHaveCount(2);
@@ -553,6 +568,7 @@ test('settings public profile keeps saved handles private until visibility is en
   });
 
   await page.goto('/entry/settings/', { waitUntil: 'domcontentloaded' });
+  await page.locator('#tab-public').click();
 
   await expect(page.locator('[data-dx-public-profile-card="true"]')).toBeVisible();
   await expect(page.locator('#profileHandleInput')).toHaveAttribute('placeholder', 'barbara-strozzi');
@@ -576,6 +592,16 @@ test('settings public profile keeps saved handles private until visibility is en
   await expect(page.locator('#copyPublicProfileUrl')).toBeDisabled();
 
   await page.locator('[data-dx-public-toggle="true"]').click();
+  await expect(page.locator('#profileVisibilityDialog')).toBeVisible();
+  expect(await page.locator('#profileVisibilityDialog').evaluate((node) => node.parentElement === document.body)).toBe(true);
+  await expect(page.locator('#profileVisibilityDialog [data-dx-visibility-title]')).toContainText('public');
+  await expect(page.locator('#profilePublicToggle')).not.toBeChecked();
+  await page.locator('#profileVisibilityDialog [data-dx-visibility-cancel]').click();
+  await expect(page.locator('#profileVisibilityDialog')).toBeHidden();
+  await expect(page.locator('#profilePublicToggle')).not.toBeChecked();
+
+  await page.locator('[data-dx-public-toggle="true"]').click();
+  await page.locator('#profileVisibilityDialog [data-dx-visibility-confirm]').click();
 
   await expect(page.locator('#profilePublicToggle')).toBeChecked();
   await expect(page.locator('#profilePublicState')).toHaveText('Visible');

@@ -361,7 +361,6 @@
           <div class="dx-achievement-glyph-wrap">
             ${badgeGlyphSvg(badge.glyph, { silhouette: badge.secret && !badge.unlocked })}
           </div>
-          <span class="dx-achievement-crest-mark">${badge.secret && !badge.unlocked ? 'DX-?' : 'DX'}</span>
         </div>
         <div class="dx-achievement-copy">
           <h3 class="dx-achievement-title">${htmlEscape(title)}</h3>
@@ -389,6 +388,10 @@
       : badge.unlocked
         ? 'Achievement complete.'
         : `${Math.min(badge.progress, badge.threshold)} of ${badge.threshold} recorded.`;
+    const depthLayers = Array.from(
+      { length: 13 },
+      (_, index) => `<i style="--dx-achievement-depth-z:${-9 + (index * 1.5)}px"></i>`,
+    ).join('');
 
     return `
       <div
@@ -403,6 +406,13 @@
         tabindex="0"
       >
         <div class="dx-achievement-inspect-plate" data-dx-achievement-inspect-plate>
+          <span class="dx-achievement-inspect-depth" aria-hidden="true">
+            ${depthLayers}
+            <b class="dx-achievement-inspect-edge dx-achievement-inspect-edge--top"></b>
+            <b class="dx-achievement-inspect-edge dx-achievement-inspect-edge--right"></b>
+            <b class="dx-achievement-inspect-edge dx-achievement-inspect-edge--bottom"></b>
+            <b class="dx-achievement-inspect-edge dx-achievement-inspect-edge--left"></b>
+          </span>
           <section class="dx-achievement-inspect-face dx-achievement-inspect-front">
             <canvas class="dx-achievement-inspect-shader" data-dx-achievement-inspect-shader aria-hidden="true"></canvas>
             <span class="dx-achievement-inspect-foil" aria-hidden="true"></span>
@@ -415,7 +425,6 @@
               <span class="dx-achievement-inspect-glyph">
                 ${badgeGlyphSvg(badge.glyph, { silhouette: isClassified })}
               </span>
-              <span class="dx-achievement-inspect-monogram">${isClassified ? 'DX-?' : 'DX'}</span>
             </div>
             <div class="dx-achievement-inspect-copy">
               <p class="dx-achievement-inspect-kicker">${htmlEscape(badgeStatusLabel(badge))}</p>
@@ -726,8 +735,12 @@
     const prevDisabled = current <= 0 ? ' disabled aria-disabled="true"' : '';
     const nextDisabled = current >= totalPages - 1 ? ' disabled aria-disabled="true"' : '';
     return `
-      <button type="button" class="carousel-nav prev dx-pagenav-arrow dx-pagenav-arrow--prev dx-pagenav-arrow--on-dark" data-dx-achievements-badge-page-prev="${htmlEscape(page)}" aria-label="Previous achievements page"${prevDisabled}></button>
-      <button type="button" class="carousel-nav next dx-pagenav-arrow dx-pagenav-arrow--next dx-pagenav-arrow--on-dark" data-dx-achievements-badge-page-next="${htmlEscape(page)}" aria-label="Next achievements page"${nextDisabled}></button>
+      <span class="dx-achievements-carousel-edge dx-achievements-carousel-edge--left">
+        <button type="button" class="carousel-nav prev dx-pagenav-arrow dx-pagenav-arrow--prev dx-pagenav-arrow--on-dark" data-dx-achievements-badge-page-prev="${htmlEscape(page)}" aria-label="Previous achievements page"${prevDisabled}></button>
+      </span>
+      <span class="dx-achievements-carousel-edge dx-achievements-carousel-edge--right">
+        <button type="button" class="carousel-nav next dx-pagenav-arrow dx-pagenav-arrow--next dx-pagenav-arrow--on-dark" data-dx-achievements-badge-page-next="${htmlEscape(page)}" aria-label="Next achievements page"${nextDisabled}></button>
+      </span>
     `;
   }
 

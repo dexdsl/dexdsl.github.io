@@ -466,6 +466,219 @@
     return { amount: savingsAmount, percent };
   }
 
+  const TIER_MESH_PALETTE = {
+    S: {
+      base: [0.34, 0.19, 0.10],
+      accent: [0.92, 0.55, 0.25],
+    },
+    M: {
+      base: [0.10, 0.25, 0.35],
+      accent: [0.38, 0.78, 1.0],
+    },
+    L: {
+      base: [0.32, 0.14, 0.30],
+      accent: [1.0, 0.62, 0.18],
+    },
+  };
+
+  function createMembershipTierShader(canvas, tier) {
+    if (!(canvas instanceof HTMLCanvasElement)) return null;
+    const fallback = () => {
+      canvas.setAttribute('data-dx-shader-state', 'fallback');
+      return null;
+    };
+
+    let gl = null;
+    try {
+      gl = canvas.getContext('webgl', {
+        alpha: true,
+        antialias: false,
+        depth: false,
+        premultipliedAlpha: true,
+        powerPreference: 'low-power',
+      });
+    } catch {
+      return fallback();
+    }
+    if (!gl) return fallback();
+
+    const vertexSource = `
+      attribute vec2 a_position;
+      varying vec2 v_uv;
+      void main() {
+        v_uv = a_position * 0.5 + 0.5;
+        gl_Position = vec4(a_position, 0.0, 1.0);
+      }
+    `;
+    const fragmentSource = `
+      precision highp float;
+      varying vec2 v_uv;
+      uniform float u_time;
+      uniform vec2 u_pointer;
+      uniform vec3 u_base;
+      uniform vec3 u_accent;
+      uniform float u_selected;
+
+      float hash(vec2 p) {
+        return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+      }
+
+      float noise(vec2 p) {
+        vec2 i = floor(p);
+        vec2 f = fract(p);
+        f = f * f * (3.0 - 2.0 * f);
+        return mix(
+          mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
+          mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x),
+          f.y
+        );
+      }
+
+      void main() {
+        vec2 uv = v_uv;
+        vec2 pointer = clamp(u_pointer, 0.0, 1.0);
+        float time = u_time * 0.11;
+        float grain = noise(uv * vec2(24.0, 16.0) + time);
+        float micro = noise(uv * vec2(120.0, 76.0));
+        float diagonal = uv.x * 0.94 + uv.y * 0.38;
+        float travel = fract(diagonal + time * 0.1 + pointer.x * 0.22);
+        float foil = pow(max(0.0, 1.0 - abs(travel - 0.5) * 2.0), 5.0);
+        float bands = 0.5 + 0.5 * sin((diagonal * 12.0 + grain * 1.7 + time) * 6.28318);
+        float spot = exp(-10.5 * distance(uv, pointer));
+        float edge = smoothstep(0.66, 0.99, distance(uv, vec2(0.5)) * 1.42);
+        float brushed = 0.5 + 0.5 * sin((uv.y * 360.0) + micro * 3.0);
+
+        vec3 spectrum = vec3(
+          0.5 + 0.5 * sin(6.28318 * (bands + 0.00)),
+          0.5 + 0.5 * sin(6.28318 * (bands + 0.33)),
+          0.5 + 0.5 * sin(6.28318 * (bands + 0.67))
+        );
+        vec3 metal = mix(u_base, u_accent, 0.2 + grain * 0.34);
+        vec3 color = mix(metal, spectrum, foil * (0.36 + u_selected * 0.34));
+        color += u_accent * spot * (0.38 + u_selected * 0.18);
+        color += vec3(0.72, 0.78, 0.9) * edge * 0.16;
+        color += (brushed - 0.5) * 0.035;
+        color += (micro - 0.5) * 0.045;
+
+        float alpha = 0.12 + foil * 0.25 + spot * 0.18 + edge * 0.06;
+        alpha *= 0.86 + u_selected * 0.14;
+        gl_FragColor = vec4(color, clamp(alpha, 0.0, 0.54));
+      }
+    `;
+
+    const compile = (type, source) => {
+      const shader = gl.createShader(type);
+      if (!shader) return null;
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        gl.deleteShader(shader);
+        return null;
+      }
+      return shader;
+    };
+
+    const vertex = compile(gl.VERTEX_SHADER, vertexSource);
+    const fragment = compile(gl.FRAGMENT_SHADER, fragmentSource);
+    if (!vertex || !fragment) return fallback();
+    const program = gl.createProgram();
+    if (!program) return fallback();
+    gl.attachShader(program, vertex);
+    gl.attachShader(program, fragment);
+    gl.linkProgram(program);
+    gl.deleteShader(vertex);
+    gl.deleteShader(fragment);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      gl.deleteProgram(program);
+      return fallback();
+    }
+
+    const buffer = gl.createBuffer();
+    if (!buffer) {
+      gl.deleteProgram(program);
+      return fallback();
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+      -1, -1,
+      1, -1,
+      -1, 1,
+      1, 1,
+    ]), gl.STATIC_DRAW);
+    gl.useProgram(program);
+    const position = gl.getAttribLocation(program, 'a_position');
+    gl.enableVertexAttribArray(position);
+    gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+
+    const uniforms = {
+      time: gl.getUniformLocation(program, 'u_time'),
+      pointer: gl.getUniformLocation(program, 'u_pointer'),
+      base: gl.getUniformLocation(program, 'u_base'),
+      accent: gl.getUniformLocation(program, 'u_accent'),
+      selected: gl.getUniformLocation(program, 'u_selected'),
+    };
+    const palette = TIER_MESH_PALETTE[tier] || TIER_MESH_PALETTE.S;
+    gl.uniform3fv(uniforms.base, palette.base);
+    gl.uniform3fv(uniforms.accent, palette.accent);
+
+    let pointer = [0.5, 0.38];
+    let selected = 0;
+    let frame = 0;
+    let running = true;
+    let observer = null;
+    const reduced = Boolean(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      const ratio = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
+      const width = Math.max(1, Math.round(rect.width * ratio));
+      const height = Math.max(1, Math.round(rect.height * ratio));
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+      }
+      gl.viewport(0, 0, width, height);
+    };
+    const draw = (now) => {
+      if (!running) return;
+      resize();
+      gl.useProgram(program);
+      gl.uniform1f(uniforms.time, Math.max(0, Number(now) || 0) / 1000);
+      gl.uniform2fv(uniforms.pointer, pointer);
+      gl.uniform1f(uniforms.selected, selected);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      if (!reduced && !document.hidden) frame = window.requestAnimationFrame(draw);
+    };
+
+    if (typeof ResizeObserver === 'function') {
+      observer = new ResizeObserver(resize);
+      observer.observe(canvas);
+    }
+    canvas.setAttribute('data-dx-shader-state', 'ready');
+    frame = window.requestAnimationFrame(draw);
+
+    return {
+      setPointer(x, y) {
+        pointer = [
+          Math.min(1, Math.max(0, Number(x) || 0)),
+          Math.min(1, Math.max(0, Number(y) || 0)),
+        ];
+        if (reduced) draw(0);
+      },
+      setSelected(next) {
+        selected = next ? 1 : 0;
+        if (reduced) draw(0);
+      },
+      dispose() {
+        running = false;
+        if (frame) window.cancelAnimationFrame(frame);
+        observer?.disconnect();
+        gl.deleteBuffer(buffer);
+        gl.deleteProgram(program);
+      },
+    };
+  }
+
   function skeletonLedgerRows(count = 4) {
     let html = '';
     for (let i = 0; i < count; i += 1) {
@@ -505,6 +718,7 @@
       this.modalAnimTimer = 0;
       this.modalLastFocus = null;
       this.bodyOverflowBeforeModal = '';
+      this.tierShaders = [];
       this.resizeObserver = null;
       this.paneObserver = null;
       this.onViewportChange = this.queueRailSync.bind(this);
@@ -627,8 +841,11 @@
           + '    </div>'
           + '  </footer>'
           + '</section>';
-        document.body.appendChild(modal);
       }
+      // Always portal the modal. A prior bundle/hot reload can leave an
+      // existing node inside the transformed Settings shell, making fixed
+      // positioning relative to the scrolled pane instead of the viewport.
+      if (modal.parentElement !== document.body) document.body.appendChild(modal);
 
       this.cache = {
         membershipCard: $('#dxMembershipV3Card', this.root),
@@ -714,6 +931,7 @@
     openMembershipModal(options = {}) {
       const modal = this.cache.modal;
       if (!(modal instanceof HTMLElement)) return;
+      if (modal.parentElement !== document.body) document.body.appendChild(modal);
       const alreadyOpen = modal.getAttribute('data-open') === 'true';
       if (this.modalAnimTimer) {
         clearTimeout(this.modalAnimTimer);
@@ -727,6 +945,10 @@
       modal.setAttribute('data-open', 'true');
       modal.setAttribute('aria-hidden', 'false');
       modal.removeAttribute('data-anim');
+      modal.scrollTop = 0;
+      const modalBody = $('.dx-memv3-modal-body', modal);
+      if (modalBody instanceof HTMLElement) modalBody.scrollTop = 0;
+      this.mountTierShaders();
       document.removeEventListener('keydown', this.onModalKeydown);
       document.addEventListener('keydown', this.onModalKeydown);
 
@@ -758,6 +980,7 @@
         modal.setAttribute('data-open', 'false');
         modal.setAttribute('aria-hidden', 'true');
         modal.removeAttribute('data-anim');
+        this.disposeTierShaders();
         return;
       }
 
@@ -766,6 +989,7 @@
         modal.setAttribute('aria-hidden', 'true');
         modal.removeAttribute('data-anim');
         this.modalAnimTimer = 0;
+        this.disposeTierShaders();
         if (focusTarget && typeof focusTarget.focus === 'function') {
           try {
             focusTarget.focus({ preventScroll: true });
@@ -907,6 +1131,7 @@
 
     renderTierCards() {
       if (!(this.cache.tierGrid instanceof HTMLElement)) return;
+      this.disposeTierShaders();
       const plansByTier = new Map(this.plans.plans.map((plan) => [plan.tier, plan]));
       const cards = [];
       for (const tier of ['S', 'M', 'L']) {
@@ -923,10 +1148,12 @@
           '<button type="button" class="dx-memv3-tier"'
             + ` data-dx-tier="${tier}"`
             + ` data-tier="${tier}"`
-            + ` aria-pressed="${String(this.selectedTier === tier)}"`
-            + ` data-savings-percent="${String(savings.percent)}"`
-            + ` data-savings-amount="${String(savings.amount)}"`
+          + ` aria-pressed="${String(this.selectedTier === tier)}"`
+          + ` data-savings-percent="${String(savings.percent)}"`
+          + ` data-savings-amount="${String(savings.amount)}"`
           + '>'
+          + `  <canvas class="dx-memv3-tier-mesh" data-dx-tier-mesh="${tier}" data-dx-shader-state="pending" aria-hidden="true"></canvas>`
+          + '  <span class="dx-memv3-tier-mesh-foil" aria-hidden="true"></span>'
           + '  <span class="dx-memv3-tier-kicker">Support tier</span>'
           + `  <span class="dx-memv3-tier-name">${plan.name}</span>`
           + '  <span class="dx-memv3-tier-price-wrap">'
@@ -940,6 +1167,42 @@
       }
 
       this.cache.tierGrid.innerHTML = cards.join('');
+      if (this.cache.modal?.getAttribute('data-open') === 'true') {
+        window.requestAnimationFrame(() => this.mountTierShaders());
+      }
+    }
+
+    disposeTierShaders() {
+      this.tierShaders.forEach((entry) => {
+        entry.card?.removeEventListener('pointermove', entry.onPointerMove);
+        entry.card?.removeEventListener('pointerleave', entry.onPointerLeave);
+        entry.shader?.dispose();
+      });
+      this.tierShaders = [];
+    }
+
+    mountTierShaders() {
+      if (!(this.cache.tierGrid instanceof HTMLElement) || this.tierShaders.length) return;
+      const cards = $$('.dx-memv3-tier', this.cache.tierGrid);
+      cards.forEach((card) => {
+        const canvas = $('.dx-memv3-tier-mesh', card);
+        const tier = txt(card.getAttribute('data-tier'), 'S').toUpperCase();
+        const shader = createMembershipTierShader(canvas, tier);
+        if (!shader) return;
+        shader.setSelected(card.getAttribute('aria-pressed') === 'true');
+        const onPointerMove = (event) => {
+          const rect = card.getBoundingClientRect();
+          if (!rect.width || !rect.height) return;
+          shader.setPointer(
+            (event.clientX - rect.left) / rect.width,
+            1 - ((event.clientY - rect.top) / rect.height),
+          );
+        };
+        const onPointerLeave = () => shader.setPointer(0.5, 0.38);
+        card.addEventListener('pointermove', onPointerMove, { passive: true });
+        card.addEventListener('pointerleave', onPointerLeave, { passive: true });
+        this.tierShaders.push({ card, shader, onPointerMove, onPointerLeave });
+      });
     }
 
     updateTierVisuals() {
@@ -947,6 +1210,8 @@
       cards.forEach((card) => {
         const tier = txt(card.getAttribute('data-tier')).toUpperCase();
         card.setAttribute('aria-pressed', String(tier === this.selectedTier));
+        const activeShader = this.tierShaders.find((entry) => entry.card === card);
+        activeShader?.shader?.setSelected(tier === this.selectedTier);
       });
 
       cards.forEach((card) => {

@@ -330,6 +330,7 @@ test('signed-in summary renders fluid specimen cards, 3D inspector, and secret v
   await expect(pollVoteCard).toHaveAttribute('data-dx-achievement-state', /unlocked|new/);
   await expect(pollVoteCard).toHaveAttribute('data-dx-achievement-category', 'polls');
   await expect(pollVoteCard.locator('[data-dx-achievement-open="first-poll-vote"]')).toHaveAttribute('aria-haspopup', 'dialog');
+  await expect(pollVoteCard.locator('.dx-achievement-crest-mark')).toHaveCount(0);
 
   const gridColumns = await page.locator('#dex-achv [data-dx-achievements-grid-page="overview"]').evaluate((grid) => {
     return getComputedStyle(grid).gridTemplateColumns.split(/\s+/).filter(Boolean).length;
@@ -338,6 +339,23 @@ test('signed-in summary renders fluid specimen cards, 3D inspector, and secret v
   expect(gridColumns).toBe(expectedColumns);
   await expect(page.locator('#dex-achv [data-dx-achievements-badge-page-prev="overview"]')).toHaveClass(/dx-pagenav-arrow--prev/);
   await expect(page.locator('#dex-achv [data-dx-achievements-badge-page-next="overview"]')).toHaveClass(/dx-pagenav-arrow--next/);
+  const pagerEdgeMetrics = await page.locator('#dex-achv [data-dx-achievements-pager="overview"]').evaluate((pager) => {
+    const prev = pager.querySelector('[data-dx-achievements-badge-page-prev="overview"]');
+    const next = pager.querySelector('[data-dx-achievements-badge-page-next="overview"]');
+    if (!(prev instanceof HTMLElement) || !(next instanceof HTMLElement)) return null;
+    const pagerRect = pager.getBoundingClientRect();
+    const prevRect = prev.getBoundingClientRect();
+    const nextRect = next.getBoundingClientRect();
+    return {
+      overflow: getComputedStyle(pager).overflow,
+      prevCenterDelta: Math.abs((prevRect.left + (prevRect.width / 2)) - pagerRect.left),
+      nextCenterDelta: Math.abs((nextRect.left + (nextRect.width / 2)) - pagerRect.right),
+    };
+  });
+  expect(pagerEdgeMetrics).not.toBeNull();
+  expect(pagerEdgeMetrics!.overflow).toBe('clip');
+  expect(pagerEdgeMetrics!.prevCenterDelta).toBeLessThan(2);
+  expect(pagerEdgeMetrics!.nextCenterDelta).toBeLessThan(2);
 
   if (testInfo.project.name === 'desktop') {
     const shellMetrics = await page.locator('#dex-achv .dx-achievements-shell').evaluate((shell) => {
@@ -354,7 +372,20 @@ test('signed-in summary renders fluid specimen cards, 3D inspector, and secret v
   await pollVoteCard.click();
   const inspector = page.locator('#dex-achv [data-dx-achievement-inspector]');
   await expect(inspector).toHaveAttribute('open', '');
-  await expect(inspector.locator('[data-dx-achievement-inspect-object]')).toBeVisible();
+  const inspectObject = inspector.locator('[data-dx-achievement-inspect-object]');
+  await expect(inspectObject).toBeVisible();
+  await expect(inspectObject.locator('.dx-achievement-inspect-depth > i')).toHaveCount(13);
+  await expect(inspectObject.locator('.dx-achievement-inspect-edge')).toHaveCount(4);
+  await expect(inspectObject.locator('.dx-achievement-inspect-monogram')).toHaveCount(0);
+  const sharedRadius = await page.evaluate(() => {
+    const card = document.querySelector('#dex-achv [data-dx-achievement-id="first-poll-vote"]');
+    const object = document.querySelector('#dex-achv [data-dx-achievement-inspect-object]');
+    return {
+      card: card instanceof HTMLElement ? getComputedStyle(card).borderRadius : '',
+      object: object instanceof HTMLElement ? getComputedStyle(object).borderRadius : '',
+    };
+  });
+  expect(sharedRadius.object).toBe(sharedRadius.card);
   await expect(inspector).toContainText('First Poll Vote');
   await expect(inspector.locator('[data-dx-achievement-inspect-shader]')).toHaveAttribute('data-dx-shader-state', /ready|fallback/);
   await inspector.locator('[data-dx-achievement-inspector-close]').click();

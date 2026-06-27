@@ -746,6 +746,131 @@
     });
   }
 
+  function enhanceAccountSelect(select) {
+    if (!(select instanceof HTMLSelectElement) || !select.id) return;
+    const existing = state.root?.querySelector(`[data-dx-account-dropdown-for="${select.id}"]`);
+    if (existing instanceof HTMLElement) {
+      existing.__dxAccountDropdownSync?.();
+      return;
+    }
+
+    const root = document.createElement('div');
+    root.className = 'dx-account-dropdown';
+    root.setAttribute('data-dx-account-dropdown-for', select.id);
+
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'dx-profile-input dx-account-dropdown-toggle';
+    toggle.setAttribute('aria-haspopup', 'listbox');
+    toggle.setAttribute('aria-expanded', 'false');
+    const label = document.createElement('span');
+    label.className = 'dx-account-dropdown-value';
+    const chevron = document.createElement('span');
+    chevron.className = 'dx-account-dropdown-chevron';
+    chevron.setAttribute('aria-hidden', 'true');
+    chevron.textContent = '▾';
+    toggle.append(label, chevron);
+
+    const menu = document.createElement('div');
+    menu.className = 'dx-account-dropdown-menu';
+    menu.setAttribute('role', 'listbox');
+    menu.hidden = true;
+    root.append(toggle, menu);
+
+    const fieldLabel = state.root?.querySelector(`label[for="${select.id}"]`)?.textContent;
+    toggle.setAttribute('aria-label', text(fieldLabel, 'Choose an option'));
+    select.classList.add('dx-profile-native-select');
+    select.setAttribute('aria-hidden', 'true');
+    select.tabIndex = -1;
+    select.insertAdjacentElement('afterend', root);
+
+    let open = false;
+    const options = () => Array.from(select.options);
+    const sync = () => {
+      const selected = select.selectedOptions[0] || options().find((option) => option.value === select.value);
+      label.textContent = text(selected?.textContent, 'Choose…');
+      label.classList.toggle('is-placeholder', !text(select.value));
+      menu.querySelectorAll('[role="option"]').forEach((option) => {
+        const selectedOption = option.getAttribute('data-value') === select.value;
+        option.classList.toggle('is-selected', selectedOption);
+        option.setAttribute('aria-selected', selectedOption ? 'true' : 'false');
+      });
+    };
+    const buildMenu = () => {
+      menu.innerHTML = '';
+      options().forEach((sourceOption) => {
+        const option = document.createElement('button');
+        option.type = 'button';
+        option.className = 'dx-account-dropdown-option';
+        option.setAttribute('role', 'option');
+        option.setAttribute('data-value', sourceOption.value);
+        option.textContent = text(sourceOption.textContent, sourceOption.value);
+        option.addEventListener('click', () => {
+          select.value = sourceOption.value;
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+          setOpen(false);
+          toggle.focus();
+        });
+        menu.appendChild(option);
+      });
+      sync();
+    };
+    const onDocumentPointer = (event) => {
+      if (!root.contains(event.target)) setOpen(false);
+    };
+    const onDocumentKeydown = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setOpen(false);
+        toggle.focus();
+        return;
+      }
+      const items = Array.from(menu.querySelectorAll('.dx-account-dropdown-option'));
+      if (!items.length) return;
+      const index = items.indexOf(document.activeElement);
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const delta = event.key === 'ArrowDown' ? 1 : -1;
+        const start = index >= 0 ? index : (delta > 0 ? -1 : 0);
+        items[(start + delta + items.length) % items.length]?.focus();
+      } else if (event.key === 'Home' || event.key === 'End') {
+        event.preventDefault();
+        items[event.key === 'Home' ? 0 : items.length - 1]?.focus();
+      }
+    };
+    function setOpen(next) {
+      open = Boolean(next);
+      root.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      menu.hidden = !open;
+      document.removeEventListener('pointerdown', onDocumentPointer, true);
+      document.removeEventListener('keydown', onDocumentKeydown, true);
+      if (!open) return;
+      buildMenu();
+      document.addEventListener('pointerdown', onDocumentPointer, true);
+      document.addEventListener('keydown', onDocumentKeydown, true);
+      (menu.querySelector('.is-selected') || menu.querySelector('.dx-account-dropdown-option'))?.focus();
+    }
+
+    toggle.addEventListener('click', () => setOpen(!open));
+    toggle.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+      event.preventDefault();
+      setOpen(true);
+    });
+    select.addEventListener('change', sync);
+    const observer = typeof MutationObserver === 'function' ? new MutationObserver(sync) : null;
+    observer?.observe(select, { childList: true, subtree: true, attributes: true });
+    root.__dxAccountDropdownSync = sync;
+    sync();
+  }
+
+  function enhanceAccountSelects() {
+    ['rolePrimarySelect', 'instrPrimarySelect', 'submitDefaultCategory'].forEach((id) => {
+      enhanceAccountSelect(getNode(id));
+    });
+  }
+
   function renderPrimaryRoleSelect() {
     const select = getNode('rolePrimarySelect');
     if (!select) return;
@@ -766,6 +891,7 @@
       ? preferred
       : (roles.includes(text(state.profile?.role_primary)) ? text(state.profile?.role_primary) : '');
     select.value = next;
+    enhanceAccountSelect(select);
   }
 
   function renderPrimaryInstrumentSelect() {
@@ -788,6 +914,7 @@
       ? preferred
       : (instruments.includes(text(state.profile?.instrument_primary)) ? text(state.profile?.instrument_primary) : '');
     select.value = next;
+    enhanceAccountSelect(select);
   }
 
   function renderContributionState() {
@@ -819,6 +946,7 @@
     if (creatorNode) creatorNode.value = text(defaults.creator);
     if (categoryNode) categoryNode.value = normalizeCategory(defaults.category);
     if (instrumentNode) instrumentNode.value = text(defaults.instrument);
+    enhanceAccountSelects();
 
     setSaveState('idle');
   }
@@ -1281,6 +1409,75 @@
       setPublicSaveState('error', summarizeSaveError(error));
       if (triggerButton) triggerButton.disabled = false;
     }
+  }
+
+  function commitPublicVisibility(nextVisible) {
+    const toggle = getNode('profilePublicToggle');
+    if (toggle instanceof HTMLInputElement) toggle.checked = Boolean(nextVisible);
+    const preview = buildPublicPayloadFromUi();
+    state.publicProfile = normalizePublicProfilePayload({
+      ...(state.publicProfile || {}),
+      ...preview,
+      profile_url: preview.profile_public ? publicProfilePath(preview) : null,
+    }, state.publicProfile || {});
+    renderPublicProfileSummary(state.publicProfile);
+    schedulePublicSave();
+  }
+
+  function openPublicVisibilityConfirm(nextVisible, trigger) {
+    const dialog = getNode('profileVisibilityDialog');
+    if (!(dialog instanceof HTMLElement)) {
+      commitPublicVisibility(nextVisible);
+      return;
+    }
+
+    const title = dialog.querySelector('[data-dx-visibility-title]');
+    const copy = dialog.querySelector('[data-dx-visibility-copy]');
+    const confirm = dialog.querySelector('[data-dx-visibility-confirm]');
+    const cancel = dialog.querySelector('[data-dx-visibility-cancel]');
+    if (title) title.textContent = nextVisible ? 'Make profile public?' : 'Make profile private?';
+    if (copy) {
+      copy.textContent = nextVisible
+        ? 'Your handle, bio, credited contributions, and selected favorites will be available at your public Dex URL.'
+        : 'Your public Dex URL will stop resolving for visitors. Your profile details stay saved for whenever you publish again.';
+    }
+    if (confirm) confirm.textContent = nextVisible ? 'Make profile public' : 'Make profile private';
+
+    if (dialog.parentElement !== document.body) document.body.appendChild(dialog);
+    dialog.hidden = false;
+    dialog.setAttribute('data-open', 'true');
+    document.body.classList.add('dx-profile-dialog-open');
+
+    const close = (restoreFocus = true) => {
+      dialog.hidden = true;
+      dialog.removeAttribute('data-open');
+      document.body.classList.remove('dx-profile-dialog-open');
+      confirm?.removeEventListener('click', onConfirm);
+      cancel?.removeEventListener('click', onCancel);
+      dialog.removeEventListener('click', onBackdrop);
+      document.removeEventListener('keydown', onKeydown);
+      if (restoreFocus && trigger instanceof HTMLElement) trigger.focus({ preventScroll: true });
+    };
+    const onConfirm = () => {
+      commitPublicVisibility(nextVisible);
+      close();
+    };
+    const onCancel = () => close();
+    const onBackdrop = (event) => {
+      if (event.target === dialog) close();
+    };
+    const onKeydown = (event) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      close();
+    };
+    confirm?.addEventListener('click', onConfirm);
+    cancel?.addEventListener('click', onCancel);
+    dialog.addEventListener('click', onBackdrop);
+    document.addEventListener('keydown', onKeydown);
+    window.requestAnimationFrame(() => {
+      if (confirm instanceof HTMLElement) confirm.focus({ preventScroll: true });
+    });
   }
 
   async function hydrateContributions() {
@@ -1837,6 +2034,7 @@
     if (creatorNode) creatorNode.value = text(latest.creator);
     if (instrumentNode) instrumentNode.value = text(latest.instrument);
     if (categoryNode) categoryNode.value = normalizeCategory(latest.category);
+    enhanceAccountSelects();
     scheduleSave();
   }
 
@@ -1860,6 +2058,7 @@
     if (select && Array.from(select.options).some((option) => option.value === top)) {
       select.value = top;
     }
+    enhanceAccountSelects();
     scheduleSave();
   }
 
@@ -1873,15 +2072,12 @@
     getNode('submitDefaultCreator')?.addEventListener('input', () => scheduleSave());
     getNode('submitDefaultCategory')?.addEventListener('change', () => scheduleSave());
     getNode('submitDefaultInstrument')?.addEventListener('input', () => scheduleSave());
-    getNode('profilePublicToggle')?.addEventListener('change', () => {
-      const preview = buildPublicPayloadFromUi();
-      state.publicProfile = normalizePublicProfilePayload({
-        ...(state.publicProfile || {}),
-        ...preview,
-        profile_url: preview.profile_public ? publicProfilePath(preview) : null,
-      }, state.publicProfile || {});
-      renderPublicProfileSummary(state.publicProfile);
-      schedulePublicSave();
+    getNode('profilePublicToggle')?.addEventListener('change', (event) => {
+      const toggle = event.currentTarget;
+      if (!(toggle instanceof HTMLInputElement)) return;
+      const nextVisible = toggle.checked;
+      toggle.checked = !nextVisible;
+      openPublicVisibilityConfirm(nextVisible, toggle);
     });
     getNode('profileBioInput')?.addEventListener('input', () => schedulePublicSave());
     getNode('profilePronounsInput')?.addEventListener('input', () => schedulePublicSave());

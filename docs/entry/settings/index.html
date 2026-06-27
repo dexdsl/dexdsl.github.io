@@ -3466,6 +3466,17 @@ body.dx-route-profile-protected #dex-settings :is(h1,h2,h3,h4,p,label,span,stron
                       </div>
                     </div>
                   </div>
+                  <div id="profileVisibilityDialog" class="dx-contrib-dialog dx-profile-visibility-dialog" hidden role="dialog" aria-modal="true" aria-labelledby="profileVisibilityDialogTitle" aria-describedby="profileVisibilityDialogCopy">
+                    <div class="dx-contrib-dialog-card">
+                      <p class="dx-profile-dialog-kicker">Public profile</p>
+                      <h3 id="profileVisibilityDialogTitle" data-dx-visibility-title>Change profile visibility?</h3>
+                      <p id="profileVisibilityDialogCopy" class="note dx-profile-dialog-copy" data-dx-visibility-copy></p>
+                      <div class="dx-contrib-dialog-actions">
+                        <button class="btn" type="button" data-dx-visibility-cancel>Cancel</button>
+                        <button class="btn primary" type="button" data-dx-visibility-confirm>Confirm</button>
+                      </div>
+                    </div>
+                  </div>
                   <div class="field">
                     <div class="dx-profile-row-head">
                       <div class="dx-profile-row-title">
