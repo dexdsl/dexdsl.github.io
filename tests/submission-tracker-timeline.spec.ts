@@ -44,6 +44,7 @@ const SUBMISSION_DETAIL = {
       stage: 'sent',
       statusRaw: 'Submitted',
       publicNote: '',
+      actorType: 'system',
       eventAt: '2026-02-26T08:59:00.000Z',
     },
     {
@@ -53,7 +54,17 @@ const SUBMISSION_DETAIL = {
       statusRaw: 'Pending Review',
       publicNote: 'Received and queued.',
       internalNote: 'staff only note',
+      actorType: 'system',
       eventAt: '2026-02-26T09:00:00.000Z',
+    },
+    {
+      id: 'evt-member',
+      eventType: 'public_note',
+      stage: 'reviewing',
+      statusRaw: '',
+      publicNote: 'test message',
+      actorType: 'member',
+      eventAt: '2026-02-26T09:01:00.000Z',
     },
   ],
   stageRail: {
@@ -64,7 +75,8 @@ const SUBMISSION_DETAIL = {
       { key: 'acknowledged', label: 'Acknowledged', state: 'todo', at: '' },
       { key: 'reviewing', label: 'Reviewing', state: 'active', at: '' },
       { key: 'accepted', label: 'Accepted', state: 'todo', at: '' },
-      { key: 'rejected', label: 'Rejected', state: 'todo', at: '' },
+      { key: 'producing', label: 'Preparing entry', state: 'todo', at: '' },
+      { key: 'preflight', label: 'Preflight', state: 'todo', at: '' },
       { key: 'in_library', label: 'In library', state: 'todo', at: '' },
     ],
   },
@@ -551,6 +563,79 @@ test('submission detail renders timeline and excludes internal note text', async
 
   await expect(page.locator('#dex-submission')).toContainText('Received and queued.');
   await expect(page.locator('#dex-submission')).not.toContainText('staff only note');
+  await expect(page.locator('.dx-sub-item--member').filter({ hasText: 'test message' })).toHaveCount(1);
+  await expect(page.locator('#dx-sub-stage-rail')).toContainText('Preparing entry');
+  await expect(page.locator('#dx-sub-stage-rail')).toContainText('Preflight');
+});
+
+test('submission detail explains production milestones and links the verified library entry', async ({ page }) => {
+  await stubHeaderRuntimes(page);
+  await stubDexAuthRuntime(page, 'signed-in');
+  await stubMessagesApis(page, {
+    detailPayload: {
+      thread: {
+        ...SUBMISSION_DETAIL.thread,
+        currentStage: 'in_library',
+        finalLookupNumber: 'B.Pre Do A2026 C.23',
+        effectiveLookupNumber: 'B.Pre Do A2026 C.23',
+        libraryHref: '/entry/brass-session/',
+      },
+      timeline: [
+        {
+          id: 'evt-accepted',
+          eventType: 'accepted',
+          stage: 'accepted',
+          actorType: 'staff',
+          actorId: 'Dex Ops',
+          eventAt: '2026-02-26T09:00:00.000Z',
+        },
+        {
+          id: 'evt-producing',
+          eventType: 'producing',
+          stage: 'producing',
+          actorType: 'staff',
+          eventAt: '2026-02-26T09:10:00.000Z',
+        },
+        {
+          id: 'evt-preflight',
+          eventType: 'preflight',
+          stage: 'preflight',
+          actorType: 'staff',
+          eventAt: '2026-02-26T09:20:00.000Z',
+        },
+        {
+          id: 'evt-library',
+          eventType: 'in_library',
+          stage: 'in_library',
+          actorType: 'staff',
+          libraryHref: '/entry/brass-session/',
+          metadata: { finalLookupNumber: 'B.Pre Do A2026 C.23' },
+          eventAt: '2026-02-26T09:30:00.000Z',
+        },
+      ],
+      stageRail: {
+        currentStage: 'in_library',
+        steps: [
+          { key: 'received', label: 'Received', state: 'done', at: '' },
+          { key: 'acknowledged', label: 'Acknowledged', state: 'done', at: '' },
+          { key: 'reviewing', label: 'Reviewing', state: 'done', at: '' },
+          { key: 'accepted', label: 'Accepted', state: 'done', at: '' },
+          { key: 'producing', label: 'Preparing entry', state: 'done', at: '' },
+          { key: 'preflight', label: 'Preflight', state: 'done', at: '' },
+          { key: 'in_library', label: 'In library', state: 'active', at: '' },
+        ],
+      },
+    },
+  });
+
+  await page.goto('/entry/messages/submission/?sid=sub-001', { waitUntil: 'domcontentloaded' });
+  await waitReady(page, '#dex-submission');
+
+  await expect(page.locator('#dx-sub-timeline')).toContainText('Congratulations');
+  await expect(page.locator('#dx-sub-timeline')).toContainText('not public yet');
+  await expect(page.locator('#dx-sub-timeline a[href="/entry/brass-session/"]')).toContainText('Open your library entry');
+  await expect(page.locator('#dx-sub-stage-rail')).toContainText('Preparing entry');
+  await expect(page.locator('#dx-sub-stage-rail')).toContainText('Preflight');
 });
 
 test('submission detail hydrates sparse payload fields from metadata and list fallbacks', async ({ page }) => {
@@ -660,8 +745,9 @@ test('submission detail keeps title in H1 and surfaces effective/final lookup in
   await expect(page.locator('.dx-sub-title')).toHaveText('Brass Session');
   await expect(page.locator('.dx-sub-status')).toContainText('Lookup B.Pre Do A2026 C.23');
   await expect(page.locator('.dx-sub-grid .dx-sub-card').first()).toContainText('Lookup: B.Pre Do A2026 C.23');
+  await expect(page.locator('#dx-sub-timeline')).toContainText('Reference finalized: B.Pre Do A2026 C.23');
   await expect(page.locator('#dx-sub-timeline')).toContainText(
-    'Lookup number finalized from SUB12-B.Pre Do A2026 to B.Pre Do A2026 C.23.',
+    'B.Pre Do A2026 C.23 is now the final reference for this submission and its library entry.',
   );
 });
 

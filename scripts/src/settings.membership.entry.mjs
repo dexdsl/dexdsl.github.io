@@ -502,10 +502,13 @@
       this.mounted = false;
       this.cache = {};
       this.railSyncRaf = 0;
-      this.viewSwapTimer = 0;
+      this.modalAnimTimer = 0;
+      this.modalLastFocus = null;
+      this.bodyOverflowBeforeModal = '';
       this.resizeObserver = null;
       this.paneObserver = null;
       this.onViewportChange = this.queueRailSync.bind(this);
+      this.onModalKeydown = this.handleModalKeydown.bind(this);
     }
 
     render() {
@@ -537,39 +540,6 @@
         + '        </div>'
         + '      </section>'
         + '    </section>'
-        + '    <section id="dxMemV3ComposerView" class="dx-memv3-view dx-memv3-view--composer" hidden aria-hidden="true">'
-        + '      <section class="dx-memv3-plan-panel dx-memv3-plan-panel--composer">'
-        + '        <div class="dx-memv3-back-row">'
-        + '          <button type="button" id="dxMemV3Back" class="btn dx-memv3-back" aria-label="Back to membership overview">'
-        + '            <span aria-hidden="true" class="dx-memv3-back-icon">←</span>'
-        + '            <span>Back</span>'
-        + '          </button>'
-        + '        </div>'
-        + '        <div id="dxMemV3TierComposer" class="dx-memv3-tier-composer" data-open="false" hidden>'
-        + '          <header class="dx-memv3-plan-head">'
-        + '            <h3>Choose your support tier</h3>'
-        + '            <div class="dx-memv3-interval-shell">'
-        + '              <div class="dx-memv3-interval" role="radiogroup" aria-label="Billing interval">'
-        + '                <span class="dx-memv3-interval-thumb" aria-hidden="true"></span>'
-        + '                <button type="button" data-interval="month" data-interval-index="0" aria-pressed="true">Monthly</button>'
-        + '                <button type="button" data-interval="year" data-interval-index="1" aria-pressed="false">Annual</button>'
-        + '              </div>'
-        + '              <p id="dxMemV3AnnualHint" class="dx-memv3-annual-hint">Switch to annual for lower effective pricing.</p>'
-        + '            </div>'
-        + '          </header>'
-        + '          <div class="dx-memv3-tier-grid" id="dxMemV3TierGrid"></div>'
-        + '          <div class="dx-memv3-plan-summary">'
-        + '            <p id="dxMemV3Selection" class="dx-memv3-selection">Selected: Steward · Monthly · $6.99</p>'
-        + '            <label id="dxMemV3CoverWrap" class="dx-memv3-cover">'
-        + '              <input id="dxMemV3Cover" type="checkbox" />'
-        + '              <span>Cover fees (+2.9% + $0.30)</span>'
-        + '            </label>'
-        + '            <button type="button" id="dxMemV3ComposerCheckout" class="cta dx-memv3-composer-checkout">Start membership</button>'
-        + '            <p class="note">Change interval, switch tiers, or cancel at period end anytime in Customer Portal.</p>'
-        + '          </div>'
-        + '        </div>'
-        + '      </section>'
-        + '    </section>'
         + '  </div>'
         + '  <p id="dxMemV3Error" class="dx-memv3-error" hidden></p>'
         + '</article>'
@@ -596,27 +566,96 @@
         + '  </div>'
         + '</article>';
 
+      let modal = document.getElementById('dxMembershipModal');
+      if (!(modal instanceof HTMLElement)) {
+        modal = document.createElement('div');
+        modal.id = 'dxMembershipModal';
+        modal.className = 'dx-memv3-modal';
+        modal.setAttribute('aria-hidden', 'true');
+        modal.setAttribute('data-open', 'false');
+        modal.setAttribute('data-dx-membership-state', 'loading');
+        modal.setAttribute('data-dx-interval', this.interval);
+        modal.innerHTML = ''
+          + '<div class="dx-memv3-modal-backdrop" data-dx-membership-modal-close aria-hidden="true"></div>'
+          + '<section class="dx-memv3-modal-card" role="dialog" aria-modal="true" aria-labelledby="dxMemV3ModalTitle" aria-describedby="dxMemV3ModalSubtitle" tabindex="-1">'
+          + '  <div class="dx-memv3-modal-glow dx-memv3-modal-glow--one" aria-hidden="true"></div>'
+          + '  <div class="dx-memv3-modal-glow dx-memv3-modal-glow--two" aria-hidden="true"></div>'
+          + '  <header class="dx-memv3-modal-head">'
+          + '    <div class="dx-memv3-modal-heading">'
+          + '      <p class="dx-memv3-modal-kicker"><span class="dx-memv3-live-dot" aria-hidden="true"></span> Membership <span aria-hidden="true">·</span> <span id="dxMemV3ModalState">Choose your level</span></p>'
+          + '      <h2 id="dxMemV3ModalTitle">Keep the archive in motion.</h2>'
+          + '      <p id="dxMemV3ModalSubtitle">Every membership keeps the archive open, pays artists, and moves new recordings toward release.</p>'
+          + '    </div>'
+          + '    <button type="button" id="dxMemV3ModalClose" class="dx-memv3-modal-close" data-dx-membership-modal-close aria-label="Close membership options">×</button>'
+          + '  </header>'
+          + '  <div class="dx-memv3-modal-steps" aria-label="Membership process">'
+          + '    <span class="is-active"><b>01</b> Choose support</span>'
+          + '    <span><b>02</b> Secure checkout</span>'
+          + '    <span><b>03</b> Keep Dex open</span>'
+          + '  </div>'
+          + '  <div class="dx-memv3-modal-body">'
+          + '    <div id="dxMemV3TierComposer" class="dx-memv3-tier-composer" data-open="false" hidden>'
+          + '      <header class="dx-memv3-plan-head">'
+          + '        <div>'
+          + '          <p class="dx-memv3-plan-kicker">Choose your support tier</p>'
+          + '          <p class="dx-memv3-plan-intro">Pick the level that feels right. You can change it whenever you need.</p>'
+          + '        </div>'
+          + '        <div class="dx-memv3-interval-shell">'
+          + '          <div class="dx-memv3-interval" role="radiogroup" aria-label="Billing interval">'
+          + '            <span class="dx-memv3-interval-thumb" aria-hidden="true"></span>'
+          + '            <button type="button" data-interval="month" data-interval-index="0" aria-pressed="true">Monthly</button>'
+          + '            <button type="button" data-interval="year" data-interval-index="1" aria-pressed="false">Annual</button>'
+          + '          </div>'
+          + '          <p id="dxMemV3AnnualHint" class="dx-memv3-annual-hint">Switch to annual for lower effective pricing.</p>'
+          + '        </div>'
+          + '      </header>'
+          + '      <div class="dx-memv3-tier-grid" id="dxMemV3TierGrid"></div>'
+          + '      <p id="dxMemV3ModalError" class="dx-memv3-error" role="alert" hidden></p>'
+          + '    </div>'
+          + '  </div>'
+          + '  <footer class="dx-memv3-modal-foot">'
+          + '    <div class="dx-memv3-plan-summary">'
+          + '      <p id="dxMemV3Selection" class="dx-memv3-selection">Selected: Steward · Monthly · $6.99</p>'
+          + '      <label id="dxMemV3CoverWrap" class="dx-memv3-cover">'
+          + '        <input id="dxMemV3Cover" type="checkbox" />'
+          + '        <span>Cover processing fees (+2.9% + $0.30)</span>'
+          + '      </label>'
+          + '    </div>'
+          + '    <div class="dx-memv3-modal-commit">'
+          + '      <button type="button" id="dxMemV3ComposerCheckout" class="cta dx-memv3-composer-checkout">Start membership</button>'
+          + '      <p>Secure checkout by Stripe · cancel at period end anytime</p>'
+          + '    </div>'
+          + '  </footer>'
+          + '</section>';
+        document.body.appendChild(modal);
+      }
+
       this.cache = {
         membershipCard: $('#dxMembershipV3Card', this.root),
         billingCard: $('#dxBillingHistoryV3Card', this.root),
         viewSurface: $('#dxMemV3ViewSurface', this.root),
         summaryView: $('#dxMemV3SummaryView', this.root),
-        composerView: $('#dxMemV3ComposerView', this.root),
-        backBtn: $('#dxMemV3Back', this.root),
         stateChip: $('#dxMemV3StateChip', this.root),
         planEl: $('#dxMemV3Plan', this.root),
         renewEl: $('#dxMemV3Renew', this.root),
         payEl: $('#dxMemV3Pay', this.root),
         cancelEl: $('#dxMemV3Cancel', this.root),
         supportHeading: $('#dxMemV3SupportHeading', this.root),
-        tierComposer: $('#dxMemV3TierComposer', this.root),
-        annualHint: $('#dxMemV3AnnualHint', this.root),
-        intervalButtons: $$('[data-interval]', this.root),
-        tierGrid: $('#dxMemV3TierGrid', this.root),
-        selection: $('#dxMemV3Selection', this.root),
-        coverWrap: $('#dxMemV3CoverWrap', this.root),
-        coverInput: $('#dxMemV3Cover', this.root),
-        composerCheckoutBtn: $('#dxMemV3ComposerCheckout', this.root),
+        modal,
+        modalCard: $('.dx-memv3-modal-card', modal),
+        modalCloseButtons: $$('[data-dx-membership-modal-close]', modal),
+        modalState: $('#dxMemV3ModalState', modal),
+        modalTitle: $('#dxMemV3ModalTitle', modal),
+        modalSubtitle: $('#dxMemV3ModalSubtitle', modal),
+        tierComposer: $('#dxMemV3TierComposer', modal),
+        annualHint: $('#dxMemV3AnnualHint', modal),
+        intervalButtons: $$('[data-interval]', modal),
+        tierGrid: $('#dxMemV3TierGrid', modal),
+        selection: $('#dxMemV3Selection', modal),
+        coverWrap: $('#dxMemV3CoverWrap', modal),
+        coverInput: $('#dxMemV3Cover', modal),
+        composerCheckoutBtn: $('#dxMemV3ComposerCheckout', modal),
+        modalErrorLine: $('#dxMemV3ModalError', modal),
         primaryCta: $('#dxMemV3Primary', this.root),
         secondaryCta: $('#dxMemV3Secondary', this.root),
         pauseResumeBtn: $('#dxMemV3PauseResume', this.root),
@@ -651,7 +690,15 @@
         this.cache.tierComposer.setAttribute('aria-hidden', this.tiersOpen ? 'false' : 'true');
       }
       this.root.setAttribute('data-dx-tier-panel-open', this.tiersOpen ? 'true' : 'false');
-      this.setMembershipView(this.tiersOpen ? 'composer' : 'summary', options);
+      this.root.setAttribute('data-dx-membership-view', this.tiersOpen ? 'modal' : 'summary');
+      if (this.cache.viewSurface instanceof HTMLElement) {
+        this.cache.viewSurface.setAttribute('data-dx-membership-view', 'summary');
+      }
+      if (this.tiersOpen) {
+        this.openMembershipModal(options);
+      } else {
+        this.hideMembershipModal(options);
+      }
       this.queueRailSync();
     }
 
@@ -664,61 +711,121 @@
       }
     }
 
-    applyMembershipView(nextView) {
-      const view = nextView === 'composer' ? 'composer' : 'summary';
-      const summaryVisible = view !== 'composer';
+    openMembershipModal(options = {}) {
+      const modal = this.cache.modal;
+      if (!(modal instanceof HTMLElement)) return;
+      const alreadyOpen = modal.getAttribute('data-open') === 'true';
+      if (this.modalAnimTimer) {
+        clearTimeout(this.modalAnimTimer);
+        this.modalAnimTimer = 0;
+      }
+      if (!alreadyOpen) {
+        this.modalLastFocus = document.activeElement;
+        this.bodyOverflowBeforeModal = document.body.style.overflow || '';
+        document.body.style.overflow = 'hidden';
+      }
+      modal.setAttribute('data-open', 'true');
+      modal.setAttribute('aria-hidden', 'false');
+      modal.removeAttribute('data-anim');
+      document.removeEventListener('keydown', this.onModalKeydown);
+      document.addEventListener('keydown', this.onModalKeydown);
 
-      if (this.cache.summaryView instanceof HTMLElement) {
-        this.cache.summaryView.hidden = !summaryVisible;
-        this.cache.summaryView.setAttribute('aria-hidden', summaryVisible ? 'false' : 'true');
-      }
-      if (this.cache.composerView instanceof HTMLElement) {
-        this.cache.composerView.hidden = summaryVisible;
-        this.cache.composerView.setAttribute('aria-hidden', summaryVisible ? 'true' : 'false');
-      }
+      const finishOpen = () => {
+        modal.setAttribute('data-anim', 'in');
+        if (this.cache.modalCard instanceof HTMLElement && options.focus !== false) {
+          try {
+            this.cache.modalCard.focus({ preventScroll: true });
+          } catch {
+            this.cache.modalCard.focus();
+          }
+        }
+      };
 
-      if (this.cache.viewSurface instanceof HTMLElement) {
-        this.cache.viewSurface.setAttribute('data-dx-membership-view', view);
+      if (options.animate === false || this.shouldReduceMotion()) {
+        finishOpen();
+      } else {
+        requestAnimationFrame(() => requestAnimationFrame(finishOpen));
       }
-      this.root.setAttribute('data-dx-membership-view', view);
     }
 
-    setMembershipView(nextView, options = {}) {
-      const view = nextView === 'composer' ? 'composer' : 'summary';
-      const animate = options.animate !== false;
-      const card = this.cache.membershipCard;
-      const shouldAnimate = (
-        animate
-        && card instanceof HTMLElement
-        && this.cache.viewSurface instanceof HTMLElement
-        && !this.shouldReduceMotion()
-      );
-
-      if (this.viewSwapTimer) {
-        clearTimeout(this.viewSwapTimer);
-        this.viewSwapTimer = 0;
-      }
-      if (card instanceof HTMLElement) {
-        card.classList.remove('dx-memv3-card--view-swapping');
-      }
-
-      if (!shouldAnimate) {
-        this.applyMembershipView(view);
+    hideMembershipModal(options = {}) {
+      const modal = this.cache.modal;
+      if (!(modal instanceof HTMLElement)) return;
+      const wasOpen = modal.getAttribute('data-open') === 'true';
+      const focusTarget = options.restoreFocus === false ? null : this.modalLastFocus;
+      document.removeEventListener('keydown', this.onModalKeydown);
+      if (!wasOpen) {
+        modal.setAttribute('data-open', 'false');
+        modal.setAttribute('aria-hidden', 'true');
+        modal.removeAttribute('data-anim');
         return;
       }
 
-      card.classList.add('dx-memv3-card--view-swapping');
-      this.viewSwapTimer = window.setTimeout(() => {
-        this.applyMembershipView(view);
-        this.queueRailSync();
-        requestAnimationFrame(() => {
-          if (card instanceof HTMLElement) {
-            card.classList.remove('dx-memv3-card--view-swapping');
+      const finishClose = () => {
+        modal.setAttribute('data-open', 'false');
+        modal.setAttribute('aria-hidden', 'true');
+        modal.removeAttribute('data-anim');
+        this.modalAnimTimer = 0;
+        if (focusTarget && typeof focusTarget.focus === 'function') {
+          try {
+            focusTarget.focus({ preventScroll: true });
+          } catch {
+            focusTarget.focus();
           }
-          this.queueRailSync();
-        });
-        this.viewSwapTimer = 0;
-      }, 150);
+        }
+      };
+
+      document.body.style.overflow = this.bodyOverflowBeforeModal;
+      if (options.animate === false || this.shouldReduceMotion()) {
+        finishClose();
+      } else {
+        modal.setAttribute('data-anim', 'out');
+        if (this.modalAnimTimer) clearTimeout(this.modalAnimTimer);
+        this.modalAnimTimer = window.setTimeout(finishClose, 260);
+      }
+
+      this.modalLastFocus = null;
+    }
+
+    handleModalKeydown(event) {
+      if (!(event instanceof KeyboardEvent)) return;
+      const modal = this.cache.modal;
+      if (!(modal instanceof HTMLElement) || modal.getAttribute('data-open') !== 'true') return;
+
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        if (!this.busy) this.closeMembershipComposer();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+
+      const focusable = $$(
+        'button:not([disabled]):not([hidden]), input:not([disabled]):not([hidden]), a[href], [tabindex]:not([tabindex="-1"])',
+        modal,
+      ).filter((element) => element instanceof HTMLElement && element.getClientRects().length > 0);
+      if (!focusable.length) {
+        event.preventDefault();
+        if (this.cache.modalCard instanceof HTMLElement) this.cache.modalCard.focus();
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    closeMembershipComposer() {
+      if (this.busy) return;
+      this.restoreComposerFromBaseline();
+      this.setTierComposerOpen(false);
+      this.renderSummary();
+      this.setError('');
     }
 
     readCoverFeesSelection() {
@@ -772,10 +879,12 @@
 
     setError(message) {
       this.error = txt(message);
-      if (!(this.cache.errorLine instanceof HTMLElement)) return;
       const hasMessage = Boolean(this.error);
-      this.cache.errorLine.hidden = !hasMessage;
-      this.cache.errorLine.textContent = hasMessage ? this.error : '';
+      [this.cache.errorLine, this.cache.modalErrorLine].forEach((line) => {
+        if (!(line instanceof HTMLElement)) return;
+        line.hidden = !hasMessage;
+        line.textContent = hasMessage ? this.error : '';
+      });
     }
 
     setBusy(nextBusy) {
@@ -785,9 +894,9 @@
         this.cache.primaryCta,
         this.cache.secondaryCta,
         this.cache.pauseResumeBtn,
-        this.cache.backBtn,
         this.cache.portalHistoryBtn,
         this.cache.ledgerRetry,
+        ...(Array.isArray(this.cache.modalCloseButtons) ? this.cache.modalCloseButtons : []),
       ];
       controls.forEach((control) => {
         if (!(control instanceof HTMLButtonElement)) return;
@@ -834,7 +943,7 @@
     }
 
     updateTierVisuals() {
-      const cards = $$('.dx-memv3-tier', this.root);
+      const cards = $$('.dx-memv3-tier', this.cache.modal || this.root);
       cards.forEach((card) => {
         const tier = txt(card.getAttribute('data-tier')).toUpperCase();
         card.setAttribute('aria-pressed', String(tier === this.selectedTier));
@@ -856,6 +965,9 @@
       });
 
       this.root.setAttribute('data-dx-interval', this.interval);
+      if (this.cache.modal instanceof HTMLElement) {
+        this.cache.modal.setAttribute('data-dx-interval', this.interval);
+      }
       this.renderAnnualHint();
       this.queueRailSync();
     }
@@ -911,9 +1023,27 @@
 
       this.root.setAttribute('data-dx-membership-state', status);
       this.root.setAttribute('data-dx-membership-cta-mode', txt(ctaModel.ctaMode, 'view-membership'));
+      if (this.cache.modal instanceof HTMLElement) {
+        this.cache.modal.setAttribute('data-dx-membership-state', status);
+      }
 
       if (this.cache.stateChip instanceof HTMLElement) {
         this.cache.stateChip.textContent = statusLabel(status);
+      }
+      if (this.cache.modalState instanceof HTMLElement) {
+        this.cache.modalState.textContent = ctaModel.hasCurrentMembership
+          ? `${statusLabel(status)} plan`
+          : 'Choose your level';
+      }
+      if (this.cache.modalTitle instanceof HTMLElement) {
+        this.cache.modalTitle.textContent = ctaModel.hasCurrentMembership
+          ? 'Shape what comes next.'
+          : 'Keep the archive in motion.';
+      }
+      if (this.cache.modalSubtitle instanceof HTMLElement) {
+        this.cache.modalSubtitle.textContent = ctaModel.hasCurrentMembership
+          ? 'Adjust your support while keeping the archive open, artists paid, and new recordings moving toward release.'
+          : 'Every membership keeps the archive open, pays artists, and moves new recordings toward release.';
       }
       if (this.cache.planEl instanceof HTMLElement) {
         this.cache.planEl.textContent = planNameForSummary(this.summary, plansByTier);
@@ -1115,9 +1245,14 @@
         });
       });
 
-      this.root.addEventListener('click', (event) => {
+      if (this.cache.modal instanceof HTMLElement) this.cache.modal.addEventListener('click', (event) => {
         const target = event.target;
         if (!(target instanceof HTMLElement)) return;
+        if (target.closest('[data-dx-membership-modal-close]')) {
+          event.preventDefault();
+          this.closeMembershipComposer();
+          return;
+        }
         const tierButton = target.closest('[data-tier]');
         if (!(tierButton instanceof HTMLButtonElement)) return;
         const tier = txt(tierButton.getAttribute('data-tier')).toUpperCase();
@@ -1131,16 +1266,6 @@
         this.cache.primaryCta.addEventListener('click', async () => {
           if (this.busy) return;
           await this.handlePrimaryAction();
-        });
-      }
-
-      if (this.cache.backBtn instanceof HTMLButtonElement) {
-        this.cache.backBtn.addEventListener('click', () => {
-          if (this.busy) return;
-          this.restoreComposerFromBaseline();
-          this.setTierComposerOpen(false);
-          this.renderSummary();
-          this.setError('');
         });
       }
 
@@ -1196,10 +1321,7 @@
       }
 
       if (mode === 'cancel-composer') {
-        this.restoreComposerFromBaseline();
-        this.setTierComposerOpen(false);
-        this.renderSummary();
-        this.setError('');
+        this.closeMembershipComposer();
         return;
       }
 

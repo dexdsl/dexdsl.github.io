@@ -314,3 +314,39 @@ export async function postAdminThreadMessage({ env = 'test', submissionId, body 
     body: { body: toText(body, '', 4000), visibility: visibility === 'internal' ? 'internal' : 'public' },
   });
 }
+
+export async function postAdminThreadAction({
+  env = 'test',
+  submissionId,
+  action,
+  apiBase = '',
+  adminToken = '',
+  idempotencyKey = '',
+} = {}) {
+  const id = toText(submissionId);
+  if (!id) throw new Error('submissionId is required');
+  if (!action || typeof action !== 'object') throw new Error('action is required');
+  const key = toText(idempotencyKey || action.idempotencyKey || crypto.randomUUID());
+  return requestOpsApi(`/admin/threads/${encodeURIComponent(id)}/actions`, {
+    env,
+    apiBase,
+    adminToken,
+    method: 'POST',
+    idempotencyKey: key,
+    body: { ...action, idempotencyKey: key },
+  });
+}
+
+export async function getAdminThreadsAudit({
+  env = 'test',
+  verifyLive = false,
+  apiBase = '',
+  adminToken = '',
+} = {}) {
+  return requestOpsApi('/admin/threads/audit', {
+    env,
+    apiBase,
+    adminToken,
+    query: verifyLive ? { verifyLive: '1' } : {},
+  });
+}

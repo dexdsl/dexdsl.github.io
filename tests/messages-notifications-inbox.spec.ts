@@ -145,6 +145,7 @@ const SUBMISSION_DETAIL_FIXTURE: Record<string, unknown> = {
       stage: 'sent',
       statusRaw: 'Submitted',
       publicNote: '',
+      actorType: 'system',
       eventAt: '2026-02-26T08:59:00.000Z',
     },
     {
@@ -153,7 +154,27 @@ const SUBMISSION_DETAIL_FIXTURE: Record<string, unknown> = {
       stage: 'received',
       statusRaw: 'Pending Review',
       publicNote: 'Received and queued.',
+      actorType: 'system',
       eventAt: '2026-02-26T09:00:00.000Z',
+    },
+    {
+      id: 'sub-evt-lookup',
+      eventType: 'lookup_generated',
+      stage: 'received',
+      statusRaw: 'lookup generated',
+      publicNote: '',
+      actorType: 'system',
+      metadata: { submissionLookupGenerated: 'SUB12-B.Pre Do A2026' },
+      eventAt: '2026-02-26T09:01:00.000Z',
+    },
+    {
+      id: 'sub-evt-member',
+      eventType: 'public_note',
+      stage: 'reviewing',
+      statusRaw: '',
+      publicNote: 'test message',
+      actorType: 'member',
+      eventAt: '2026-02-26T09:02:00.000Z',
     },
   ],
   stageRail: {
@@ -164,7 +185,8 @@ const SUBMISSION_DETAIL_FIXTURE: Record<string, unknown> = {
       { key: 'acknowledged', label: 'Acknowledged', state: 'todo', at: '' },
       { key: 'reviewing', label: 'Reviewing', state: 'active', at: '' },
       { key: 'accepted', label: 'Accepted', state: 'todo', at: '' },
-      { key: 'rejected', label: 'Rejected', state: 'todo', at: '' },
+      { key: 'producing', label: 'Preparing entry', state: 'todo', at: '' },
+      { key: 'preflight', label: 'Preflight', state: 'todo', at: '' },
       { key: 'in_library', label: 'In library', state: 'todo', at: '' },
     ],
   },
@@ -836,25 +858,31 @@ test('settings membership v3 renders trust-first status and production billing l
   await expect(page.locator('#dxMembershipV3Root [data-dx-billing-cta-primary]')).toContainText('View membership');
   await expect(page.locator('#dxMembershipV3Root #dxMemV3Secondary')).toBeHidden();
   await expect(page.locator('#dxMembershipV3Root [data-dx-tier-panel]')).toBeVisible();
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3TierComposer')).toBeHidden();
+  await expect(page.locator('#dxMembershipV3Root #dxMemV3TierComposer')).toHaveCount(0);
+  await expect(page.locator('#dxMembershipModal')).toBeHidden();
   await expect(page.locator('#dxMembershipV3Root')).toHaveAttribute('data-dx-tier-panel-open', 'false');
-  await page.locator('#dxMembershipV3Root [data-dx-billing-cta-primary]').click();
+  const membershipTrigger = page.locator('#dxMembershipV3Root [data-dx-billing-cta-primary]');
+  await membershipTrigger.focus();
+  await membershipTrigger.click();
   await expect(page.locator('#dxMembershipV3Root')).toHaveAttribute('data-dx-membership-cta-mode', 'cancel-composer');
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3SummaryView')).toBeHidden();
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3ComposerView')).toBeVisible();
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3Back')).toBeVisible();
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3Back')).toContainText('Back');
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3TierComposer')).toBeVisible();
-  await expect(page.locator('#dxMembershipV3Root')).toHaveAttribute('data-dx-tier-panel-open', 'true');
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3ComposerCheckout')).toBeVisible();
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3ComposerCheckout')).toContainText('Start membership');
-  await expect(page.locator('#dxMembershipV3Root .dx-memv3-interval-thumb')).toBeVisible();
-  await page.locator('#dxMembershipV3Root #dxMemV3Back').click();
-  await expect(page.locator('#dxMembershipV3Root')).toHaveAttribute('data-dx-membership-cta-mode', 'view-membership');
+  await expect(page.locator('#dxMembershipV3Root')).toHaveAttribute('data-dx-membership-view', 'modal');
   await expect(page.locator('#dxMembershipV3Root #dxMemV3SummaryView')).toBeVisible();
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3ComposerView')).toBeHidden();
+  const membershipModal = page.locator('#dxMembershipModal');
+  await expect(membershipModal).toBeVisible();
+  await expect(membershipModal).toHaveAttribute('aria-hidden', 'false');
+  await expect(membershipModal.locator('[role="dialog"]')).toHaveAttribute('aria-modal', 'true');
+  await expect(membershipModal.locator('#dxMemV3TierComposer')).toBeVisible();
+  await expect(page.locator('#dxMembershipV3Root')).toHaveAttribute('data-dx-tier-panel-open', 'true');
+  await expect(membershipModal.locator('#dxMemV3ComposerCheckout')).toBeVisible();
+  await expect(membershipModal.locator('#dxMemV3ComposerCheckout')).toContainText('Start membership');
+  await expect(membershipModal.locator('.dx-memv3-interval-thumb')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(membershipModal).toBeHidden();
+  await expect(page.locator('#dxMembershipV3Root')).toHaveAttribute('data-dx-membership-cta-mode', 'view-membership');
+  await expect(page.locator('#dxMembershipV3Root')).toHaveAttribute('data-dx-membership-view', 'summary');
+  await expect(page.locator('#dxMembershipV3Root #dxMemV3SummaryView')).toBeVisible();
   await expect(page.locator('#dxMembershipV3Root #dxMemV3Primary')).toContainText('View membership');
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3TierComposer')).toBeHidden();
+  await expect(membershipTrigger).toBeFocused();
   await expect(page.locator('#dxMembershipV3Root .dx-memv3-impact')).toHaveCount(0);
   await expect(page.locator('#asideWhy')).toBeVisible();
 
@@ -917,27 +945,30 @@ test('settings membership v3 shows current-membership actions for active and pay
   await expect(page.locator('#dxMembershipV3Root #dxMemV3Secondary')).toBeVisible();
   await expect(page.locator('#dxMembershipV3Root #dxMemV3Secondary')).toContainText('Manage billing');
   await expect(page.locator('#dxMembershipV3Root #dxMemV3PauseResume')).toBeVisible();
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3Selection')).toContainText('Archivist');
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3Selection')).toContainText('Monthly');
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3Selection')).toContainText('$14.99');
 
   await page.locator('#dxMembershipV3Root #dxMemV3Primary').click();
   await expect(page.locator('#dxMembershipV3Root')).toHaveAttribute('data-dx-membership-cta-mode', 'cancel-composer');
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3Back')).toBeVisible();
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3TierComposer')).toBeVisible();
-  await page.locator('#dxMembershipV3Root [data-interval="year"]').click();
-  await page.locator('#dxMembershipV3Root [data-tier="S"]').click();
-  await page.locator('#dxMembershipV3Root #dxMemV3Cover').check();
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3Selection')).toContainText('Steward');
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3Selection')).toContainText('Annual');
-  await page.locator('#dxMembershipV3Root #dxMemV3Back').click();
+  const membershipModal = page.locator('#dxMembershipModal');
+  await expect(membershipModal).toBeVisible();
+  await expect(membershipModal.locator('#dxMemV3TierComposer')).toBeVisible();
+  await expect(membershipModal.locator('#dxMemV3Selection')).toContainText('Archivist');
+  await expect(membershipModal.locator('#dxMemV3Selection')).toContainText('Monthly');
+  await expect(membershipModal.locator('#dxMemV3Selection')).toContainText('$14.99');
+  await membershipModal.locator('[data-interval="year"]').click();
+  await membershipModal.locator('[data-tier="S"]').click();
+  await membershipModal.locator('#dxMemV3Cover').check();
+  await expect(membershipModal.locator('#dxMemV3Selection')).toContainText('Steward');
+  await expect(membershipModal.locator('#dxMemV3Selection')).toContainText('Annual');
+  await membershipModal.locator('#dxMemV3ModalClose').click();
+  await expect(membershipModal).toBeHidden();
   await expect(page.locator('#dxMembershipV3Root')).toHaveAttribute('data-dx-membership-cta-mode', 'view-membership');
   await expect(page.locator('#dxMembershipV3Root #dxMemV3Primary')).toContainText('Change plan');
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3TierComposer')).toBeHidden();
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3Selection')).toContainText('Archivist');
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3Selection')).toContainText('Monthly');
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3Selection')).toContainText('$14.99');
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3Cover')).not.toBeChecked();
+  await page.locator('#dxMembershipV3Root #dxMemV3Primary').click();
+  await expect(membershipModal.locator('#dxMemV3Selection')).toContainText('Archivist');
+  await expect(membershipModal.locator('#dxMemV3Selection')).toContainText('Monthly');
+  await expect(membershipModal.locator('#dxMemV3Selection')).toContainText('$14.99');
+  await expect(membershipModal.locator('#dxMemV3Cover')).not.toBeChecked();
+  await membershipModal.locator('#dxMemV3ModalClose').click();
 
   await page.unroute(/\/me\/billing\/summary(?:\?.*)?$|\/me\/subscription(?:\?.*)?$/);
   await stubMembershipSummary(page, {
@@ -956,7 +987,7 @@ test('settings membership v3 shows current-membership actions for active and pay
   await expect(page.locator('#dxMembershipV3Root #dxMemV3Secondary')).toContainText('Manage billing');
 });
 
-test('settings membership v3 blocks same-plan checkout and shows inline guidance', async ({ page }) => {
+test('settings membership v3 blocks same-plan checkout and shows modal guidance', async ({ page }) => {
   let checkoutHits = 0;
 
   await stubHeaderRuntimes(page);
@@ -986,14 +1017,15 @@ test('settings membership v3 blocks same-plan checkout and shows inline guidance
   await page.goto('/entry/settings/#membership', { waitUntil: 'domcontentloaded' });
   await page.locator('#tab-membership').click();
 
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3Selection')).toContainText('Archivist');
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3Selection')).toContainText('Monthly');
   await page.locator('#dxMembershipV3Root #dxMemV3Primary').click();
   await expect(page.locator('#dxMembershipV3Root')).toHaveAttribute('data-dx-membership-cta-mode', 'cancel-composer');
-  await page.locator('#dxMembershipV3Root #dxMemV3ComposerCheckout').click();
+  const membershipModal = page.locator('#dxMembershipModal');
+  await expect(membershipModal.locator('#dxMemV3Selection')).toContainText('Archivist');
+  await expect(membershipModal.locator('#dxMemV3Selection')).toContainText('Monthly');
+  await membershipModal.locator('#dxMemV3ComposerCheckout').click();
 
   await expect.poll(() => checkoutHits).toBe(0);
-  await expect(page.locator('#dxMembershipV3Root #dxMemV3Error')).toContainText(
+  await expect(membershipModal.locator('#dxMemV3ModalError')).toContainText(
     'Select a different tier or billing interval to change your plan.',
   );
 });
@@ -1028,6 +1060,14 @@ test('messages inbox merges system + submissions and supports read/archive actio
     'href',
     /\/entry\/messages\/submission\/\?sid=sub-001/,
   );
+  const memberMessage = modal.locator('.dx-msg-bubble[data-actor="user"]').filter({ hasText: 'test message' });
+  await expect(memberMessage).toHaveCount(1);
+  await expect(memberMessage).toHaveClass(/dx-msg-bubble--member/);
+  await expect(modal.locator('.dx-msg-bubble--system').filter({ hasText: 'SUB12-B.Pre Do A2026' })).toContainText(
+    'Dex automatically generated',
+  );
+  await expect(modal.locator('.dx-msg-modal-rail')).toContainText('Preparing entry');
+  await expect(modal.locator('.dx-msg-modal-rail')).toContainText('Preflight');
   await modal.locator('.dx-msg-modal-close').click();
 
   // System messages: opening a card marks it read; the modal Archive removes it.

@@ -330,6 +330,42 @@ body.dx-route-profile-protected #dex-submission .dx-sub-shell {
   padding: 10px;
   display: grid;
   gap: 7px;
+  width: min(92%, 760px);
+  animation: dx-sub-event-in 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+#dex-submission .dx-sub-item--member {
+  width: min(84%, 680px);
+  justify-self: end;
+  border-color: rgba(255, 91, 58, 0.34);
+  background: rgba(255, 91, 58, 0.12);
+}
+
+#dex-submission .dx-sub-item--staff {
+  justify-self: start;
+}
+
+#dex-submission .dx-sub-item--system {
+  justify-self: center;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.78), rgba(255, 91, 58, 0.08));
+}
+
+#dex-submission .dx-sub-item[data-tone="success"] {
+  border-color: rgba(35, 156, 95, 0.4);
+  box-shadow: 0 8px 26px rgba(35, 156, 95, 0.08);
+}
+
+#dex-submission .dx-sub-item[data-tone="warning"] {
+  border-color: rgba(190, 125, 29, 0.44);
+}
+
+@keyframes dx-sub-event-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.99); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #dex-submission .dx-sub-item { animation: none; }
 }
 
 #dex-submission .dx-sub-item-head {

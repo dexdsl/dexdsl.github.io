@@ -1,3 +1,10 @@
+import {
+  SUBMISSION_MEMBER_STAGE_FLOW,
+  normalizeSubmissionStage,
+  normalizeSubmissionTimelineEvent,
+  submissionStageLabel,
+} from './submission-thread-presentation.mjs';
+
 (() => {
   if (typeof window === 'undefined') return;
   if (window.__dxMessagesInboxRuntimeLoaded) {
@@ -1002,9 +1009,12 @@
       #dex-msg-modal .dx-msg-rail-label{font-size:.6rem;letter-spacing:.04em;text-transform:uppercase;color:var(--dx-blackglass-faint,rgba(255,255,255,.4));white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
       #dex-msg-modal .dx-msg-rail-step[data-state='active'] .dx-msg-rail-label{color:var(--dx-blackglass-ink,#f3f3f4);}
       #dex-msg-modal .dx-msg-modal-body{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-anchor:none;padding:16px 20px;display:flex;flex-direction:column;gap:11px;}
-      #dex-msg-modal .dx-msg-bubble{display:grid;gap:5px;padding:11px 13px;border:1px solid var(--dx-blackglass-line,rgba(255,255,255,.14));border-radius:12px;background:rgba(255,255,255,.05);}
+      #dex-msg-modal .dx-msg-bubble{display:grid;gap:7px;padding:12px 14px;border:1px solid var(--dx-blackglass-line,rgba(255,255,255,.14));border-radius:12px;background:rgba(255,255,255,.05);animation:dx-msg-event-in .32s cubic-bezier(.2,.8,.2,1) both;}
       #dex-msg-modal .dx-msg-bubble--member{margin-left:auto;max-width:84%;background:rgba(255,91,58,.14);border-color:rgba(255,91,58,.32);}
-      #dex-msg-modal .dx-msg-bubble--system{max-width:90%;}
+      #dex-msg-modal .dx-msg-bubble--staff{margin-right:auto;max-width:88%;background:rgba(255,255,255,.07);}
+      #dex-msg-modal .dx-msg-bubble--system{max-width:92%;margin-inline:auto;background:linear-gradient(135deg,rgba(255,255,255,.075),rgba(255,91,58,.055));}
+      #dex-msg-modal .dx-msg-bubble[data-tone="success"]{border-color:rgba(103,211,153,.34);box-shadow:0 0 24px rgba(103,211,153,.07);}
+      #dex-msg-modal .dx-msg-bubble[data-tone="warning"]{border-color:rgba(255,191,92,.36);}
       #dex-msg-modal .dx-msg-bubble-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;}
       #dex-msg-modal .dx-msg-bubble-type{margin:0;font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dx-blackglass-faint,rgba(255,255,255,.4));}
       #dex-msg-modal .dx-msg-bubble-time{margin:0;font-size:.66rem;color:var(--dx-blackglass-faint,rgba(255,255,255,.4));}
@@ -1027,6 +1037,9 @@
       #dex-msg-modal .dx-msg-btn--accent{border-color:transparent;background:var(--dx-accent-gradient,linear-gradient(120deg,#ff1910,#ff6a00));color:#fff;box-shadow:0 6px 18px rgba(255,60,20,.32);}
       #dex-msg-modal .dx-msg-btn--accent:hover{filter:brightness(1.07);border-color:transparent;}
       #dex-msg-modal .dx-msg-bubble--member .dx-msg-bubble-type{color:var(--dx-accent-solid,#ff5b3a);}
+      #dex-msg-modal .dx-msg-bubble--staff .dx-msg-bubble-type{color:rgba(255,255,255,.82);}
+      @keyframes dx-msg-event-in{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:none}}
+      @media (prefers-reduced-motion:reduce){#dex-msg-modal .dx-msg-bubble{animation:none}}
       #dex-msg-modal .dx-msg-modal-note{margin:0;font-size:.72rem;color:var(--dx-blackglass-faint,rgba(255,255,255,.4));}
       @media (max-width:640px){
         #dex-msg-modal .dx-msg-modal-card{max-height:92dvh;}
@@ -1092,24 +1105,10 @@
   }
 
   // ---- status-lane kanban helpers --------------------------------------
-  const STAGE_FLOW = [
-    { key: 'received', label: 'Received' },
-    { key: 'acknowledged', label: 'Acknowledged' },
-    { key: 'reviewing', label: 'Reviewing' },
-    { key: 'accepted', label: 'Accepted' },
-    { key: 'in_library', label: 'In library' },
-  ];
+  const STAGE_FLOW = SUBMISSION_MEMBER_STAGE_FLOW;
 
   function statusToStage(status) {
-    const s = String(status || '').toLowerCase();
-    if (/librar/.test(s)) return 'in_library';
-    if (/reject|declin/.test(s)) return 'rejected';
-    if (/accept|approv/.test(s)) return 'accepted';
-    if (/review/.test(s)) return 'reviewing';
-    if (/acknowledg/.test(s)) return 'acknowledged';
-    if (/receiv|sent|submit/.test(s)) return 'received';
-    if (/need|revision|info/.test(s)) return 'needs_info';
-    return 'reviewing';
+    return normalizeSubmissionStage(status);
   }
 
   function submissionStageKey(record) {
@@ -1118,7 +1117,7 @@
 
   function threadStageKey(thread) {
     const stage = String(thread?.currentStage || '').toLowerCase();
-    if (stage === 'rejected' || STAGE_FLOW.some((s) => s.key === stage)) return stage;
+    if (stage === 'rejected' || stage === 'revision_requested' || STAGE_FLOW.some((s) => s.key === stage)) return stage;
     return statusToStage(thread?.status);
   }
 
@@ -1128,11 +1127,7 @@
   }
 
   function stageLabel(stage) {
-    const found = STAGE_FLOW.find((s) => s.key === stage);
-    if (found) return found.label;
-    if (stage === 'rejected') return 'Rejected';
-    if (stage === 'needs_info') return 'Needs info';
-    return '';
+    return submissionStageLabel(stage);
   }
 
   function stageSev(stage) {
@@ -1148,6 +1143,7 @@
       bucket_assigned: 'Bucket assigned', acknowledged: 'Acknowledged',
       user_acknowledged: 'Acknowledged', request_submitted: 'Submitted',
       received: 'Received', reviewing: 'In review', accepted: 'Accepted',
+      producing: 'Preparing entry', preflight: 'Preflight',
       rejected: 'Rejected', in_library: 'In library', message: 'Message',
       needs_info: 'Needs info',
     };
@@ -1160,7 +1156,7 @@
     if (record.sourceType === 'submission') {
       const stage = submissionStageKey(record);
       if (stage === 'in_library' || stage === 'rejected' || stage === 'closed') return 'resolved';
-      if (stage === 'needs_info') return 'needs';
+      if (stage === 'needs_info' || stage === 'revision_requested') return 'needs';
       return 'progress';
     }
     // system / pressroom notifications: unread asks for attention, read is settled.
@@ -1352,45 +1348,60 @@
     const payload = isObject(response.payload) ? response.payload : {};
     const threadPayload = isObject(payload.thread) ? payload.thread : (isObject(payload.submission) ? payload.submission : {});
     const rawTimeline = Array.isArray(payload.timeline) ? payload.timeline : (Array.isArray(payload.events) ? payload.events : []);
+    const thread = {
+      currentStage: toSafeText(threadPayload.currentStage || threadPayload.current_stage, ''),
+      status: toSafeText(threadPayload.currentStatusRaw || threadPayload.current_status_raw || threadPayload.status, ''),
+      lookup: toSafeText(threadPayload.lookup || threadPayload.effectiveLookupNumber || threadPayload.effective_lookup_number, ''),
+      libraryHref: toSafeText(threadPayload.libraryHref || threadPayload.library_href || threadPayload.entryHref || threadPayload.entry_href, ''),
+    };
     const timeline = rawTimeline
-      .map(normalizeTimelineEvent)
+      .map((row, index) => normalizeTimelineEvent(row, index, thread))
       .filter(Boolean)
       .sort((a, b) => (parseTimestamp(a.createdAt) || 0) - (parseTimestamp(b.createdAt) || 0));
     return {
-      thread: {
-        currentStage: toSafeText(threadPayload.currentStage || threadPayload.current_stage, ''),
-        status: toSafeText(threadPayload.currentStatusRaw || threadPayload.current_status_raw || threadPayload.status, ''),
-        lookup: toSafeText(threadPayload.lookup || threadPayload.effectiveLookupNumber || threadPayload.effective_lookup_number, ''),
-      },
+      thread,
       timeline,
     };
   }
 
-  function normalizeTimelineEvent(row, index) {
-    const value = isObject(row) ? row : {};
-    const eventType = String(value.eventType || value.event_type || value.stage || '').toLowerCase();
-    const note = toSafeText(value.publicNote || value.public_note || value.body || value.message, '');
-    const author = String(value.author || value.actor_type || value.actorType || '').toLowerCase();
-    const statusRaw = toSafeText(value.statusRaw || value.status_raw, '');
-    const createdAt = toSafeText(value.eventAt || value.event_at || value.createdAt || value.created_at, '');
-    const link = toSafeText(value.libraryHref || value.library_href || value.sourceLink || value.source_link, '');
-    if (!note && !statusRaw && !eventType) return null;
-    return { id: toSafeText(value.id, `tl-${index + 1}`), eventType, note, author, statusRaw, createdAt, link };
+  function normalizeTimelineEvent(row, index, thread = {}) {
+    const normalized = normalizeSubmissionTimelineEvent(row, index, thread);
+    if (!normalized.note && !normalized.statusRaw && !normalized.eventType) return null;
+    return {
+      ...normalized,
+      author: normalized.actorType,
+      link: normalized.presentation?.link?.href || normalized.link,
+    };
   }
 
   function bubbleHtml(event) {
-    const isMember = event.author === 'member' || event.author === 'user';
-    const cls = isMember ? 'dx-msg-bubble--member' : 'dx-msg-bubble--system';
-    const type = isMember ? 'You' : (formatEventType(event.eventType) || event.statusRaw || 'Update');
-    const note = event.note ? `<p class="dx-msg-bubble-body">${escapeHtml(event.note)}</p>` : '';
-    const link = event.link ? `<a class="dx-msg-bubble-link" href="${escapeHtml(event.link)}" target="_blank" rel="noopener">Open link ↗</a>` : '';
+    const isMember = event.author === 'user';
+    const isStaff = event.author === 'staff';
+    const cls = isMember ? 'dx-msg-bubble--member' : isStaff ? 'dx-msg-bubble--staff' : 'dx-msg-bubble--system';
+    const presentation = isObject(event.presentation) ? event.presentation : {};
+    const title = toSafeText(presentation.title, formatEventType(event.eventType) || event.statusRaw || 'Update');
+    const type = isMember
+      ? 'You'
+      : isStaff
+        ? `${toSafeText(presentation.actorLabel, 'Dex team')} · ${title}`
+        : title;
+    const body = toSafeText(presentation.body, event.note || '');
+    const note = body ? `<p class="dx-msg-bubble-body">${escapeHtml(body)}</p>` : '';
+    const presentationLink = isObject(presentation.link) ? presentation.link : {};
+    const linkHref = toSafeText(presentationLink.href, event.link || '');
+    const linkLabel = toSafeText(presentationLink.label, 'Open link');
+    const link = linkHref ? `<a class="dx-msg-bubble-link" href="${escapeHtml(linkHref)}" target="_blank" rel="noopener">${escapeHtml(linkLabel)} ↗</a>` : '';
     const chip = (event.statusRaw && !isMember) ? `<span class="dx-msg-chip ${severityChipClass(stageSev(event.eventType))}">${escapeHtml(event.statusRaw)}</span>` : '';
-    return `<article class="dx-msg-bubble ${cls}"><div class="dx-msg-bubble-head"><p class="dx-msg-bubble-type">${escapeHtml(type)}</p><p class="dx-msg-bubble-time">${escapeHtml(relativeTime(event.createdAt))}</p></div>${note}${(chip || link) ? `<div>${chip}${link}</div>` : ''}</article>`;
+    const tone = toSafeText(presentation.tone, isMember ? 'member' : isStaff ? 'staff' : 'system');
+    return `<article class="dx-msg-bubble ${cls}" data-actor="${escapeHtml(event.author)}" data-tone="${escapeHtml(tone)}"><div class="dx-msg-bubble-head"><p class="dx-msg-bubble-type">${escapeHtml(type)}</p><p class="dx-msg-bubble-time">${escapeHtml(relativeTime(event.createdAt))}</p></div>${note}${(chip || link) ? `<div>${chip}${link}</div>` : ''}</article>`;
   }
 
   function railHtml(stage) {
     if (stage === 'rejected') {
-      return '<div class="dx-msg-rail-step" data-state="active" style="flex:1"><div class="dx-msg-rail-bar"></div><span class="dx-msg-rail-label">Rejected</span></div>';
+      return '<div class="dx-msg-rail-step" data-state="active" style="flex:1"><div class="dx-msg-rail-bar"></div><span class="dx-msg-rail-label">Not selected</span></div>';
+    }
+    if (stage === 'revision_requested') {
+      return '<div class="dx-msg-rail-step" data-state="active" style="flex:1"><div class="dx-msg-rail-bar"></div><span class="dx-msg-rail-label">Revisions requested</span></div>';
     }
     const idx = stageIndex(stage);
     return STAGE_FLOW

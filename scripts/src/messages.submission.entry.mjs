@@ -1,3 +1,7 @@
+import {
+  normalizeSubmissionTimelineEvent,
+} from './submission-thread-presentation.mjs';
+
 (() => {
   if (typeof window === 'undefined') return;
   if (window.__dxSubmissionTimelineRuntimeLoaded) {
@@ -623,11 +627,23 @@
     const secondary = isObject(secondaryEvent) ? secondaryEvent : {};
     const primaryMeta = parseMetadata(primary.metadata || primary.metadata_json || primary.metadataJson || primary.meta);
     const secondaryMeta = parseMetadata(secondary.metadata || secondary.metadata_json || secondary.metadataJson || secondary.meta);
+    const mergedPublicNote = toSafeText(primary.publicNote, '') || toSafeText(secondary.publicNote, '');
+    const mergedPresentation = isObject(primary.presentation)
+      ? { ...primary.presentation }
+      : isObject(secondary.presentation)
+        ? { ...secondary.presentation }
+        : {};
+    if (mergedPublicNote.length > 24 || !toSafeText(mergedPresentation.body, '')) {
+      mergedPresentation.body = mergedPublicNote;
+    }
     return {
       ...primary,
       id: toSafeText(primary.id, '') || toSafeText(secondary.id, ''),
       eventType: normalizeEventType(primary.eventType || secondary.eventType),
-      publicNote: toSafeText(primary.publicNote, '') || toSafeText(secondary.publicNote, ''),
+      publicNote: mergedPublicNote,
+      actorType: toSafeText(primary.actorType, '') || toSafeText(secondary.actorType, ''),
+      actorLabel: toSafeText(primary.actorLabel, '') || toSafeText(secondary.actorLabel, ''),
+      presentation: mergedPresentation,
       statusRaw: toSafeText(primary.statusRaw, '') || toSafeText(secondary.statusRaw, ''),
       libraryHref: normalizeHref(toSafeText(primary.libraryHref, '') || toSafeText(secondary.libraryHref, '')),
       sourceLink: normalizeHref(toSafeText(primary.sourceLink, '') || toSafeText(secondary.sourceLink, '')),
@@ -804,11 +820,18 @@
           '',
         );
         const displayNote = buildLookupTransitionNote(eventType, metadata, publicNote);
+        const shared = normalizeSubmissionTimelineEvent(value, index, {
+          lookup,
+          libraryHref: normalizeHref(libraryHref),
+        });
         return {
           id,
           sourceEventKey,
           eventType,
           publicNote: displayNote || publicNote,
+          actorType: shared.actorType,
+          actorLabel: shared.actorLabel,
+          presentation: shared.presentation,
           statusRaw,
           libraryHref: normalizeHref(libraryHref),
           sourceLink: normalizeHref(sourceLink),
@@ -838,7 +861,8 @@
       { key: 'acknowledged', label: 'Acknowledged' },
       { key: 'reviewing', label: 'Reviewing' },
       { key: 'accepted', label: 'Accepted' },
-      { key: 'rejected', label: 'Rejected' },
+      { key: 'producing', label: 'Preparing entry' },
+      { key: 'preflight', label: 'Preflight' },
       { key: 'in_library', label: 'In library' },
     ];
 
@@ -867,7 +891,11 @@
         state = 'active';
       } else if (timelineSet.has(key)) {
         state = 'done';
-      } else if (key === 'accepted' && current === 'in_library') {
+      } else if (
+        (key === 'accepted' && ['producing', 'preflight', 'in_library'].includes(current))
+        || (key === 'producing' && ['preflight', 'in_library'].includes(current))
+        || (key === 'preflight' && current === 'in_library')
+      ) {
         state = 'done';
       }
       return {
@@ -1698,19 +1726,31 @@
     const timelineHtml = model.timeline.length
       ? model.timeline
         .map((item) => {
-          const eventLabel = formatEventLabel(item.eventType);
-          const note = item.publicNote ? `<p class="dx-sub-item-body">${escapeHtml(item.publicNote)}</p>` : '';
+          const presentation = !isPressroom && isObject(item.presentation) ? item.presentation : {};
+          const isMember = !isPressroom && item.actorType === 'user';
+          const isStaff = !isPressroom && item.actorType === 'staff';
+          const eventLabel = isMember
+            ? 'You'
+            : isStaff
+              ? `${toSafeText(item.actorLabel, 'Dex team')} · ${toSafeText(presentation.title, formatEventLabel(item.eventType))}`
+              : toSafeText(presentation.title, formatEventLabel(item.eventType));
+          const eventBody = toSafeText(presentation.body, item.publicNote || '');
+          const note = eventBody ? `<p class="dx-sub-item-body">${escapeHtml(eventBody)}</p>` : '';
           const statusChip = item.statusRaw
             ? `<span class="dx-sub-chip ${severityChipClass(stageSeverity(item.eventType))}">${escapeHtml(item.statusRaw)}</span>`
             : '';
-          const eventLink = normalizeHref(item.sourceLink || item.libraryHref || '');
-          const linkLabel = isPressroom ? 'Request link' : 'Submission link';
+          const eventLink = normalizeHref(presentation.link?.href || item.sourceLink || item.libraryHref || '');
+          const linkLabel = isPressroom
+            ? 'Request link'
+            : toSafeText(presentation.link?.label, item.eventType === 'in_library' ? 'Open your library entry' : 'Submission link');
           const link = eventLink
             ? `<a class="dx-sub-link" href="${escapeHtml(eventLink)}" target="_blank" rel="noopener">${linkLabel}</a>`
             : '';
+          const actorClass = isMember ? 'dx-sub-item--member' : isStaff ? 'dx-sub-item--staff' : 'dx-sub-item--system';
+          const tone = toSafeText(presentation.tone, isMember ? 'member' : isStaff ? 'staff' : 'system');
 
           return `
-            <article class="dx-sub-item" data-dx-sub-item data-event-id="${escapeHtml(item.id)}">
+            <article class="dx-sub-item ${isPressroom ? '' : actorClass}" data-dx-sub-item data-event-id="${escapeHtml(item.id)}" data-tone="${escapeHtml(tone)}">
               <div class="dx-sub-item-head">
                 <p class="dx-sub-item-type">${escapeHtml(eventLabel)}</p>
                 <p class="dx-sub-item-time">${escapeHtml(toDateTime(item.createdAt))}</p>

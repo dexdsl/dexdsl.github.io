@@ -1628,6 +1628,52 @@ body.dx-route-profile-protected :is(#dex-submit .dx-submit-command, #dex-press .
   }
 }
 
+/* Secondary / ghost CTAs were only spec'd for light surfaces (white fill + #000
+   text), which is illegible on the dark-glass profile shells. Re-skin them inside
+   those shells as translucent glass with light ink + a readable border. */
+body.dx-route-profile-protected
+  :is(#dex-favorites, #dex-msg, #dex-submit, #dex-press, #dex-achv, #dex-console, #dex-settings)
+  :is(
+    .dx-button-element--secondary,
+    .dx-block-button-element--secondary,
+    .sqs-button-element--secondary,
+    .ghost,
+    .ghost-btn,
+    .btn--border.theme-btn--primary-inverse
+  ) {
+  background: rgba(255, 255, 255, 0.07) !important;
+  color: var(--dx-blackglass-ink, #f3f3f4) !important;
+  border: 1px solid var(--dx-blackglass-line-strong, rgba(255, 255, 255, 0.26)) !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: blur(8px) saturate(140%);
+  backdrop-filter: blur(8px) saturate(140%);
+}
+
+body.dx-route-profile-protected
+  :is(#dex-favorites, #dex-msg, #dex-submit, #dex-press, #dex-achv, #dex-console, #dex-settings)
+  :is(
+    .dx-button-element--secondary,
+    .dx-block-button-element--secondary,
+    .sqs-button-element--secondary,
+    .ghost,
+    .ghost-btn,
+    .btn--border.theme-btn--primary-inverse
+  ):hover,
+body.dx-route-profile-protected
+  :is(#dex-favorites, #dex-msg, #dex-submit, #dex-press, #dex-achv, #dex-console, #dex-settings)
+  :is(
+    .dx-button-element--secondary,
+    .dx-block-button-element--secondary,
+    .sqs-button-element--secondary,
+    .ghost,
+    .ghost-btn,
+    .btn--border.theme-btn--primary-inverse
+  ):focus-visible {
+  background: rgba(255, 255, 255, 0.13) !important;
+  border-color: var(--dx-blackglass-rim, rgba(255, 255, 255, 0.34)) !important;
+  color: #fff !important;
+}
+
 body.dx-route-profile-protected #dex-settings .hdr,
 body.dx-route-profile-protected #dex-settings .tabsbar,
 body.dx-route-profile-protected #dex-settings .card,
