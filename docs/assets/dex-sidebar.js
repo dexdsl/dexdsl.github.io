@@ -5549,6 +5549,7 @@
 
     const sections = Array.from(document.querySelectorAll('.dex-sidebar section'));
     if (!sections.length) return;
+    const sidebar = document.querySelector('.dex-sidebar');
 
     const observer = new IntersectionObserver(
       (entries, instance) => {
@@ -5578,6 +5579,7 @@
         });
       },
       {
+        root: sidebar instanceof HTMLElement ? sidebar : null,
         threshold: 0.15,
         rootMargin: '0px 0px -8% 0px',
       },
@@ -5590,6 +5592,15 @@
       section.style.transform = 'translate3d(0, 14px, 0)';
       observer.observe(section);
     });
+    window.setTimeout(() => {
+      sections.forEach((section) => {
+        if (section.dataset.dexMotionReveal === '1') return;
+        section.dataset.dexMotionReveal = '1';
+        section.style.opacity = '1';
+        section.style.transform = 'translate3d(0, 0, 0)';
+        observer.unobserve(section);
+      });
+    }, 700);
   };
 
   const installSidebarInteractiveMotion = () => {

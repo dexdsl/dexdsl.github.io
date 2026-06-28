@@ -100,6 +100,8 @@ function ensureRuntimeMarkers(runtimeJs) {
     'data-dx-bucket-tab',
     'dx-file-tree-panel',
     'WHOLE FILES',
+    'root: sidebar instanceof HTMLElement ? sidebar : null',
+    "section.style.opacity = '1'",
   ];
   for (const marker of required) {
     if (!runtimeJs.includes(marker)) {
