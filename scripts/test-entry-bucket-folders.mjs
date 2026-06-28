@@ -7,6 +7,7 @@ import {
   scanBucketFolder,
 } from './lib/entry-bucket-folders.mjs';
 import { DRIVE_FOLDER_MIME } from './lib/google-drive-inventory.mjs';
+import { normalizeProtectedAssetsFile } from './lib/protected-assets-schema.mjs';
 
 const ROOT = 'root-folder-000001';
 const AUDIO = 'audio-folder-00001';
@@ -95,10 +96,59 @@ const protectedImport = bucketFoldersToProtectedImport({
       files: scan.files,
     },
   },
+}, {
+  slug: 'unit-entry',
+  lookupNumber: 'W.Ob. Ma AV2024 S2',
+  title: 'UNIT ENTRY',
+  season: 'S2',
+  status: 'active',
+  existingFiles: [{
+    bucketNumber: 'X.1',
+    fileId: 'unit-entry-recording-index-pdf',
+    bucket: 'X',
+    r2Key: 'unit-entry/recording-index/recording-index.pdf',
+    driveFileId: '',
+    sizeBytes: 10,
+    mime: 'application/pdf',
+    position: 4,
+    label: 'Recording Index PDF',
+    sourceLabel: 'Recording Index PDF',
+    type: 'pdf',
+    availableTypes: ['pdf'],
+    role: 'recording_index_pdf',
+  }],
 });
-assert.equal(protectedImport.files.length, 3);
+assert.equal(protectedImport.files.length, 4);
 assert.equal(protectedImport.files.find((entry) => entry.label === 'B.1.wav')?.type, 'audio');
 assert.equal(protectedImport.files.find((entry) => entry.label === 'B.2.mp4')?.type, 'video');
+assert.deepEqual(
+  protectedImport.files.filter((entry) => entry.bucket === 'B').map((entry) => entry.bucketNumber).sort(),
+  ['B.1', 'B.2', 'B.3'],
+);
+assert.ok(protectedImport.files.every((entry) => entry.r2Key), 'every scanned file must have an R2 key');
+assert.equal(
+  new Set(protectedImport.files.map((entry) => entry.r2Key)).size,
+  protectedImport.files.length,
+  'generated R2 keys must be unique',
+);
+assert.ok(
+  protectedImport.files.some((entry) => entry.role === 'recording_index_pdf'),
+  'an existing recording-index PDF must survive a scanned-folder rebuild',
+);
+normalizeProtectedAssetsFile({
+  version: 'protected-assets-v1',
+  updatedAt: new Date().toISOString(),
+  settings: {
+    storageBucket: 'dex-protected-assets',
+    allowedBuckets: ['A', 'B', 'C', 'D', 'E', 'X'],
+    syncStrategy: 'manifest-publish',
+  },
+  lookups: [{
+    ...protectedImport,
+    entitlements: [{ type: 'role', value: 'authenticated' }],
+  }],
+  exemptions: [],
+});
 
 await assert.rejects(
   listBucketFolderRecursive({

@@ -14,7 +14,10 @@ import {
   assertCatalogManifestRowLinkage,
 } from './entry-catalog-linkage.mjs';
 import { assertAssetReferenceToken, assertAssetReferenceTokenKinds } from './asset-ref.mjs';
-import { upsertProtectedAssetsLookupMapping } from './protected-assets-publisher.mjs';
+import {
+  readProtectedAssetsFile,
+  upsertProtectedAssetsLookupMapping,
+} from './protected-assets-publisher.mjs';
 import { bucketFoldersToProtectedImport } from './entry-bucket-folders.mjs';
 import { parseRecordingIndexSheetUrl } from './recording-index-import.mjs';
 
@@ -205,6 +208,18 @@ async function syncCatalogLinkageAfterWrite(data, opts) {
 
 async function syncProtectedAssetsAfterWrite(data, opts = {}) {
   if (opts?.dryRun) return { synced: false, lines: [] };
+  const protectedAssetsFilePath = opts?.protectedAssetsFilePath;
+  const requestedLookup = toText(data?.protectedAssetsImport?.lookupNumber || data?.sidebar?.lookupNumber);
+  let existingLookup = null;
+  try {
+    const source = await readProtectedAssetsFile(protectedAssetsFilePath);
+    existingLookup = (source.data.lookups || []).find(
+      (row) => toText(row?.lookupNumber).toLowerCase() === requestedLookup.toLowerCase(),
+    ) || null;
+  } catch (error) {
+    if (String(error?.code || '') !== 'ENOENT' && !String(error?.message || '').includes('ENOENT')) throw error;
+  }
+
   let importData = data?.protectedAssetsImport && typeof data.protectedAssetsImport === 'object'
     ? data.protectedAssetsImport
     : null;
@@ -212,9 +227,12 @@ async function syncProtectedAssetsAfterWrite(data, opts = {}) {
   // Scan → Save → Publish makes the declared buckets downloadable (no sheet step).
   if (!importData) {
     importData = bucketFoldersToProtectedImport(data?.sidebar?.downloads, {
+      slug: toText(data?.slug),
       lookupNumber: toText(data?.sidebar?.lookupNumber),
       title: toText(data?.title),
       season: toText(data?.creditsData?.season || data?.sidebar?.credits?.season || ''),
+      status: toText(existingLookup?.status),
+      existingFiles: Array.isArray(existingLookup?.files) ? existingLookup.files : [],
     });
   }
   if (!importData) return { synced: false, lines: [] };
@@ -229,15 +247,24 @@ async function syncProtectedAssetsAfterWrite(data, opts = {}) {
   const result = await upsertProtectedAssetsLookupMapping({
     lookupNumber,
     title: toText(importData.title || data?.title),
-    status: toText(importData.status || 'draft'),
+    status: toText(importData.status || existingLookup?.status || 'draft'),
     season: toText(importData.season || data?.creditsData?.season || data?.sidebar?.credits?.season || ''),
     files,
     entitlements: Array.isArray(importData.entitlements) ? importData.entitlements : [],
     recordingIndex: importData.recordingIndex && typeof importData.recordingIndex === 'object'
       ? importData.recordingIndex
       : null,
-    filePath: importData.filePath || opts?.protectedAssetsFilePath,
+    filePath: importData.filePath || protectedAssetsFilePath,
   });
+  const canonicalProtectedPath = path.resolve(process.cwd(), 'data', 'protected.assets.json');
+  if (path.resolve(result.filePath) === canonicalProtectedPath) {
+    const json = await fs.readFile(result.filePath, 'utf8');
+    for (const servedRoot of ['docs', 'public']) {
+      const mirrorPath = path.resolve(process.cwd(), servedRoot, 'data', 'protected.assets.json');
+      await fs.mkdir(path.dirname(mirrorPath), { recursive: true });
+      await fs.writeFile(mirrorPath, json, 'utf8');
+    }
+  }
   return {
     synced: true,
     lines: [
@@ -245,6 +272,23 @@ async function syncProtectedAssetsAfterWrite(data, opts = {}) {
       `Protected assets file: ${path.resolve(result.filePath)}`,
     ],
   };
+}
+
+export async function publishEntryRoute(slug, {
+  rootDir = process.cwd(),
+  entriesDir = path.resolve(rootDir, 'entries'),
+  routeEntryDir = path.resolve(rootDir, 'docs', 'entry'),
+} = {}) {
+  const normalizedSlug = toText(slug);
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(normalizedSlug)) {
+    throw new Error(`Invalid entry slug for route publish: ${normalizedSlug || '(empty)'}`);
+  }
+  const sourcePath = path.resolve(entriesDir, normalizedSlug, 'index.html');
+  const routePath = path.resolve(routeEntryDir, normalizedSlug, 'index.html');
+  const html = await fs.readFile(sourcePath, 'utf8');
+  await fs.mkdir(path.dirname(routePath), { recursive: true });
+  await fs.writeFile(routePath, html, 'utf8');
+  return { sourcePath, routePath, bytes: Buffer.byteLength(html) };
 }
 
 export async function writeEntryFromData({ templatePath, templateHtml, data, opts = {}, log = () => {} }) {

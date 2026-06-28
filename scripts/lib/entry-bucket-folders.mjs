@@ -39,10 +39,63 @@ function fileTypeFromName(name) {
   const n = String(name || '').toLowerCase();
   if (/\.(wav|aif|aiff|flac|m4a|ogg|mp3)$/.test(n)) return 'audio';
   if (/\.(mov|mp4|m4v|webm|mkv|avi)$/.test(n)) return 'video';
-  if (/\.zip$/.test(n)) return 'bundle';
   if (/\.pdf$/.test(n)) return 'pdf';
-  if (/\.(jpe?g|png|webp|gif)$/.test(n)) return 'image';
   return 'unknown';
+}
+
+function safeToken(value, fallback = 'file') {
+  const normalized = toText(value)
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  return normalized || fallback;
+}
+
+function bucketNumberFromName(name, bucket, fallbackNumber) {
+  const wanted = toText(bucket).toUpperCase();
+  const matches = String(name || '').matchAll(/\b([A-EX])\.([0-9]{1,6})\b/gi);
+  for (const match of matches) {
+    if (String(match[1] || '').toUpperCase() === wanted) {
+      return `${wanted}.${Number(match[2])}`;
+    }
+  }
+  return `${wanted}.${Math.max(1, Number(fallbackNumber) || 1)}`;
+}
+
+function extensionFromName(name, type) {
+  const match = toText(name).match(/\.([A-Za-z0-9]{1,10})$/);
+  if (match) return match[1].toLowerCase();
+  if (type === 'audio') return 'wav';
+  if (type === 'video') return 'mov';
+  if (type === 'pdf') return 'pdf';
+  return 'bin';
+}
+
+function renditionFromName(name, type) {
+  const bracket = toText(name).match(/\[([^\]]+)\]/);
+  const raw = safeToken(bracket?.[1] || '', '');
+  if (raw === 'ste' || raw === 'stereo') return 'stereo';
+  if (raw) return raw;
+  if (type !== 'unknown') return type;
+  const withoutExtension = toText(name).replace(/\.[A-Za-z0-9]{1,10}$/, '');
+  return safeToken(withoutExtension, 'file');
+}
+
+function uniqueValue(base, used, suffix = '') {
+  let candidate = base;
+  if (used.has(candidate.toLowerCase())) {
+    const safeSuffix = safeToken(suffix, 'duplicate').slice(-16);
+    candidate = `${base}-${safeSuffix}`;
+  }
+  let counter = 2;
+  while (used.has(candidate.toLowerCase())) {
+    candidate = `${base}-${counter}`;
+    counter += 1;
+  }
+  used.add(candidate.toLowerCase());
+  return candidate;
 }
 
 // Build a protected-assets import (files keyed by bucket + Drive file id) from an
@@ -54,6 +107,15 @@ export function bucketFoldersToProtectedImport(downloads, meta = {}) {
   if (!bucketFolders) return null;
   const selectedRaw = Array.isArray(downloads.selectedBuckets) ? downloads.selectedBuckets : [];
   const selected = new Set(selectedRaw.map((b) => toText(b).toUpperCase()));
+  const slug = safeToken(meta.slug || meta.title || meta.lookupNumber, 'entry');
+  const existingFiles = Array.isArray(meta.existingFiles) ? meta.existingFiles : [];
+  const existingByDriveId = new Map(
+    existingFiles
+      .filter((file) => toText(file?.driveFileId))
+      .map((file) => [toText(file.driveFileId), file]),
+  );
+  const usedFileIds = new Set();
+  const usedR2Keys = new Set();
   const files = [];
   for (const bucket of BUCKET_ORDER) {
     if (selected.size && !selected.has(bucket)) continue; // only published buckets
@@ -63,26 +125,71 @@ export function bucketFoldersToProtectedImport(downloads, meta = {}) {
       const fileId = toText(file.id || file.fileId);
       if (!fileId) return;
       const name = toText(file.name || file.label);
+      const type = fileTypeFromName(name);
+      const bucketNumber = bucketNumberFromName(name, bucket, index + 1);
+      const existing = existingByDriveId.get(fileId);
+      if (existing?.fileId && existing?.r2Key) {
+        usedFileIds.add(toText(existing.fileId).toLowerCase());
+        usedR2Keys.add(toText(existing.r2Key).toLowerCase());
+        files.push({
+          ...existing,
+          bucket,
+          bucketNumber,
+          driveFileId: fileId,
+          sizeBytes: Number(file.size ?? file.sizeBytes ?? existing.sizeBytes ?? 0) || 0,
+          mime: toText(file.mimeType || file.mime || existing.mime) || 'application/octet-stream',
+          position: files.length + 1,
+          label: toText(existing.label) || name,
+          sourceLabel: toText(existing.sourceLabel || existing.label) || name,
+          type: toText(existing.type) || type,
+          availableTypes: Array.isArray(existing.availableTypes) ? existing.availableTypes : [],
+          role: toText(existing.role) || 'media',
+        });
+        return;
+      }
+
+      const number = bucketNumber.split('.')[1].padStart(3, '0');
+      const rendition = renditionFromName(name, type);
+      const extension = extensionFromName(name, type);
+      const baseFileId = `${slug}-${bucket.toLowerCase()}-${number}-${rendition}`.slice(0, 47).replace(/-+$/g, '');
+      const generatedFileId = uniqueValue(baseFileId, usedFileIds, fileId).slice(0, 64);
+      const baseR2Key = `${slug}/${bucket.toLowerCase()}/${number}-${rendition}.${extension}`;
+      const r2Key = uniqueValue(baseR2Key, usedR2Keys, fileId);
       files.push({
         bucket,
-        bucketNumber: `${bucket}${index + 1}`,
-        fileId,
+        bucketNumber,
+        fileId: generatedFileId,
         driveFileId: fileId,
+        r2Key,
         sizeBytes: Number(file.size ?? file.sizeBytes ?? 0) || 0,
-        mime: toText(file.mimeType || file.mime),
+        mime: toText(file.mimeType || file.mime) || 'application/octet-stream',
+        position: files.length + 1,
         label: name,
         sourceLabel: name,
-        type: fileTypeFromName(name),
+        type,
         availableTypes: [],
-        role: 'recording',
+        role: 'media',
       });
     });
+  }
+  // Recording-index PDFs and other explicit support records may not live in a
+  // scanned bucket folder. Keep them when rebuilding the mapping so publishing
+  // scanned media cannot invalidate an existing recordingIndex reference.
+  for (const existing of existingFiles) {
+    if (toText(existing?.role).toLowerCase() !== 'recording_index_pdf') continue;
+    const fileId = toText(existing.fileId);
+    const r2Key = toText(existing.r2Key);
+    if (!fileId || !r2Key || usedFileIds.has(fileId.toLowerCase()) || usedR2Keys.has(r2Key.toLowerCase())) continue;
+    usedFileIds.add(fileId.toLowerCase());
+    usedR2Keys.add(r2Key.toLowerCase());
+    files.push({ ...existing, position: files.length + 1 });
   }
   if (!files.length) return null;
   return {
     lookupNumber: toText(meta.lookupNumber),
     title: toText(meta.title),
     season: toText(meta.season),
+    status: toText(meta.status),
     files,
   };
 }
