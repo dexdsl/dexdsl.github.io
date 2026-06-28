@@ -70,13 +70,14 @@ function rowLookup(row) {
 function assertPublishableRows(failures, rows, label) {
   for (const row of rows || []) {
     const href = String(row?.entry_href || row?.href || '').trim();
-    if (!href.startsWith('/entry/')) {
+    const isUav = row?.kind === 'uav' || href.startsWith('/uav/');
+    if (!(isUav ? href.startsWith('/uav/') : href.startsWith('/entry/'))) {
       failures.push(`${label} row has non-entry href: ${rowLabel(row)}`);
     }
     if (!rowLookup(row)) {
       failures.push(`${label} row missing lookup number: ${rowLabel(row)}`);
     }
-    if (!String(row?.season || '').trim()) {
+    if (!isUav && !String(row?.season || '').trim()) {
       failures.push(`${label} row missing season: ${rowLabel(row)}`);
     }
   }
@@ -165,6 +166,11 @@ function main() {
   assertPublishableRows(failures, entriesModel.entries || [], 'catalog.entries');
   assertPublishableRows(failures, searchModel.entries || [], 'catalog.search');
   assertPublishableRows(failures, curationSnapshot.manifest || [], 'catalog curation snapshot');
+  for (const row of model.entries || []) {
+    if (row?.kind !== 'catalog' && row?.kind !== 'uav') {
+      failures.push(`catalog.data row has invalid kind: ${rowLabel(row)}`);
+    }
+  }
   compareEntryMirror(failures, model, entriesModel, 'public/data/catalog.entries.json');
   compareEntryMirror(failures, entriesModel, dataEntriesModel, 'data/catalog.entries.json');
   compareEntryMirror(failures, entriesModel, assetEntriesModel, 'assets/data/catalog.entries.json');
@@ -176,7 +182,7 @@ function main() {
     const href = String(entry.entry_href || '');
     modelEntryHrefs.add(href);
 
-    if (!href.startsWith('/entry/')) {
+    if (!href.startsWith('/entry/') && !href.startsWith('/uav/')) {
       failures.push(`entry href is not canonical local route: ${href}`);
       continue;
     }

@@ -78,9 +78,50 @@
       "description_raw": "Audio-visual",
       "key_norm": "av",
       "description_norm": "audio-visual"
+    },
+    {
+      "key_raw": "DR",
+      "description_raw": "dexDRONES wing namespace"
+    },
+    {
+      "key_raw": "V",
+      "description_raw": "Aerial video capture series and deliverable bucket"
+    },
+    {
+      "key_raw": "I",
+      "description_raw": "Field stills capture series and deliverable bucket"
+    },
+    {
+      "key_raw": "A",
+      "description_raw": "Ambient sound capture series and deliverable bucket"
+    },
+    {
+      "key_raw": "D",
+      "description_raw": "Imaging study capture series and deliverable bucket"
+    },
+    {
+      "key_raw": "X",
+      "description_raw": "Raw and support files, including recording-index PDFs"
     }
   ],
-  "quality": [],
+  "quality": [
+    {
+      "key_raw": "FS",
+      "description_raw": "Full-spectrum acquisition"
+    },
+    {
+      "key_raw": "RGB",
+      "description_raw": "Visible-light acquisition"
+    },
+    {
+      "key_raw": "IR",
+      "description_raw": "Infrared acquisition"
+    },
+    {
+      "key_raw": "TH",
+      "description_raw": "Thermal acquisition"
+    }
+  ],
   "qualifier": [
     {
       "key_raw": "1080p",

@@ -1,0 +1,189 @@
+{
+  "version": "uav-collections-v1",
+  "generatedAt": "2026-06-28T05:42:58.205Z",
+  "authorities": {
+    "version": "uav-authorities-v1",
+    "updatedAt": "2026-06-28T05:42:58.197Z",
+    "subjects": [
+      {
+        "id": "subject-win",
+        "code": "Win",
+        "label": "Wind power plants",
+        "authority": {
+          "source": "lcsh",
+          "uri": "http://id.loc.gov/authorities/subjects/sh97003604",
+          "label": "Wind power plants"
+        },
+        "additionalAuthorities": []
+      },
+      {
+        "id": "subject-mojave-desert",
+        "code": "Moj",
+        "label": "Mojave Desert",
+        "authority": {
+          "source": "lcsh",
+          "uri": "http://id.loc.gov/authorities/subjects/sh85086496",
+          "label": "Mojave Desert"
+        },
+        "additionalAuthorities": []
+      }
+    ],
+    "sites": [
+      {
+        "id": "site-mojave-desert",
+        "name": "Mojave Desert",
+        "cutter": "Mo",
+        "admin": "California, United States",
+        "authority": {
+          "source": "geonames",
+          "uri": "https://www.geonames.org/5366898",
+          "label": "Mojave Desert"
+        },
+        "coordinateVisibility": "rounded",
+        "publicCoordinates": {
+          "lat": 35.01,
+          "lon": -115.47,
+          "precision": 2
+        }
+      }
+    ]
+  },
+  "collections": [
+    {
+      "version": "uav-collection-v1",
+      "kind": "uav",
+      "slug": "mojave-wind-farm",
+      "title": "Mojave Desert – Wind Farms",
+      "status": "active",
+      "lookupRaw": "DR.Win. Mo 2026 T1",
+      "lookupNorm": "dr.win. mo 2026 t1",
+      "identity": {
+        "wing": "DR",
+        "primarySubjectCode": "Win",
+        "siteCutter": "Mo",
+        "year": 2026,
+        "tour": "T1"
+      },
+      "subjectAuthorityIds": [
+        "subject-win",
+        "subject-mojave-desert"
+      ],
+      "siteAuthorityId": "site-mojave-desert",
+      "capturedFrom": "2026-04-02",
+      "capturedTo": "2026-04-02",
+      "license": "CC-BY-4.0",
+      "attribution": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Paul Yorke, Sofi Jacquez.",
+      "operators": [
+        "Sebastian Suarez-Solis"
+      ],
+      "contributors": [
+        "Dex Digital Sample Library",
+        "Kolari Vision"
+      ],
+      "creditLinks": {},
+      "imageSrc": "https://i.ytimg.com/vi/YVLwwSe4m9I/maxresdefault.jpg",
+      "previewUrl": "https://www.youtube.com/watch?v=YVLwwSe4m9I",
+      "description": "Mojave Desert wind farms documented by Dex Digital Sample Library during a full-spectrum UAV capture tour on April 2, 2026. The collection preserves aerial-video deliverables and their associated raw and support materials under CC BY 4.0.",
+      "series": [
+        {
+          "id": "aerial-video-fs",
+          "title": "Mojave wind farms — full-spectrum aerial video",
+          "captureClass": "V",
+          "spectrum": "FS",
+          "lookupRaw": "DR.Win. Mo V2026 T1 [FS]",
+          "lookupNorm": "dr.win. mo v2026 t1 [fs]",
+          "capturedFrom": "2026-04-02",
+          "capturedTo": "2026-04-02",
+          "technical": {
+            "platform": "UAV",
+            "filter": "Full-spectrum"
+          },
+          "folders": {}
+        }
+      ],
+      "lifecycle": {
+        "createdAt": "2026-06-27T18:44:14.296Z",
+        "updatedAt": "2026-06-28T05:20:23.447Z",
+        "publishedAt": "2026-06-27T18:45:00.192Z"
+      }
+    }
+  ],
+  "entries": [
+    {
+      "kind": "uav",
+      "id": "mojave-wind-farm",
+      "title_raw": "Mojave Desert – Wind Farms",
+      "lookup_raw": "DR.Win. Mo 2026 T1",
+      "lookup_norm": "dr.win. mo 2026 t1",
+      "entry_href": "/uav/mojave-wind-farm/",
+      "image_src": "https://i.ytimg.com/vi/YVLwwSe4m9I/maxresdefault.jpg",
+      "image_alt_raw": "Mojave Desert – Wind Farms",
+      "featured": false,
+      "status": "active",
+      "sort_key": "UAV::DR.Win. Mo 2026 T1",
+      "title_norm": "mojave desert – wind farms",
+      "site_norm": "mojave desert california, united states",
+      "subject_norm": "wind power plants mojave desert",
+      "uav": {
+        "collection_lookup": "DR.Win. Mo 2026 T1",
+        "site": {
+          "id": "site-mojave-desert",
+          "name": "Mojave Desert",
+          "cutter": "Mo",
+          "admin": "California, United States",
+          "authority": {
+            "source": "geonames",
+            "uri": "https://www.geonames.org/5366898",
+            "label": "Mojave Desert"
+          },
+          "coordinateVisibility": "rounded",
+          "publicCoordinates": {
+            "lat": 35.01,
+            "lon": -115.47,
+            "precision": 2
+          }
+        },
+        "primary_subject_code": "Win",
+        "subjects": [
+          {
+            "id": "subject-win",
+            "code": "Win",
+            "label": "Wind power plants",
+            "authority": {
+              "source": "lcsh",
+              "uri": "http://id.loc.gov/authorities/subjects/sh97003604",
+              "label": "Wind power plants"
+            }
+          },
+          {
+            "id": "subject-mojave-desert",
+            "code": "Moj",
+            "label": "Mojave Desert",
+            "authority": {
+              "source": "lcsh",
+              "uri": "http://id.loc.gov/authorities/subjects/sh85086496",
+              "label": "Mojave Desert"
+            }
+          }
+        ],
+        "year": 2026,
+        "tour": "T1",
+        "capture_classes": [
+          "V"
+        ],
+        "spectra": [
+          "FS"
+        ],
+        "series": [
+          {
+            "id": "aerial-video-fs",
+            "title": "Mojave wind farms — full-spectrum aerial video",
+            "lookup_raw": "DR.Win. Mo V2026 T1 [FS]",
+            "capture_class": "V",
+            "spectrum": "FS"
+          }
+        ]
+      }
+    }
+  ]
+}

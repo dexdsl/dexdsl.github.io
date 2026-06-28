@@ -7,7 +7,8 @@ import { hasServiceAccount } from './google-sa-token.mjs';
 import { BUCKET_ORDER } from './bucket-normalize.mjs';
 
 export { BUCKET_ORDER };
-const DOWNLOADABLE_EXT = /\.(wav|aif|aiff|flac|mp3|m4a|ogg|zip)$/i;
+const DOWNLOADABLE_EXT = /\.(wav|aif|aiff|flac|mp3|m4a|ogg|mov|mp4|m4v|webm|mkv|avi|zip)$/i;
+const MAX_BUCKET_FOLDERS = 10_000;
 
 function toText(value) {
   return String(value ?? '').trim();
@@ -37,6 +38,7 @@ export function humanSize(bytes) {
 function fileTypeFromName(name) {
   const n = String(name || '').toLowerCase();
   if (/\.(wav|aif|aiff|flac|m4a|ogg|mp3)$/.test(n)) return 'audio';
+  if (/\.(mov|mp4|m4v|webm|mkv|avi)$/.test(n)) return 'video';
   if (/\.zip$/.test(n)) return 'bundle';
   if (/\.pdf$/.test(n)) return 'pdf';
   if (/\.(jpe?g|png|webp|gif)$/.test(n)) return 'image';
@@ -109,25 +111,106 @@ export function auditEntryBucketFolders(entry) {
   return warnings;
 }
 
-// Read a bucket's Drive folder and summarise the downloadable files within.
-export async function scanBucketFolder({ folderId, keyPath } = {}) {
+// Walk a bucket folder breadth-first. Drive shortcuts are normalized to their
+// target ids by createDriveClient(), so seenFolders also prevents shortcut
+// cycles (including a nested shortcut back to the bucket root). File ids are
+// de-duplicated because the same target can be reachable through more than one
+// shortcut/folder path.
+export async function listBucketFolderRecursive({
+  folderId,
+  driveClient,
+  maxFolders = MAX_BUCKET_FOLDERS,
+} = {}) {
   const id = resolveBucketFolderId(folderId);
   if (!id) throw new Error('A Google Drive folder id or URL is required.');
-  if (!hasServiceAccount(keyPath)) {
+  if (!driveClient || typeof driveClient.listFolder !== 'function') {
+    throw new Error('A Drive client with listFolder() is required.');
+  }
+
+  const folderLimit = Math.max(1, Number(maxFolders) || MAX_BUCKET_FOLDERS);
+  const queue = [{ id, path: '', depth: 0 }];
+  const seenFolders = new Set([id]);
+  const seenFiles = new Set();
+  const files = [];
+  let maxDepth = 0;
+
+  while (queue.length) {
+    const current = queue.shift();
+    if (!current) continue;
+    const entries = await driveClient.listFolder(current.id);
+    for (const entry of Array.isArray(entries) ? entries : []) {
+      const entryId = toText(entry?.id);
+      const name = toText(entry?.name);
+      if (!entryId) continue;
+      const relativePath = [current.path, name].filter(Boolean).join('/');
+      const depth = current.depth + 1;
+      maxDepth = Math.max(maxDepth, depth);
+
+      if (entry.mimeType === DRIVE_FOLDER_MIME) {
+        if (seenFolders.has(entryId)) continue;
+        if (seenFolders.size >= folderLimit) {
+          throw new Error(`Bucket folder scan exceeded the ${folderLimit}-folder safety limit.`);
+        }
+        seenFolders.add(entryId);
+        queue.push({ id: entryId, path: relativePath, depth });
+        continue;
+      }
+
+      if (seenFiles.has(entryId)) continue;
+      seenFiles.add(entryId);
+      files.push({
+        ...entry,
+        relativePath,
+        parentFolderId: current.id,
+        depth,
+      });
+    }
+  }
+
+  return {
+    files,
+    subfolders: Math.max(0, seenFolders.size - 1),
+    foldersScanned: seenFolders.size,
+    maxDepth,
+  };
+}
+
+// Read a bucket's Drive folder and summarise the downloadable files within.
+export async function scanBucketFolder({
+  folderId,
+  keyPath,
+  driveClient,
+  maxFolders = MAX_BUCKET_FOLDERS,
+} = {}) {
+  const id = resolveBucketFolderId(folderId);
+  if (!id) throw new Error('A Google Drive folder id or URL is required.');
+  if (!driveClient && !hasServiceAccount(keyPath)) {
     throw new Error('Google service account is not configured (set GOOGLE_APPLICATION_CREDENTIALS or place the key where google-sa-token resolves it).');
   }
-  const client = createDriveClient({ keyPath });
-  const entries = await client.listFolder(id);
-  const files = entries
+  const client = driveClient || createDriveClient({ keyPath });
+  const traversal = await listBucketFolderRecursive({
+    folderId: id,
+    driveClient: client,
+    maxFolders,
+  });
+  const files = traversal.files
     .filter((file) => file.mimeType !== DRIVE_FOLDER_MIME)
     .filter((file) => DOWNLOADABLE_EXT.test(file.name) || Number(file.size) > 0)
-    .map((file) => ({ id: file.id, name: file.name, size: Number(file.size) || 0, mimeType: file.mimeType }));
-  const subfolders = entries.filter((file) => file.mimeType === DRIVE_FOLDER_MIME).length;
+    .map((file) => ({
+      id: file.id,
+      name: file.name,
+      relativePath: file.relativePath,
+      size: Number(file.size) || 0,
+      mimeType: file.mimeType,
+    }))
+    .sort((a, b) => a.relativePath.localeCompare(b.relativePath, undefined, { numeric: true, sensitivity: 'base' }));
   const totalBytes = files.reduce((sum, file) => sum + file.size, 0);
   return {
     folderId: id,
     count: files.length,
-    subfolders,
+    subfolders: traversal.subfolders,
+    foldersScanned: traversal.foldersScanned,
+    maxDepth: traversal.maxDepth,
     totalBytes,
     humanSize: humanSize(totalBytes),
     files,

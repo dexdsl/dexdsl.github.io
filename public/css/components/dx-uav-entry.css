@@ -1,0 +1,178 @@
+.dx-uav-page {
+  margin: 0;
+  color: var(--dx-color-ink, #111217);
+  background:
+    linear-gradient(rgba(88, 94, 112, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(88, 94, 112, 0.08) 1px, transparent 1px),
+    #e8ebf1;
+  background-size: 56px 56px;
+  min-height: 100vh;
+}
+
+.dx-uav-shell {
+  width: min(1180px, calc(100vw - 40px));
+  margin: 0 auto;
+  padding: 28px 0 72px;
+}
+
+.dx-uav-shell nav {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  font-family: var(--dx-font-mono, monospace);
+  font-size: 13px;
+}
+
+.dx-uav-shell a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
+
+.dx-uav-hero,
+.dx-uav-authority,
+.dx-uav-series {
+  border: 1px solid rgba(17, 18, 23, 0.2);
+  border-radius: 20px;
+  background: rgba(250, 251, 254, 0.88);
+  box-shadow: 0 20px 60px rgba(30, 35, 48, 0.09);
+  backdrop-filter: blur(16px);
+}
+
+.dx-uav-hero {
+  padding: clamp(28px, 6vw, 76px);
+}
+
+.dx-uav-kicker,
+.dx-uav-hero code,
+.dx-uav-series code,
+.dx-uav-authority span,
+.dx-uav-bucket h4 {
+  font-family: var(--dx-font-mono, monospace);
+  letter-spacing: 0.06em;
+}
+
+.dx-uav-kicker,
+.dx-uav-authority span {
+  color: #5f6677;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.dx-uav-hero h1 {
+  max-width: 900px;
+  margin: 20px 0 16px;
+  font-size: clamp(42px, 8vw, 92px);
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+}
+
+.dx-uav-hero > p:last-of-type {
+  max-width: 740px;
+  color: #4f5667;
+  font-size: clamp(17px, 2vw, 22px);
+  line-height: 1.5;
+}
+
+.dx-uav-cta {
+  display: inline-flex;
+  margin-top: 18px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: #111217;
+  color: #fff !important;
+  text-decoration: none;
+}
+
+.dx-uav-authority {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin: 20px 0 42px;
+  overflow: hidden;
+}
+
+.dx-uav-authority > div {
+  display: grid;
+  gap: 7px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.52);
+}
+
+.dx-uav-series-list > h2 {
+  margin: 0 0 16px;
+  font-size: clamp(30px, 5vw, 54px);
+}
+
+.dx-uav-series {
+  margin-bottom: 18px;
+  padding: 24px;
+}
+
+.dx-uav-series header {
+  display: grid;
+  gap: 8px;
+}
+
+.dx-uav-series header p,
+.dx-uav-series header h3 {
+  margin: 0;
+}
+
+.dx-uav-series h3 {
+  font-size: clamp(24px, 3vw, 38px);
+}
+
+.dx-uav-buckets {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.dx-uav-bucket {
+  padding: 16px;
+  border: 1px solid rgba(17, 18, 23, 0.13);
+  border-radius: 14px;
+}
+
+.dx-uav-bucket h4,
+.dx-uav-bucket p {
+  margin: 0 0 10px;
+}
+
+.dx-uav-bucket ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dx-uav-bucket li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(17, 18, 23, 0.1);
+}
+
+.dx-uav-bucket li small {
+  grid-column: 2;
+  color: #666d7c;
+}
+
+.dx-uav-muted {
+  color: #666d7c;
+}
+
+@media (max-width: 760px) {
+  .dx-uav-shell {
+    width: min(100% - 24px, 1180px);
+  }
+
+  .dx-uav-authority,
+  .dx-uav-buckets {
+    grid-template-columns: 1fr;
+  }
+}
+

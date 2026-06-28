@@ -2,6 +2,7 @@
 // and the symbol set. Powered by the same authority module the catalog runtime
 // and CI audit use (lib/lookup-authority.mjs), so the live decoder is the spec.
 import { parseLookup, LOOKUP_FAMILIES, LOOKUP_MEDIA } from '../lib/lookup-authority.mjs';
+import { parseUavLookup } from '../lib/uav-lookup-authority.mjs';
 import { protectName } from '../lib/performer-authority.mjs';
 import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
 
@@ -42,7 +43,7 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
       body: 'Bracketed descriptors — resolution/format first ([4K], [1080p], [ste], [4ch]), then signifier codes describing the sound.' },
   ];
   const BUCKETS = [['A', 'Bucket A'], ['B', 'Bucket B'], ['C', 'Bucket C'], ['D', 'Bucket D'], ['E', 'Bucket E'], ['X', 'Other']];
-  const EXAMPLES = ['K.Hps. Su AV2023 S1', 'W.Bsn. CoTo AV2024 S2', 'E.Gtr. Ma A2024 S2', 'V.Obj. Lu A2023 S1'];
+  const EXAMPLES = ['K.Hps. Su AV2023 S1', 'W.Bsn. CoTo AV2024 S2', 'DR.Win. Mo 2026 T1', 'DR.Win. Mo V2026 T1 [FS]'];
 
   function symChip(code, label) {
     const t = `${code} ${label}`.toLowerCase();
@@ -81,17 +82,33 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     if (!raw) {
       return '<p class="dx-guide-decode-empty">Type or paste a collection lookup to decode it.</p>';
     }
-    const p = parseLookup(raw);
+    const isUav = /^DR\./i.test(raw);
+    const p = isUav ? parseUavLookup(raw) : parseLookup(raw);
     if (!p.valid) {
       const issues = (p.issues || []).map((i) => `<li>${esc(i)}</li>`).join('');
       return `<div class="dx-guide-decode-result is-invalid">
         <p class="dx-guide-decode-status">Not a valid collection lookup</p>
         <ul class="dx-guide-decode-issues">${issues}</ul>
-        <p class="dx-guide-decode-grammar"><code>Family.Instrument. Cutter&nbsp;(A|AV)YYYY&nbsp;S#</code></p>
+        <p class="dx-guide-decode-grammar"><code>${isUav ? 'DR.Subject. Site [Class]YYYY T# [Spectrum]' : 'Family.Instrument. Cutter (A|AV)YYYY S#'}</code></p>
       </div>`;
     }
     const tile = (label, value, sub) =>
       `<div class="dx-guide-facet"><span class="dx-guide-facet-label">${esc(label)}</span><span class="dx-guide-facet-value">${head(value)}</span>${sub ? `<span class="dx-guide-facet-sub">${esc(sub)}</span>` : ''}</div>`;
+    if (isUav) {
+      return `<div class="dx-guide-decode-result is-valid">
+        <p class="dx-guide-decode-status">Valid dexDRONES ${esc(p.level)} lookup</p>
+        <div class="dx-guide-facets">
+          ${tile('Wing', p.wing, 'dexDRONES')}
+          ${tile('Subject', p.subjectCode, 'LCSH-backed code')}
+          ${tile('Site Cutter', p.siteCutter, 'geographic authority')}
+          ${p.captureClass ? tile('Class', p.captureClass, 'capture series') : ''}
+          ${tile('Year', String(p.year), 'captured')}
+          ${tile('Tour', p.tour, 'site-year visit')}
+          ${p.spectrum ? tile('Spectrum', p.spectrum, 'acquisition') : ''}
+          ${p.bucket ? tile('Bucket', `${p.bucket}.${p.number}`, p.bucket === 'X' ? 'raw/support' : 'deliverable') : ''}
+        </div>
+      </div>`;
+    }
     return `<div class="dx-guide-decode-result is-valid">
       <p class="dx-guide-decode-status">Valid collection lookup</p>
       <div class="dx-guide-facets">

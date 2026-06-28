@@ -1,0 +1,64 @@
+{
+  "version": "uav-collection-v1",
+  "kind": "uav",
+  "slug": "mojave-wind-farm",
+  "title": "Mojave Desert – Wind Farms",
+  "status": "active",
+  "lookupRaw": "DR.Win. Mo 2026 T1",
+  "lookupNorm": "dr.win. mo 2026 t1",
+  "identity": {
+    "wing": "DR",
+    "primarySubjectCode": "Win",
+    "siteCutter": "Mo",
+    "year": 2026,
+    "tour": "T1"
+  },
+  "subjectAuthorityIds": [
+    "subject-win",
+    "subject-wind-power-plants-sh97003604",
+    "subject-mojave-desert"
+  ],
+  "siteAuthorityId": "site-mojave-desert",
+  "capturedFrom": "2026-04-02",
+  "capturedTo": "2026-04-02",
+  "license": "CC-BY-4.0",
+  "attribution": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Kolari Vision.",
+  "operators": [
+    "Sebastian Suarez-Solis"
+  ],
+  "contributors": [
+    "Dex Digital Sample Library",
+    "Kolari Vision"
+  ],
+  "creditLinks": {},
+  "imageSrc": "https://i.ytimg.com/vi/YVLwwSe4m9I/maxresdefault.jpg",
+  "previewUrl": "https://www.youtube.com/watch?v=YVLwwSe4m9I",
+  "description": "Mojave Desert wind farms documented by Dex Digital Sample Library during a full-spectrum UAV capture tour on April 2, 2026. The collection preserves aerial-video deliverables and their associated raw and support materials under CC BY 4.0.",
+  "series": [
+    {
+      "id": "aerial-video-fs",
+      "title": "Mojave wind farms — full-spectrum aerial video",
+      "captureClass": "V",
+      "spectrum": "FS",
+      "lookupRaw": "DR.Win. Mo V2026 T1 [FS]",
+      "lookupNorm": "dr.win. mo v2026 t1 [fs]",
+      "capturedFrom": "2026-04-02",
+      "capturedTo": "2026-04-02",
+      "technical": {
+        "platform": "UAV",
+        "aircraft": "DJI Mavic 2 Pro",
+        "camera": "Hasselblad 5.1K (Full-Spectrum Converted)",
+        "filter": "Full-spectrum",
+        "attitude": "high-oblique",
+        "cloudCover": 0,
+        "notes": "High wind, mixed spectra"
+      },
+      "folders": {}
+    }
+  ],
+  "lifecycle": {
+    "createdAt": "2026-06-27T18:44:14.296Z",
+    "updatedAt": "2026-06-28T05:50:49.587Z",
+    "publishedAt": "2026-06-27T18:45:00.192Z"
+  }
+}

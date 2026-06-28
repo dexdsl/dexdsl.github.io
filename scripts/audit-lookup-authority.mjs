@@ -15,6 +15,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseLookup, normalizeLookup, LOOKUP_FAMILIES, LOOKUP_MEDIA } from './lib/lookup-authority.mjs';
+import { parseUavLookup, normalizeUavLookup } from './lib/uav-lookup-authority.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CANONICAL = path.join(ROOT, 'public', 'data', 'catalog.entries.json');
@@ -28,27 +29,33 @@ function main() {
   const seenRaw = new Map();
   const familyCounts = {};
   const mediumCounts = {};
+  let uavCount = 0;
 
   for (const entry of entries) {
     const label = entry.lookup_raw || entry.id || '(unknown)';
-    const parsed = parseLookup(entry.lookup_raw, { performers: entry.performers });
+    const isUav = entry.kind === 'uav' || /^DR\./i.test(String(entry.lookup_raw || ''));
+    const parsed = isUav
+      ? parseUavLookup(entry.lookup_raw)
+      : parseLookup(entry.lookup_raw, { performers: entry.performers });
 
     if (!parsed.valid) {
       for (const issue of parsed.issues) hard.push(`${label}: ${issue}`);
+    } else if (isUav) {
+      uavCount += 1;
     } else {
       familyCounts[parsed.family] = (familyCounts[parsed.family] || 0) + 1;
       mediumCounts[parsed.medium] = (mediumCounts[parsed.medium] || 0) + 1;
     }
 
     // Uniqueness — lookup_raw is the identifier.
-    const rawKey = normalizeLookup(entry.lookup_raw);
+    const rawKey = isUav ? normalizeUavLookup(entry.lookup_raw) : normalizeLookup(entry.lookup_raw);
     if (rawKey) {
       if (seenRaw.has(rawKey)) hard.push(`duplicate lookup "${entry.lookup_raw}" (also ${seenRaw.get(rawKey)})`);
       else seenRaw.set(rawKey, entry.id || label);
     }
 
     // Normalization/propagation — stored norm must equal canonical norm.
-    const expectedNorm = normalizeLookup(entry.lookup_raw);
+    const expectedNorm = isUav ? normalizeUavLookup(entry.lookup_raw) : normalizeLookup(entry.lookup_raw);
     if (String(entry.lookup_norm || '') !== expectedNorm) {
       fixable.push(`${label}: lookup_norm "${entry.lookup_norm || ''}" → should be "${expectedNorm}"`);
     }
@@ -58,6 +65,7 @@ function main() {
   console.log(`entries: ${entries.length}`);
   console.log(`families: ${Object.entries(familyCounts).map(([k, v]) => `${k}(${LOOKUP_FAMILIES[k]})×${v}`).join('  ')}`);
   console.log(`media:    ${Object.entries(mediumCounts).map(([k, v]) => `${k}(${LOOKUP_MEDIA[k]})×${v}`).join('  ')}`);
+  console.log(`uav:      ${uavCount}`);
   console.log('');
 
   if (fixable.length) {

@@ -12,6 +12,7 @@ import { normalizeCatalogEditorialFile } from './lib/catalog-editorial-schema.mj
 import { buildHomeFeaturedSnapshot } from './lib/home-featured-store.mjs';
 import { normalizeHomeFeaturedFile } from './lib/home-featured-schema.mjs';
 import { deepStripInvisibleMarks, removeExcludedEntries, applyPerformerAliases } from './lib/catalog-sanitize.mjs';
+import { mergeUavCollectionsIntoCatalogModel } from './lib/uav-catalog.mjs';
 
 const ROOT = process.cwd();
 const SOURCE_PATH = path.join(ROOT, 'docs', 'catalog', 'index.html');
@@ -273,8 +274,13 @@ function refreshCatalogStats(model) {
 }
 
 function publishableEntry(entry) {
-  return /^\/entry\/[^/?#]+\/?$/i.test(String(entry?.entry_href || '').trim())
-    && Boolean(String(entry?.lookup_raw || '').trim())
+  const href = String(entry?.entry_href || '').trim();
+  const lookup = Boolean(String(entry?.lookup_raw || '').trim());
+  if (entry?.kind === 'uav') {
+    return /^\/uav\/[^/?#]+\/?$/i.test(href) && lookup;
+  }
+  return /^\/entry\/[^/?#]+\/?$/i.test(href)
+    && lookup
     && Boolean(String(entry?.season || '').trim());
 }
 
@@ -389,6 +395,8 @@ async function main() {
   // performer names / identity grouping), normalize known performer names, and drop dev-stub
   // placeholder entries. Runs before payloads are built so every output (data, entries,
   // search, curation, featured) is clean.
+  const uav = readJsonIfExists(path.join(ROOT, 'data', 'uav.collections.json')) || { entries: [] };
+  model = mergeUavCollectionsIntoCatalogModel(model, uav);
   model = refreshCatalogStats(removeExcludedEntries(applyPerformerAliases(deepStripInvisibleMarks(model))));
 
   const search = buildSearchIndex(model);

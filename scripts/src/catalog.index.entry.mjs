@@ -4,6 +4,7 @@ import { bindDexButtonMotion, bindPaginationMotion, prefersReducedMotion, reveal
 import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry.mjs';
 import { deriveAuthority, protectName } from '../lib/performer-authority.mjs';
 import { parseLookup, normalizeLookup } from '../lib/lookup-authority.mjs';
+import { parseUavLookup, normalizeUavLookup } from '../lib/uav-lookup-authority.mjs';
 import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
 
 (() => {
@@ -84,6 +85,7 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
   // authority fields baked into the catalog data; falls back to deriving on the
   // fly so the page is correct even against un-normalized data.
   function performerHeading(entry) {
+    if (entry?.kind === 'uav') return text(entry?.uav?.site?.name || 'Unknown site');
     const baked = text(entry?.performer_display).trim();
     if (baked) return baked;
     return deriveAuthority(entry?.performer_raw, entry?.performer_norm).performer_display || text(entry?.performer_raw);
@@ -92,6 +94,7 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
   // Lowercased authority sort key — used to collocate name variants into one
   // group ("Cameron Church" / "cameron church" → "church, cameron").
   function performerSortKey(entry) {
+    if (entry?.kind === 'uav') return normalize(entry?.uav?.site?.name || entry?.title_raw);
     const baked = text(entry?.performer_norm).trim();
     if (baked) return baked;
     return deriveAuthority(entry?.performer_raw, entry?.performer_norm).performer_norm || normalize(entry?.performer_raw);
@@ -104,6 +107,21 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
   // derived fields are overwritten idempotently.
   function normalizeLoadedEntry(entry) {
     if (!entry || typeof entry !== 'object') return entry;
+    if (entry.kind === 'uav' || /^DR\./i.test(text(entry.lookup_raw))) {
+      entry.kind = 'uav';
+      const parsedUav = parseUavLookup(entry.lookup_raw);
+      entry.lookup_norm = normalizeUavLookup(entry.lookup_raw);
+      if (parsedUav.valid) {
+        entry.lookup = {
+          wing: parsedUav.wing,
+          subject: parsedUav.subjectCode,
+          site_cutter: parsedUav.siteCutter,
+          year: parsedUav.year,
+          tour: parsedUav.tour,
+        };
+      }
+      return entry;
+    }
     const authority = deriveAuthority(entry.performer_raw, entry.performer_norm);
     if (authority.performer_display) entry.performer_display = authority.performer_display;
     if (authority.performer_norm) entry.performer_norm = authority.performer_norm;
@@ -566,7 +584,7 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
       entryLookupNumber: lookup,
       entryHref,
       title: text(entry?.title_raw || ''),
-      performer: text(entry?.performer_raw || ''),
+      performer: text(entry?.kind === 'uav' ? entry?.uav?.site?.name : entry?.performer_raw || ''),
       source: 'catalog',
     };
   }
@@ -666,7 +684,7 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
 
   function canonicalEntryHref(hrefValue) {
     const href = text(hrefValue).trim();
-    if (!/^\/entry\/[^?#]+\/?$/i.test(href)) return '';
+    if (!/^\/(?:entry|uav)\/[^?#]+\/?$/i.test(href)) return '';
     return href.endsWith('/') ? href : `${href}/`;
   }
 
@@ -908,6 +926,10 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
         return text(a.title_raw).localeCompare(text(b.title_raw));
       },
       recent: (a, b) => {
+        if (a.kind === 'uav' || b.kind === 'uav') {
+          const yearCmp = Number(b.uav?.year || 0) - Number(a.uav?.year || 0);
+          if (yearCmp !== 0) return yearCmp;
+        }
         const seasonCmp = text(b.season).localeCompare(text(a.season));
         if (seasonCmp !== 0) return seasonCmp;
         return performerSortKey(a).localeCompare(performerSortKey(b));
@@ -922,11 +944,17 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     let filtered = [...allEntries()];
 
     if (state.season !== 'all') {
-      filtered = filtered.filter((entry) => text(entry.season) === state.season);
+      filtered = filtered.filter((entry) =>
+        text(entry.kind === 'uav' ? entry.uav?.tour : entry.season) === state.season);
     }
 
     if (state.instrument !== 'all') {
-      filtered = filtered.filter((entry) => (entry.instrument_family || []).some((family) => normalize(family) === normalize(state.instrument)));
+      filtered = filtered.filter((entry) => {
+        const values = entry.kind === 'uav'
+          ? (entry.uav?.subjects || []).map((row) => row.label)
+          : (entry.instrument_family || []);
+        return values.some((family) => normalize(family) === normalize(state.instrument));
+      });
     }
 
     const query = text(state.q).trim();
@@ -937,7 +965,7 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
       } else {
         const q = normalize(query);
         filtered = filtered.filter((entry) => {
-          const haystack = [entry.title_norm, entry.performer_norm, entry.lookup_norm, entry.instrument_norm].join(' ');
+          const haystack = [entry.title_norm, entry.performer_norm, entry.lookup_norm, entry.instrument_norm, entry.site_norm, entry.subject_norm].join(' ');
           return haystack.includes(q);
         });
       }
@@ -987,7 +1015,10 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     if (state.mode === 'instrument') {
       const groups = new Map();
       for (const entry of entries) {
-        const families = (entry.instrument_family || []).length ? entry.instrument_family : ['Other'];
+        const uavSubjects = (entry.uav?.subjects || []).map((row) => row.label);
+        const families = entry.kind === 'uav'
+          ? (uavSubjects.length ? uavSubjects : ['Other'])
+          : ((entry.instrument_family || []).length ? entry.instrument_family : ['Other']);
         for (const family of families) {
           if (!groups.has(family)) groups.set(family, []);
           groups.get(family).push(entry);
@@ -1000,7 +1031,7 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     for (const entry of entries) {
       const lookupRaw = text(entry.lookup_raw);
       const prefix = lookupRaw.split(' ').filter(Boolean)[0] || 'Uncoded';
-      const season = text(entry.season || 'S?');
+      const season = entry.kind === 'uav' ? text(entry.uav?.tour || 'T?') : text(entry.season || 'S?');
       const key = `${season} · ${prefix}`;
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key).push(entry);
@@ -1013,7 +1044,7 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
 
     const heading = create('div', 'dx-catalog-index-heading');
     heading.appendChild(create('p', 'dx-catalog-index-kicker', 'Catalog Index'));
-    heading.appendChild(create('h1', 'dx-catalog-index-title', 'Browse by performer, instrument, or lookup code.'));
+    heading.appendChild(create('h1', 'dx-catalog-index-title', 'Browse by performer or site, instrument or subject, or lookup code.'));
     const delta = create('p', 'dx-catalog-index-whats-new', 'Lookup guide and symbol key now live on separate pages.');
     heading.appendChild(delta);
     controls.appendChild(heading);
@@ -1027,7 +1058,7 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     search.type = 'search';
     search.autocomplete = 'off';
     search.spellcheck = false;
-    search.placeholder = 'Search performer, title, lookup, instrument';
+    search.placeholder = 'Search performer, site, title, lookup, instrument, subject';
     search.value = state.q;
     search.addEventListener('input', (event) => {
       activateNewsletter();
@@ -1077,9 +1108,11 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
       drawerGrid.appendChild(modeWrap);
 
       const seasonWrap = create('label', 'dx-catalog-index-field');
-      seasonWrap.appendChild(create('span', 'dx-catalog-index-field-label', 'Season'));
+      seasonWrap.appendChild(create('span', 'dx-catalog-index-field-label', 'Season / UAV tour'));
       const seasonSelect = create('select', 'dx-catalog-index-select');
-      ['all', ...new Set(allEntries().map((entry) => entry.season).filter(Boolean))].forEach((season) => {
+      ['all', ...new Set(allEntries()
+        .map((entry) => entry.kind === 'uav' ? entry.uav?.tour : entry.season)
+        .filter(Boolean))].forEach((season) => {
         const option = create('option', '', season === 'all' ? 'All' : season);
         option.value = season;
         if (state.season === season) option.selected = true;
@@ -1095,9 +1128,11 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
       drawerGrid.appendChild(seasonWrap);
 
       const instrumentWrap = create('label', 'dx-catalog-index-field');
-      instrumentWrap.appendChild(create('span', 'dx-catalog-index-field-label', 'Instrument family'));
+      instrumentWrap.appendChild(create('span', 'dx-catalog-index-field-label', 'Instrument family / UAV subject'));
       const instrumentSelect = create('select', 'dx-catalog-index-select');
-      ['all', ...new Set(allEntries().flatMap((entry) => entry.instrument_family || []).filter(Boolean))]
+      ['all', ...new Set(allEntries().flatMap((entry) => entry.kind === 'uav'
+        ? (entry.uav?.subjects || []).map((row) => row.label)
+        : (entry.instrument_family || [])).filter(Boolean))]
         .forEach((instrument) => {
           const option = create('option', '', instrument === 'all' ? 'All' : instrument);
           option.value = instrument;
@@ -1612,10 +1647,15 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     const code = create('p', 'dx-catalog-index-row-code', text(entry.lookup_raw || '—'));
     const title = create('h4', 'dx-catalog-index-row-title', text(entry.title_raw || 'Untitled'));
     const performer = create('p', 'dx-catalog-index-row-performer', protectName(performerHeading(entry)));
-    const meta = create('p', 'dx-catalog-index-row-meta', [
-      text(entry.season || ''),
-      ...(entry.instrument_family || []),
-    ].filter(Boolean).join(' · '));
+    const metaValues = entry.kind === 'uav'
+      ? [
+          text(entry.uav?.tour || ''),
+          ...(entry.uav?.subjects || []).map((row) => row.label),
+          ...(entry.uav?.capture_classes || []),
+          ...(entry.uav?.spectra || []),
+        ]
+      : [text(entry.season || ''), ...(entry.instrument_family || [])];
+    const meta = create('p', 'dx-catalog-index-row-meta', metaValues.filter(Boolean).join(' · '));
 
     const open = createEntryOpenArrowCta(href);
     const favorite = createEntryFavoriteButton(entry);

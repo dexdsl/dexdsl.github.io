@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record xmlns="http://www.loc.gov/MARC21/slim" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd">
+    <leader>00000npc a2200000 i 4500</leader>
+    <controlfield tag="001">dex-uav-mojave-wind-farm</controlfield>
+    <controlfield tag="003">DexDSL</controlfield>
+    <controlfield tag="005">20260628T055049.0</controlfield>
+    <controlfield tag="007">ru#buubbbdv</controlfield>
+    <datafield tag="099" ind1=" " ind2=" ">
+      <subfield code="a">DR.Win. Mo 2026 T1</subfield>
+    </datafield>
+    <datafield tag="245" ind1="0" ind2="0">
+      <subfield code="a">Mojave Desert – Wind Farms</subfield>
+    </datafield>
+    <datafield tag="264" ind1=" " ind2="1">
+      <subfield code="a">United States</subfield>
+      <subfield code="b">Dex Digital Sample Library</subfield>
+      <subfield code="c">2026</subfield>
+    </datafield>
+    <datafield tag="300" ind1=" " ind2=" ">
+      <subfield code="a">1 capture series (0 digital files)</subfield>
+    </datafield>
+    <datafield tag="336" ind1=" " ind2=" ">
+      <subfield code="a">two-dimensional moving image</subfield>
+      <subfield code="2">rdacontent</subfield>
+      <subfield code="3">DR.Win. Mo V2026 T1 [FS]</subfield>
+    </datafield>
+    <datafield tag="337" ind1=" " ind2=" ">
+      <subfield code="a">computer</subfield>
+      <subfield code="2">rdamedia</subfield>
+    </datafield>
+    <datafield tag="338" ind1=" " ind2=" ">
+      <subfield code="a">online resource</subfield>
+      <subfield code="2">rdacarrier</subfield>
+    </datafield>
+    <datafield tag="033" ind1="0" ind2="0">
+      <subfield code="a">20260402</subfield>
+      <subfield code="p">Mojave Desert</subfield>
+      <subfield code="1">https://www.geonames.org/5366898</subfield>
+    </datafield>
+    <datafield tag="034" ind1="0" ind2=" ">
+      <subfield code="d">-115.47</subfield>
+      <subfield code="e">-115.47</subfield>
+      <subfield code="f">35.01</subfield>
+      <subfield code="g">35.01</subfield>
+      <subfield code="1">https://www.geonames.org/5366898</subfield>
+      <subfield code="3">Place of capture</subfield>
+    </datafield>
+    <datafield tag="518" ind1=" " ind2=" ">
+      <subfield code="o">Captured</subfield>
+      <subfield code="d">2026-04-02</subfield>
+      <subfield code="p">Mojave Desert</subfield>
+      <subfield code="1">https://www.geonames.org/5366898</subfield>
+    </datafield>
+    <datafield tag="520" ind1=" " ind2=" ">
+      <subfield code="a">Mojave Desert wind farms documented by Dex Digital Sample Library during a full-spectrum UAV capture tour on April 2, 2026. The collection preserves aerial-video deliverables and their associated raw and support materials under CC BY 4.0.</subfield>
+    </datafield>
+    <datafield tag="508" ind1=" " ind2=" ">
+      <subfield code="a">UAV operators: Sebastian Suarez-Solis; Contributors: Dex Digital Sample Library, Kolari Vision</subfield>
+    </datafield>
+    <datafield tag="540" ind1=" " ind2=" ">
+      <subfield code="a">Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Kolari Vision.</subfield>
+      <subfield code="u">https://creativecommons.org/licenses/by/4.0/</subfield>
+    </datafield>
+    <datafield tag="650" ind1=" " ind2="0">
+      <subfield code="a">Wind power plants</subfield>
+      <subfield code="1">http://id.loc.gov/authorities/subjects/sh97003604</subfield>
+    </datafield>
+    <datafield tag="650" ind1=" " ind2="0">
+      <subfield code="a">Wind power plants</subfield>
+      <subfield code="1">http://id.loc.gov/authorities/subjects/sh97003604</subfield>
+    </datafield>
+    <datafield tag="650" ind1=" " ind2="0">
+      <subfield code="a">Mojave Desert</subfield>
+      <subfield code="1">http://id.loc.gov/authorities/subjects/sh85086496</subfield>
+    </datafield>
+    <datafield tag="651" ind1=" " ind2="7">
+      <subfield code="a">Mojave Desert</subfield>
+      <subfield code="1">https://www.geonames.org/5366898</subfield>
+      <subfield code="2">geonames</subfield>
+    </datafield>
+    <datafield tag="655" ind1=" " ind2="7">
+      <subfield code="a">Aerial video</subfield>
+      <subfield code="2">local</subfield>
+      <subfield code="3">DR.Win. Mo V2026 T1 [FS]</subfield>
+    </datafield>
+    <datafield tag="856" ind1="4" ind2="0">
+      <subfield code="u">https://dexdsl.org/uav/mojave-wind-farm/</subfield>
+      <subfield code="y">Open dexDRONES collection</subfield>
+    </datafield>
+</record>

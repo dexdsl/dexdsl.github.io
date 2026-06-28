@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import {
+  checkMembershipPriceConsistency,
+  parseDefaultTiers,
+} from './lib/membership-price-consistency.mjs';
 
 const ROOT = process.cwd();
 const SETTINGS_PATH = path.join(ROOT, 'docs', 'entry', 'settings', 'index.html');
@@ -121,6 +125,12 @@ function verifyMembershipRuntimeContract(failures) {
 }
 
 function verifyAudienceContract(failures) {
+  // The Auth0 API identifier is now confirmed (authenticated billing works end
+  // to end), so the old empty-audience compat mode is retired: every declared
+  // audience must be a non-empty, absolute API identifier and they must all
+  // agree. This stops a silent regression to weak (audience-less) tokens.
+  const seen = new Set();
+
   for (const configPath of AUTH_CONFIG_PATHS) {
     const source = readText(configPath);
     const matches = [...source.matchAll(/audience:\s*"([^"]*)"/g)];
@@ -128,8 +138,27 @@ function verifyAudienceContract(failures) {
       failures.push(`${path.relative(ROOT, configPath)} has no audience declarations`);
       continue;
     }
-    // Compatibility mode: empty audience keeps auth stable until Auth0 API identifier is confirmed.
-    // Contract only requires declarations to exist.
+
+    matches.forEach((match, index) => {
+      const value = match[1].trim();
+      if (!value) {
+        failures.push(
+          `${path.relative(ROOT, configPath)} audience #${index + 1} is empty (weak-token compat mode is retired)`,
+        );
+        return;
+      }
+      if (!/^https?:\/\//.test(value)) {
+        failures.push(
+          `${path.relative(ROOT, configPath)} audience #${index + 1} is not an absolute API identifier: ${value}`,
+        );
+        return;
+      }
+      seen.add(value);
+    });
+  }
+
+  if (seen.size > 1) {
+    failures.push(`auth audience is inconsistent across configs: ${[...seen].join(', ')}`);
   }
 }
 
@@ -170,6 +199,28 @@ function verifyStripeProductMap(failures) {
   }
 }
 
+function verifyPriceConsistency(failures) {
+  let map;
+  try {
+    map = JSON.parse(readText(STRIPE_PRODUCT_MAP_PATH));
+  } catch (error) {
+    failures.push(`stripe product map is not valid JSON: ${error instanceof Error ? error.message : String(error)}`);
+    return;
+  }
+
+  let defaultTiers;
+  try {
+    defaultTiers = parseDefaultTiers(readText(MEMBERSHIP_RUNTIME_PATH));
+  } catch (error) {
+    failures.push(`could not read DEFAULT_TIERS: ${error instanceof Error ? error.message : String(error)}`);
+    return;
+  }
+
+  for (const failure of checkMembershipPriceConsistency({ map, defaultTiers })) {
+    failures.push(`price consistency: ${failure}`);
+  }
+}
+
 function main() {
   const failures = [];
 
@@ -177,6 +228,7 @@ function main() {
   verifyMembershipRuntimeContract(failures);
   verifyAudienceContract(failures);
   verifyStripeProductMap(failures);
+  verifyPriceConsistency(failures);
 
   if (failures.length > 0) {
     console.error(`verify:membership-billing failed with ${failures.length} issue(s):`);

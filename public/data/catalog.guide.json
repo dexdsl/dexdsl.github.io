@@ -21,6 +21,10 @@
     {
       "heading_raw": "Part 4: [Quality] [Qualifiers] (Ex: [4K] [Met Perc Cle Lou Poly Exc])",
       "body_raw": "The last section has one or two sets of brackets, each holding valuable information. The first set of brackets tells us the type and quality of the sample such as 4K, 1080p, stereo, 4-channel, etc. Some samples may have a second set of brackets containing a list of signifiers providing details about the sound in that file, whether they are short, percussive sounds, whether it is in time or free of meter, etc."
+    },
+    {
+      "heading_raw": "dexDRONES / UAV collections",
+      "body_raw": "Location collection: DR.Subject. Site YYYY T#. Capture series: DR.Subject. Site (V|I|A|D)YYYY T# [FS|RGB|IR|TH]. Files append the matching deliverable bucket or X raw/support bucket and a running number, for example V.1 or X.1."
     }
   ],
   "examples": [
@@ -29,7 +33,11 @@
     "So our label of K.Hps. Su AV2023 S1 B.13 [4K] [Met Perc Cle Lou Poly Exc] is referencing an audio-visual collection of harpsichord samples produced in season 1 of 2023 by Sebastian Suarez-Solis (this set, actually); specifically it is referencing the 13th sample of group B, which is a 4K video file, the sound of which is metered, percussive, clean audio that is loud, polyphonic, and exciting.",
     "K.Hps. Su AV2023 S1",
     "K.Hps. Su AV2023 S1 A",
-    "K.Hps.2 Su AV2023 S1"
+    "K.Hps.2 Su AV2023 S1",
+    "DR.Win. Mo 2026 T1",
+    "DR.Win. Mo V2026 T1 [FS]",
+    "DR.Win. Mo V2026 T1 [FS] V.1",
+    "DR.Win. Mo V2026 T1 [FS] X.1"
   ],
   "anchors": [
     "part1",

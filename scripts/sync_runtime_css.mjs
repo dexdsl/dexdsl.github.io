@@ -176,6 +176,10 @@ const SYNC_MAP = [
     targets: ['css/components/dx-dexdrones.css', 'docs/css/components/dx-dexdrones.css'],
   },
   {
+    source: 'css/components/dx-uav-entry.css',
+    targets: ['public/css/components/dx-uav-entry.css', 'docs/css/components/dx-uav-entry.css'],
+  },
+  {
     source: 'public/css/components/dx-donate.css',
     targets: ['css/components/dx-donate.css', 'docs/css/components/dx-donate.css'],
   },

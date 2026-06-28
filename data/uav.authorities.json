@@ -1,0 +1,58 @@
+{
+  "version": "uav-authorities-v1",
+  "updatedAt": "2026-06-28T05:50:49.511Z",
+  "subjects": [
+    {
+      "id": "subject-win",
+      "code": "Win",
+      "label": "Wind power plants",
+      "authority": {
+        "source": "lcsh",
+        "uri": "http://id.loc.gov/authorities/subjects/sh97003604",
+        "label": "Wind power plants"
+      },
+      "additionalAuthorities": []
+    },
+    {
+      "id": "subject-mojave-desert",
+      "code": "Moj",
+      "label": "Mojave Desert",
+      "authority": {
+        "source": "lcsh",
+        "uri": "http://id.loc.gov/authorities/subjects/sh85086496",
+        "label": "Mojave Desert"
+      },
+      "additionalAuthorities": []
+    },
+    {
+      "id": "subject-wind-power-plants-sh97003604",
+      "code": "Wpo",
+      "label": "Wind power plants",
+      "authority": {
+        "source": "lcsh",
+        "uri": "http://id.loc.gov/authorities/subjects/sh97003604",
+        "label": "Wind power plants"
+      },
+      "additionalAuthorities": []
+    }
+  ],
+  "sites": [
+    {
+      "id": "site-mojave-desert",
+      "name": "Mojave Desert",
+      "cutter": "Mo",
+      "admin": "California, United States",
+      "authority": {
+        "source": "geonames",
+        "uri": "https://www.geonames.org/5366898",
+        "label": "Mojave Desert"
+      },
+      "coordinateVisibility": "rounded",
+      "publicCoordinates": {
+        "lat": 35.01,
+        "lon": -115.47,
+        "precision": 2
+      }
+    }
+  ]
+}

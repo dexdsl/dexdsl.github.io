@@ -89,6 +89,12 @@ jobs:
       - name: Verify interactive hover motion contract
         run: npm run verify:hover-motion
 
+      - name: Verify membership billing contract
+        run: npm run verify:membership-billing
+
+      - name: Membership price consistency test
+        run: npm run test:membership-price
+
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium
 
@@ -109,6 +115,9 @@ jobs:
 
       - name: Achievements loading resilience test
         run: npm run test:achievements-loading
+
+      - name: Membership billing client test
+        run: npm run test:membership-billing
 
       - name: Favorites lookup parity test
         run: npm run test:favorites-lookup

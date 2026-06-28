@@ -1,0 +1,24 @@
+{
+  "version": "uav-manifest-v1",
+  "slug": "mojave-wind-farm",
+  "collectionLookup": "DR.Win. Mo 2026 T1",
+  "groups": [
+    {
+      "seriesId": "aerial-video-fs",
+      "seriesLookup": "DR.Win. Mo V2026 T1 [FS]",
+      "captureClass": "V",
+      "buckets": [
+        {
+          "bucket": "V",
+          "folderId": "",
+          "files": []
+        },
+        {
+          "bucket": "X",
+          "folderId": "",
+          "files": []
+        }
+      ]
+    }
+  ]
+}
