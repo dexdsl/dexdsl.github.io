@@ -1,6 +1,6 @@
 {
   "version": "catalog-editorial-v1",
-  "updatedAt": "2026-06-28T06:43:10.743Z",
+  "updatedAt": "2026-06-28T12:24:39.335Z",
   "manifest": [
     {
       "entry_id": "2-organs-midori-ataka",
@@ -120,7 +120,7 @@
       "instrument": "MODULAR SYNTH",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "cello-emmanuel-losa",
@@ -264,7 +264,7 @@
       "instrument": "SNARE DRUM",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "this-is-a-tangible-space",

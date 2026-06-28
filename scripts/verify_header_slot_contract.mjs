@@ -152,6 +152,10 @@ function verifyGlassParityContract(failures) {
     'var headerFilter = filter || webkitFilter || cssHeaderFilter || "saturate(180%) blur(18px)";',
     'ui.style.setProperty("--dex-header-glass-filter", headerFilter);',
     'ui.style.setProperty("--dex-header-glass-webkit-filter", headerFilter);',
+    'function startWhenHeaderIsReady()',
+    'document.body.classList.contains("dx-entry-page")',
+    'return null;',
+    'window.addEventListener("dx:slotready", start);',
   ];
   for (const marker of requiredAuthMarkers) {
     if (!authRuntime.includes(marker)) {

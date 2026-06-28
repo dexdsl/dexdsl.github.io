@@ -1,6 +1,6 @@
 {
   "source": "live-dexdsl-com-catalog",
-  "generated_at": "2026-06-28T05:42:58.212Z",
+  "generated_at": "2026-06-28T10:47:52.889Z",
   "anchors": {
     "performer": "#dex-performer",
     "instrument": "#dex-instrument",
@@ -667,7 +667,7 @@
       "sort_key": "UAV::DR.Win. Mo 2026 T1",
       "title_norm": "mojave desert – wind farms",
       "site_norm": "mojave desert california, united states",
-      "subject_norm": "wind power plants mojave desert",
+      "subject_norm": "wind power plants wind power plants mojave desert",
       "uav": {
         "collection_lookup": "DR.Win. Mo 2026 T1",
         "site": {
@@ -692,6 +692,16 @@
           {
             "id": "subject-win",
             "code": "Win",
+            "label": "Wind power plants",
+            "authority": {
+              "source": "lcsh",
+              "uri": "http://id.loc.gov/authorities/subjects/sh97003604",
+              "label": "Wind power plants"
+            }
+          },
+          {
+            "id": "subject-wind-power-plants-sh97003604",
+            "code": "Wpo",
             "label": "Wind power plants",
             "authority": {
               "source": "lcsh",

@@ -185,6 +185,118 @@ button,
   letter-spacing: 0.02em;
 }
 
+/* First-paint collection favorites shared by /entry/ and /uav/. */
+body.dx-entry-page {
+  --dx-test5-header-radius: var(--radius-002, 4px);
+}
+
+body.dx-entry-page .dex-collections .dx-fav-sr {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+body.dx-entry-page .dex-collections .dx-fav-heart-btn {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.3rem !important;
+  min-width: 2rem !important;
+  min-height: 2rem !important;
+  width: auto;
+  padding: 0.42rem 0.56rem !important;
+  border: 1px solid rgba(27, 33, 45, 0.24) !important;
+  border-radius: var(--dx-test5-header-radius) !important;
+  background: rgba(255, 255, 255, 0.3) !important;
+  color: rgba(29, 33, 42, 0.86) !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  overflow: visible !important;
+  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease, transform 180ms ease !important;
+}
+
+body.dx-entry-page .dex-collections .dx-fav-heart-btn:hover,
+body.dx-entry-page .dex-collections .dx-fav-heart-btn:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(224, 36, 94, 0.42) !important;
+}
+
+body.dx-entry-page .dex-collections .dx-fav-heart-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 1.1rem !important;
+  height: 1.1rem !important;
+  pointer-events: none !important;
+}
+
+body.dx-entry-page .dex-collections .dx-fav-heart-svg {
+  width: 1.1rem !important;
+  height: 1.1rem !important;
+  stroke: currentColor !important;
+  filter: drop-shadow(0 0 0.25px rgba(0, 0, 0, 0.25));
+}
+
+body.dx-entry-page .dex-collections .dx-fav-heart-svg path {
+  stroke-width: 1.8;
+  fill: transparent;
+  transition: fill 160ms ease, stroke 160ms ease;
+}
+
+body.dx-entry-page .dex-collections .dx-fav-heart-chip {
+  font-family: var(--font-heading, "Typefesse", sans-serif) !important;
+  font-size: 0.76rem !important;
+  letter-spacing: 0.02em !important;
+  text-transform: none !important;
+  line-height: 1 !important;
+  font-weight: 700 !important;
+}
+
+body.dx-entry-page .dex-collections .overview-item--favorite-collection button.dx-fav-entry-toggle.dx-fav-heart-btn {
+  width: 100% !important;
+  min-height: 2rem !important;
+  padding: var(--primary-button-padding-y, var(--dx-btn-pad-y-md)) var(--primary-button-padding-x, var(--dx-btn-pad-x-md)) !important;
+  border: 0 !important;
+  border-radius: var(--dx-test5-header-radius) !important;
+  background: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: var(--dx-btn-primary-shadow) !important;
+}
+
+body.dx-entry-page .dex-collections .overview-item--favorite-buckets .overview-badges button.dx-fav-bucket-toggle.dx-fav-heart-btn {
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: var(--dx-entry-tile-height, clamp(28px, 1.85vw, 34px)) !important;
+  max-height: var(--dx-entry-tile-height, clamp(28px, 1.85vw, 34px)) !important;
+  height: var(--dx-entry-tile-height, clamp(28px, 1.85vw, 34px)) !important;
+  padding: clamp(3px, 0.45vw, 6px) !important;
+  border-color: transparent !important;
+  border-radius: var(--dx-test5-header-radius) !important;
+  background: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+}
+
+body.dx-entry-page .dex-collections .overview-item--favorite-buckets .overview-badges button.dx-fav-bucket-toggle.dx-fav-heart-btn .dx-fav-heart-icon {
+  display: inline-flex !important;
+}
+
+body.dx-entry-page .dex-collections .dx-fav-heart-btn.is-active {
+  color: #e0245e !important;
+  border-color: rgba(224, 36, 94, 0.44) !important;
+  background: rgba(224, 36, 94, 0.1) !important;
+}
+
+body.dx-entry-page .dex-collections .dx-fav-heart-btn.is-active .dx-fav-heart-svg path {
+  fill: currentColor;
+}
+
 .dx-button-element .dx-add-to-cart-button-inner,
 .dx-block-button-element .dx-add-to-cart-button-inner,
 .sqs-button-element .dx-add-to-cart-button-inner,

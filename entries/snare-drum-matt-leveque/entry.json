@@ -6,8 +6,8 @@
     "artistName": "Matt LeVeque"
   },
   "lifecycle": {
-    "publishedAt": "2026-03-25T20:32:22.857Z",
-    "updatedAt": "2026-03-25T20:32:22.857Z"
+    "publishedAt": "2026-06-28T12:21:31.970Z",
+    "updatedAt": "2026-06-28T12:21:31.970Z"
   },
   "video": {
     "mode": "url",
@@ -15,7 +15,7 @@
     "dataUrlOriginal": "https://youtu.be/d-7wYJzGliw?si=agZLxoZPsJyTY0ga",
     "dataHtml": ""
   },
-  "descriptionText": "SNARE DRUM.",
+  "descriptionText": "Matt LeVeque (b. 1996) is a percussionist, composer, and improviser based in Los Angeles. His work is primarily rooted in acoustic concert music, but frequently also includes electronic music, video, written text, installation, and intermedia performance. Through all his work, he explores questions of intimacy, queer relationality, and nostalgia. \n\nMatt’s compositions investigate diverse concepts such as the inner lifeworlds of percussion instruments, samples as found objects, documentary materials, and more. He has had works performed at soundpedro, Automata Arts, LA Artcore, Lois Lambert Gallery, rasp.la, Experiments in Electronic Sound Festival, Darmstädter Ferienkurse, and others.\n\nAn active interpreter of contemporary percussion music, he has worked closely with composers Jack Herscowitz, Jeonghyeon Joo, Kevin Good, Eric Lennartson, Wong Foo Jeng, Judith Berkson, and María Alejandra Bulla. He has performed at New Music on the Point, BENXT Festival, Yarn/Wire Institute, HEAR NOW Festival, Percussive Arts Society International Convention, Tiny Backpack concert series, and others. He has also performed alongside notable musicians such as Claire Chase, Katherine Young, Elliott Sharp, the Bergamot Quartet, red fish blue fish, and members of Yarn/Wire.\n\nAs an improviser, Matt performs regularly with his trio Castle Anthrax, with Jack Herscowitz and Mason Moy, as well as his duo project ++, with Daniel Newman-Lessler. He has also performed frequently with M A Harms, Jeonghyeon Joo, Vinny Golia, and Ana Luisa Díaz de Cossío, in venues such as Coaxial Arts Foundation, Oracle Egg, NettNett Performance Space, Dotolim, and REDCAT.​​\n\n​Matt’s scholarship focuses on issues of queer futurity and worldmaking, particularly as they relate to experimental percussion practices and sample-\n\nbased electronic music. He has presented work at the Transplanted Roots Percussion Symposium and University of Pittsburgh MGSO Conference, as well as having an essay published in the Queer Percussion Research Group Zine Collection alongside Bill Solomon, Jennifer Torrence, Sarah Hennies, and others.\n\n​Matt is pursuing a Performer-Composer DMA at the California Institute of the Arts, where he studies with Tim Feeney, Michael Pisaro-Liu, and Nicholas Deyoe. He holds an MFA from CalArts and a BA from UC San Diego, where he studied with Steven Schick and Rand Steiger.",
   "series": "dex",
   "selectedBuckets": [
     "A",
@@ -27,31 +27,31 @@
       "Matt LeVeque"
     ],
     "artistAlt": null,
+    "audio": {
+      "master": [],
+      "mix": [],
+      "recording": []
+    },
     "instruments": [
       "SNARE DRUM"
     ],
+    "location": "Unknown",
+    "season": "S2",
     "video": {
-      "director": [],
       "cinematography": [],
+      "director": [],
       "editing": []
     },
-    "audio": {
-      "recording": [],
-      "mix": [],
-      "master": []
-    },
-    "year": 2024,
-    "season": "S2",
-    "location": "Unknown"
+    "year": 2024
   },
   "fileSpecs": {
     "bitDepth": 24,
-    "sampleRate": 48000,
     "channels": "stereo",
+    "sampleRate": 48000,
     "staticSizes": {
-      "A": "",
-      "B": "",
-      "C": "",
+      "A": "9.0 GB",
+      "B": "8.2 GB",
+      "C": "8.4 GB",
       "D": "",
       "E": "",
       "X": ""
@@ -62,57 +62,1101 @@
     "tags": []
   },
   "sidebarPageConfig": {
-    "lookupNumber": "P.Sdr. Le AV2024 S2",
+    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Matt LeVeque.",
     "buckets": [
       "A",
       "B",
       "C"
     ],
-    "specialEventImage": "/assets/series/dex.png",
-    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Matt LeVeque.",
     "credits": {
       "artist": [
-        "Matt LeVeque"
+        "Matt Leveque"
       ],
       "artistAlt": null,
+      "audio": {
+        "master": [
+          "Sebastian Suarez-Solis"
+        ],
+        "mix": [
+          "Sebastian Suarez-Solis",
+          "Cameron Church"
+        ],
+        "recording": [
+          "Cameron Church"
+        ]
+      },
+      "instrumentLinksEnabled": true,
       "instruments": [
         "SNARE DRUM"
       ],
-      "video": {
-        "director": [],
-        "cinematography": [],
-        "editing": []
+      "linksByPerson": {
+        "Sebastian Suarez-Solis": [
+          {
+            "href": "https://dexdsl.github.io/u/cbassuarez",
+            "label": "Website"
+          }
+        ]
       },
-      "audio": {
-        "recording": [],
-        "mix": [],
-        "master": []
-      },
-      "year": 2024,
+      "location": "Los Angeles, CA",
       "season": "S2",
-      "location": "Unknown"
+      "video": {
+        "cinematography": [
+          "Gabrielle Milman",
+          "Sebastian Suarez-Solis"
+        ],
+        "director": [
+          "Gabrielle Milman"
+        ],
+        "editing": [
+          "Sebastian Suarez-Solis"
+        ]
+      },
+      "year": 2024
+    },
+    "downloads": {
+      "bucketFolders": {
+        "A": {
+          "fileCount": 3,
+          "files": [
+            {
+              "id": "1lIeH_L_CHhJ2LaVXNLPi2w3rdm0c-np2",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 A.1 [4K].mov",
+              "size": 6066172085
+            },
+            {
+              "id": "1SA_KJ5c24J9w1wfuw0fwV6OJIBHpu03q",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 A.1 [1080p].mov",
+              "size": 2899499557
+            },
+            {
+              "id": "1PPAtqBcCrZe8pv64iN7uo6UwTiq6GtlB",
+              "mimeType": "audio/wav",
+              "name": "P.Sdr. Le AV2024 S2 A.1 [ste].wav",
+              "size": 744577588
+            }
+          ],
+          "folderId": "1bwXr7i_O5Upllbfq4lI_GC7sMr42qU9-",
+          "scannedAt": "2026-06-28T12:10:06.954Z",
+          "totalBytes": 9710249230
+        },
+        "B": {
+          "fileCount": 30,
+          "files": [
+            {
+              "id": "1E-DWPBYarLFMOSKjIHKpwZMMmGYVJfSf",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 B.1 [4K].mov",
+              "size": 517922344
+            },
+            {
+              "id": "1iDPC95B5iXDcWTtd8TRQHt64b4HHx5pI",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 B.2 [4K].mov",
+              "size": 430933742
+            },
+            {
+              "id": "1lmsIffe0ItpmLJHH_jznszsCAlXDzmNj",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 B.3 [4K].mov",
+              "size": 614673009
+            },
+            {
+              "id": "1azE5FBfQ3LO9K3YB7ljVRma59fbpY2eH",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 B.4 [4K].mov",
+              "size": 457975989
+            },
+            {
+              "id": "128D7jjetNhQlnxNZQTokOhFRYniPClpQ",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 B.5 [4K].mov",
+              "size": 882038985
+            },
+            {
+              "id": "1J_4tyEUDWpcb0pOxa1bpYVctCW1p6frl",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 B.6 [4K].mov",
+              "size": 607145833
+            },
+            {
+              "id": "13FNinz2mFe47LGIXwiOhhyKtAYSJNaT5",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 B.7 [4K].mov",
+              "size": 208334660
+            },
+            {
+              "id": "1mIJ-NaMbtayFf25fHFMHNsbWqgFdCDGU",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 B.8 [4K].mov",
+              "size": 423994127
+            },
+            {
+              "id": "18KCM_lXN02hlVmf1A3z-HNcwVJnOMLZ5",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 B.9 [4K].mov",
+              "size": 395760253
+            },
+            {
+              "id": "1NBUpPXj-fHH5__Q14mpt0j_FPlyxeWBW",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 B.10 [4K].mov",
+              "size": 892851714
+            },
+            {
+              "id": "1lZrIJCHDoeLdnifqi4VdK8pTxLjm-6tZ",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 B.1 [1080p].mov",
+              "size": 276187559
+            },
+            {
+              "id": "1XKNUn5tBNsgSpD7NHk4x5bicYz5fBrWJ",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 B.2 [1080p].mov",
+              "size": 229858529
+            },
+            {
+              "id": "1RosaUL-MetB2C6sE1EwWPuBICODPjb8Z",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 B.3 [1080p].mov",
+              "size": 327853599
+            },
+            {
+              "id": "1g-grcG1As51a69a1d4YcjOy17v8jmP3B",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 B.4 [1080p].mov",
+              "size": 244102889
+            },
+            {
+              "id": "1eODvY-qxNfdf8EBTyXMdgZ0PRvsuh4k4",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 B.5 [1080p].mov",
+              "size": 470459087
+            },
+            {
+              "id": "1xBq0p61OS8PLfYGyft8Qg8qarRgvuGkB",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 B.6 [1080p].mov",
+              "size": 323908680
+            },
+            {
+              "id": "1vTHl5TmOzaf29s0NcHYgsAZRhj9LoZLE",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 B.7 [1080p].mov",
+              "size": 110966451
+            },
+            {
+              "id": "17Uc97t6tH0TZJU3P_yW3iDQ7Dshlg25w",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 B.8 [1080p].mov",
+              "size": 226089360
+            },
+            {
+              "id": "1IfdVcrWS9xLVTNpUr_CQGXmK_vZ4rOT3",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 B.9 [1080p].mov",
+              "size": 211154059
+            },
+            {
+              "id": "1zSStFXTWgKelilXe9pu-RlkiuQ6BSl5R",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 B.10 [1080p].mov",
+              "size": 476469298
+            },
+            {
+              "id": "1r7Lxb90UjLviUYWCggzLflHmatXGhXq9",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 B.1 [ste].wav",
+              "size": 1358944
+            },
+            {
+              "id": "1_-8_BxyPhiXvT-QBuo2dsoEPYUKzrEaR",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 B.2 [ste].wav",
+              "size": 44241784
+            },
+            {
+              "id": "1_CMEpVMYLFH2BPakGf5e3VQ0JSAh8MUo",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 B.3 [ste].wav",
+              "size": 63244768
+            },
+            {
+              "id": "1vjpKZCB9sT9dxidPHWnFdMHNrTsLxCZX",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 B.4 [ste].wav",
+              "size": 46992532
+            },
+            {
+              "id": "1VpiIPmB9bsla1CGtsuE07yLrpOefiHH7",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 B.5 [ste].wav",
+              "size": 90824320
+            },
+            {
+              "id": "1OfsDmEU6HBYSLE44Z-V_H1zVja76REvk",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 B.6 [ste].wav",
+              "size": 62463988
+            },
+            {
+              "id": "1y6CVVMrbZb19hcj4ZGLIsQO0yTwsjWDz",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 B.7 [ste].wav",
+              "size": 21214780
+            },
+            {
+              "id": "1DrxhJ9gHSg12S_bhZ86bZgco3P576qF-",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 B.8 [ste].wav",
+              "size": 43509052
+            },
+            {
+              "id": "1qpxAdyIYuk1EupIhzYjZm0L8sil_aKHq",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 B.9 [ste].wav",
+              "size": 40626172
+            },
+            {
+              "id": "1OWTQKJN8BC4NMc5FDOAyhCIu9ISrNn9Y",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 B.10 [ste].wav",
+              "size": 92073568
+            }
+          ],
+          "folderId": "1GJwhdM9t5IMMYRJ5nKCObWnf4fz6QifZ",
+          "scannedAt": "2026-06-28T12:10:19.859Z",
+          "totalBytes": 8835230075
+        },
+        "C": {
+          "fileCount": 132,
+          "files": [
+            {
+              "id": "1Xj3ottqJMAq1sTUxxGWZIAyuZyjQiEY4",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.1 [4K].mov",
+              "size": 112845021
+            },
+            {
+              "id": "1GhuXxOA0yvHe4JcleQHxa8yOZZxhVO0L",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.2 [4K].mov",
+              "size": 81065339
+            },
+            {
+              "id": "11pt7oQT__-ut_EqomBnUPJhdnoeYo53m",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.3 [4K].mov",
+              "size": 109280984
+            },
+            {
+              "id": "1fnthKIYhVgPH0V3SAXHPSrmiyd-LpOjk",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.4 [4K].mov",
+              "size": 81251179
+            },
+            {
+              "id": "1P1vOFAa68Ipa4NDeC7HGx3Z9JtqTh1o-",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.5 [4K].mov",
+              "size": 90667595
+            },
+            {
+              "id": "1-iw7oDw0IEg91Ax9wcp_U3htBgty8ykH",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.6 [4K].mov",
+              "size": 53825326
+            },
+            {
+              "id": "16bD4mmx9aD4I7yj7WUks30vH2C_q-loG",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.7 [4K].mov",
+              "size": 100775740
+            },
+            {
+              "id": "12lbbEmfqHUszhXPr4-d2bqXJoNCb_BHa",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.8 [4K].mov",
+              "size": 121888419
+            },
+            {
+              "id": "1vRudW22h-Tl207Xd4Y4BEdLABcXDPfw1",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.9 [4K].mov",
+              "size": 87507183
+            },
+            {
+              "id": "1EgnR1vh3ZsXTamUfS66_XK8rYHm4kXrj",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.10 [4K].mov",
+              "size": 128538566
+            },
+            {
+              "id": "1mLXvIlgIBG_vxKzuBIqqntJEWB9E23Ah",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.11 [4K].mov",
+              "size": 174211208
+            },
+            {
+              "id": "1fljxG6CkGQZj3Ml47snDk-PlT3-8HQ-I",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.12 [4K].mov",
+              "size": 161622475
+            },
+            {
+              "id": "13TwqU6LsXmqOp44XXvzCn7sdFB1Vs625",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.13 [4K].mov",
+              "size": 106376490
+            },
+            {
+              "id": "1kEBBQH8oJCO6FnlBhJP_noaQJISY8RaG",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.14 [4K].mov",
+              "size": 70075130
+            },
+            {
+              "id": "1EnYVYOi7cEpJE2idAQn6FoDA440kGyFe",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.15 [4K].mov",
+              "size": 83845534
+            },
+            {
+              "id": "18Dza8ir1CCixw4YjCj2rkbJpe4rA5CYM",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.16 [4K].mov",
+              "size": 32109347
+            },
+            {
+              "id": "11BYUM8z55vcPUWTJdGuqW7SB1yoZ6uGw",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.17 [4K].mov",
+              "size": 171953796
+            },
+            {
+              "id": "11XvnwW24Vt29ysHRn956Pw6NKsOWDsX_",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.18 [4K].mov",
+              "size": 150903601
+            },
+            {
+              "id": "1BRXT55QpOwl3QDgCh_ZmqGsRQ7cQVU36",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.19 [4K].mov",
+              "size": 141135802
+            },
+            {
+              "id": "1BaF8qwtm0iO4bjJkL45py_hNEUT2d4k7",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.20 [4K].mov",
+              "size": 222813812
+            },
+            {
+              "id": "1OEcjDMXxpzU9ZKmF6WScSteJIwGduwhK",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.21 [4K].mov",
+              "size": 188093791
+            },
+            {
+              "id": "1ubMOwrTU1LjWJjoyKWzCRqvcsOf7u0rG",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.22 [4K].mov",
+              "size": 183068986
+            },
+            {
+              "id": "1SbhArxbt-enQ-aP0gEUgFSTfmywSIWH1",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.23 [4K].mov",
+              "size": 185469365
+            },
+            {
+              "id": "1CUpnT0WFlnmX04Hg5KBra7I6zMBu6YER",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.24 [4K].mov",
+              "size": 112677804
+            },
+            {
+              "id": "1XNsyn-FLmFn-vygOLZOqH1dskEp2UKi2",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.25 [4K].mov",
+              "size": 92008528
+            },
+            {
+              "id": "1G7ZGEFksBFsVrmDrL-i9DvZxqrQ5UPAt",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.26 [4K].mov",
+              "size": 80696454
+            },
+            {
+              "id": "1cINwedwFiMvDc21-EwyCFez2EfTT7STm",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.27 [4K].mov",
+              "size": 84646538
+            },
+            {
+              "id": "1bskfVMT8zEM1Fi7V3_bGav026dpaE4Su",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.28 [4K].mov",
+              "size": 167673611
+            },
+            {
+              "id": "1JZOme50IM1_HUpDkJz3z7CCX2ONg9oQH",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.29 [4K].mov",
+              "size": 136120069
+            },
+            {
+              "id": "1-JYPwhP7jn5KFK-9yrTgjIMV-mSt0ooq",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.30 [4K].mov",
+              "size": 59912931
+            },
+            {
+              "id": "1X3tPnjmdBsfJ1sYPUdFHjoMOawi63wzg",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.31 [4K].mov",
+              "size": 63014286
+            },
+            {
+              "id": "1G5HGftY_Dsz5usk_VcTa-BHMIph7oZQT",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.32 [4K].mov",
+              "size": 106210164
+            },
+            {
+              "id": "1iR9lErhOoGma9cxU6iA87GBrf6qCq9ie",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.33 [4K].mov",
+              "size": 44425576
+            },
+            {
+              "id": "1IHozxmzDMU4ovVCyqGEgoPo8hSjHpZbx",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.34 [4K].mov",
+              "size": 157149600
+            },
+            {
+              "id": "1SdjycI7CNvusYOJPi17_yVNnpSzi4p8Q",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.35 [4K].mov",
+              "size": 99275099
+            },
+            {
+              "id": "1AeCMLOKQxTR93s8yxXOu9sxkpFbUz_7D",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.36 [4K].mov",
+              "size": 76236446
+            },
+            {
+              "id": "19U8dzxDVESR1Y6JQm1vtvu0sYio8eODm",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.37 [4K].mov",
+              "size": 98873284
+            },
+            {
+              "id": "1-5_5SEwVjkmGHeZ-oEJoi1mNwGJYQbAg",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.38 [4K].mov",
+              "size": 168598561
+            },
+            {
+              "id": "12mwFzKYmF2t9j9EfvfbNIDwqy2d-q9zy",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.39 [4K].mov",
+              "size": 229059611
+            },
+            {
+              "id": "1hAWEWV_Ir5EbhsIse66MAQlopAovZMBn",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.40 [4K].mov",
+              "size": 187138526
+            },
+            {
+              "id": "1327oBeq5eeA_WdJ9lLmL7b-ftd3cHhJ0",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.41 [4K].mov",
+              "size": 248754276
+            },
+            {
+              "id": "14Ix6LCHRW94q9qabSPYmqu0GKOPl4m-O",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.42 [4K].mov",
+              "size": 246121718
+            },
+            {
+              "id": "1DpmY02VPQIj6g98gyvu5p2QYAALTM0h_",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.43 [4K].mov",
+              "size": 78682663
+            },
+            {
+              "id": "1ir7BSwOZKmbRDj7U1V9Y9inB7b1_8l88",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.44 [4K].mov",
+              "size": 143523086
+            },
+            {
+              "id": "1vOJ6AbmN03H4Qj1s_AOxnZ_QUHknClYS",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.1 [1080p].mov",
+              "size": 59905211
+            },
+            {
+              "id": "1nSY7o1owLWt8-v0ls0zAF-iiblEPtzjd",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.2 [1080p].mov",
+              "size": 43198409
+            },
+            {
+              "id": "1VPAkJzHQlSFsZeKBVOOMSVSrJVAL2fhS",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.3 [1080p].mov",
+              "size": 58296400
+            },
+            {
+              "id": "1S0s8NG48Q40PvsdolBnwz0XOGYwBVTzW",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.4 [1080p].mov",
+              "size": 43363490
+            },
+            {
+              "id": "1GZuC-QlDVuTG6InGD43qUxQgD843NcVg",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.5 [1080p].mov",
+              "size": 48127154
+            },
+            {
+              "id": "1RsWilZtam5sucO_JIDqiqQLCn3cRLrHz",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.6 [1080p].mov",
+              "size": 28909546
+            },
+            {
+              "id": "1Syq7sgd1oatYIXm0t4NxbXNTekgyQzm7",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.7 [1080p].mov",
+              "size": 53741783
+            },
+            {
+              "id": "1aoN_ZXPSjqu73HVlc0axiEkld1csslKz",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.8 [1080p].mov",
+              "size": 64789570
+            },
+            {
+              "id": "1WtHzyBZA9xY3N1kS3LD-UOduxxn8hPPd",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.9 [1080p].mov",
+              "size": 46519708
+            },
+            {
+              "id": "1oGUEqBYfU9Wtbhi2rFCCNq9z3Ksf6i7e",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.10 [1080p].mov",
+              "size": 68522907
+            },
+            {
+              "id": "1L7uefpTypZFX67bsTwlgnDCu2nQdSXOP",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.11 [1080p].mov",
+              "size": 92722289
+            },
+            {
+              "id": "1S3dy85PXdPoQmtnz5gKvfS8G-hsLZNJ0",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.12 [1080p].mov",
+              "size": 86076664
+            },
+            {
+              "id": "1b7E2A4yPKrFAdMgSani_QHemijGhg74E",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.13 [1080p].mov",
+              "size": 56695707
+            },
+            {
+              "id": "1vCervUotyQNjF4tUcUs6cXWKPHWyTGat",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.14 [1080p].mov",
+              "size": 37137561
+            },
+            {
+              "id": "16ddP-a8uTgnlceGpnK1GXzmzIF5m71k-",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.15 [1080p].mov",
+              "size": 44353821
+            },
+            {
+              "id": "1EheT2IjzHnr2__Nva0n0Ow9Oe63QnMgT",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.16 [1080p].mov",
+              "size": 16997160
+            },
+            {
+              "id": "1w22W5L6jtKEc48ruuFZ7ncTqlO9IzzxZ",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.17 [1080p].mov",
+              "size": 91420322
+            },
+            {
+              "id": "1lS3wvrnOKs7DsnTB2b1455ik4NJwGO0M",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.18 [1080p].mov",
+              "size": 80284151
+            },
+            {
+              "id": "1k4wS3GZJrP5X45vcMHhL0nvKwE1AAKQc",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.19 [1080p].mov",
+              "size": 75111012
+            },
+            {
+              "id": "1qSPPe4Rk7Ga63sgZGLxSAYKD-DeC-Yrk",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.20 [1080p].mov",
+              "size": 118882832
+            },
+            {
+              "id": "1Z_PPjTebA9lb27fQYY08elCg3LcQPfZA",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.21 [1080p].mov",
+              "size": 100205015
+            },
+            {
+              "id": "18TmjESpi5tJLrykO09pVSkYjR7q86Y_C",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.22 [1080p].mov",
+              "size": 97602350
+            },
+            {
+              "id": "1Kq3S47szGrQJvQxz0qrshCc7bwDHuU8a",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.23 [1080p].mov",
+              "size": 98860973
+            },
+            {
+              "id": "1GoUV0nSBsp_TpAF5yjdI-S2-Eegnjqsb",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.24 [1080p].mov",
+              "size": 59893988
+            },
+            {
+              "id": "1L0rSFv0eEBfy2pZvDqjA6AiqzP7JeSAq",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.25 [1080p].mov",
+              "size": 49149373
+            },
+            {
+              "id": "1ChKlN0pgKGvbBAfB4xLEl0jj1dLbf766",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.26 [1080p].mov",
+              "size": 42892690
+            },
+            {
+              "id": "1YdAt7ez6xDvM4kBeZ6unG4mde5t0Qyzu",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.27 [1080p].mov",
+              "size": 44996085
+            },
+            {
+              "id": "1ilMY0MY--q7gE-eGhXuR2n-aF0NUKY8w",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.28 [1080p].mov",
+              "size": 89295741
+            },
+            {
+              "id": "1cBTRQCTJpuorYPq1E3E1qiiKiSvMtlI8",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.29 [1080p].mov",
+              "size": 72595074
+            },
+            {
+              "id": "1V0mlZPxGVjDz6qN2IIA6v4JjNXF2Q8N_",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.30 [1080p].mov",
+              "size": 31710132
+            },
+            {
+              "id": "1uhuHTutC5aSa8VomfKHtt8-SkLjo6-GZ",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.31 [1080p].mov",
+              "size": 33409081
+            },
+            {
+              "id": "1M954Ee2OXKErhYZQKwLLpeKsAwXqXwQ8",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.32 [1080p].mov",
+              "size": 56476941
+            },
+            {
+              "id": "1K2VUMBbNon_9H9IwwyCVXcSNTaSNTUlY",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.33 [1080p].mov",
+              "size": 23517853
+            },
+            {
+              "id": "1saFLeifLZunth9h4eMuxsRPD9XLfZExU",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.34 [1080p].mov",
+              "size": 83723242
+            },
+            {
+              "id": "1opHO19w5DqwN9fW8S0nM9-urOX3XkG0q",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.35 [1080p].mov",
+              "size": 52924312
+            },
+            {
+              "id": "19IV6_ydPQ1Hq1idcRq4di0DMPhfpAseK",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.36 [1080p].mov",
+              "size": 40406391
+            },
+            {
+              "id": "1K3knzgqYEo-ro7p1LuWWHHWt_WkWzT-o",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.37 [1080p].mov",
+              "size": 52608919
+            },
+            {
+              "id": "1w9PiF_iDNJW9Rf5PJT4ybYH2cwyzcenw",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.38 [1080p].mov",
+              "size": 89853224
+            },
+            {
+              "id": "1VkhLiEVrhuEwKSp1iUJF_Hx5LnhbpmC_",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.39 [1080p].mov",
+              "size": 122319957
+            },
+            {
+              "id": "1KQ6aR-MhVoJSCOTUjKPnuqP5MPMhS77h",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.40 [1080p].mov",
+              "size": 99906403
+            },
+            {
+              "id": "15vl5kXxxVx8Cu7jGt8vX81Q4YkAIarmQ",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.41 [1080p].mov",
+              "size": 132644851
+            },
+            {
+              "id": "1WLWFac1r3VJZJJQm5DdEZ4O3EWJKAZXE",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.42 [1080p].mov",
+              "size": 131131509
+            },
+            {
+              "id": "1eMGLA8EYOyD38djC0AblRT6-kyws3K8N",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.43 [1080p].mov",
+              "size": 41702500
+            },
+            {
+              "id": "1EMFNq3iPeSIH-7LkEvvAVX2OKZRKRQNM",
+              "mimeType": "video/quicktime",
+              "name": "P.Sdr. Le AV2024 S2 C.44 [1080p].mov",
+              "size": 76472123
+            },
+            {
+              "id": "16YFQH3qmmukpyw0lGXw2QKy5BQ_4A8Hd",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.1 [ste].wav",
+              "size": 4217800
+            },
+            {
+              "id": "1JAlZFX6r99b0gctwI5VpagdgpYgGzsY6",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.2 [ste].wav",
+              "size": 8181760
+            },
+            {
+              "id": "1winYhv_X0a87VbRYGFBZ-ZlLuLp191-P",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.3 [ste].wav",
+              "size": 11064640
+            },
+            {
+              "id": "15eV4RloU-oh2bThmTqBtnG_RZVuR0ta1",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.4 [ste].wav",
+              "size": 8145724
+            },
+            {
+              "id": "1-qbjhk8DTtPnk1nMHmlWVpggkR9Tyogg",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.5 [ste].wav",
+              "size": 9094672
+            },
+            {
+              "id": "1zaWZTb7QStTI_Dhbu4W6FW3zhvVmqaSY",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.6 [ste].wav",
+              "size": 5406988
+            },
+            {
+              "id": "18DN9TY92hRkmVPTsDx6hCfwDDzzLDRCG",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.7 [ste].wav",
+              "size": 10175752
+            },
+            {
+              "id": "1aGAHLUR_2c_13i0E1mE5BifVsXRWJ19g",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.8 [ste].wav",
+              "size": 12277852
+            },
+            {
+              "id": "1annzQGW5vWNJZ_uw4-TgW-At3pgs2H0r",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.9 [ste].wav",
+              "size": 8770348
+            },
+            {
+              "id": "1nl1C2TEp3nTa-8EyWP9x1Iy0_RrNDkSZ",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.10 [ste].wav",
+              "size": 13022596
+            },
+            {
+              "id": "1qKLtL6X_rha7R48756rUf4wax4olbIvj",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.11 [ste].wav",
+              "size": 17683252
+            },
+            {
+              "id": "1ZjopsOaPXO1J5RFS_OJlLQFAZSUzWIq8",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.12 [ste].wav",
+              "size": 16458028
+            },
+            {
+              "id": "19hxSQsDe4kr2VYK0YPPn9NChORYB1AoL",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.13 [ste].wav",
+              "size": 10764340
+            },
+            {
+              "id": "1YNPMKqklHY-CaN3HJejTaW6SoflR9nip",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.14 [ste].wav",
+              "size": 6956536
+            },
+            {
+              "id": "1VwK5vLv5d6BDDOqpZVIKpJSEm-vlGMZX",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.15 [ste].wav",
+              "size": 8325904
+            },
+            {
+              "id": "10QYzkm6-zxwC-yclisZF1Oqn6UWq82Kj",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.16 [ste].wav",
+              "size": 3064648
+            },
+            {
+              "id": "1Q9C489u_cB0uGxXtXRHUpjt-7LyyLq67",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.17 [ste].wav",
+              "size": 17443012
+            },
+            {
+              "id": "1sR0UWAMB9X52kFlf1qQ9_OyZnUNQrPEe",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.18 [ste].wav",
+              "size": 15268840
+            },
+            {
+              "id": "1GPQPUapDmXw2c-w4nmc2BUNN9JskwJtF",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.19 [ste].wav",
+              "size": 14283856
+            },
+            {
+              "id": "1YuLDetJMTs4MNMqd0rx_-6tWRuuSz1xZ",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.20 [ste].wav",
+              "size": 22752316
+            },
+            {
+              "id": "10L_6mE_-q7LZhS99yYeuxB0PO_VEzhXB",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.21 [ste].wav",
+              "size": 19160728
+            },
+            {
+              "id": "1lOGjwLgSjaef8Pri80UWqvinIqFMSv8o",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.22 [ste].wav",
+              "size": 18668236
+            },
+            {
+              "id": "1n6__hDwqZmycfRa_l5hs3mEWs5rPT9zK",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.23 [ste].wav",
+              "size": 18908476
+            },
+            {
+              "id": "1jb8poLPprmtN2tmCpoVC3GVSczZVAR3a",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.24 [ste].wav",
+              "size": 11340916
+            },
+            {
+              "id": "1kEscPvRPrAk7h7wWKnSf3bvqHrsBxRR0",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.25 [ste].wav",
+              "size": 9250828
+            },
+            {
+              "id": "1HmnG2Ox_31UVsD4J5Z1fixVbPw0Et_3s",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.26 [ste].wav",
+              "size": 8049628
+            },
+            {
+              "id": "1ruYbN_VA9EsXO-bPi5wBCjVTj8rDXEVz",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.27 [ste].wav",
+              "size": 8458036
+            },
+            {
+              "id": "1-iNsEVJJdh4xbu-UsVSFCIed44pxygJV",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.28 [ste].wav",
+              "size": 17022592
+            },
+            {
+              "id": "1d4XtcyDvNjePw-EazOY5rDfj5qE91fvB",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.29 [ste].wav",
+              "size": 13791364
+            },
+            {
+              "id": "1CwfHh3nBac4p1F1VqJePMU-wJARNCjD8",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.30 [ste].wav",
+              "size": 5899480
+            },
+            {
+              "id": "1qBiqlhg-RkmvQW9dtgF9SJGw7szyObVW",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.31 [ste].wav",
+              "size": 6211792
+            },
+            {
+              "id": "1R2-Pgz2mXO3wNZO41B4Iqi1m_Kl4Zl9r",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.32 [ste].wav",
+              "size": 10716292
+            },
+            {
+              "id": "1MJZQvXK9MsCEQRVEx3J6TGeehknnFph2",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.33 [ste].wav",
+              "size": 4289872
+            },
+            {
+              "id": "10ZBI4R2IpT0pjzf29luf2hn4p1pxsL72",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.34 [ste].wav",
+              "size": 15965536
+            },
+            {
+              "id": "1KNwsR-vCqQLd7CkzAFXw45Gn1h4eT53j",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.35 [ste].wav",
+              "size": 10019596
+            },
+            {
+              "id": "1ZHGn-RTh2w10f3KZRoj6ogczRJcBExgG",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.36 [ste].wav",
+              "size": 7581160
+            },
+            {
+              "id": "17DyMhiVEwlID-epwJ9djIhzpHozJ68Cy",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.37 [ste].wav",
+              "size": 9947524
+            },
+            {
+              "id": "1MQc_cDd2FFcmRUmKDDvTBzN2vW3hLg7W",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.38 [ste].wav",
+              "size": 17178748
+            },
+            {
+              "id": "1bIme_yHFHNJKkR6wl27nLMJHNeeEW7Pm",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.39 [ste].wav",
+              "size": 23449012
+            },
+            {
+              "id": "1-93yUHLvDmZL8sA8cNnmoTYjTJzqyi82",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.40 [ste].wav",
+              "size": 19124692
+            },
+            {
+              "id": "10LzRvjm-h93d76MRK7Pc8iwKYIQWcWl3",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.41 [ste].wav",
+              "size": 25370932
+            },
+            {
+              "id": "1sh-6MXpVw3Fn26kxQYaF6iQcQFE3Lw8v",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.42 [ste].wav",
+              "size": 25166728
+            },
+            {
+              "id": "1BqBjtRAlrzPnP-OpzljCYwQHc5szyR7M",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.43 [ste].wav",
+              "size": 7833412
+            },
+            {
+              "id": "1bvnofzVJYz1wXe0NYSsDqlx2HOrV2GSN",
+              "mimeType": "audio/x-wav",
+              "name": "P.Sdr. Le AV2024 S2 C.44 [ste].wav",
+              "size": 14584156
+            }
+          ],
+          "folderId": "1TX1_0XMRYVqamFNZPYdFOJdWbdm-oqBb",
+          "scannedAt": "2026-06-28T12:10:31.207Z",
+          "totalBytes": 9010826544
+        }
+      },
+      "recordingIndexBundleRef": "bundle:recording-index:P.Sdr. Le AV2024 S2:all",
+      "recordingIndexPdfRef": "asset:snare-drum-matt-leveque-recording-index-pdf",
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1T11YbuvXQPnfEY52qAW_kshFSut_V1K2NJUhKtXM_84/edit?usp=drive_link",
+      "selectedBuckets": [
+        "A",
+        "B",
+        "C"
+      ]
     },
     "fileSpecs": {
       "bitDepth": 24,
-      "sampleRate": 48000,
       "channels": "stereo",
+      "sampleRate": 48000,
       "staticSizes": {
-        "A": "",
-        "B": "",
-        "C": "",
+        "A": "9.0 GB",
+        "B": "8.2 GB",
+        "C": "8.4 GB",
         "D": "",
         "E": "",
         "X": ""
       }
     },
+    "lookupNumber": "P.Sdr. Le AV2024 S2",
     "metadata": {
       "sampleLength": "AUTO",
       "tags": []
     },
-    "downloads": {
-      "recordingIndexPdfRef": "asset:snare-drum-matt-leveque-recording-index-pdf",
-      "recordingIndexBundleRef": "bundle:recording-index:P.Sdr. Le AV2024 S2:all",
-      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1T11YbuvXQPnfEY52qAW_kshFSut_V1K2NJUhKtXM_84/edit?gid=0#gid=0"
-    }
+    "specialEventImage": "/assets/series/dex.png"
   }
 }

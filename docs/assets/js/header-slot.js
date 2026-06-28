@@ -92,6 +92,7 @@
     ['/assets/js/dexnotes.entry.js', '__dxDexnotesEntryLoaded'],
     ['/assets/js/dexnotes.index.js', '__dxDexnotesIndexLoaded'],
     ['/assets/js/dx-about.js', '__dxAboutRouteLoaded'],
+    ['/assets/js/dx-uav-entry.js', '__dxUavEntryLoaded'],
     ['/assets/js/dx-scroll-dot.js', '__dxScrollDotLoaded'],
   ]);
   const STRETCH_PRO_CANONICAL_SEPARATOR = '\u200C';
@@ -2785,6 +2786,15 @@
     const shouldPreserveCurrentChrome = !sourceClassName && !sourceId && !hasLayoutHintAttrs;
 
     if (shouldPreserveCurrentChrome) {
+      document.body.classList.remove('dx-entry-page', 'dx-uav-page', 'dx-entry-desktop-fixed');
+      for (const attr of Array.from(document.body.attributes)) {
+        if (attr.name.startsWith('data-dx-uav-') || attr.name === 'data-dx-entry-rail-mode') {
+          document.body.removeAttribute(attr.name);
+        }
+      }
+      document.documentElement.removeAttribute('data-dx-entry-rail-mode');
+      document.documentElement.style.removeProperty('--dx-uav-shell-top');
+      document.documentElement.style.removeProperty('--dx-uav-shell-bottom');
       document.body.classList.add(BODY_CLASS);
       return;
     }

@@ -1,0 +1,167 @@
+{
+  "version": "home-hero-library-v1",
+  "activeCompositionId": "open-access-featured",
+  "updatedAt": "2026-06-28T12:07:54.070Z",
+  "modules": [
+    {
+      "id": "season3-human-credits",
+      "name": "Season 3 — Human Credits",
+      "createdAt": "2026-06-28T12:00:00.000Z",
+      "updatedAt": "2026-06-28T12:00:00.000Z",
+      "archived": false,
+      "type": "season3-human-credits",
+      "kicker": "DEX / SEASON 3",
+      "headline": "SEASON 3 IS YOU.",
+      "body": "Your work. Your name. Your place in the commons. Enter through Dex's open pipeline and follow your contribution from first upload to public release.",
+      "assembleWord": "YOU",
+      "pipelineLabels": [
+        "SUBMIT",
+        "IN CONVERSATION",
+        "SELECTED",
+        "IN THE LIBRARY",
+        "OPEN TO EVERYONE"
+      ],
+      "seedReleases": [
+        {
+          "lookup": "W.Pob. Ma AV2024 S2",
+          "name": "Sky Macklay",
+          "role": "Prepared Oboe",
+          "href": "/entry/prepared-oboe-sky-macklay/"
+        },
+        {
+          "lookup": "S.Pdb. He AV2024 S2",
+          "name": "Jakob Heinemann",
+          "role": "Prepared Double Bass",
+          "href": "/entry/jakob-heinemann/"
+        },
+        {
+          "lookup": "E.Mod. Zh AV2024 S2",
+          "name": "Bojun Zhang",
+          "role": "Modular Synth",
+          "href": "/entry/bojun-zhang/"
+        },
+        {
+          "lookup": "X.Tlv. Pl AV2024 S1",
+          "name": "Sam Pluta",
+          "role": "Feedback Televisions",
+          "href": "/entry/amplified-tv-sam-pluta/"
+        }
+      ],
+      "cta": {
+        "guest": {
+          "label": "JOIN SEASON 3"
+        },
+        "submit": {
+          "label": "SUBMIT TO SEASON 3",
+          "href": "/entry/submit/"
+        },
+        "active": {
+          "label": "OPEN MY PIPELINE",
+          "href": "/account/"
+        },
+        "published": {
+          "label": "VIEW MY RELEASE",
+          "href": "/account/"
+        }
+      },
+      "profileCapacity": 24,
+      "profileFeed": "/profiles/public",
+      "presentation": {
+        "surface": "graphite",
+        "density": "balanced",
+        "motion": "cinematic"
+      }
+    },
+    {
+      "id": "open-access-campaign",
+      "name": "Open access campaign",
+      "createdAt": "2026-06-28T11:00:00.000Z",
+      "updatedAt": "2026-06-28T11:00:00.000Z",
+      "archived": false,
+      "type": "campaign",
+      "headlineLines": [
+        "THE OPEN-ACCESS",
+        "RECORDING LIBRARY FOR"
+      ],
+      "rotatingWords": [
+        "WEIRD NOISE.",
+        "ODD SOUNDS.",
+        "NOISE MAKERS.",
+        "ARTISTS.",
+        "CREATIVES.",
+        "PERFORMERS.",
+        "COMPOSERS.",
+        "MUSICIANS.",
+        "STRANGE.",
+        "STRANGE SOUNDS.",
+        "ECCENTRICS.",
+        "YOU.",
+        "ALL.",
+        "EVERYONE.",
+        "%*!?%",
+        "!!!",
+        "???",
+        "***"
+      ],
+      "body": "dexFest 2024 recordings releasing all month — free & CC-BY.",
+      "primaryCta": {
+        "kind": "link",
+        "label": "EXPLORE CATALOG",
+        "href": "/catalog/"
+      },
+      "secondaryCta": {
+        "kind": "auth-switch",
+        "guestLabel": "SIGN UP FREE ↗",
+        "authenticatedLabel": "SUBMIT SAMPLES ↗",
+        "authenticatedHref": "/entry/submit/"
+      }
+    },
+    {
+      "id": "featured-entries",
+      "name": "Featured entries",
+      "createdAt": "2026-06-28T11:00:00.000Z",
+      "updatedAt": "2026-06-28T11:00:00.000Z",
+      "archived": false,
+      "type": "featured",
+      "title": "FEATURED ENTRIES",
+      "source": "home-featured"
+    }
+  ],
+  "compositions": [
+    {
+      "id": "season3-human-credits",
+      "name": "Season 3 Human Credits",
+      "layout": "single",
+      "slots": [
+        "season3-human-credits"
+      ],
+      "createdAt": "2026-06-28T12:00:00.000Z",
+      "updatedAt": "2026-06-28T12:07:07.988Z",
+      "archived": false
+    },
+    {
+      "id": "open-access-featured",
+      "name": "Open access + featured",
+      "layout": "split",
+      "slots": [
+        "open-access-campaign",
+        "featured-entries"
+      ],
+      "createdAt": "2026-06-28T11:00:00.000Z",
+      "updatedAt": "2026-06-28T11:35:57.184Z",
+      "archived": false
+    },
+    {
+      "id": "open-access-featured-copy",
+      "name": "Open access + featured copy",
+      "layout": "split",
+      "slots": [
+        "open-access-campaign",
+        "featured-entries"
+      ],
+      "createdAt": "2026-06-28T11:34:44.943Z",
+      "updatedAt": "2026-06-28T11:34:44.943Z",
+      "archived": false
+    }
+  ]
+}

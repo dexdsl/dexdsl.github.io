@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-28T05:42:58.215Z",
+  "generated_at": "2026-06-28T10:47:52.925Z",
   "total": 26,
   "entries": [
     {
@@ -411,8 +411,8 @@
       "title_norm": "mojave desert – wind farms",
       "lookup_norm": "dr.win. mo 2026 t1",
       "site_norm": "mojave desert",
-      "subject_norm": "wind power plants mojave desert",
-      "search_blob": "mojave desert – wind farms dr.win. mo 2026 t1 mojave desert california, united states wind power plants mojave desert v fs",
+      "subject_norm": "wind power plants wind power plants mojave desert",
+      "search_blob": "mojave desert – wind farms dr.win. mo 2026 t1 mojave desert california, united states wind power plants wind power plants mojave desert v fs",
       "uav": {
         "collection_lookup": "DR.Win. Mo 2026 T1",
         "site": {
@@ -437,6 +437,16 @@
           {
             "id": "subject-win",
             "code": "Win",
+            "label": "Wind power plants",
+            "authority": {
+              "source": "lcsh",
+              "uri": "http://id.loc.gov/authorities/subjects/sh97003604",
+              "label": "Wind power plants"
+            }
+          },
+          {
+            "id": "subject-wind-power-plants-sh97003604",
+            "code": "Wpo",
             "label": "Wind power plants",
             "authority": {
               "source": "lcsh",

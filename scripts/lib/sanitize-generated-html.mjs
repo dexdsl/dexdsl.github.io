@@ -17,7 +17,11 @@ const SITE_CSS_HREF_PATTERN = new RegExp(
   'i',
 );
 const DEX_LAYOUT_PATCH_STYLE_ID = 'dex-layout-patch';
-const STALE_ENTRY_OVERRIDE_STYLE_IDS = ['dex-entry-sidebar-vnext-overrides'];
+const STALE_ENTRY_OVERRIDE_STYLE_IDS = [
+  'dex-entry-sidebar-vnext-overrides',
+  'dx-remove-body-card',
+  'dx-test5-sidebar-padding-final',
+];
 const ENTRY_FETCH_ROOT_SELECTORS = ['.dex-entry-layout', '.dex-sidebar'];
 const ENTRY_FETCH_TARGET_ATTR = 'data-dx-entry-fetch-target';
 const ENTRY_FETCH_TARGET_SELECTORS = [
@@ -125,7 +129,7 @@ const DEX_ENTRY_BG_MARKUP = `
   </svg>
 </div>
 `;
-const DEX_FOOTER_MARKUP = `
+export const DEX_FOOTER_MARKUP = `
 <footer class="dex-footer" data-surface="light" data-managed="1">
   <div class="footer-grid">
     <div class="footer-logo-column">
@@ -515,7 +519,10 @@ function stripLegacyEntryChrome($, classFamily = 'dx') {
   $('.sqs-announcement-bar, .dx-announcement-bar, .announcement-bar').remove();
 
   $('header#header, header.Header, header[data-test="header"]').remove();
-  $('footer#footer, footer.Footer, .dex-footer-section').remove();
+  // Entry pages receive one managed footer at the end of <body>. Keeping the
+  // legacy Squarespace footer-sections landmark creates a second, empty footer
+  // layer beside the managed footer and can shift the fixed footer stack.
+  $('footer#footer, footer.Footer, #footer-sections, .dex-footer-section').remove();
 
   $('.dex-sidebar #downloads .btn-audio, .dex-sidebar #downloads .btn-video').remove();
   $('.dex-sidebar #downloads > p').remove();
@@ -764,9 +771,19 @@ function normalizeDexSectionSpacing($) {
   });
 }
 
-function ensureDexLayoutPatchStyle($, head) {
-  const css = `
+export function getDexLayoutPatchCss() {
+  return `
 #${DEX_LAYOUT_PATCH_STYLE_ID}[data-managed="1"] { display: block; }
+html:not([data-dex-sidebar-rendered="1"]) body.dx-entry-page #page,
+html:not([data-dex-sidebar-rendered="1"]) body.dx-entry-page .dex-footer {
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+html[data-dex-sidebar-rendered="1"] body.dx-entry-page #page,
+html[data-dex-sidebar-rendered="1"] body.dx-entry-page .dex-footer {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
 body.dx-entry-page .dex-entry-host .sqs-block-content,
 body.dx-entry-page .dex-entry-host .dx-block-content {
   background: transparent !important;
@@ -1303,6 +1320,11 @@ body.dx-entry-page .dex-collections .overview-item--favorite-collection .dx-fav-
   width: 100% !important;
   border-radius: var(--dx-entry-tile-radius) !important;
 }
+body.dx-entry-page .dex-collections .overview-item--favorite-buckets .dx-fav-bucket-toggle.dx-fav-heart-btn:not(.is-active) {
+  border-color: transparent !important;
+  background: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: none !important;
+}
 .dex-sidebar .dex-license-controls .copy-btn,
 .dex-sidebar .dex-license-controls .usage-btn,
 .dex-sidebar #downloads .btn-audio,
@@ -1406,6 +1428,20 @@ body.dx-entry-page .dex-collections .overview-item--favorite-collection .dx-fav-
   }
 }
 `;
+}
+
+export function getDexCollectionContractCss() {
+  const css = getDexLayoutPatchCss();
+  const start = css.indexOf('body.dx-entry-page .dex-collections {');
+  const end = css.indexOf('.dex-sidebar .dex-license-controls .copy-btn,', start);
+  if (start < 0 || end <= start) {
+    throw new Error('Unable to extract the canonical entry collection CSS contract');
+  }
+  return css.slice(start, end).trim();
+}
+
+function ensureDexLayoutPatchStyle($, head) {
+  const css = getDexLayoutPatchCss();
   $(`style#${DEX_LAYOUT_PATCH_STYLE_ID}`).remove();
   head.append(`\n<style id="${DEX_LAYOUT_PATCH_STYLE_ID}" data-managed="1">${css}</style>`);
 }
@@ -1887,6 +1923,7 @@ export function sanitizeGeneratedHtml(html) {
   for (const staleStyleId of STALE_ENTRY_OVERRIDE_STYLE_IDS) {
     $(`style#${staleStyleId}`).remove();
   }
+  $('script#dx-remove-body-card-runtime').remove();
 
   const head = ensureHead($);
   ensureDexLayoutPatchStyle($, head);

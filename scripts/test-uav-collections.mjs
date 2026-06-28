@@ -145,6 +145,62 @@ linkedCreditsCollection.creditLinks = {
 };
 assert.equal(validateUavCollection(linkedCreditsCollection, folder.manifest, projected).ok, true);
 assert.ok(renderUavCollectionHtml(linkedCreditsCollection, folder.manifest, projected).includes('https://example.com/operator'));
+const parityHtml = renderUavCollectionHtml(folder.collection, folder.manifest, projected);
+for (const marker of [
+  'class="dx-uav-entry-card dex-entry-section"',
+  'class="dx-uav-entry-header dex-entry-header"',
+  'class="dex-entry-page-title"',
+  'class="dx-uav-layout dex-entry-layout"',
+  'class="dx-uav-main-rail dex-entry-main"',
+  'class="dx-uav-sidebar dex-sidebar"',
+  'class="dex-overview"',
+  'COLLECTION LOOKUP NUMBER',
+  'class="overview-series-img"',
+  'class="dex-collections"',
+  'id="dex-entry-collection-contract"',
+  'border-color: transparent !important',
+  'data-dx-fav-ui-ready="1"',
+  'class="dx-bucket-tile available"',
+  'data-dx-tooltip-metrics=',
+  'dx-fav-entry-toggle',
+  'dx-fav-bucket-toggle',
+  'class="btn-download dx-button-element--primary"',
+  'data-dx-uav-recording-index="1"',
+  'data-dex-breadcrumb-delimiter',
+  'data-dex-breadcrumb-path stroke-width="2.2"',
+  '/assets/js/dex-breadcrumb-motion.js',
+  '/assets/dex-sidebar.js',
+  '/assets/js/dx-uav-entry.js',
+]) {
+  assert.ok(parityHtml.includes(marker), `UAV entry parity marker missing: ${marker}`);
+}
+const controlsCss = await fs.readFile(path.join(root, 'public', 'css', 'components', 'dx-controls.css'), 'utf8');
+for (const marker of [
+  'overview-item--favorite-collection button.dx-fav-entry-toggle.dx-fav-heart-btn',
+  'border: 0 !important',
+  'box-shadow: var(--dx-btn-primary-shadow) !important',
+  'border-radius: var(--dx-test5-header-radius) !important',
+]) {
+  assert.ok(controlsCss.includes(marker), `shared entry controls CSS missing ${marker}`);
+}
+assert.equal((parityHtml.match(/<footer\b/g) || []).length, 1, 'UAV entry must emit one canonical footer');
+assert.ok(!parityHtml.includes('data-dx-slot-preserve'), 'UAV route content must be replaceable by soft navigation');
+const uavCss = await fs.readFile(path.join(root, 'css', 'components', 'dx-uav-entry.css'), 'utf8');
+for (const marker of [
+  'aspect-ratio: 16 / 9 !important',
+  'font-family: "Courier New", monospace !important',
+  'grid-template-columns: 65% 35% !important',
+  'stroke-width: 2.2 !important',
+  'transform: scale(var(--dx-motion-scale-hover, 1.015))',
+]) {
+  assert.ok(uavCss.includes(marker), `UAV entry parity CSS marker missing: ${marker}`);
+}
+const uavRuntime = await fs.readFile(path.join(root, 'public', 'assets', 'js', 'dx-uav-entry.js'), 'utf8');
+assert.ok(uavRuntime.includes('shared.ensureInteractiveHoverRuntime?.'), 'UAV entry must load the shared hover runtime');
+assert.ok(uavRuntime.includes('shared.ensureEntryRuntimeLayoutOverrides?.'), 'UAV entry must load shared entry shell styles');
+assert.ok(uavRuntime.includes('shared.bindEntryTooltips?.'), 'UAV entry must bind shared bucket tooltips');
+assert.ok(uavRuntime.includes("dx:route-transition-out:end"), 'UAV entry must clean up route state after soft navigation');
+assert.ok(uavRuntime.includes('window.__dxUavEntryLoaded = false'), 'UAV entry must permit clean soft-navigation remounts');
 const linkedManifest = structuredClone(folder.manifest);
 linkedManifest.groups[0].buckets = [structuredClone(first), structuredClone(raw)];
 linkedManifest.groups[0].buckets[0].files[0].sourceXItems = [raw.files[0].lookupRaw];

@@ -344,6 +344,27 @@ function mergeGeneratedDescription(routeBlock, generatedBlock) {
   return String(routeBlock).replace(contentPattern, `$1${generatedContent[0].slice(generatedContent[1].length, -generatedContent[2].length)}$2`);
 }
 
+function replaceCanonicalFooter(routeHtml, generatedHtml) {
+  const footerPattern = /<footer class="dex-footer"[\s\S]*?<\/footer>/;
+  const generatedFooter = String(generatedHtml || '').match(footerPattern);
+  if (!generatedFooter) throw new Error('Generated entry is missing the canonical Dex footer');
+  if (!footerPattern.test(String(routeHtml || ''))) {
+    throw new Error('Production route is missing the Dex footer');
+  }
+  return String(routeHtml).replace(footerPattern, generatedFooter[0]);
+}
+
+function replaceManagedStyle(routeHtml, generatedHtml, styleId) {
+  const escapedId = String(styleId || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const pattern = new RegExp(`<style id="${escapedId}"[^>]*>[\\s\\S]*?<\\/style>`);
+  const generatedStyle = String(generatedHtml || '').match(pattern);
+  if (!generatedStyle) throw new Error(`Generated entry is missing managed style#${styleId}`);
+  if (!pattern.test(String(routeHtml || ''))) {
+    throw new Error(`Production route is missing managed style#${styleId}`);
+  }
+  return String(routeHtml).replace(pattern, generatedStyle[0]);
+}
+
 export function buildProductionEntryRoute({ routeHtml, generatedHtml } = {}) {
   const base = String(routeHtml || '');
   const generated = String(generatedHtml || '');
@@ -381,6 +402,13 @@ export function buildProductionEntryRoute({ routeHtml, generatedHtml } = {}) {
     'DESC',
     mergeGeneratedDescription(extractMarkedBlock(base, 'DESC'), extractMarkedBlock(generated, 'DESC')),
   );
+  next = replaceCanonicalFooter(next, generated);
+  next = replaceManagedStyle(next, generated, 'dex-layout-patch');
+  next = next
+    .replace(/<style id="dx-remove-body-card">[\s\S]*?<\/style>\s*/g, '')
+    .replace(/<script id="dx-remove-body-card-runtime">[\s\S]*?<\/script>\s*/g, '')
+    .replace(/<style id="dx-test5-sidebar-padding-final">[\s\S]*?<\/style>\s*/g, '')
+    .replace(/<footer\b[^>]*\bid="footer-sections"[^>]*>[\s\S]*?<\/footer>\s*/gi, '');
   next = next.replace(
     /https:\/\/dexdsl\.github\.io\/assets\/dex-sidebar\.js/g,
     '/assets/dex-sidebar.js',

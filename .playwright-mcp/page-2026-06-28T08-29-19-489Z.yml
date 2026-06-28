@@ -1,0 +1,252 @@
+- generic [active]:
+  - banner:
+    - generic [ref=e1]:
+      - link "Skip to Content" [ref=e2] [cursor=pointer]:
+        - /url: index.html#page
+      - generic [ref=e4]:
+        - generic [ref=e6]:
+          - link "YouTube" [ref=e7] [cursor=pointer]:
+            - /url: https://www.youtube.com/channel/UCo5B4ztNwaErXhQlGyNhMDQ
+            - img [ref=e8]
+          - link "Instagram" [ref=e10] [cursor=pointer]:
+            - /url: http://instagram.com/dexdsl
+            - img [ref=e11]
+          - link "TikTok" [ref=e13] [cursor=pointer]:
+            - /url: https://www.tiktok.com/@dexdsl
+            - img [ref=e14]
+          - link "Twitter" [ref=e16] [cursor=pointer]:
+            - /url: https://twitter.com/dexdsl
+            - img [ref=e17]
+        - generic [ref=e19]:
+          - link "dex digital sample library" [ref=e22] [cursor=pointer]:
+            - /url: /
+            - img "dex digital sample library" [ref=e23]
+          - navigation [ref=e24]:
+            - link "CATALOG" [ref=e26] [cursor=pointer]:
+              - /url: /catalog/
+            - link "IN DEX" [ref=e28] [cursor=pointer]:
+              - /url: /call/
+            - link "DEX NOTES" [ref=e30] [cursor=pointer]:
+              - /url: /dexnotes/
+            - link "ABOUT" [ref=e32] [cursor=pointer]:
+              - /url: /about/
+        - generic [ref=e33]:
+          - link "DONATE" [ref=e35] [cursor=pointer]:
+            - /url: /donate/
+          - button "SIGN IN" [ref=e37] [cursor=pointer]
+  - generic [ref=e39]:
+    - main [ref=e41]:
+      - article [ref=e42]:
+        - generic [ref=e46]:
+          - generic [ref=e47]:
+            - generic [ref=e49]:
+              - link "catalog" [ref=e50] [cursor=pointer]:
+                - /url: /catalog
+              - img [ref=e52] [cursor=pointer]
+              - generic [ref=e54]: prepared oboe, sky macklay
+            - heading "prepared oboe, sky macklay" [level=1] [ref=e55]
+            - generic [ref=e56]:
+              - generic [ref=e57]:
+                - generic [ref=e58]: published
+                - time [ref=e59]: jun 28, 2026
+              - generic [ref=e60]:
+                - text: ·
+                - generic [ref=e61]: updated
+                - time [ref=e62]: jun 28, 2026
+              - generic [ref=e63]:
+                - text: ·
+                - generic [ref=e64]: location
+                - generic [ref=e65]: Baltimore, MD
+              - generic [ref=e66]:
+                - text: ·
+                - generic [ref=e67]: "🏷 Tags: prepared oboe, performance, music, CC-BY 4.0"
+              - generic [ref=e68]:
+                - text: ·
+                - generic [ref=e69]: 🎚 24-bit 🔊 48000 Hz 🎧 stereo
+          - generic [ref=e70]:
+            - generic [ref=e71]:
+              - iframe [ref=e75]:
+                - generic [active] [ref=f4e1]:
+                  - generic "YouTube Video Player" [ref=f4e3]
+                  - generic [ref=f4e5]:
+                    - generic:
+                      - generic:
+                        - button "Play video" [ref=f4e10] [cursor=pointer]
+                        - button "Hide player controls" [ref=f4e12] [cursor=pointer]
+                        - generic [ref=f4e14]:
+                          - generic [ref=f4e19]:
+                            - generic [ref=f4e20]:
+                              - link "Sky Macklay - Prepared Oboe" [ref=f4e21] [cursor=pointer]:
+                                - /url: https://www.youtube.com/watch?v=LPHD-ynh-MA
+                              - link "Dex Digital Sample Library" [ref=f4e22] [cursor=pointer]:
+                                - /url: /channel/UCo5B4ztNwaErXhQlGyNhMDQ
+                                - generic [ref=f4e23]: Dex Digital Sample Library
+                            - generic [ref=f4e24]:
+                              - button [ref=f4e25] [cursor=pointer]
+                              - generic [ref=f4e27]:
+                                - generic: Dex Digital Sample Library
+                                - generic: 47 subscribers
+                          - generic [ref=f4e28]:
+                            - button "Copy link" [ref=f4e31] [cursor=pointer]:
+                              - generic [ref=f4e35]:
+                                - img
+                            - link "Watch on YouTube" [ref=f4e42] [cursor=pointer]:
+                              - /url: https://www.youtube.com/watch?v=LPHD-ynh-MA
+                              - generic [ref=f4e45]:
+                                - text: Watch on
+                                - img [ref=f4e47]:
+                                  - generic [ref=f4e49]:
+                                    - img
+              - paragraph [ref=e78]:
+                - generic "description" [ref=e79]:
+                  - generic [ref=e80]: description
+                  - generic [ref=e81]: dexcription
+                - text: With a paper towel core jammed in the oboe’s horn, Macklay provides both loud and soft moments, the most memorable of which are an analog ring modulation glissando, many, many multiphonics, and a coda of underwater reed sounds.
+            - complementary [ref=e82]:
+              - generic:
+                - generic: ↓
+              - generic [ref=e83]:
+                - generic [ref=e84]:
+                  - generic [ref=e85]: "#W.Ob. Ma AV2024 S2"
+                  - paragraph [ref=e86]: "Lookup #"
+                - generic [ref=e87]:
+                  - img "Series" [ref=e88]
+                  - paragraph [ref=e89]: Series
+              - generic [ref=e90]:
+                - heading "COL‌LECTION" [level=3] [ref=e91]
+                - generic [ref=e92]:
+                  - paragraph [ref=e93]: Available Buckets
+                  - generic [ref=e94]:
+                    - 'generic "A BUCKET • Status: available • File types: Audio, Video • Video quality: 1080p, 4K • Audio WAV: 1 • Video 1080p: 1 • Video 4K: 1 • Total files: 3" [ref=e95]':
+                      - generic [ref=e96]: A
+                    - 'generic "B BUCKET • Status: available • File types: Audio, Video • Video quality: 1080p, 4K • Audio WAV: 6 • Video 1080p: 6 • Video 4K: 6 • Total files: 18" [ref=e97]':
+                      - generic [ref=e98]: B
+                    - 'generic "C BUCKET • Status: available • File types: Audio, Video • Video quality: 1080p, 4K • Audio WAV: 34 • Video 1080p: 34 • Video 4K: 34 • Total files: 102" [ref=e99]':
+                      - generic [ref=e100]: C
+                    - 'generic "D BUCKET • Status: available • File types: Audio, Video • Video quality: 1080p, 4K • Audio WAV: 95 • Video 1080p: 95 • Video 4K: 95 • Total files: 285" [ref=e101]':
+                      - generic [ref=e102]: D
+                    - 'generic "E BUCKET • Status: available • File types: Audio, Video • Video quality: 1080p, 4K • Audio WAV: 57 • Video 1080p: 57 • Video 4K: 57 • Total files: 171" [ref=e103]':
+                      - generic [ref=e104]: E
+                    - 'generic "X BUCKET • Status: available • File types: Audio, Video • Video quality: 1080p, 4K • Audio WAV: 47 • Video 1080p: 47 • Video 4K: 47 • Total files: 141" [ref=e105]':
+                      - generic [ref=e106]: X
+                - generic [ref=e107]:
+                  - paragraph [ref=e108]: Favorite This Collection
+                  - button "Favorite entry" [ref=e109] [cursor=pointer]:
+                    - generic:
+                      - img
+                    - generic [ref=e110]: W.Ob. Ma AV2024 S2
+                    - generic [ref=e111]: Favorite entry
+                - generic [ref=e112]:
+                  - paragraph [ref=e113]: Favorite Buckets
+                  - generic [ref=e114]:
+                    - button "Favorite A" [ref=e115] [cursor=pointer]:
+                      - generic:
+                        - img
+                      - generic [ref=e116]: A
+                      - generic [ref=e117]: Favorite A
+                    - button "Favorite B" [ref=e118] [cursor=pointer]:
+                      - generic:
+                        - img
+                      - generic [ref=e119]: B
+                      - generic [ref=e120]: Favorite B
+                    - button "Favorite C" [ref=e121] [cursor=pointer]:
+                      - generic:
+                        - img
+                      - generic [ref=e122]: C
+                      - generic [ref=e123]: Favorite C
+                    - button "Favorite D" [ref=e124] [cursor=pointer]:
+                      - generic:
+                        - img
+                      - generic [ref=e125]: D
+                      - generic [ref=e126]: Favorite D
+                    - button "Favorite E" [ref=e127] [cursor=pointer]:
+                      - generic:
+                        - img
+                      - generic [ref=e128]: E
+                      - generic [ref=e129]: Favorite E
+                    - button "Favorite X" [ref=e130] [cursor=pointer]:
+                      - generic:
+                        - img
+                      - generic [ref=e131]: X
+                      - generic [ref=e132]: Favorite X
+              - generic [ref=e133]:
+                - heading "LICENSE" [level=3] [ref=e134]
+                - link "Creative Commons Attribution 4.0" [ref=e135] [cursor=pointer]:
+                  - /url: https://creativecommons.org/licenses/by/4.0/
+                  - img "Creative Commons Attribution 4.0" [ref=e136]
+                - paragraph [ref=e137]: This work contains samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Sky Macklay
+                - generic [ref=e138]:
+                  - button "COPY" [ref=e139] [cursor=pointer]:
+                    - generic [ref=e140]: COPY
+                  - button "USAGE NOTES" [ref=e141] [cursor=pointer]
+              - generic [ref=e142]:
+                - heading "CREDITS" [level=3] [ref=e143]
+                - generic [ref=e144]:
+                  - generic [ref=e145]:
+                    - generic [ref=e146]: Artist
+                    - generic [ref=e147]: Sky Macklay
+                  - generic [ref=e148]:
+                    - generic [ref=e149]: Instrument
+                    - generic [ref=e150]: PREPARED OBOE
+                  - generic [ref=e151]:
+                    - generic [ref=e152]: Video
+                    - generic [ref=e153]:
+                      - generic [ref=e154]: Dir
+                      - generic [ref=e155]: Sebastian Suarez-Solis, Cameron Church
+                    - generic [ref=e156]:
+                      - generic [ref=e157]: Cin
+                      - generic [ref=e158]: Sebastian Suarez-Solis
+                    - generic [ref=e159]:
+                      - generic [ref=e160]: Edit
+                      - generic [ref=e161]: Cameron Church
+                  - generic [ref=e162]:
+                    - generic [ref=e163]: Audio
+                    - generic [ref=e164]:
+                      - generic [ref=e165]: Rec
+                      - generic [ref=e166]: Cameron Church
+                    - generic [ref=e167]:
+                      - generic [ref=e168]: Mix
+                      - generic [ref=e169]: Sebastian Suarez-Solis
+                    - generic [ref=e170]:
+                      - generic [ref=e171]: Master
+                      - generic [ref=e172]: Sebastian Suarez-Solis
+                - generic [ref=e173]:
+                  - generic [ref=e174]: S2 2024
+                  - generic [ref=e175]: Baltimore, MD
+              - generic [ref=e176]:
+                - heading "DOWNLOAD" [level=3] [ref=e177]
+                - tabpanel [ref=e179]:
+                  - button "Get Files" [ref=e180] [cursor=pointer]:
+                    - generic [ref=e181]: GET FILES
+                  - button "Recording Index" [ref=e183] [cursor=pointer]:
+                    - generic [ref=e184]: RECORDING INDEX
+    - contentinfo [ref=e185]:
+      - generic [ref=e186]:
+        - img "Dex Footer Logo (black)" [ref=e189]
+        - generic [ref=e190]:
+          - text: © 2023–2026 DEX CO-OP CORP (EIN 92-3509152)
+          - text: dba Dex Digital Sample Library. All rights reserved.
+        - link "View Dex Digital Sample Library's Candid (GuideStar) profile" [ref=e192] [cursor=pointer]:
+          - /url: https://app.candid.org/profile/15083758/dex-digital-sample-library-92-3509152
+          - img "Candid (GuideStar) Transparency Seal" [ref=e193]
+        - generic [ref=e194]:
+          - generic [ref=e195]:
+            - link "YouTube" [ref=e196] [cursor=pointer]:
+              - /url: https://www.youtube.com/dexdsl
+              - img [ref=e197]
+            - link "Instagram" [ref=e199] [cursor=pointer]:
+              - /url: https://instagram.com/dexdsl
+              - img [ref=e200]
+            - link "TikTok" [ref=e202] [cursor=pointer]:
+              - /url: https://www.tiktok.com/@dexdsl
+              - img [ref=e203]
+            - link "Twitter" [ref=e205] [cursor=pointer]:
+              - /url: https://twitter.com/dexdsl
+              - img [ref=e206]
+          - navigation [ref=e208]:
+            - link "Privacy" [ref=e209] [cursor=pointer]:
+              - /url: /privacy
+            - link "Contact" [ref=e210] [cursor=pointer]:
+              - /url: /contact
+            - link "Copyright" [ref=e211] [cursor=pointer]:
+              - /url: /copyright

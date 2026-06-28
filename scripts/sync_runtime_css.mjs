@@ -272,6 +272,10 @@ const SYNC_MAP = [
     targets: ['assets/js/dx-dexdrones.js', 'docs/assets/js/dx-dexdrones.js'],
   },
   {
+    source: 'public/assets/js/dx-uav-entry.js',
+    targets: ['assets/js/dx-uav-entry.js', 'docs/assets/js/dx-uav-entry.js'],
+  },
+  {
     source: 'public/assets/js/donate.js',
     targets: ['assets/js/donate.js', 'docs/assets/js/donate.js'],
   },

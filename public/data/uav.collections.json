@@ -1,9 +1,9 @@
 {
   "version": "uav-collections-v1",
-  "generatedAt": "2026-06-28T05:42:58.205Z",
+  "generatedAt": "2026-06-28T10:47:52.848Z",
   "authorities": {
     "version": "uav-authorities-v1",
-    "updatedAt": "2026-06-28T05:42:58.197Z",
+    "updatedAt": "2026-06-28T10:47:52.787Z",
     "subjects": [
       {
         "id": "subject-win",
@@ -24,6 +24,17 @@
           "source": "lcsh",
           "uri": "http://id.loc.gov/authorities/subjects/sh85086496",
           "label": "Mojave Desert"
+        },
+        "additionalAuthorities": []
+      },
+      {
+        "id": "subject-wind-power-plants-sh97003604",
+        "code": "Wpo",
+        "label": "Wind power plants",
+        "authority": {
+          "source": "lcsh",
+          "uri": "http://id.loc.gov/authorities/subjects/sh97003604",
+          "label": "Wind power plants"
         },
         "additionalAuthorities": []
       }
@@ -66,13 +77,14 @@
       },
       "subjectAuthorityIds": [
         "subject-win",
+        "subject-wind-power-plants-sh97003604",
         "subject-mojave-desert"
       ],
       "siteAuthorityId": "site-mojave-desert",
       "capturedFrom": "2026-04-02",
       "capturedTo": "2026-04-02",
       "license": "CC-BY-4.0",
-      "attribution": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Paul Yorke, Sofi Jacquez.",
+      "attribution": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Kolari Vision.",
       "operators": [
         "Sebastian Suarez-Solis"
       ],
@@ -96,14 +108,19 @@
           "capturedTo": "2026-04-02",
           "technical": {
             "platform": "UAV",
-            "filter": "Full-spectrum"
+            "aircraft": "DJI Mavic 2 Pro",
+            "camera": "Hasselblad 5.1K (Full-Spectrum Converted)",
+            "filter": "Full-spectrum",
+            "attitude": "high-oblique",
+            "cloudCover": 0,
+            "notes": "High wind, mixed spectra"
           },
           "folders": {}
         }
       ],
       "lifecycle": {
         "createdAt": "2026-06-27T18:44:14.296Z",
-        "updatedAt": "2026-06-28T05:20:23.447Z",
+        "updatedAt": "2026-06-28T05:50:49.587Z",
         "publishedAt": "2026-06-27T18:45:00.192Z"
       }
     }
@@ -123,7 +140,7 @@
       "sort_key": "UAV::DR.Win. Mo 2026 T1",
       "title_norm": "mojave desert – wind farms",
       "site_norm": "mojave desert california, united states",
-      "subject_norm": "wind power plants mojave desert",
+      "subject_norm": "wind power plants wind power plants mojave desert",
       "uav": {
         "collection_lookup": "DR.Win. Mo 2026 T1",
         "site": {
@@ -148,6 +165,16 @@
           {
             "id": "subject-win",
             "code": "Win",
+            "label": "Wind power plants",
+            "authority": {
+              "source": "lcsh",
+              "uri": "http://id.loc.gov/authorities/subjects/sh97003604",
+              "label": "Wind power plants"
+            }
+          },
+          {
+            "id": "subject-wind-power-plants-sh97003604",
+            "code": "Wpo",
             "label": "Wind power plants",
             "authority": {
               "source": "lcsh",

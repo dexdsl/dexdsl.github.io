@@ -56,6 +56,9 @@ jobs:
       - name: Verify HDR contract
         run: npm run verify:hdr
 
+      - name: Verify home hero composition
+        run: npm run verify:home-hero
+
       - name: Verify favorites contract
         run: npm run verify:favorites
 
@@ -97,6 +100,9 @@ jobs:
 
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium
+
+      - name: Home hero composition runtime test
+        run: npm run test:home-hero-ui
 
       - name: Auth0 runtime test
         run: npm run test:auth0

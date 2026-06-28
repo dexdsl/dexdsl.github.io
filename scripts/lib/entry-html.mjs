@@ -1265,16 +1265,16 @@ export function injectEntryHtml(templateHtml, { descriptionText, descriptionHtml
   let titleInjectionStrategy = 'layout-fallback';
   if (hasAnchoredRegion(html, 'title')) {
     const titleRegion = getAnchoredRegion(html, 'title');
-    const existingDisplayLabel = extractDisplayLabelFromTitleRegion(titleRegion.content);
-    if (collapseText(existingDisplayLabel).toLowerCase() === collapseText(displayLabel).toLowerCase()) {
+    const nextTitleRegion = injectTitleRegion(titleRegion.content, {
+      displayLabel,
+      lifecycle,
+      creditsData,
+      sidebarConfig,
+    });
+    if (titleRegion.content === nextTitleRegion) {
       titleInjectionStrategy = 'anchors-preserved';
     } else {
-      html = replaceBetween(html, titleRegion, injectTitleRegion(titleRegion.content, {
-        displayLabel,
-        lifecycle,
-        creditsData,
-        sidebarConfig,
-      }));
+      html = replaceBetween(html, titleRegion, nextTitleRegion);
       titleInjectionStrategy = 'anchors';
     }
   } else {

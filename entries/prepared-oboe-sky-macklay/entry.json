@@ -31,19 +31,32 @@
     ],
     "artistAlt": null,
     "audio": {
-      "master": [],
-      "mix": [],
-      "recording": []
+      "master": [
+        "Sebastian Suarez-Solis"
+      ],
+      "mix": [
+        "Sebastian Suarez-Solis"
+      ],
+      "recording": [
+        "Cameron Church"
+      ]
     },
     "instruments": [
       "PREPARED OBOE"
     ],
-    "location": "Unknown",
+    "location": "Baltimore, MD",
     "season": "S2",
     "video": {
-      "cinematography": [],
-      "director": [],
-      "editing": []
+      "cinematography": [
+        "Sebastian Suarez-Solis"
+      ],
+      "director": [
+        "Sebastian Suarez-Solis",
+        "Cameron Church"
+      ],
+      "editing": [
+        "Cameron Church"
+      ]
     },
     "year": 2024
   },
@@ -61,8 +74,13 @@
     }
   },
   "metadata": {
-    "sampleLength": "AUTO",
-    "tags": []
+    "sampleLength": "15:25",
+    "tags": [
+      "prepared oboe",
+      "performance",
+      "music",
+      "CC-BY 4.0"
+    ]
   },
   "sidebarPageConfig": {
     "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Sky Macklay.",
@@ -80,21 +98,34 @@
       ],
       "artistAlt": null,
       "audio": {
-        "master": [],
-        "mix": [],
-        "recording": []
+        "master": [
+          "Sebastian Suarez-Solis"
+        ],
+        "mix": [
+          "Sebastian Suarez-Solis"
+        ],
+        "recording": [
+          "Cameron Church"
+        ]
       },
       "instrumentLinksEnabled": true,
       "instruments": [
         "PREPARED OBOE"
       ],
       "linksByPerson": {},
-      "location": "Unknown",
+      "location": "Baltimore, MD",
       "season": "S2",
       "video": {
-        "cinematography": [],
-        "director": [],
-        "editing": []
+        "cinematography": [
+          "Sebastian Suarez-Solis"
+        ],
+        "director": [
+          "Sebastian Suarez-Solis",
+          "Cameron Church"
+        ],
+        "editing": [
+          "Cameron Church"
+        ]
       },
       "year": 2024
     },
@@ -4496,8 +4527,13 @@
     },
     "lookupNumber": "W.Ob. Ma AV2024 S2",
     "metadata": {
-      "sampleLength": "AUTO",
-      "tags": []
+      "sampleLength": "15:25",
+      "tags": [
+        "prepared oboe",
+        "performance",
+        "music",
+        "CC-BY 4.0"
+      ]
     },
     "specialEventImage": "/assets/series/dex.png"
   }

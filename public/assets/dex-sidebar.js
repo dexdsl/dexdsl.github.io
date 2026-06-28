@@ -3,6 +3,7 @@
   window.__dexSidebarRuntimeBound = true;
 
   const ALL_BUCKETS = ['A', 'B', 'C', 'D', 'E', 'X'];
+  const SUPPORTED_DOWNLOAD_BUCKETS = ['A', 'B', 'C', 'D', 'E', 'V', 'I', 'X'];
   const FAVORITES_STORAGE_PREFIX = 'dex:favorites:v2:';
   const FAVORITES_RUNTIME_PATH = '/assets/js/dx-favorites.js';
   const BAG_RUNTIME_PATH = '/assets/js/dx-bag.js';
@@ -201,16 +202,26 @@
       const files = Array.isArray(variantRow?.files) ? variantRow.files : [];
       if (!files.length) return;
       pushUnique(variantRow?.variantKey || variantRow?.label);
+      files.forEach((fileRow) => {
+        const extension = String(fileRow?.extension || fileRow?.ext || '').trim().toLowerCase();
+        if (safeType === 'audio') {
+          if (extension === 'mp3') pushUnique('mp3');
+          if (extension === 'wav') pushUnique('wav');
+          return;
+        }
+        if (safeType === 'video') {
+          const haystack = `${String(fileRow?.filename || '')} ${String(fileRow?.label || '')}`.toLowerCase();
+          if (/\b4k\b|\b2160p?\b|\buhd\b/.test(haystack)) pushUnique('4K');
+          if (/\b1080p?\b/.test(haystack)) pushUnique('1080p');
+        }
+      });
     });
     if (keys.length) return keys;
 
     const files = Array.isArray(typeRow?.files) ? typeRow.files : [];
     files.forEach((fileRow) => {
       const directKey = String(fileRow?.variantKey || fileRow?.variantLabel || '').trim();
-      if (directKey) {
-        pushUnique(directKey);
-        return;
-      }
+      if (directKey) pushUnique(directKey);
       const extension = String(fileRow?.extension || fileRow?.ext || '').trim().toLowerCase();
       if (safeType === 'audio') {
         if (extension === 'mp3') pushUnique('mp3');
@@ -275,6 +286,20 @@
       total += 1;
     });
     return matched ? total : null;
+  };
+
+  const readEmbeddedFileCount = (embeddedTree, bucket) => {
+    if (!embeddedTree || !Array.isArray(embeddedTree.buckets)) return null;
+    const safeBucket = String(bucket || '').trim().toUpperCase();
+    if (!safeBucket) return null;
+    const bucketRow = embeddedTree.buckets.find(
+      (row) => String(row?.bucket || '').trim().toUpperCase() === safeBucket,
+    );
+    if (!bucketRow || !Array.isArray(bucketRow.types)) return null;
+    return bucketRow.types.reduce(
+      (sum, typeRow) => sum + (Array.isArray(typeRow?.files) ? typeRow.files.length : 0),
+      0,
+    );
   };
 
   const hasFormatVariant = (availableFormatKeys, variants = []) => {
@@ -357,7 +382,10 @@
     if (audioWavAvailable && Number.isInteger(audioWavCount)) numericCounts.push(audioWavCount);
     if (video1080Available && Number.isInteger(video1080Count)) numericCounts.push(video1080Count);
     if (video4kAvailable && Number.isInteger(video4kCount)) numericCounts.push(video4kCount);
-    const totalFiles = numericCounts.reduce((sum, value) => sum + value, 0);
+    const embeddedFileCount = hasEmbeddedTree ? readEmbeddedFileCount(embeddedTree, bucket) : null;
+    const totalFiles = Number.isInteger(embeddedFileCount)
+      ? embeddedFileCount
+      : numericCounts.reduce((sum, value) => sum + value, 0);
     return {
       bucket,
       selected,
@@ -522,6 +550,25 @@
         min-height: 0 !important;
       }
 
+      body.dx-entry-page #page,
+      body.dx-entry-page #sections {
+        width: 100% !important;
+        max-width: none !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+
+      html[data-dx-entry-rail-mode="desktop-fixed"],
+      html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page,
+      html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page #dx-slot-scroll-root,
+      html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page #dx-slot-foreground-root,
+      html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page #siteWrapper,
+      html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page #page,
+      html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page #sections {
+        overflow: hidden !important;
+        overscroll-behavior: none !important;
+      }
+
       html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-entry-layout {
         height: var(--dx-entry-rails-height, 62vh) !important;
         min-height: 0 !important;
@@ -530,7 +577,44 @@
       }
 
       body.dx-entry-page .dex-entry-section {
+        width: var(--dx-header-frame-width-vw, calc(100vw - 3vw)) !important;
+        max-width: var(--dx-header-frame-width-vw, calc(100vw - 3vw)) !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
         margin-bottom: var(--dx-entry-footer-gap, clamp(18px, 2.2vh, 30px)) !important;
+        padding: clamp(18px, 2vw, 28px) !important;
+        box-sizing: border-box !important;
+        left: auto !important;
+        right: auto !important;
+        transform: none !important;
+        background: rgba(255, 255, 255, 0.22) !important;
+        border: 1px solid rgba(255, 255, 255, 0.48) !important;
+        border-radius: var(--dx-radius-md, 10px) !important;
+        box-shadow: 0 16px 36px rgba(18, 22, 30, 0.22), inset 0 0 0 1px rgba(255, 255, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.38) !important;
+        -webkit-backdrop-filter: saturate(190%) blur(28px) !important;
+        backdrop-filter: saturate(190%) blur(28px) !important;
+      }
+
+      body.dx-entry-page .dex-entry-section > .content-wrapper,
+      body.dx-entry-page .dex-entry-section > .content-wrapper > .content,
+      body.dx-entry-page .dex-entry-section .dex-entry-layout {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        box-sizing: border-box !important;
+        left: auto !important;
+        right: auto !important;
+        transform: none !important;
+      }
+
+      body.dx-entry-page .dex-entry-host,
+      body.dx-entry-page .dex-entry-host .dx-code-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        box-sizing: border-box !important;
       }
 
       html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-entry-section {
@@ -553,7 +637,7 @@
       }
 
       html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-entry-main {
-        overflow-y: hidden !important;
+        overflow-y: auto !important;
         overflow-x: hidden !important;
       }
 
@@ -561,6 +645,19 @@
         overflow-y: auto !important;
         overflow-x: hidden !important;
         padding-bottom: var(--dx-entry-footer-gap, clamp(14px, 1.2vw, 20px)) !important;
+      }
+
+      html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-entry-main,
+      html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-sidebar {
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+      }
+
+      html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-entry-main::-webkit-scrollbar,
+      html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-sidebar::-webkit-scrollbar {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
       }
 
       html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-entry-main > :last-child {
@@ -668,15 +765,228 @@
         display: none !important;
       }
 
-      body.dx-entry-page .dex-sidebar section {
+      html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-footer {
+        position: fixed !important;
+        left: 50% !important;
+        right: auto !important;
+        bottom: max(12px, env(safe-area-inset-bottom, 0px)) !important;
+        transform: translateX(-50%) !important;
+        width: var(--dx-header-frame-width-vw) !important;
+        max-width: var(--dx-header-frame-width-vw) !important;
+        margin: 0 !important;
+        z-index: calc(var(--dx-layer-foreground) + 4) !important;
+      }
+
+      body.dx-entry-page .dex-footer .footer-grid {
+        align-items: center !important;
+      }
+
+      body.dx-entry-page .dex-footer .footer-grid > .footer-logo-column,
+      body.dx-entry-page .dex-footer .footer-grid > .footer-attribution,
+      body.dx-entry-page .dex-footer .footer-grid > .footer-seal-column,
+      body.dx-entry-page .dex-footer .footer-grid > .footer-links-column {
+        align-self: center !important;
+        top: auto !important;
+        bottom: auto !important;
+        transform: none !important;
+      }
+
+      body.dx-entry-page .dex-footer .footer-links-column {
+        justify-content: center !important;
+      }
+
+      body.dx-entry-page {
+        --dx-test5-header-radius: var(--radius-002, 4px);
+      }
+
+      html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-entry-layout .dex-sidebar,
+      html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-sidebar {
+        --dx-sidebar-outer-pad-x: clamp(24px, 2.2vw, 36px);
+        --dx-fetch-shell-radius: var(--dx-test5-header-radius) !important;
+        --dx-entry-card-radius: var(--dx-test5-header-radius) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-self: stretch !important;
+        box-sizing: border-box !important;
+        background: var(--liquid-bg, rgba(255, 255, 255, 0.14)) !important;
+        border: 1px solid var(--liquid-border, rgba(255, 255, 255, 0.32)) !important;
+        border-radius: var(--dx-test5-header-radius) !important;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+        padding-top: clamp(24px, 2.2vw, 36px) !important;
+        padding-right: var(--dx-sidebar-outer-pad-x) !important;
+        padding-bottom: clamp(24px, 2.2vw, 36px) !important;
+        padding-left: var(--dx-sidebar-outer-pad-x) !important;
+        -webkit-backdrop-filter: blur(var(--liquid-blur, 28px)) saturate(180%) contrast(1.12) brightness(1.06) !important;
+        backdrop-filter: blur(var(--liquid-blur, 28px)) saturate(180%) contrast(1.12) brightness(1.06) !important;
+      }
+
+      body.dx-entry-page .dex-entry-layout .dex-sidebar > section,
+      body.dx-entry-page .dex-sidebar > section {
+        width: 100% !important;
         height: auto !important;
         min-height: max-content !important;
-        padding: clamp(16px, 1.35vw, 22px) clamp(16px, 1.6vw, 22px) !important;
+        flex: 0 0 auto !important;
+        border-radius: var(--dx-test5-header-radius) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+        padding-top: clamp(18px, 1.45vw, 24px) !important;
+        padding-right: clamp(18px, 1.6vw, 26px) !important;
+        padding-bottom: clamp(18px, 1.45vw, 24px) !important;
+        padding-left: clamp(18px, 1.6vw, 26px) !important;
         box-sizing: border-box !important;
       }
 
-      body.dx-entry-page .dex-sidebar section + section {
-        margin-top: clamp(12px, 1.05vw, 18px) !important;
+      body.dx-entry-page .dex-entry-layout .dex-sidebar > section + section,
+      body.dx-entry-page .dex-sidebar > section + section {
+        margin-top: clamp(14px, 1.1vw, 18px) !important;
+      }
+
+      body.dx-entry-page .dex-video-card,
+      body.dx-entry-page .dex-video,
+      body.dx-entry-page .dex-video-aspect,
+      body.dx-entry-page .dex-video-card iframe,
+      body.dx-entry-page .dex-video-card video,
+      body.dx-entry-page .dex-video-card .intrinsic,
+      body.dx-entry-page .dex-video-card .sqs-video-wrapper,
+      body.dx-entry-page .dex-video-card .sqs-oembed,
+      body.dx-entry-page .dex-video-card .sqs-embed-content,
+      body.dx-entry-page .dex-video-aspect iframe,
+      body.dx-entry-page .dex-collections .overview-buckets-grid .dx-bucket-tile,
+      body.dx-entry-page .dex-collections .overview-buckets-grid .dx-bucket-tile[data-dx-tooltip],
+      body.dx-entry-page .dex-collections .overview-item--favorite-collection .dx-fav-entry-toggle,
+      body.dx-entry-page .dex-collections .overview-item--favorite-buckets .dx-fav-bucket-toggle,
+      body.dx-entry-page .dex-collections .overview-item .dx-fav-heart-btn {
+        border-radius: var(--dx-test5-header-radius) !important;
+      }
+
+      body.dx-entry-page .dex-collections .overview-item--favorite-buckets .overview-badges {
+        display: grid !important;
+        grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+        justify-content: stretch !important;
+        gap: var(--dx-entry-tile-gap, clamp(6px, 0.6vw, 10px)) !important;
+        width: 100% !important;
+        padding: 0 var(--dx-entry-tile-edge-pad, clamp(8px, 0.85vw, 12px)) !important;
+        box-sizing: border-box !important;
+      }
+
+      body.dx-entry-page .dex-collections .overview-item--favorite-buckets .dx-fav-bucket-toggle.dx-fav-heart-btn {
+        width: 100% !important;
+        min-width: 0 !important;
+        min-height: var(--dx-entry-tile-height, clamp(28px, 1.85vw, 34px)) !important;
+        max-height: var(--dx-entry-tile-height, clamp(28px, 1.85vw, 34px)) !important;
+        height: var(--dx-entry-tile-height, clamp(28px, 1.85vw, 34px)) !important;
+        padding: clamp(3px, 0.45vw, 6px) !important;
+        box-sizing: border-box !important;
+      }
+
+      body.dx-entry-page .dex-collections .overview-item--favorite-buckets .dx-fav-bucket-toggle.dx-fav-heart-btn:not(.is-active) {
+        border-color: transparent !important;
+        background: rgba(255, 255, 255, 0.3) !important;
+        box-shadow: none !important;
+      }
+
+      body.dx-entry-page .dex-sidebar .dex-credits .dex-credits-row,
+      body.dx-entry-page .dex-sidebar .dex-credits .dex-credits-role {
+        display: flex !important;
+        align-items: baseline !important;
+        flex-wrap: wrap !important;
+        column-gap: 0.55rem !important;
+        row-gap: 0.15rem !important;
+        margin: 0.28rem 0 !important;
+      }
+
+      body.dx-entry-page .dex-sidebar .dex-credits .dex-credits-row .dex-credits-key,
+      body.dx-entry-page .dex-sidebar .dex-credits .dex-credits-role .dex-credits-key {
+        font-family: var(--font-heading) !important;
+        font-weight: 700 !important;
+        letter-spacing: 0 !important;
+        text-transform: none !important;
+        color: rgba(16, 16, 16, 0.96) !important;
+      }
+
+      body.dx-entry-page .dex-sidebar .dex-credits .dex-credits-row .dex-credits-value,
+      body.dx-entry-page .dex-sidebar .dex-credits .dex-credits-role .dex-credits-value {
+        min-width: 0 !important;
+        font-family: var(--font-body) !important;
+        font-weight: 500 !important;
+        color: rgba(16, 16, 16, 0.92) !important;
+        overflow-wrap: anywhere !important;
+      }
+
+      body.dx-entry-page .dex-sidebar .dex-credits .dex-credits-group {
+        margin-top: 1.05rem !important;
+        padding-top: 1.05rem !important;
+        border-top: 1px solid rgba(16, 16, 16, 0.22) !important;
+      }
+
+      body.dx-entry-page .dex-sidebar .dex-credits .dex-credits-group-title {
+        font-family: var(--font-heading) !important;
+        font-weight: 700 !important;
+        letter-spacing: 0 !important;
+        text-transform: none !important;
+        color: rgba(16, 16, 16, 0.98) !important;
+        margin: 0 0 0.48rem 0 !important;
+      }
+
+      body.dx-entry-page .dex-sidebar .dex-credits .dex-badges .badge,
+      body.dx-entry-page .dex-sidebar #file-specs .dex-badges .badge,
+      body.dx-entry-page .dex-sidebar #metadata .dex-badges .badge {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.35rem !important;
+        padding: 0.3rem 0.62rem !important;
+        border-radius: var(--dx-test5-header-radius) !important;
+        border: 1px solid var(--dx-header-glass-rim, rgba(255, 255, 255, 0.42)) !important;
+        background: var(--dx-header-glass-bg, linear-gradient(120deg, rgba(221, 230, 240, 0.36) 0%, rgba(191, 208, 224, 0.26) 55%, rgba(232, 210, 203, 0.24) 100%)) !important;
+        box-shadow: var(--dx-header-glass-shadow, 0 16px 36px rgba(18, 22, 30, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.32)) !important;
+        -webkit-backdrop-filter: var(--dx-header-glass-backdrop, saturate(180%) blur(18px)) !important;
+        backdrop-filter: var(--dx-header-glass-backdrop, saturate(180%) blur(18px)) !important;
+        color: rgba(20, 20, 20, 0.92) !important;
+        font-family: var(--font-body, "Courier New", monospace) !important;
+        font-size: 0.8rem !important;
+        font-weight: 400 !important;
+        letter-spacing: 0.02em !important;
+        line-height: 1.05 !important;
+      }
+
+      body.dx-entry-page .dex-sidebar-scroll-affordance {
+        position: sticky;
+        top: calc(100% - 28px);
+        z-index: 30;
+        align-self: flex-start;
+        flex: 0 0 24px;
+        width: 24px;
+        height: 24px;
+        min-height: 24px;
+        margin-left: calc(-1 * var(--dx-sidebar-outer-pad-x, 24px) + 3px);
+        margin-bottom: -24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        box-sizing: border-box;
+        pointer-events: none;
+        color: rgba(20, 23, 30, 0.72);
+        background: transparent;
+        font: 700 16px/1 var(--font-body, monospace);
+        opacity: 0;
+        transition: opacity 160ms ease;
+      }
+
+      body.dx-entry-page .dex-sidebar[data-dx-scrollable="true"]:not([data-dx-scroll-at-end="true"]) .dex-sidebar-scroll-affordance {
+        opacity: 1;
+      }
+
+      body.dx-entry-page .dex-sidebar-scroll-affordance-arrow {
+        display: block;
+        font-size: 16px;
+        line-height: 1;
+        animation: dx-sidebar-scroll-cue 1.2s ease-in-out infinite;
+      }
+
+      @keyframes dx-sidebar-scroll-cue {
+        0%, 100% { transform: translateY(-2px); }
+        50% { transform: translateY(2px); }
       }
 
       @media (max-width: 899px) {
@@ -742,6 +1052,28 @@
         text-transform: none !important;
       }
 
+      body.dx-entry-page .dex-sidebar .dex-license-controls {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: var(--space-2, 0.5rem) !important;
+        width: 100% !important;
+      }
+
+      body.dx-entry-page .dex-sidebar .dex-license-controls .copy-btn,
+      body.dx-entry-page .dex-sidebar .dex-license-controls .usage-btn {
+        width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        justify-self: stretch !important;
+      }
+
+      body.dx-entry-page .dex-sidebar .dex-license-controls .usage-btn {
+        background: var(--dx-btn-secondary-bg, linear-gradient(145deg, rgba(255, 255, 255, 0.78), rgba(245, 249, 255, 0.52))) !important;
+        color: #000 !important;
+        box-shadow: none !important;
+        font-weight: var(--dx-btn-secondary-weight, 700) !important;
+      }
+
       body.dx-entry-page .dex-sidebar .dex-license-controls .copy-btn:hover,
       body.dx-entry-page .dex-sidebar .dex-license-controls .usage-btn:hover,
       body.dx-entry-page .dex-sidebar #downloads .btn-audio:hover,
@@ -751,6 +1083,10 @@
       }
 
       body.dx-entry-page .dex-sidebar #downloads .btn-recording-index:hover {
+        box-shadow: none !important;
+      }
+
+      body.dx-entry-page .dex-sidebar .dex-license-controls .usage-btn:hover {
         box-shadow: none !important;
       }
 
@@ -1819,7 +2155,7 @@
     const subtitle = document.querySelector('[data-dex-entry-subtitle], .dex-entry-subtitle');
     if (!(subtitle instanceof HTMLElement)) return;
 
-    Array.from(subtitle.querySelectorAll('[data-dx-subtitle-extra]')).forEach((node) => node.remove());
+    Array.from(subtitle.querySelectorAll('[data-dx-subtitle-extra], .dex-entry-subtitle-item--meta')).forEach((node) => node.remove());
 
     const appendItem = (kind, value) => {
       const text = String(value || '').trim();
@@ -1998,22 +2334,36 @@
       E: 'Files per by Moment',
       X: 'Extras',
     };
-    const descriptor = escapeHtml(bucketDescriptorMap[bucketKey] || '');
+    const descriptor = escapeHtml(
+      String(target.getAttribute('data-dx-tooltip-descriptor') || '').trim()
+      || bucketDescriptorMap[bucketKey]
+      || '',
+    );
     const status = statusRaw === 'available' ? 'available' : 'unavailable';
     const statusLabel = status === 'available' ? 'Available' : 'Unavailable';
     const normalizeLabel = (value, fallback = '—') => {
       const safe = String(value || '').trim();
       return safe || fallback;
     };
-    const metrics = [
+    let customMetrics = [];
+    try {
+      const parsed = JSON.parse(String(target.getAttribute('data-dx-tooltip-metrics') || '[]'));
+      if (Array.isArray(parsed)) {
+        customMetrics = parsed
+          .map((row) => Array.isArray(row) ? row : [row?.label, row?.value])
+          .map(([label, value]) => [String(label || '').trim(), String(value ?? '').trim()])
+          .filter(([label]) => label);
+      }
+    } catch {}
+    const metrics = customMetrics.length ? customMetrics : [
       ['File Types', normalizeLabel(fileTypes, 'None')],
       ['Video Quality', normalizeLabel(videoQuality, 'None')],
       ['Audio WAV', normalizeLabel(audioWav, 'n/a')],
     ];
-    if (audioMp3Available) metrics.push(['Audio MP3', normalizeLabel(audioMp3, '—')]);
-    if (video1080Available) metrics.push(['Video 1080p', normalizeLabel(video1080, '—')]);
-    if (video4kAvailable) metrics.push(['Video 4K', normalizeLabel(video4k, '—')]);
-    metrics.push(['Total Files', normalizeLabel(totalFiles, '0')]);
+    if (!customMetrics.length && audioMp3Available) metrics.push(['Audio MP3', normalizeLabel(audioMp3, '—')]);
+    if (!customMetrics.length && video1080Available) metrics.push(['Video 1080p', normalizeLabel(video1080, '—')]);
+    if (!customMetrics.length && video4kAvailable) metrics.push(['Video 4K', normalizeLabel(video4k, '—')]);
+    if (!customMetrics.length) metrics.push(['Total Files', normalizeLabel(totalFiles, '0')]);
     const metricRows = metrics
       .map(([label, value]) => `
         <div class="dx-submit-tooltip-metric" style="display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:8px;align-items:baseline;">
@@ -2321,6 +2671,38 @@
     });
   };
 
+  const ensureSidebarScrollAffordance = (sidebar) => {
+    if (!(sidebar instanceof HTMLElement)) return;
+    let cue = sidebar.querySelector(':scope > .dex-sidebar-scroll-affordance');
+    if (!(cue instanceof HTMLElement)) {
+      cue = document.createElement('div');
+      cue.className = 'dex-sidebar-scroll-affordance';
+      cue.setAttribute('aria-hidden', 'true');
+      cue.innerHTML = '<span class="dex-sidebar-scroll-affordance-arrow">↓</span>';
+      sidebar.prepend(cue);
+    }
+
+    const update = () => {
+      const scrollable = sidebar.scrollHeight > sidebar.clientHeight + 4;
+      const atEnd = !scrollable || sidebar.scrollTop + sidebar.clientHeight >= sidebar.scrollHeight - 4;
+      sidebar.setAttribute('data-dx-scrollable', scrollable ? 'true' : 'false');
+      sidebar.setAttribute('data-dx-scroll-at-end', atEnd ? 'true' : 'false');
+    };
+
+    if (sidebar.dataset.dxScrollAffordanceBound !== '1') {
+      sidebar.dataset.dxScrollAffordanceBound = '1';
+      sidebar.addEventListener('scroll', update, { passive: true });
+      if (typeof ResizeObserver === 'function') {
+        const observer = new ResizeObserver(update);
+        observer.observe(sidebar);
+        Array.from(sidebar.children).forEach((child) => observer.observe(child));
+        sidebar.__dxScrollAffordanceObserver = observer;
+      }
+    }
+    update();
+    window.requestAnimationFrame(update);
+  };
+
   const applyEntryRailLayout = () => {
     const layout = document.querySelector('.dex-entry-layout');
     const main = layout?.querySelector('.dex-entry-main');
@@ -2360,6 +2742,7 @@
       main.style.removeProperty('overflow-y');
       sidebar.style.removeProperty('overflow-y');
       layout.setAttribute('data-dx-entry-rail-mode', 'mobile-flow');
+      ensureSidebarScrollAffordance(sidebar);
       entryRailLastMode = 'mobile-flow';
       return;
     }
@@ -2396,6 +2779,10 @@
       window.setTimeout(resetEntryScrollRoots, 40);
     }
 
+    root.setAttribute('data-dx-entry-rail-mode', 'desktop-fixed');
+    document.body.setAttribute('data-dx-entry-rail-mode', 'desktop-fixed');
+    document.body.classList.add('dx-entry-desktop-fixed');
+
     let bottomInset = 20;
     let footerIsOverlay = false;
     if (footer instanceof HTMLElement) {
@@ -2429,24 +2816,27 @@
 
     const layoutRect = layout.getBoundingClientRect();
     const topInset = Math.max(0, Math.ceil(layoutRect.top));
-    const available = Math.max(280, Math.floor(window.innerHeight - topInset - bottomInset));
+    const footerRect = footer instanceof HTMLElement ? footer.getBoundingClientRect() : null;
+    const available = footerIsOverlay && footerRect && footerRect.top > topInset
+      ? Math.max(120, Math.floor(footerRect.top - topInset - 52))
+      : Math.max(120, Math.floor(window.innerHeight - topInset - bottomInset - 36));
     const railInlinePad = Math.max(14, Math.min(24, Math.round(window.innerWidth * 0.016)));
     const footerGap = Math.max(16, Math.min(42, Math.round(Math.max(railInlinePad * 1.1, bottomInset * 0.16))));
     root.style.setProperty('--dx-entry-rails-height', `${available}px`);
     root.style.setProperty('--dx-entry-rail-inline-pad', `${railInlinePad}px`);
     root.style.setProperty('--dx-entry-footer-inline-pad', `${railInlinePad}px`);
     root.style.setProperty('--dx-entry-footer-gap', `${footerGap}px`);
-    root.setAttribute('data-dx-entry-rail-mode', 'desktop-fixed');
-    document.body.setAttribute('data-dx-entry-rail-mode', 'desktop-fixed');
-    document.body.classList.add('dx-entry-desktop-fixed');
     document.body.style.overflow = 'hidden';
 
     main.style.setProperty('height', `${available}px`, 'important');
     main.style.setProperty('max-height', `${available}px`, 'important');
     sidebar.style.setProperty('height', `${available}px`, 'important');
     sidebar.style.setProperty('max-height', `${available}px`, 'important');
-    main.style.setProperty('overflow-y', 'hidden', 'important');
+    main.style.setProperty('overflow-y', 'auto', 'important');
     sidebar.style.setProperty('overflow-y', 'auto', 'important');
+    main.style.setProperty('overflow-x', 'hidden', 'important');
+    sidebar.style.setProperty('overflow-x', 'hidden', 'important');
+    ensureSidebarScrollAffordance(sidebar);
 
     layout.setAttribute('data-dx-entry-rail-mode', 'desktop-fixed');
     entryRailLastMode = 'desktop-fixed';
@@ -3342,7 +3732,7 @@
     const normalizedBuckets = buckets
       .map((bucketRow) => {
         const bucket = String(bucketRow?.bucket || '').trim().toUpperCase();
-        if (!bucket || !ALL_BUCKETS.includes(bucket)) return null;
+        if (!bucket || !SUPPORTED_DOWNLOAD_BUCKETS.includes(bucket)) return null;
         const types = Array.isArray(bucketRow?.types)
           ? bucketRow.types
           : [];
@@ -3400,13 +3790,20 @@
                 });
               });
             } else if (legacyFiles.length) {
-              const syntheticVariantKey = `default-${mediaType}`;
-              normalizedVariants.push({
-                variantKey: syntheticVariantKey,
-                label: mediaType === 'video' ? 'Default Video' : 'Default Audio',
-                files: legacyFiles
-                  .map((fileRow) => normalizeFile(fileRow, syntheticVariantKey))
-                  .filter(Boolean),
+              const groupedFiles = new Map();
+              legacyFiles.forEach((fileRow) => {
+                const variantKey = normalizeVariantKey(fileRow?.variantKey);
+                const normalizedFile = normalizeFile(fileRow, variantKey);
+                if (!normalizedFile) return;
+                if (!groupedFiles.has(variantKey)) groupedFiles.set(variantKey, []);
+                groupedFiles.get(variantKey).push(normalizedFile);
+              });
+              groupedFiles.forEach((files, variantKey) => {
+                normalizedVariants.push({
+                  variantKey,
+                  label: variantKey,
+                  files,
+                });
               });
             }
 
@@ -3451,7 +3848,7 @@
       }
       return `default-${mediaType}`;
     };
-    const buckets = ALL_BUCKETS.map((bucket) => {
+    const buckets = SUPPORTED_DOWNLOAD_BUCKETS.map((bucket) => {
       const byBucket = files.filter((file) => file.bucket === bucket);
       const byType = {
         audio: new Map(),
@@ -4169,7 +4566,7 @@
             buckets: buckets
               .map((bucketRow) => {
                 const bucket = String(bucketRow?.bucket || '').trim().toUpperCase();
-                if (!bucket || !ALL_BUCKETS.includes(bucket)) return null;
+                if (!bucket || !SUPPORTED_DOWNLOAD_BUCKETS.includes(bucket)) return null;
                 const typeRows = Array.isArray(bucketRow?.types)
                   ? bucketRow.types
                   : [];
@@ -5642,8 +6039,44 @@
     });
   };
 
+  const exposeSharedEntryComponents = () => {
+    window.__dxEntryComponents = {
+      attachUnifiedDownload,
+      attachRecordingIndex,
+      bindEntryTooltips,
+      bindFavoriteToggle,
+      buildBucketFavoriteRecord,
+      buildEntryFavoriteRecord,
+      bindOverviewLookupFit,
+      ensureDownloadTreeStyles,
+      ensureEntryButtonPrimitiveOverrides,
+      ensureEntryRuntimeLayoutOverrides,
+      ensureFavoritesApi,
+      ensureInteractiveHoverRuntime,
+      getFavoritesApi: () => activateFavoritesApi(getFavoritesApi()),
+      openSignedUrl,
+      refreshFavoriteButtons,
+      requestBundleDownload,
+      setDownloadState,
+    };
+    try {
+      window.dispatchEvent(new CustomEvent('dx:entry-components-ready'));
+    } catch {}
+    return window.__dxEntryComponents;
+  };
+
+  exposeSharedEntryComponents();
+
   const boot = async () => {
     if (document.documentElement.dataset.dexSidebarRendered === '1') return;
+    if (document.body?.classList.contains('dx-uav-page')) {
+      ensureEntryRuntimeLayoutOverrides();
+      ensureEntryButtonPrimitiveOverrides();
+      ensureDownloadTreeStyles();
+      ensureInteractiveHoverRuntime(getSidebarAssetOrigin());
+      exposeSharedEntryComponents();
+      return;
+    }
     bindEntryPageTitleSeparatorWatcher(document);
     const fetchTargets = collectEntryFetchTargets();
     ensureEntryFetchShells(fetchTargets);
@@ -5853,7 +6286,7 @@
         <p class="dex-attrib">This work contains samples licensed under CC-BY 4.0 by Dex Digital Sample Library and ${cfg.credits.artist}</p>
         <div class="dex-license-controls">
           <button type="button" class="license-btn copy-btn dx-button-element--primary" title="Copy attribution"><span class="copy-text">${copyLabel}</span></button>
-          <button type="button" class="license-btn usage-btn dx-button-element--primary" onclick="window.open('https://dexdsl.com/copyright','_blank')">${usageNotesLabel}</button>
+          <button type="button" class="license-btn usage-btn dx-button-element--secondary" onclick="window.open('https://dexdsl.com/copyright','_blank')">${usageNotesLabel}</button>
         </div>
       `);
 

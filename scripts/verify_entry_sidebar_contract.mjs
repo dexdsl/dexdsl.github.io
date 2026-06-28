@@ -102,6 +102,17 @@ function ensureRuntimeMarkers(runtimeJs) {
     'WHOLE FILES',
     'root: sidebar instanceof HTMLElement ? sidebar : null',
     "section.style.opacity = '1'",
+    'readEmbeddedFileCount',
+    'groupedFiles',
+    'saturate(180%) blur(18px)',
+    'margin-bottom: var(--dx-entry-footer-gap',
+    '.dex-entry-subtitle-item--meta',
+    'body.dx-entry-page #page',
+    'ensureSidebarScrollAffordance',
+    'data-dx-scrollable',
+    'scrollbar-width: none',
+    'position: fixed !important',
+    'grid-template-columns: repeat(6, minmax(0, 1fr))',
   ];
   for (const marker of required) {
     if (!runtimeJs.includes(marker)) {
@@ -159,6 +170,7 @@ function ensureCompilerMarkers(entryHtmlSource) {
     'linksByPerson',
     'instrumentLinksEnabled',
     'normalizeLinksByPerson',
+    'titleRegion.content === nextTitleRegion',
   ];
   for (const marker of required) {
     if (!entryHtmlSource.includes(marker)) {
@@ -202,15 +214,55 @@ async function ensureGeneratedEntryRouteContract() {
   }
 
   const skyRoutePath = 'docs/entry/prepared-oboe-sky-macklay/index.html';
-  const skyHtml = await read(skyRoutePath);
+  const skySourcePath = 'entries/prepared-oboe-sky-macklay/index.html';
+  const [skyHtml, skySourceHtml] = await Promise.all([
+    read(skyRoutePath),
+    read(skySourcePath),
+  ]);
   if (/id="spark-app"|<header data-test="header"/i.test(skyHtml)) {
     fail(`${skyRoutePath} must preserve the production route shell`);
+  }
+  if (/id="(?:dx-remove-body-card(?:-runtime)?|dx-test5-sidebar-padding-final)"/.test(skyHtml)) {
+    fail(`${skyRoutePath} must not contain retired entry layout overrides`);
+  }
+  if (!/html:not\(\[data-dex-sidebar-rendered="1"\]\) body\.dx-entry-page #page/.test(skyHtml)) {
+    fail(`${skyRoutePath} must hide the entry page until the sidebar runtime is ready`);
   }
   const pageConfigMatch = skyHtml.match(
     /<script id="dex-sidebar-page-config" type="application\/json">([\s\S]*?)<\/script>/,
   );
   if (!pageConfigMatch) fail(`${skyRoutePath} is missing sidebar page config`);
   const pageConfig = JSON.parse(pageConfigMatch[1]);
+  if (!/class="dex-footer"[^>]*data-managed="1"/.test(skyHtml)) {
+    fail(`${skyRoutePath} must contain the current managed canonical footer`);
+  }
+  const footerPattern = /<footer class="dex-footer"[\s\S]*?<\/footer>/;
+  const routeFooter = skyHtml.match(footerPattern)?.[0] || '';
+  const sourceFooter = skySourceHtml.match(footerPattern)?.[0] || '';
+  if (!routeFooter || routeFooter !== sourceFooter) {
+    fail(`${skyRoutePath} footer must match the current generated entry footer`);
+  }
+  if (!/dex-entry-subtitle-label">location<\/span><span class="dex-entry-subtitle-value">Baltimore, MD</.test(skyHtml)) {
+    fail(`${skyRoutePath} title metadata must contain Sky's authored location`);
+  }
+  const credits = pageConfig?.credits || {};
+  for (const [label, value] of [
+    ['video director', credits?.video?.director],
+    ['video cinematography', credits?.video?.cinematography],
+    ['video editing', credits?.video?.editing],
+    ['audio recording', credits?.audio?.recording],
+    ['audio mix', credits?.audio?.mix],
+    ['audio master', credits?.audio?.master],
+  ]) {
+    if (!String(value || '').trim()) {
+      fail(`${skyRoutePath} ${label} credit must not be blank`);
+    }
+  }
+  if (String(pageConfig?.metadata?.sampleLength || '') !== '15:25'
+    || !Array.isArray(pageConfig?.metadata?.tags)
+    || pageConfig.metadata.tags.length === 0) {
+    fail(`${skyRoutePath} must contain Sky's authored duration and metadata tags`);
+  }
   const fileTree = pageConfig?.downloads?.fileTree;
   if (String(fileTree?.lookup || '') !== 'W.Ob. Ma AV2024 S2') {
     fail(`${skyRoutePath} download file tree must be keyed to Sky's lookup`);

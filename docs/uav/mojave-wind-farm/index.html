@@ -1,65 +1,445 @@
 <!doctype html>
 <html lang="en-US">
 <head>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#e8ebf1">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta charset="utf-8">
-<title>Mojave Desert – Wind Farms — dexDRONES</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mojave Desert – Wind Farms — dexDRONES</title>
   <meta name="description" content="Mojave Desert wind farms documented by Dex Digital Sample Library during a full-spectrum UAV capture tour on April 2, 2026. The collection preserves aerial-video deliverables and their associated raw and support materials under CC BY 4.0.">
   <link rel="canonical" href="https://dexdsl.org/uav/mojave-wind-farm/">
   <link rel="stylesheet" href="/css/tokens.css">
   <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/bridge.squarespace.css">
+  <link rel="stylesheet" href="/css/components/dx-layout.css">
+  <link rel="stylesheet" href="/css/components/dx-surface.css">
+  <link rel="stylesheet" href="/css/components/dx-controls.css">
+  <link rel="stylesheet" href="/css/components/dx-nav.css">
   <link rel="stylesheet" href="/css/fonts.css">
+  <link rel="stylesheet" href="/assets/css/dex.css">
   <link rel="stylesheet" href="/css/components/dx-uav-entry.css">
+  <style id="dex-entry-collection-contract" data-managed="1">body.dx-entry-page .dex-collections {
+  --dx-entry-tile-height: clamp(28px, 1.85vw, 34px);
+  --dx-entry-tile-radius: clamp(10px, 0.8vw, 12px);
+  --dx-entry-tile-gap: clamp(6px, 0.6vw, 10px);
+  --dx-entry-tile-edge-pad: clamp(8px, 0.85vw, 12px);
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: clamp(10px, 1vw, 14px) !important;
+  padding: clamp(10px, 1.1vw, 14px) clamp(12px, 1.2vw, 16px) !important;
+  box-sizing: border-box !important;
+}
+body.dx-entry-page .dex-sidebar > section {
+  padding: clamp(18px, 1.45vw, 24px) clamp(18px, 1.6vw, 26px) !important;
+  box-sizing: border-box !important;
+}
+html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-entry-layout .dex-sidebar > section {
+  padding: clamp(18px, 1.45vw, 24px) clamp(18px, 1.6vw, 26px) !important;
+}
+body.dx-entry-page .dex-sidebar > section + section {
+  margin-top: clamp(14px, 1.1vw, 18px) !important;
+}
+body.dx-entry-page .dex-entry-page-title,
+body.dx-entry-page .dex-collections > h3[data-dx-entry-heading] {
+  font-variant-ligatures: common-ligatures discretionary-ligatures contextual !important;
+  font-feature-settings: "liga" 1, "clig" 1, "dlig" 1, "calt" 1, "kern" 1 !important;
+  text-rendering: optimizeLegibility !important;
+}
+body.dx-entry-page .dex-collections > h3[data-dx-entry-heading] {
+  margin: 0 !important;
+  padding: clamp(8px, 0.9vw, 12px) 0 0 clamp(8px, 0.9vw, 12px) !important;
+}
+body.dx-entry-page .dex-collections .overview-item {
+  align-items: stretch !important;
+  row-gap: clamp(4px, 0.45vw, 7px) !important;
+}
+body.dx-entry-page .dex-collections .overview-item--buckets .overview-label,
+body.dx-entry-page .dex-collections .overview-item--favorite-buckets .overview-label,
+body.dx-entry-page .dex-collections .overview-item--favorite-collection .overview-label {
+  justify-content: flex-start !important;
+  text-align: left !important;
+}
+body.dx-entry-page .dex-collections .overview-label {
+  margin: 0 0 1px !important;
+  font-size: clamp(0.52rem, 0.66vw, 0.62rem) !important;
+  font-style: italic !important;
+  letter-spacing: 0.02em !important;
+  line-height: 1 !important;
+}
+body.dx-entry-page .dex-collections .overview-buckets-grid {
+  display: grid !important;
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  gap: var(--dx-entry-tile-gap) !important;
+  width: 100% !important;
+  padding: 0 var(--dx-entry-tile-edge-pad) !important;
+  align-items: stretch !important;
+}
+body.dx-entry-page .dex-collections .dx-bucket-tile {
+  display: grid !important;
+  place-items: center !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: var(--dx-entry-tile-height) !important;
+  max-height: var(--dx-entry-tile-height) !important;
+  height: var(--dx-entry-tile-height) !important;
+  aspect-ratio: auto !important;
+  border-radius: var(--dx-entry-tile-radius) !important;
+  border: 1px solid rgba(0, 0, 0, 0.2) !important;
+  padding: clamp(3px, 0.45vw, 6px) !important;
+  box-sizing: border-box !important;
+  background: rgba(255, 255, 255, 0.68) !important;
+  color: rgba(26, 26, 26, 0.8) !important;
+  font: 800 clamp(0.72rem, 0.88vw, 0.9rem) / 1 "Typefesse", sans-serif !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.02em !important;
+  overflow: hidden !important;
+}
+body.dx-entry-page .dex-collections .dx-bucket-tile[data-dx-tooltip] {
+  position: relative !important;
+  cursor: help !important;
+  overflow: visible !important;
+  isolation: isolate !important;
+  transform: translate3d(0, 0, 0) scale(1) !important;
+  transform-origin: center center !important;
+  will-change: transform, opacity, filter, box-shadow !important;
+  transition:
+    transform 230ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 180ms ease,
+    filter 200ms ease,
+    box-shadow 220ms ease !important;
+}
+body.dx-entry-page .dex-collections .overview-buckets-grid {
+  overflow: visible !important;
+}
+body.dx-entry-page .dex-collections .overview-item--buckets {
+  overflow: visible !important;
+}
+body.dx-entry-page .dex-collections .dx-bucket-tile[data-dx-tooltip]:hover,
+body.dx-entry-page .dex-collections .dx-bucket-tile[data-dx-tooltip]:focus-visible {
+  z-index: 20 !important;
+  transform: translate3d(0, -1px, 0) scale(1.04) !important;
+  opacity: 0.97 !important;
+  filter: saturate(1.07) brightness(1.02) !important;
+}
+#dx-submit-tooltip-layer {
+  --dx-fetch-min-shell-h: 76px;
+  --dx-fetch-shell-radius: 10px;
+}
+#dx-submit-tooltip-layer .dx-submit-tooltip-content {
+  position: relative;
+  z-index: 1;
+}
+#dx-submit-tooltip-layer .dx-fetch-shell-overlay[data-dx-tooltip-fetch-shell="1"] {
+  z-index: 2;
+  border-radius: inherit;
+  pointer-events: none;
+}
+#dx-submit-tooltip-layer[data-dx-fetch-state="loading"] .dx-submit-tooltip-content {
+  opacity: 0.22;
+}
+@media (prefers-reduced-motion: reduce) {
+  body.dx-entry-page .dex-collections .dx-bucket-tile[data-dx-tooltip] {
+    transition: none !important;
+    transform: none !important;
+  }
+  body.dx-entry-page .dex-collections .dx-bucket-tile[data-dx-tooltip]:hover,
+  body.dx-entry-page .dex-collections .dx-bucket-tile[data-dx-tooltip]:focus-visible {
+    transform: none !important;
+  }
+}
+body.dx-entry-page .dex-collections .dx-bucket-tile.available {
+  border-color: rgba(255, 25, 16, 0.5) !important;
+  color: #fff !important;
+  background: linear-gradient(130deg, rgba(255, 25, 16, 0.92), rgba(255, 140, 16, 0.92)) !important;
+  box-shadow: 0 8px 22px rgba(255, 25, 16, 0.22) !important;
+}
+body.dx-entry-page .dex-collections .dx-bucket-tile.unavailable {
+  opacity: 0.86;
+  background: rgba(255, 255, 255, 0.55) !important;
+}
+body.dx-entry-page .dex-collections .overview-item--favorite-buckets .overview-badges {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(88px, 1fr)) !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+body.dx-entry-page .dex-collections .overview-item--favorite-buckets .dx-fav-bucket-toggle,
+body.dx-entry-page .dex-collections .overview-item--favorite-collection .dx-fav-entry-toggle {
+  width: 100% !important;
+  border-radius: var(--dx-entry-tile-radius) !important;
+}
+body.dx-entry-page .dex-collections .overview-item--favorite-buckets .dx-fav-bucket-toggle.dx-fav-heart-btn:not(.is-active) {
+  border-color: transparent !important;
+  background: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: none !important;
+}</style>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Dataset","name":"Mojave Desert – Wind Farms","identifier":"DR.Win. Mo 2026 T1","license":"https://creativecommons.org/licenses/by/4.0/","url":"https://dexdsl.org/uav/mojave-wind-farm/","spatialCoverage":"Mojave Desert","temporalCoverage":"2026"}</script>
 </head>
-<body class="dx-uav-page">
-  <main class="dx-uav-shell">
-    <nav><a href="/catalog/">← Catalog</a><a href="/dexdrones/">dexDRONES</a></nav>
-    <header class="dx-uav-hero">
-      <p class="dx-uav-kicker">dexDRONES / UAV COLLECTION</p>
-      <code>DR.Win. Mo 2026 T1</code>
-      <h1>Mojave Desert – Wind Farms</h1>
-      <p>Mojave Desert wind farms documented by Dex Digital Sample Library during a full-spectrum UAV capture tour on April 2, 2026. The collection preserves aerial-video deliverables and their associated raw and support materials under CC BY 4.0.</p>
-      <a class="dx-uav-cta" href="https://www.youtube.com/watch?v=YVLwwSe4m9I" rel="noreferrer">Open preview ↗</a>
-    </header>
-    <section class="dx-uav-authority">
-      <div><span>Site authority</span><strong><a href="https://www.geonames.org/5366898" rel="noreferrer">Mojave Desert</a></strong></div>
-      <div><span>Subjects</span><strong><a href="http://id.loc.gov/authorities/subjects/sh97003604" rel="noreferrer">Wind power plants</a>, <a href="http://id.loc.gov/authorities/subjects/sh85086496" rel="noreferrer">Mojave Desert</a></strong></div>
-      <div><span>Capture</span><strong>2026-04-02 – 2026-04-02</strong></div>
-      <div><span>Coordinates</span><strong>35.01, -115.47 (rounded)</strong></div>
-      <div><span>License</span><strong>CC-BY-4.0</strong></div>
-      <div><span>Attribution</span><strong>Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Paul Yorke, Sofi Jacquez.</strong></div>
-      <div><span>Operators</span><strong>Sebastian Suarez-Solis</strong></div>
-      <div><span>Contributors</span><strong>Dex Digital Sample Library, Kolari Vision</strong></div>
-    </section>
-    <section class="dx-uav-series-list">
-      <h2>Capture series</h2>
-      
-      <article class="dx-uav-series">
+<body class="dx-entry-page dx-uav-page">
+  <main id="page" class="dx-uav-shell">
+    <article class="dx-uav-entry-card dex-entry-section">
+      <header class="dx-uav-entry-header dex-entry-header">
+        <div class="dex-breadcrumb-overlay" data-dex-breadcrumb-overlay>
+          <div class="dex-breadcrumb" data-dex-breadcrumb>
+            <a class="dex-breadcrumb-back" href="/catalog/" data-dex-breadcrumb-back>catalog</a>
+            <span class="dex-breadcrumb-delimiter" data-dex-breadcrumb-delimiter aria-hidden="true">
+              <svg class="dex-breadcrumb-icon" viewBox="0 0 24 24" width="24" height="24" focusable="false" aria-hidden="true">
+                <path data-dex-breadcrumb-path stroke-width="2.2" d="M12 1.75L19.85 12L12 22.25L4.15 12Z"></path>
+              </svg>
+            </span>
+            <span class="dex-breadcrumb-current">dexDRONES, Mojave Desert</span>
+          </div>
+        </div>
+        <h1 class="dex-entry-page-title" data-dex-entry-page-title data-dx-heading-randomize="false">Mojave Desert – Wind Farms</h1>
+        <div class="dex-entry-subtitle" data-dex-entry-subtitle>
+          <span class="dex-entry-subtitle-item"><span class="dex-entry-subtitle-label">collection</span><span class="dex-entry-subtitle-value">DR.Win. Mo 2026 T1</span></span>
+          <span class="dex-entry-subtitle-item"><span class="dex-entry-subtitle-label">capture</span><span class="dex-entry-subtitle-value">2026-04-02</span></span>
+          <span class="dex-entry-subtitle-item"><span class="dex-entry-subtitle-label">series</span><span class="dex-entry-subtitle-value">V/FS</span></span>
+          <span class="dex-entry-subtitle-item"><span class="dex-entry-subtitle-label">files</span><span class="dex-entry-subtitle-value">0</span></span>
+        </div>
+      </header>
+
+      <div class="dx-uav-layout dex-entry-layout">
+        <section class="dx-uav-main-rail dex-entry-main" aria-label="Collection overview">
+          <div class="dx-uav-media-card dex-video-shell">
+            <div class="dex-video">
+              <div class="dex-video-aspect">
+            <iframe src="https://www.youtube-nocookie.com/embed/YVLwwSe4m9I?rel=0" title="Mojave Desert – Wind Farms preview" loading="eager" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+              </div>
+            </div>
+          </div>
+          <div class="dx-uav-description dex-entry-desc-scroll" data-dex-scroll-dot="y">
+            <div class="dex-entry-desc-content">
+              <p><span class="dex-entry-desc-heading" aria-label="description"><span class="dex-entry-desc-heading-label dex-entry-desc-heading-label--base">description</span><span class="dex-entry-desc-heading-label dex-entry-desc-heading-label--hover" aria-hidden="true">dexcription</span></span><span class="dex-entry-desc-heading-gap" aria-hidden="true">&nbsp;</span>Mojave Desert wind farms documented by Dex Digital Sample Library during a full-spectrum UAV capture tour on April 2, 2026. The collection preserves aerial-video deliverables and their associated raw and support materials under CC BY 4.0.</p>
+            </div>
+          </div>
+        </section>
+
+        <aside class="dx-uav-sidebar dex-sidebar" aria-label="dexDRONES collection details">
+          <span class="dx-uav-scroll-affordance" aria-hidden="true">↓</span>
+          <section class="dex-overview">
+            <div class="overview-item overview-item--lookup">
+              <span class="overview-lookup">DR.Win. Mo 2026 T1</span>
+              <p class="p3 overview-label overview-label--lookup">COLLECTION LOOKUP NUMBER</p>
+            </div>
+            <div class="overview-item overview-item--series">
+              <img src="/assets/img/dexdrones.png" alt="dexDRONES" class="overview-series-img">
+              <p class="p3 overview-label overview-label--series">Series</p>
+            </div>
+          </section>
+
+          <section class="dex-collections">
+            <h3 data-dx-entry-heading="1">COL‌LECTION</h3>
+            <div class="overview-item overview-item--buckets">
+              <p class="p3 overview-label">Available Buckets</p>
+              <div class="overview-buckets-grid"><span
+      class="dx-bucket-tile available"
+      data-dx-bucket-key="V"
+      data-dx-bucket-tooltip="V BUCKET • Status: available • Aerial video deliverables • Total files: 0"
+      data-dx-tooltip="V BUCKET • Status: available • Aerial video deliverables • Total files: 0"
+      data-dx-tooltip-status="available"
+      data-dx-tooltip-descriptor="Aerial video deliverables"
+      data-dx-tooltip-metrics="[[&quot;Capture class&quot;,&quot;V&quot;],[&quot;Spectrum&quot;,&quot;FS&quot;],[&quot;File types&quot;,&quot;Aerial video&quot;],[&quot;Total files&quot;,&quot;0&quot;]]"
+      data-dx-tooltip-file-types="Aerial video"
+      data-dx-tooltip-video-quality="FS"
+      data-dx-tooltip-audio-mp3="n/a"
+      data-dx-tooltip-audio-mp3-available="no"
+      data-dx-tooltip-audio-wav="0"
+      data-dx-tooltip-video-1080p="0"
+      data-dx-tooltip-video-4k="0"
+      data-dx-tooltip-video-1080p-available="no"
+      data-dx-tooltip-video-4k-available="no"
+      data-dx-tooltip-total-files="0"
+      data-dx-uav-series="DR.Win. Mo V2026 T1 [FS]"
+      title="V BUCKET • Status: available • Aerial video deliverables • Total files: 0"
+      aria-label="V BUCKET • Status: available • Aerial video deliverables • Total files: 0"
+      tabindex="0"
+    ><span class="dx-bucket-label">V</span></span><span
+      class="dx-bucket-tile available"
+      data-dx-bucket-key="X"
+      data-dx-bucket-tooltip="X BUCKET • Status: available • Raw + support files • Total files: 0"
+      data-dx-tooltip="X BUCKET • Status: available • Raw + support files • Total files: 0"
+      data-dx-tooltip-status="available"
+      data-dx-tooltip-descriptor="Raw + support files"
+      data-dx-tooltip-metrics="[[&quot;Capture class&quot;,&quot;X&quot;],[&quot;Spectrum&quot;,&quot;FS&quot;],[&quot;File types&quot;,&quot;Raw, Support&quot;],[&quot;Total files&quot;,&quot;0&quot;]]"
+      data-dx-tooltip-file-types="Raw, Support"
+      data-dx-tooltip-video-quality="FS"
+      data-dx-tooltip-audio-mp3="n/a"
+      data-dx-tooltip-audio-mp3-available="no"
+      data-dx-tooltip-audio-wav="0"
+      data-dx-tooltip-video-1080p="0"
+      data-dx-tooltip-video-4k="0"
+      data-dx-tooltip-video-1080p-available="no"
+      data-dx-tooltip-video-4k-available="no"
+      data-dx-tooltip-total-files="0"
+      data-dx-uav-series="DR.Win. Mo V2026 T1 [FS]"
+      title="X BUCKET • Status: available • Raw + support files • Total files: 0"
+      aria-label="X BUCKET • Status: available • Raw + support files • Total files: 0"
+      tabindex="0"
+    ><span class="dx-bucket-label">X</span></span></div>
+            </div>
+            <div class="overview-item overview-item--favorite-collection">
+              <p class="p3 overview-label">Favorite This Collection</p>
+              <button
+                type="button"
+                class="dx-button-element--primary dx-fav-toggle dx-fav-entry-toggle dx-fav-heart-btn"
+                data-dx-fav-ui-ready="1"
+                data-dx-fav-chip="DR.Win. Mo 2026 T1"
+                aria-label="Favorite collection"
+                title="Favorite collection"
+              >
+    <span class="dx-fav-heart-icon" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="dx-fav-heart-svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"></path>
+      </svg>
+    </span><span class="dx-fav-heart-chip">DR.Win. Mo 2026 T1</span><span class="dx-fav-sr">Favorite collection</span></button>
+            </div>
+            <div class="overview-item overview-item--favorite-buckets">
+              <p class="p3 overview-label">Favorite Buckets</p>
+              <div class="overview-badges">
+    <button
+      type="button"
+      class="dx-button-element--secondary dx-fav-toggle dx-fav-bucket-toggle dx-fav-heart-btn"
+      data-dx-fav-ui-ready="1"
+      data-bucket="V"
+      data-dx-fav-chip="V"
+      data-dx-fav-chip-case="upper"
+      aria-label="Favorite V"
+      title="Favorite V"
+    >
+    <span class="dx-fav-heart-icon" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="dx-fav-heart-svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"></path>
+      </svg>
+    </span><span class="dx-fav-heart-chip">V</span><span class="dx-fav-sr">Favorite V</span></button>
+    <button
+      type="button"
+      class="dx-button-element--secondary dx-fav-toggle dx-fav-bucket-toggle dx-fav-heart-btn"
+      data-dx-fav-ui-ready="1"
+      data-bucket="X"
+      data-dx-fav-chip="X"
+      data-dx-fav-chip-case="upper"
+      aria-label="Favorite X"
+      title="Favorite X"
+    >
+    <span class="dx-fav-heart-icon" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="dx-fav-heart-svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"></path>
+      </svg>
+    </span><span class="dx-fav-heart-chip">X</span><span class="dx-fav-sr">Favorite X</span></button></div>
+            </div>
+          </section>
+
+          <section class="dx-uav-authority-card">
+            <h2>AUTHORITIES</h2>
+            <div class="dx-uav-detail-row"><b>Site</b><span><a href="https://www.geonames.org/5366898" rel="noreferrer">Mojave Desert</a></span></div>
+            <div class="dx-uav-detail-row"><b>Subjects</b><span><a href="http://id.loc.gov/authorities/subjects/sh97003604" rel="noreferrer">Wind power plants</a>, <a href="http://id.loc.gov/authorities/subjects/sh85086496" rel="noreferrer">Mojave Desert</a></span></div>
+            <div class="dx-uav-detail-row"><b>Coordinates</b><span>35.01, -115.47 (rounded)</span></div>
+            <div class="dx-uav-detail-row"><b>Authority source</b><span>geonames</span></div>
+          </section>
+
+          <section class="dx-uav-series-list">
+            <h2>CAPTURE SERIES</h2>
+            
+      <article class="dx-uav-series-card">
         <header>
           <p>V · FS</p>
           <h3>Mojave wind farms — full-spectrum aerial video</h3>
           <code>DR.Win. Mo V2026 T1 [FS]</code>
         </header>
-        <div class="dx-uav-buckets">
-          <section class="dx-uav-bucket">
-            <h4>V / deliverables</h4>
-            <p>0 files</p>
+        <div class="dex-badges"><span class="badge"><b>platform</b> UAV</span><span class="badge"><b>aircraft</b> DJI Mavic 2 Pro</span><span class="badge"><b>camera</b> Hasselblad 5.1K (Full-Spectrum Converted)</span><span class="badge"><b>filter</b> Full-spectrum</span><span class="badge"><b>attitude</b> high-oblique</span><span class="badge"><b>cloud Cover</b> 0</span><span class="badge"><b>notes</b> High wind, mixed spectra</span></div>
+        <div class="dx-uav-bucket-details">
+          <section class="dx-uav-bucket-detail">
+            <div class="dx-uav-bucket-detail-heading">
+              <strong>V</strong>
+              <span>deliverables</span>
+              <b>0</b>
+            </div>
             <p class="dx-uav-muted">No published files.</p>
           </section>
-          <section class="dx-uav-bucket">
-            <h4>X / raw + support</h4>
-            <p>0 files</p>
+          <section class="dx-uav-bucket-detail">
+            <div class="dx-uav-bucket-detail-heading">
+              <strong>X</strong>
+              <span>raw + support</span>
+              <b>0</b>
+            </div>
             <p class="dx-uav-muted">No published files.</p>
           </section></div>
       </article>
-    </section>
+          </section>
+
+          <section class="dx-uav-credits-card">
+            <h2>CREDITS</h2>
+            <div class="dx-uav-detail-row"><b>Operators</b><span>Sebastian Suarez-Solis</span></div>
+            <div class="dx-uav-detail-row"><b>Contributors</b><span>Dex Digital Sample Library, Kolari Vision</span></div>
+            <div class="dx-uav-credit-group">
+              <h3>License</h3>
+              <div class="dx-uav-detail-row"><b>Terms</b><span>CC-BY-4.0</span></div>
+              <p>Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Kolari Vision.</p>
+            </div>
+          </section>
+
+          <section class="dx-uav-metadata-card">
+            <h2>METADATA</h2>
+            <div class="dex-badges">
+              <span class="badge">2026</span>
+              <span class="badge">T1</span>
+              <span class="badge">California, United States</span>
+              <span class="badge">V · FS</span>
+            </div>
+          </section>
+
+          <section class="dx-uav-download-card dex-file-info">
+            <h2>DOWNLOAD</h2>
+            <div id="downloads" role="tabpanel" data-dx-download-mode="unified">
+              <button type="button" class="btn-download dx-button-element--primary" aria-label="Get Files"><span>GET FILES</span></button>
+              <a class="btn-recording-index dx-button-element--secondary" href="marc.xml"><span>MARCXML</span></a>
+              <button type="button" class="btn-recording-index dx-button-element--secondary" data-dx-uav-recording-index="1" aria-label="Recording Index PDF"><span>RECORDING INDEX PDF</span></button>
+              <span data-dx-download-status="1" hidden></span>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </article>
   </main>
-  <script id="dex-uav-record" type="application/json">{"collection":{"version":"uav-collection-v1","kind":"uav","slug":"mojave-wind-farm","title":"Mojave Desert – Wind Farms","status":"active","lookupRaw":"DR.Win. Mo 2026 T1","lookupNorm":"dr.win. mo 2026 t1","identity":{"wing":"DR","primarySubjectCode":"Win","siteCutter":"Mo","year":2026,"tour":"T1"},"subjectAuthorityIds":["subject-win","subject-mojave-desert"],"siteAuthorityId":"site-mojave-desert","capturedFrom":"2026-04-02","capturedTo":"2026-04-02","license":"CC-BY-4.0","attribution":"Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Paul Yorke, Sofi Jacquez.","operators":["Sebastian Suarez-Solis"],"contributors":["Dex Digital Sample Library","Kolari Vision"],"creditLinks":{},"imageSrc":"https://i.ytimg.com/vi/YVLwwSe4m9I/maxresdefault.jpg","previewUrl":"https://www.youtube.com/watch?v=YVLwwSe4m9I","description":"Mojave Desert wind farms documented by Dex Digital Sample Library during a full-spectrum UAV capture tour on April 2, 2026. The collection preserves aerial-video deliverables and their associated raw and support materials under CC BY 4.0.","series":[{"id":"aerial-video-fs","title":"Mojave wind farms — full-spectrum aerial video","captureClass":"V","spectrum":"FS","lookupRaw":"DR.Win. Mo V2026 T1 [FS]","lookupNorm":"dr.win. mo v2026 t1 [fs]","capturedFrom":"2026-04-02","capturedTo":"2026-04-02","technical":{"platform":"UAV","filter":"Full-spectrum"},"folders":{}}],"lifecycle":{"createdAt":"2026-06-27T18:44:14.296Z","updatedAt":"2026-06-28T05:20:23.447Z","publishedAt":"2026-06-27T18:45:00.192Z"}},"manifest":{"version":"uav-manifest-v1","slug":"mojave-wind-farm","collectionLookup":"DR.Win. Mo 2026 T1","groups":[{"seriesId":"aerial-video-fs","seriesLookup":"DR.Win. Mo V2026 T1 [FS]","captureClass":"V","buckets":[{"bucket":"V","folderId":"","files":[]},{"bucket":"X","folderId":"","files":[]}]}]},"authorities":{"subjects":[{"id":"subject-win","code":"Win","label":"Wind power plants","authority":{"source":"lcsh","uri":"http://id.loc.gov/authorities/subjects/sh97003604","label":"Wind power plants"},"additionalAuthorities":[]},{"id":"subject-mojave-desert","code":"Moj","label":"Mojave Desert","authority":{"source":"lcsh","uri":"http://id.loc.gov/authorities/subjects/sh85086496","label":"Mojave Desert"},"additionalAuthorities":[]}],"sites":[{"id":"site-mojave-desert","name":"Mojave Desert","cutter":"Mo","admin":"California, United States","authority":{"source":"geonames","uri":"https://www.geonames.org/5366898","label":"Mojave Desert"},"coordinateVisibility":"rounded","publicCoordinates":{"lat":35.01,"lon":-115.47,"precision":2}}]}}</script>
+  <script id="dex-uav-record" type="application/json">{"collection":{"version":"uav-collection-v1","kind":"uav","slug":"mojave-wind-farm","title":"Mojave Desert – Wind Farms","status":"active","lookupRaw":"DR.Win. Mo 2026 T1","lookupNorm":"dr.win. mo 2026 t1","identity":{"wing":"DR","primarySubjectCode":"Win","siteCutter":"Mo","year":2026,"tour":"T1"},"subjectAuthorityIds":["subject-win","subject-wind-power-plants-sh97003604","subject-mojave-desert"],"siteAuthorityId":"site-mojave-desert","capturedFrom":"2026-04-02","capturedTo":"2026-04-02","license":"CC-BY-4.0","attribution":"Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Kolari Vision.","operators":["Sebastian Suarez-Solis"],"contributors":["Dex Digital Sample Library","Kolari Vision"],"creditLinks":{},"imageSrc":"https://i.ytimg.com/vi/YVLwwSe4m9I/maxresdefault.jpg","previewUrl":"https://www.youtube.com/watch?v=YVLwwSe4m9I","description":"Mojave Desert wind farms documented by Dex Digital Sample Library during a full-spectrum UAV capture tour on April 2, 2026. The collection preserves aerial-video deliverables and their associated raw and support materials under CC BY 4.0.","series":[{"id":"aerial-video-fs","title":"Mojave wind farms — full-spectrum aerial video","captureClass":"V","spectrum":"FS","lookupRaw":"DR.Win. Mo V2026 T1 [FS]","lookupNorm":"dr.win. mo v2026 t1 [fs]","capturedFrom":"2026-04-02","capturedTo":"2026-04-02","technical":{"platform":"UAV","aircraft":"DJI Mavic 2 Pro","camera":"Hasselblad 5.1K (Full-Spectrum Converted)","filter":"Full-spectrum","attitude":"high-oblique","cloudCover":0,"notes":"High wind, mixed spectra"},"folders":{}}],"lifecycle":{"createdAt":"2026-06-27T18:44:14.296Z","updatedAt":"2026-06-28T05:50:49.587Z","publishedAt":"2026-06-27T18:45:00.192Z"}},"manifest":{"version":"uav-manifest-v1","slug":"mojave-wind-farm","collectionLookup":"DR.Win. Mo 2026 T1","groups":[{"seriesId":"aerial-video-fs","seriesLookup":"DR.Win. Mo V2026 T1 [FS]","captureClass":"V","buckets":[{"bucket":"V","folderId":"","files":[]},{"bucket":"X","folderId":"","files":[]}]}]},"authorities":{"subjects":[{"id":"subject-win","code":"Win","label":"Wind power plants","authority":{"source":"lcsh","uri":"http://id.loc.gov/authorities/subjects/sh97003604","label":"Wind power plants"},"additionalAuthorities":[]},{"id":"subject-mojave-desert","code":"Moj","label":"Mojave Desert","authority":{"source":"lcsh","uri":"http://id.loc.gov/authorities/subjects/sh85086496","label":"Mojave Desert"},"additionalAuthorities":[]}],"sites":[{"id":"site-mojave-desert","name":"Mojave Desert","cutter":"Mo","admin":"California, United States","authority":{"source":"geonames","uri":"https://www.geonames.org/5366898","label":"Mojave Desert"},"coordinateVisibility":"rounded","publicCoordinates":{"lat":35.01,"lon":-115.47,"precision":2}}]}}</script>
+  <footer class="dex-footer" data-surface="light" data-managed="1">
+  <div class="footer-grid">
+    <div class="footer-logo-column">
+      <div class="footer-logo">
+        <img class="logo--dark" src="/assets/img/4471b81e48dd98fdcc7c.png" alt="Dex Footer Logo (white)" loading="lazy" decoding="async">
+        <img class="logo--light" src="/assets/img/588db8babfe6f8722983.png" alt="Dex Footer Logo (black)" loading="lazy" decoding="async">
+      </div>
+    </div>
+    <div class="footer-attribution">
+      © 2023–2026 DEX CO-OP CORP (EIN 92-3509152)<br>
+      dba Dex Digital Sample Library. All rights reserved.
+    </div>
+    <div class="footer-seal-column">
+      <a class="candid-seal" href="https://app.candid.org/profile/15083758/dex-digital-sample-library-92-3509152" target="_blank" rel="noopener noreferrer" aria-label="View Dex Digital Sample Library's Candid (GuideStar) profile">
+        <img src="https://widgets.guidestar.org/prod/v1/pdp/transparency-seal/15083758/svg" alt="Candid (GuideStar) Transparency Seal">
+      </a>
+    </div>
+    <div class="footer-links-column">
+      <div class="footer-social">
+        <a href="https://www.youtube.com/dexdsl" aria-label="YouTube" class="youtube"><svg aria-hidden="true" viewBox="0 0 64 64"><use xlink:href="#youtube-unauth-icon"></use></svg></a>
+        <a href="https://instagram.com/dexdsl" aria-label="Instagram" class="instagram"><svg aria-hidden="true" viewBox="0 0 64 64"><use xlink:href="#instagram-unauth-icon"></use></svg></a>
+        <a href="https://www.tiktok.com/@dexdsl" aria-label="TikTok" class="tiktok"><svg aria-hidden="true" viewBox="0 0 64 64"><use xlink:href="#tiktok-unauth-icon"></use></svg></a>
+        <a href="https://twitter.com/dexdsl" aria-label="Twitter" class="twitter"><svg aria-hidden="true" viewBox="0 0 64 64"><use xlink:href="#twitter-unauth-icon"></use></svg></a>
+      </div>
+      <nav class="footer-nav">
+        <a href="/privacy">Privacy</a>
+        <a href="/contact">Contact</a>
+        <a href="/copyright">Copyright</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+  <script defer src="/assets/vendor/auth0-spa-js.umd.min.js"></script>
+  <script defer src="/assets/dex-auth0-config.js"></script>
+  <script defer src="/assets/dex-auth.js"></script>
   <script defer src="/assets/js/header-slot.js"></script>
+  <script defer src="/assets/js/dx-favorites.js"></script>
+  <script defer src="/assets/dex-sidebar.js"></script>
+  <script defer src="/assets/js/dex-breadcrumb-motion.js"></script>
+  <script defer src="/assets/js/dx-uav-entry.js"></script>
 </body>
 </html>

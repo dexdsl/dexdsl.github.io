@@ -22,6 +22,10 @@ import {
   uavManifestSchema,
   validateUavCollection,
 } from './uav-schema.mjs';
+import {
+  DEX_FOOTER_MARKUP,
+  getDexCollectionContractCss,
+} from './sanitize-generated-html.mjs';
 
 function text(value) {
   return String(value ?? '').trim();
@@ -61,6 +65,32 @@ function html(value) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+function youtubeEmbedUrl(value) {
+  const raw = text(value);
+  if (!raw) return '';
+  try {
+    const url = new URL(raw);
+    let id = '';
+    if (url.hostname === 'youtu.be') id = url.pathname.split('/').filter(Boolean)[0] || '';
+    if (url.hostname.endsWith('youtube.com')) {
+      id = url.searchParams.get('v') || url.pathname.match(/\/(?:embed|shorts)\/([^/?#]+)/)?.[1] || '';
+    }
+    return id ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?rel=0` : '';
+  } catch {
+    return '';
+  }
+}
+
+function uniqueAuthorityRows(rows) {
+  const seen = new Set();
+  return rows.filter((row) => {
+    const key = text(row?.authority?.uri || row?.id || row?.label).toLowerCase();
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 async function readJson(filePath, fallback = null) {
@@ -148,9 +178,16 @@ export async function readUavCollection(slug, rootDir) {
 
 export function renderUavCollectionHtml(collection, manifest, authorities) {
   const site = authorities.sites.find((row) => row.id === collection.siteAuthorityId);
-  const subjects = collection.subjectAuthorityIds
+  const subjects = uniqueAuthorityRows(collection.subjectAuthorityIds
     .map((id) => authorities.subjects.find((row) => row.id === id))
-    .filter(Boolean);
+    .filter(Boolean));
+  const previewEmbed = youtubeEmbedUrl(collection.previewUrl);
+  const publicFiles = manifest.groups.flatMap((group) =>
+    group.buckets.flatMap((bucket) => bucket.files.filter((file) => !file.missing)));
+  const activeBuckets = Array.from(new Set(collection.series.flatMap((series) => {
+    const group = manifest.groups.find((row) => row.seriesId === series.id);
+    return (group?.buckets || []).map((bucket) => bucket.bucket);
+  })));
   const groupMarkup = collection.series.map((series) => {
     const group = manifest.groups.find((row) => row.seriesId === series.id);
     const buckets = (group?.buckets || []).map((bucket) => {
@@ -162,20 +199,28 @@ export function renderUavCollectionHtml(collection, manifest, authorities) {
                 <small>${html(file.mime)} · ${Number(file.sizeBytes || 0).toLocaleString()} bytes</small>
               </li>`).join('');
       return `
-          <section class="dx-uav-bucket">
-            <h4>${html(bucket.bucket === 'X' ? 'X / raw + support' : `${bucket.bucket} / deliverables`)}</h4>
-            <p>${files.length} file${files.length === 1 ? '' : 's'}</p>
+          <section class="dx-uav-bucket-detail">
+            <div class="dx-uav-bucket-detail-heading">
+              <strong>${html(bucket.bucket)}</strong>
+              <span>${html(bucket.bucket === 'X' ? 'raw + support' : 'deliverables')}</span>
+              <b>${files.length}</b>
+            </div>
             ${fileMarkup ? `<ul>${fileMarkup}</ul>` : '<p class="dx-uav-muted">No published files.</p>'}
           </section>`;
     }).join('');
+    const technical = Object.entries(series.technical || {})
+      .filter(([, value]) => value !== '' && value !== null && value !== undefined)
+      .map(([key, value]) => `<span class="badge"><b>${html(key.replace(/([A-Z])/g, ' $1'))}</b> ${html(value)}</span>`)
+      .join('');
     return `
-      <article class="dx-uav-series">
+      <article class="dx-uav-series-card">
         <header>
           <p>${html(series.captureClass)}${series.spectrum ? ` · ${html(series.spectrum)}` : ''}</p>
           <h3>${html(series.title)}</h3>
           <code>${html(series.lookupRaw)}</code>
         </header>
-        <div class="dx-uav-buckets">${buckets || '<p class="dx-uav-muted">File inventory pending.</p>'}</div>
+        ${technical ? `<div class="dex-badges">${technical}</div>` : ''}
+        <div class="dx-uav-bucket-details">${buckets || '<p class="dx-uav-muted">File inventory pending.</p>'}</div>
       </article>`;
   }).join('');
   const subjectLinks = subjects.map((subject) =>
@@ -189,6 +234,77 @@ export function renderUavCollectionHtml(collection, manifest, authorities) {
     return `<a href="${html(links[0].href)}" rel="noreferrer">${html(name)}</a>${links.length > 1 ? ` <small>+${links.length - 1}</small>` : ''}`;
   }).join(', ');
   const serialized = safeJsonForHtml({ collection, manifest, authorities: { subjects, sites: site ? [site] : [] } });
+  const capturedCopy = html([collection.capturedFrom, collection.capturedTo]
+    .filter(Boolean)
+    .filter((value, index, rows) => index === 0 || value !== rows[index - 1])
+    .join(' – ') || String(collection.identity.year));
+  const seriesSummary = collection.series
+    .map((series) => `${series.captureClass}${series.spectrum ? `/${series.spectrum}` : ''}`)
+    .join(' · ');
+  const heartIcon = `
+    <span class="dx-fav-heart-icon" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="dx-fav-heart-svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"></path>
+      </svg>
+    </span>`;
+  const bucketTiles = activeBuckets.map((bucket) => {
+    const fileCount = manifest.groups.reduce((count, group) => {
+      const row = group.buckets.find((candidate) => candidate.bucket === bucket);
+      return count + (row?.files || []).filter((file) => !file.missing).length;
+    }, 0);
+    const seriesRows = collection.series.filter((series) => {
+      const group = manifest.groups.find((row) => row.seriesId === series.id);
+      return group?.buckets.some((candidate) => candidate.bucket === bucket);
+    });
+    const fileType = bucket === 'X'
+      ? 'Raw, Support'
+      : ({ V: 'Aerial video', I: 'Field stills', A: 'Ambient sound', D: 'Imaging study' }[bucket] || 'Files');
+    const spectrum = Array.from(new Set(seriesRows.map((series) => series.spectrum).filter(Boolean))).join(', ') || 'n/a';
+    const seriesLookups = seriesRows.map((series) => series.lookupRaw).join(' · ') || collection.lookupRaw;
+    const descriptor = bucket === 'X' ? 'Raw + support files' : `${fileType} deliverables`;
+    const metrics = JSON.stringify([
+      ['Capture class', bucket === 'X' ? 'X' : bucket],
+      ['Spectrum', spectrum],
+      ['File types', fileType],
+      ['Total files', String(fileCount)],
+    ]);
+    const tooltip = `${bucket} BUCKET • Status: available • ${descriptor} • Total files: ${fileCount}`;
+    return `<span
+      class="dx-bucket-tile available"
+      data-dx-bucket-key="${html(bucket)}"
+      data-dx-bucket-tooltip="${html(tooltip)}"
+      data-dx-tooltip="${html(tooltip)}"
+      data-dx-tooltip-status="available"
+      data-dx-tooltip-descriptor="${html(descriptor)}"
+      data-dx-tooltip-metrics="${html(metrics)}"
+      data-dx-tooltip-file-types="${html(fileType)}"
+      data-dx-tooltip-video-quality="${html(spectrum)}"
+      data-dx-tooltip-audio-mp3="n/a"
+      data-dx-tooltip-audio-mp3-available="no"
+      data-dx-tooltip-audio-wav="0"
+      data-dx-tooltip-video-1080p="0"
+      data-dx-tooltip-video-4k="0"
+      data-dx-tooltip-video-1080p-available="no"
+      data-dx-tooltip-video-4k-available="no"
+      data-dx-tooltip-total-files="${fileCount}"
+      data-dx-uav-series="${html(seriesLookups)}"
+      title="${html(tooltip)}"
+      aria-label="${html(tooltip)}"
+      tabindex="0"
+    ><span class="dx-bucket-label">${html(bucket)}</span></span>`;
+  }).join('');
+  const favoriteBucketButtons = activeBuckets.map((bucket) => `
+    <button
+      type="button"
+      class="dx-button-element--secondary dx-fav-toggle dx-fav-bucket-toggle dx-fav-heart-btn"
+      data-dx-fav-ui-ready="1"
+      data-bucket="${html(bucket)}"
+      data-dx-fav-chip="${html(bucket)}"
+      data-dx-fav-chip-case="upper"
+      aria-label="Favorite ${html(bucket)}"
+      title="Favorite ${html(bucket)}"
+    >${heartIcon}<span class="dx-fav-heart-chip">${html(bucket)}</span><span class="dx-fav-sr">Favorite ${html(bucket)}</span></button>`).join('');
+  const collectionContractCss = getDexCollectionContractCss();
 
   return `<!doctype html>
 <html lang="en-US">
@@ -200,8 +316,15 @@ export function renderUavCollectionHtml(collection, manifest, authorities) {
   <link rel="canonical" href="https://dexdsl.org/uav/${html(collection.slug)}/">
   <link rel="stylesheet" href="/css/tokens.css">
   <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/bridge.squarespace.css">
+  <link rel="stylesheet" href="/css/components/dx-layout.css">
+  <link rel="stylesheet" href="/css/components/dx-surface.css">
+  <link rel="stylesheet" href="/css/components/dx-controls.css">
+  <link rel="stylesheet" href="/css/components/dx-nav.css">
   <link rel="stylesheet" href="/css/fonts.css">
+  <link rel="stylesheet" href="/assets/css/dex.css">
   <link rel="stylesheet" href="/css/components/dx-uav-entry.css">
+  <style id="dex-entry-collection-contract" data-managed="1">${collectionContractCss}</style>
   <script type="application/ld+json">${safeJsonForHtml({
     '@context': 'https://schema.org',
     '@type': 'Dataset',
@@ -213,33 +336,143 @@ export function renderUavCollectionHtml(collection, manifest, authorities) {
     temporalCoverage: String(collection.identity.year),
   })}</script>
 </head>
-<body class="dx-uav-page">
-  <main class="dx-uav-shell">
-    <nav><a href="/catalog/">← Catalog</a><a href="/dexdrones/">dexDRONES</a></nav>
-    <header class="dx-uav-hero">
-      <p class="dx-uav-kicker">dexDRONES / UAV COLLECTION</p>
-      <code>${html(collection.lookupRaw)}</code>
-      <h1>${html(collection.title)}</h1>
-      <p>${html(collection.description)}</p>
-      ${collection.previewUrl ? `<a class="dx-uav-cta" href="${html(collection.previewUrl)}" rel="noreferrer">Open preview ↗</a>` : ''}
-    </header>
-    <section class="dx-uav-authority">
-      <div><span>Site authority</span><strong>${site ? `<a href="${html(site.authority.uri)}" rel="noreferrer">${html(site.name)}</a>` : 'Unresolved'}</strong></div>
-      <div><span>Subjects</span><strong>${subjectLinks || 'Unresolved'}</strong></div>
-      <div><span>Capture</span><strong>${html([collection.capturedFrom, collection.capturedTo].filter(Boolean).join(' – ') || String(collection.identity.year))}</strong></div>
-      <div><span>Coordinates</span><strong>${html(coordinateCopy)}</strong></div>
-      <div><span>License</span><strong>${html(collection.license)}</strong></div>
-      <div><span>Attribution</span><strong>${html(collection.attribution)}</strong></div>
-      <div><span>Operators</span><strong>${linkedCredits(collection.operators) || '—'}</strong></div>
-      <div><span>Contributors</span><strong>${linkedCredits(collection.contributors) || '—'}</strong></div>
-    </section>
-    <section class="dx-uav-series-list">
-      <h2>Capture series</h2>
-      ${groupMarkup || '<p class="dx-uav-muted">Capture series pending.</p>'}
-    </section>
+<body class="dx-entry-page dx-uav-page">
+  <main id="page" class="dx-uav-shell">
+    <article class="dx-uav-entry-card dex-entry-section">
+      <header class="dx-uav-entry-header dex-entry-header">
+        <div class="dex-breadcrumb-overlay" data-dex-breadcrumb-overlay>
+          <div class="dex-breadcrumb" data-dex-breadcrumb>
+            <a class="dex-breadcrumb-back" href="/catalog/" data-dex-breadcrumb-back>catalog</a>
+            <span class="dex-breadcrumb-delimiter" data-dex-breadcrumb-delimiter aria-hidden="true">
+              <svg class="dex-breadcrumb-icon" viewBox="0 0 24 24" width="24" height="24" focusable="false" aria-hidden="true">
+                <path data-dex-breadcrumb-path stroke-width="2.2" d="M12 1.75L19.85 12L12 22.25L4.15 12Z"></path>
+              </svg>
+            </span>
+            <span class="dex-breadcrumb-current">dexDRONES, ${html(site?.name || collection.title)}</span>
+          </div>
+        </div>
+        <h1 class="dex-entry-page-title" data-dex-entry-page-title data-dx-heading-randomize="false">${html(collection.title)}</h1>
+        <div class="dex-entry-subtitle" data-dex-entry-subtitle>
+          <span class="dex-entry-subtitle-item"><span class="dex-entry-subtitle-label">collection</span><span class="dex-entry-subtitle-value">${html(collection.lookupRaw)}</span></span>
+          <span class="dex-entry-subtitle-item"><span class="dex-entry-subtitle-label">capture</span><span class="dex-entry-subtitle-value">${capturedCopy}</span></span>
+          <span class="dex-entry-subtitle-item"><span class="dex-entry-subtitle-label">series</span><span class="dex-entry-subtitle-value">${html(seriesSummary || 'pending')}</span></span>
+          <span class="dex-entry-subtitle-item"><span class="dex-entry-subtitle-label">files</span><span class="dex-entry-subtitle-value">${publicFiles.length}</span></span>
+        </div>
+      </header>
+
+      <div class="dx-uav-layout dex-entry-layout">
+        <section class="dx-uav-main-rail dex-entry-main" aria-label="Collection overview">
+          <div class="dx-uav-media-card dex-video-shell">
+            <div class="dex-video">
+              <div class="dex-video-aspect">
+            ${previewEmbed
+              ? `<iframe src="${html(previewEmbed)}" title="${html(collection.title)} preview" loading="eager" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`
+              : collection.imageSrc
+              ? `<img src="${html(collection.imageSrc)}" alt="${html(collection.title)} preview">`
+              : '<div class="dx-uav-media-placeholder">Preview pending</div>'}
+              </div>
+            </div>
+          </div>
+          <div class="dx-uav-description dex-entry-desc-scroll" data-dex-scroll-dot="y">
+            <div class="dex-entry-desc-content">
+              <p><span class="dex-entry-desc-heading" aria-label="description"><span class="dex-entry-desc-heading-label dex-entry-desc-heading-label--base">description</span><span class="dex-entry-desc-heading-label dex-entry-desc-heading-label--hover" aria-hidden="true">dexcription</span></span><span class="dex-entry-desc-heading-gap" aria-hidden="true">&nbsp;</span>${html(collection.description)}</p>
+            </div>
+          </div>
+        </section>
+
+        <aside class="dx-uav-sidebar dex-sidebar" aria-label="dexDRONES collection details">
+          <span class="dx-uav-scroll-affordance" aria-hidden="true">↓</span>
+          <section class="dex-overview">
+            <div class="overview-item overview-item--lookup">
+              <span class="overview-lookup">${html(collection.lookupRaw)}</span>
+              <p class="p3 overview-label overview-label--lookup">COLLECTION LOOKUP NUMBER</p>
+            </div>
+            <div class="overview-item overview-item--series">
+              <img src="/assets/img/dexdrones.png" alt="dexDRONES" class="overview-series-img">
+              <p class="p3 overview-label overview-label--series">Series</p>
+            </div>
+          </section>
+
+          <section class="dex-collections">
+            <h3 data-dx-entry-heading="1">COL‌LECTION</h3>
+            <div class="overview-item overview-item--buckets">
+              <p class="p3 overview-label">Available Buckets</p>
+              <div class="overview-buckets-grid">${bucketTiles || '<span class="dx-uav-muted">Inventory pending</span>'}</div>
+            </div>
+            <div class="overview-item overview-item--favorite-collection">
+              <p class="p3 overview-label">Favorite This Collection</p>
+              <button
+                type="button"
+                class="dx-button-element--primary dx-fav-toggle dx-fav-entry-toggle dx-fav-heart-btn"
+                data-dx-fav-ui-ready="1"
+                data-dx-fav-chip="${html(collection.lookupRaw)}"
+                aria-label="Favorite collection"
+                title="Favorite collection"
+              >${heartIcon}<span class="dx-fav-heart-chip">${html(collection.lookupRaw)}</span><span class="dx-fav-sr">Favorite collection</span></button>
+            </div>
+            <div class="overview-item overview-item--favorite-buckets">
+              <p class="p3 overview-label">Favorite Buckets</p>
+              <div class="overview-badges">${favoriteBucketButtons || '<span class="badge unavailable">No buckets</span>'}</div>
+            </div>
+          </section>
+
+          <section class="dx-uav-authority-card">
+            <h2>AUTHORITIES</h2>
+            <div class="dx-uav-detail-row"><b>Site</b><span>${site ? `<a href="${html(site.authority.uri)}" rel="noreferrer">${html(site.name)}</a>` : 'Unresolved'}</span></div>
+            <div class="dx-uav-detail-row"><b>Subjects</b><span>${subjectLinks || 'Unresolved'}</span></div>
+            <div class="dx-uav-detail-row"><b>Coordinates</b><span>${html(coordinateCopy)}</span></div>
+            <div class="dx-uav-detail-row"><b>Authority source</b><span>${html(site?.authority?.source || 'local')}</span></div>
+          </section>
+
+          <section class="dx-uav-series-list">
+            <h2>CAPTURE SERIES</h2>
+            ${groupMarkup || '<p class="dx-uav-muted">Capture series pending.</p>'}
+          </section>
+
+          <section class="dx-uav-credits-card">
+            <h2>CREDITS</h2>
+            <div class="dx-uav-detail-row"><b>Operators</b><span>${linkedCredits(collection.operators) || '—'}</span></div>
+            <div class="dx-uav-detail-row"><b>Contributors</b><span>${linkedCredits(collection.contributors) || '—'}</span></div>
+            <div class="dx-uav-credit-group">
+              <h3>License</h3>
+              <div class="dx-uav-detail-row"><b>Terms</b><span>${html(collection.license)}</span></div>
+              <p>${html(collection.attribution)}</p>
+            </div>
+          </section>
+
+          <section class="dx-uav-metadata-card">
+            <h2>METADATA</h2>
+            <div class="dex-badges">
+              <span class="badge">${html(collection.identity.year)}</span>
+              <span class="badge">${html(collection.identity.tour)}</span>
+              <span class="badge">${html(site?.admin || 'Site admin pending')}</span>
+              ${collection.series.map((series) => `<span class="badge">${html(series.captureClass)}${series.spectrum ? ` · ${html(series.spectrum)}` : ''}</span>`).join('')}
+            </div>
+          </section>
+
+          <section class="dx-uav-download-card dex-file-info">
+            <h2>DOWNLOAD</h2>
+            <div id="downloads" role="tabpanel" data-dx-download-mode="unified">
+              <button type="button" class="btn-download dx-button-element--primary" aria-label="Get Files"><span>GET FILES</span></button>
+              <a class="btn-recording-index dx-button-element--secondary" href="marc.xml"><span>MARCXML</span></a>
+              <button type="button" class="btn-recording-index dx-button-element--secondary" data-dx-uav-recording-index="1" aria-label="Recording Index PDF"><span>RECORDING INDEX PDF</span></button>
+              <span data-dx-download-status="1" hidden></span>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </article>
   </main>
   <script id="dex-uav-record" type="application/json">${serialized}</script>
+  ${DEX_FOOTER_MARKUP.trim()}
+  <script defer src="/assets/vendor/auth0-spa-js.umd.min.js"></script>
+  <script defer src="/assets/dex-auth0-config.js"></script>
+  <script defer src="/assets/dex-auth.js"></script>
   <script defer src="/assets/js/header-slot.js"></script>
+  <script defer src="/assets/js/dx-favorites.js"></script>
+  <script defer src="/assets/dex-sidebar.js"></script>
+  <script defer src="/assets/js/dex-breadcrumb-motion.js"></script>
+  <script defer src="/assets/js/dx-uav-entry.js"></script>
 </body>
 </html>
 `;

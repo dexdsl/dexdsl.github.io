@@ -13,6 +13,7 @@ const SNAPSHOT_PUBLIC = path.join(ROOT, 'public', 'data', 'home.featured.snapsho
 const SNAPSHOT_DOCS = path.join(ROOT, 'docs', 'data', 'home.featured.snapshot.json');
 
 const HOME_PAGE_PATH = path.join(ROOT, 'docs', 'index.html');
+const HOME_HERO_RUNTIME_PATH = path.join(ROOT, 'scripts', 'src', 'home.hero.entry.mjs');
 const HOME_MANAGER_PATH = path.join(ROOT, 'scripts', 'ui', 'home-featured-manager.mjs');
 const HOME_CLI_PATH = path.join(ROOT, 'scripts', 'lib', 'home-featured-cli.mjs');
 
@@ -52,10 +53,7 @@ function main() {
   }
 
   const homePage = readText(HOME_PAGE_PATH);
-  const requiredHomeMarkers = [
-    '/data/home.featured.snapshot.json',
-    'loadFeaturedItems',
-  ];
+  const requiredHomeMarkers = ['/assets/js/dx-home-hero.js'];
   for (const marker of requiredHomeMarkers) {
     if (!homePage.includes(marker)) {
       failures.push(`docs/index.html missing marker: ${marker}`);
@@ -63,6 +61,13 @@ function main() {
   }
   if (homePage.includes('id="featured-manifest"')) {
     failures.push('docs/index.html still includes legacy inline featured-manifest source');
+  }
+
+  const homeRuntime = readText(HOME_HERO_RUNTIME_PATH);
+  for (const marker of ['/data/home.featured.snapshot.json', 'initFeatured']) {
+    if (!homeRuntime.includes(marker)) {
+      failures.push(`home hero runtime missing featured marker: ${marker}`);
+    }
   }
 
   const homeCli = readText(HOME_CLI_PATH);

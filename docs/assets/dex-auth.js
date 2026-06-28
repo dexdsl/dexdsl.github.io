@@ -811,6 +811,9 @@
       }
       return el;
     }
+    if (document.body && document.body.classList.contains("dx-entry-page")) {
+      return null;
+    }
     return document.body;
   }
 
@@ -818,6 +821,9 @@
     hideLegacyAccountUi();
 
     var mount = pickMount();
+    if (!mount) {
+      return null;
+    }
 
     var styleId = "dex-auth-style";
     if (!document.getElementById(styleId)) {
@@ -1913,9 +1919,35 @@
     }
   }
 
+  function hasStableHeaderAuthMount() {
+    return !!document.querySelector(
+      "[data-dx-auth-mount], .header-actions--right, .header-actions, header"
+    );
+  }
+
+  function startWhenHeaderIsReady() {
+    var isEntryRoute = !!(document.body && document.body.classList.contains("dx-entry-page"));
+    if (!isEntryRoute || hasStableHeaderAuthMount()) {
+      init();
+      return;
+    }
+
+    var started = false;
+    var start = function () {
+      if (started || !hasStableHeaderAuthMount()) {
+        return;
+      }
+      started = true;
+      window.removeEventListener("dx:slotready", start);
+      init();
+    };
+
+    window.addEventListener("dx:slotready", start);
+  }
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
+    document.addEventListener("DOMContentLoaded", startWhenHeaderIsReady);
   } else {
-    init();
+    startWhenHeaderIsReady();
   }
 })();
