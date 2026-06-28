@@ -1,6 +1,6 @@
 {
   "version": "catalog-editorial-v1",
-  "updatedAt": "2026-06-27T18:44:14.361Z",
+  "updatedAt": "2026-06-28T06:23:56.575Z",
   "manifest": [
     {
       "entry_id": "2-organs-midori-ataka",
@@ -252,7 +252,7 @@
       "instrument": "PREPARED OBOE",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "snare-drum-matt-leveque",

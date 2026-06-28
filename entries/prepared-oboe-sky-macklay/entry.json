@@ -1,8 +1,30 @@
 {
+  "slug": "prepared-oboe-sky-macklay",
+  "title": "PREPARED OBOE",
   "canonical": {
     "instrument": "PREPARED OBOE",
     "artistName": "Sky Macklay"
   },
+  "lifecycle": {
+    "publishedAt": "2026-06-28T06:23:56.490Z",
+    "updatedAt": "2026-06-28T06:23:56.490Z"
+  },
+  "video": {
+    "mode": "url",
+    "dataUrl": "https://www.youtube.com/watch?v=LPHD-ynh-MA",
+    "dataUrlOriginal": "https://www.youtube.com/watch?v=LPHD-ynh-MA",
+    "dataHtml": ""
+  },
+  "descriptionText": "With a paper towel core jammed in the oboe’s horn, Macklay provides both loud and soft moments, the most memorable of which are an analog ring modulation glissando, many, many multiphonics, and a coda of underwater reed sounds.",
+  "series": "dex",
+  "selectedBuckets": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "X"
+  ],
   "creditsData": {
     "artist": [
       "Sky Macklay"
@@ -25,37 +47,23 @@
     },
     "year": 2024
   },
-  "descriptionText": "PREPARED OBOE.",
   "fileSpecs": {
     "bitDepth": 24,
     "channels": "stereo",
     "sampleRate": 48000,
     "staticSizes": {
-      "A": "",
-      "B": "",
-      "C": "",
-      "D": "",
-      "E": "",
-      "X": ""
+      "A": "3.9 GB",
+      "B": "3.9 GB",
+      "C": "3.9 GB",
+      "D": "4.0 GB",
+      "E": "1.6 GB",
+      "X": "425 MB"
     }
-  },
-  "lifecycle": {
-    "publishedAt": "2026-03-25T20:32:34.745Z",
-    "updatedAt": "2026-06-27T21:16:06.791Z"
   },
   "metadata": {
     "sampleLength": "AUTO",
     "tags": []
   },
-  "selectedBuckets": [
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "X"
-  ],
-  "series": "dex",
   "sidebarPageConfig": {
     "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Sky Macklay.",
     "buckets": [
@@ -76,9 +84,11 @@
         "mix": [],
         "recording": []
       },
+      "instrumentLinksEnabled": true,
       "instruments": [
         "PREPARED OBOE"
       ],
+      "linksByPerson": {},
       "location": "Unknown",
       "season": "S2",
       "video": {
@@ -4490,13 +4500,5 @@
       "tags": []
     },
     "specialEventImage": "/assets/series/dex.png"
-  },
-  "slug": "prepared-oboe-sky-macklay",
-  "title": "PREPARED OBOE",
-  "video": {
-    "dataHtml": "",
-    "dataUrl": "https://www.youtube.com/watch?v=LPHD-ynh-MA",
-    "dataUrlOriginal": "https://www.youtube.com/watch?v=LPHD-ynh-MA",
-    "mode": "url"
   }
 }

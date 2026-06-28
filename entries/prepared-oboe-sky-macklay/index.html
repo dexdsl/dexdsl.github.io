@@ -523,12 +523,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 
 
-
-
-
-
-
-
 <style id="dex-layout-patch" data-managed="1">
 #dex-layout-patch[data-managed="1"] { display: block; }
 body.dx-entry-page .dex-entry-host .sqs-block-content,
@@ -1285,11 +1279,6 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
 
 
 
-
-
-
-
-
 <div id="scroll-gradient-bg" data-dex-entry-bg="1"></div>
 <div id="gooey-mesh-wrapper" data-dex-entry-bg="1">
   <div class="gooey-stage">
@@ -1776,7 +1765,7 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
     "instruments": [
       "<span class=\"person-text\" data-person-linkable=\"false\">PREPARED OBOE</span>"
     ],
-    "instrumentLinksEnabled": false,
+    "instrumentLinksEnabled": true,
     "linksByPerson": {},
     "video": {
       "director": "",
@@ -6199,7 +6188,6 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
 
 
 
-
 <script id="dex-manifest" type="application/json">
 {
   "audio": {
@@ -6351,15 +6339,15 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
 </script>
 <h1 class="dex-entry-page-title" data-dex-entry-page-title="" data-dx-heading-randomize="false">prepared oboe, sky macklay</h1>
 <div class="dex-entry-subtitle" data-dex-entry-subtitle="">
-  <span class="dex-entry-subtitle-item"><span class="dex-entry-subtitle-label">published</span><time class="dex-entry-subtitle-value" datetime="2026-03-25T20:32:34.745Z">mar 25, 2026</time></span>
-  <span class="dex-entry-subtitle-item"><span class="dex-entry-subtitle-label">updated</span><time class="dex-entry-subtitle-value" datetime="2026-06-27T21:16:06.719Z">jun 27, 2026</time></span>
+  <span class="dex-entry-subtitle-item"><span class="dex-entry-subtitle-label">published</span><time class="dex-entry-subtitle-value" datetime="2026-06-28T06:23:56.490Z">jun 28, 2026</time></span>
+  <span class="dex-entry-subtitle-item"><span class="dex-entry-subtitle-label">updated</span><time class="dex-entry-subtitle-value" datetime="2026-06-28T06:23:56.490Z">jun 28, 2026</time></span>
   <span class="dex-entry-subtitle-item"><span class="dex-entry-subtitle-label">location</span><span class="dex-entry-subtitle-value">Unknown</span></span>
   <span class="dex-entry-subtitle-item dex-entry-subtitle-item--meta"><span class="dex-entry-subtitle-value">🎚 24-bit 🔊 48000 Hz 🎧 stereo</span></span>
 </div>
 </div>
 <!-- DEX:TITLE_END -->
 
-<div class="dex-entry-layout" aria-busy="true" data-dx-fetch-state="loading" data-dx-entry-fetch-target="layout">
+<div class="dex-entry-layout" data-dx-fetch-state="loading" aria-busy="true" data-dx-entry-fetch-target="layout">
 <div class="dex-entry-main">
 <!-- DEX:VIDEO_START -->
 
@@ -6764,8 +6752,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
 
-
-
 <script id="dex-entry-gooey-bg-script" data-managed="1">
 
 ;(function(){
@@ -6773,6 +6759,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   window.__dexEntryGooeyBgInit = true;
 
   var start = function(){
+    // header-slot.js owns the gooey-mesh animation loop on every route. When it
+    // is present it sets this flag (before DOMContentLoaded, since it is a
+    // deferred head script), and this inline fallback must not start a second,
+    // competing loop. Without header-slot this still animates the mesh standalone.
     if (window.__dxDisableRouteGooeyBootstrap) return;
     var mesh = document.getElementById('gooey-mesh-wrapper');
     var grad = document.getElementById('scroll-gradient-bg');
