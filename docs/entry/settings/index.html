@@ -3269,6 +3269,23 @@ body.dx-route-profile-protected #dex-settings :is(h1,h2,h3,h4,p,label,span,stron
       color:#ffc1c5 !important;
     }
 
+    /* Mobile: drop the fixed-height pinned-shell model (which reserves a
+       desktop footer band and leaves a big empty gap under short panes like
+       Account/Notifications). Let the sheet grow with its content, fill at
+       least the viewport, and scroll with the page instead of internally. */
+    @media (max-width: 979px){
+      body.dx-route-profile-protected #dex-settings{
+        height:auto !important;
+        max-height:none !important;
+        min-height:calc(100svh - var(--dx-fixed-header-space, 114px) - 16px) !important;
+        overflow:visible !important;
+      }
+      body.dx-route-profile-protected #dex-settings > .grid{
+        flex:1 1 auto !important;
+        overflow:visible !important;
+      }
+    }
+
   </style>
 <!-- Settings UI -->
   <!-- Header (no chips / no manage button) -->

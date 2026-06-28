@@ -988,6 +988,12 @@ import {
       @media (max-width:900px){
         #dex-msg .dx-msg-board{grid-auto-flow:column;grid-auto-columns:78%;grid-template-columns:none;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
         #dex-msg .dx-msg-lane{scroll-snap-align:start;}
+        /* stack the toolbar so the filter pills wrap instead of forcing the
+           controls row past the viewport (the desktop flex:0 0 auto never
+           shrinks). */
+        #dex-msg .dx-msg-head{flex-direction:column;align-items:stretch;gap:12px;}
+        #dex-msg .dx-msg-controls{flex:1 1 auto;width:100%;min-width:0;}
+        #dex-msg .dx-msg-seg{display:flex;width:100%;min-width:0;}
       }
       /* thread modal — black-glass surface matching the download modal */
       #dex-msg-modal{position:fixed;inset:0;z-index:2147483000;display:none;align-items:center;justify-content:center;padding:clamp(12px,3vw,40px);font-family:var(--dx-mono,'Courier Prime',monospace);}

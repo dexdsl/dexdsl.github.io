@@ -1,6 +1,6 @@
 {
   "version": "catalog-editorial-v1",
-  "updatedAt": "2026-06-28T12:24:39.335Z",
+  "updatedAt": "2026-06-28T19:51:47.434Z",
   "manifest": [
     {
       "entry_id": "2-organs-midori-ataka",
@@ -262,7 +262,7 @@
       "season": "S2",
       "performer": "Matt LeVeque",
       "instrument": "SNARE DRUM",
-      "image_src": "",
+      "image_src": "/assets/catalog/snare-drum-matt-leveque.jpg",
       "image_alt_raw": "",
       "status": "draft"
     },

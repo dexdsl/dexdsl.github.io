@@ -8,6 +8,7 @@ import {
   writeCatalogEditorialFile,
   upsertCatalogManifestEntry,
   findCatalogManifestEntry,
+  defaultCatalogEditorialData,
 } from './catalog-editorial-store.mjs';
 
 const SERVED_ROOTS = ['', 'public', 'docs'];
@@ -54,7 +55,13 @@ export async function setEntryImage({ siteRoot, token, sourcePath } = {}) {
 
   // Record the override in the editorial store (canonical, survives re-extract).
   const editorialPath = path.join(root, 'data', 'catalog.editorial.json');
-  const data = await readCatalogEditorialFile(editorialPath);
+  let data;
+  try {
+    ({ data } = await readCatalogEditorialFile(editorialPath));
+  } catch (err) {
+    if (err?.code !== 'ENOENT') throw err;
+    data = defaultCatalogEditorialData();
+  }
   const existing = findCatalogManifestEntry(data, slug) || {};
   const updated = upsertCatalogManifestEntry(data, {
     ...existing,
@@ -74,7 +81,7 @@ export async function getEntryImage({ siteRoot, token } = {}) {
   const slug = slugFromToken(token);
   if (!root || !slug) return { image_src: '' };
   try {
-    const data = await readCatalogEditorialFile(path.join(root, 'data', 'catalog.editorial.json'));
+    const { data } = await readCatalogEditorialFile(path.join(root, 'data', 'catalog.editorial.json'));
     const row = findCatalogManifestEntry(data, slug);
     if (row && String(row.image_src || '').trim()) return { image_src: String(row.image_src).trim() };
   } catch {

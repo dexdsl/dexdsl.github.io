@@ -1,6 +1,6 @@
 {
   "source": "live-dexdsl-com-catalog",
-  "generated_at": "2026-02-23T05:22:36.416Z",
+  "generated_at": "2026-06-28T19:51:39.493Z",
   "anchors": {
     "performer": "#dex-performer",
     "instrument": "#dex-instrument",
@@ -9,8 +9,8 @@
     "symbols": "#list-of-identifiers"
   },
   "stats": {
-    "entries_count": 26,
-    "lookup_count": 26,
+    "entries_count": 27,
+    "lookup_count": 27,
     "seasons": [
       "S2",
       "S1"
@@ -31,6 +31,7 @@
       "MODULAR SYNTH",
       "MULTIPLE PERCUS‌SION",
       "NO IMPUT MIXING BOARD",
+      "PERCUSSION",
       "PREPARED BAS‌S VIOL",
       "Prepared Floor Tom",
       "PREPARED HAM‌MERED DULCIMER + DIGITAL SIGNAL PROCES‌SOR",
@@ -42,8 +43,7 @@
       "TWO ORGANS",
       "VOICE W/ EVERYDAY OBJECT MANIPULATION"
     ],
-    "protected_char_count": 51,
-    "uav_count": 1
+    "protected_char_count": 51
   },
   "entries": [
     {
@@ -354,7 +354,7 @@
       "title_norm": "electric guitar",
       "performer_norm": "mann, chris",
       "lookup_norm": "e.gtr. ma a2024 s2",
-      "instrument_norm": "electric guitar",
+      "instrument_norm": "dholak and electronics electric guitar",
       "status": "draft",
       "kind": "catalog"
     },
@@ -379,7 +379,7 @@
       "performer_norm": "zhang, bojun",
       "lookup_norm": "e.mod. zh av2024 s2",
       "instrument_norm": "modular synth",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {
@@ -427,7 +427,7 @@
       "performer_norm": "jáquez, sofí & yorke, paul",
       "lookup_norm": "p.ens. jayo av2024 s2",
       "instrument_norm": "as though i’m slipping",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {
@@ -476,6 +476,29 @@
       "lookup_norm": "p.pto. fe av2024 s2",
       "instrument_norm": "prepared floor tom",
       "status": "active",
+      "kind": "catalog"
+    },
+    {
+      "id": "matt-leveque",
+      "title_raw": "“GROUND”, SOLO SNARE DRUM",
+      "performer_raw": "matt leveque",
+      "instrument_family": [
+        "PERCUSSION"
+      ],
+      "instrument_labels": [
+        "“GROUND”, SOLO SNARE DRUM"
+      ],
+      "lookup_raw": "P.Sdr. Le AV2024 S2",
+      "season": "S2",
+      "entry_href": "/entry/matt-leveque/",
+      "image_src": "https://images.squarespace-cdn.com/content/v1/63956a55e99f9772a8cd1742/c2962421-d7f8-483b-b403-cdbada9bb434/matt_l_dex_1.206.1.jpg",
+      "image_alt_raw": "",
+      "featured": false,
+      "sort_key": "S2::P.Sdr. Le AV2024 S2",
+      "title_norm": "“ground”, solo snare drum",
+      "performer_norm": "matt leveque",
+      "lookup_norm": "p.sdr. le av2024 s2",
+      "instrument_norm": "“ground”, solo snare drum",
       "kind": "catalog"
     },
     {
@@ -571,7 +594,7 @@
       "performer_norm": "macklay, sky",
       "lookup_norm": "w.ob. ma av2024 s2",
       "instrument_norm": "prepared oboe",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {
@@ -643,7 +666,7 @@
       "performer_norm": "",
       "lookup_norm": "",
       "instrument_norm": "",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {
@@ -760,6 +783,10 @@
       {
         "heading_raw": "Part 4: [Quality] [Qualifiers] (Ex: [4K] [Met Perc Cle Lou Poly Exc])",
         "body_raw": "The last section has one or two sets of brackets, each holding valuable information. The first set of brackets tells us the type and quality of the sample such as 4K, 1080p, stereo, 4-channel, etc. Some samples may have a second set of brackets containing a list of signifiers providing details about the sound in that file, whether they are short, percussive sounds, whether it is in time or free of meter, etc."
+      },
+      {
+        "heading_raw": "dexDRONES / UAV collections",
+        "body_raw": "Location collection: DR.Subject. Site YYYY T#. Capture series: DR.Subject. Site (V|I|A|D)YYYY T# [FS|RGB|IR|TH]. Files append the matching deliverable bucket or X raw/support bucket and a running number, for example V.1 or X.1."
       }
     ],
     "examples": [
@@ -768,7 +795,11 @@
       "So our label of K.Hps. Su AV2023 S1 B.13 [4K] [Met Perc Cle Lou Poly Exc] is referencing an audio-visual collection of harpsichord samples produced in season 1 of 2023 by Sebastian Suarez-Solis (this set, actually); specifically it is referencing the 13th sample of group B, which is a 4K video file, the sound of which is metered, percussive, clean audio that is loud, polyphonic, and exciting.",
       "K.Hps. Su AV2023 S1",
       "K.Hps. Su AV2023 S1 A",
-      "K.Hps.2 Su AV2023 S1"
+      "K.Hps.2 Su AV2023 S1",
+      "DR.Win. Mo 2026 T1",
+      "DR.Win. Mo V2026 T1 [FS]",
+      "DR.Win. Mo V2026 T1 [FS] V.1",
+      "DR.Win. Mo V2026 T1 [FS] X.1"
     ],
     "anchors": [
       "part1",
@@ -853,9 +884,50 @@
         "description_raw": "Audio-visual",
         "key_norm": "av",
         "description_norm": "audio-visual"
+      },
+      {
+        "key_raw": "DR",
+        "description_raw": "dexDRONES wing namespace"
+      },
+      {
+        "key_raw": "V",
+        "description_raw": "Aerial video capture series and deliverable bucket"
+      },
+      {
+        "key_raw": "I",
+        "description_raw": "Field stills capture series and deliverable bucket"
+      },
+      {
+        "key_raw": "A",
+        "description_raw": "Ambient sound capture series and deliverable bucket"
+      },
+      {
+        "key_raw": "D",
+        "description_raw": "Imaging study capture series and deliverable bucket"
+      },
+      {
+        "key_raw": "X",
+        "description_raw": "Raw and support files, including recording-index PDFs"
       }
     ],
-    "quality": [],
+    "quality": [
+      {
+        "key_raw": "FS",
+        "description_raw": "Full-spectrum acquisition"
+      },
+      {
+        "key_raw": "RGB",
+        "description_raw": "Visible-light acquisition"
+      },
+      {
+        "key_raw": "IR",
+        "description_raw": "Infrared acquisition"
+      },
+      {
+        "key_raw": "TH",
+        "description_raw": "Thermal acquisition"
+      }
+    ],
     "qualifier": [
       {
         "key_raw": "1080p",

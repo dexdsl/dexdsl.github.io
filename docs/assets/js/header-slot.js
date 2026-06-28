@@ -2234,11 +2234,35 @@
     root.setAttribute('data-dx-mobile-utility-stacked', shouldStack ? 'true' : 'false');
   }
 
+  // Anchors the mobile menu sheet just beneath the *actual* fixed header. The
+  // CSS fallback reserves a static --dx-fixed-header-height (70px), but the real
+  // header can be taller (large logo, safe-area inset, signed-in chrome). When it
+  // is, a statically positioned sheet slides up underneath the header — which sits
+  // on a higher stacking layer — and gets clipped from view. Measuring the live
+  // header bottom keeps the sheet clear of it on every device.
+  function syncMobileMenuSheetOffset(root) {
+    if (!(root instanceof HTMLElement)) return;
+    const sheet = root.querySelector('.dx-mobile-menu-sheet');
+    if (!(sheet instanceof HTMLElement)) return;
+    const headerFrame = document.querySelector('.header-announcement-bar-wrapper');
+    if (!(headerFrame instanceof HTMLElement)) return;
+
+    const headerRect = headerFrame.getBoundingClientRect();
+    if (!Number.isFinite(headerRect.bottom) || headerRect.height <= 0) return;
+
+    const top = Math.round(headerRect.bottom + 10);
+    sheet.style.top = `${top}px`;
+    sheet.style.maxHeight = `calc(100dvh - ${top + 12}px)`;
+  }
+
   function syncMobileMenuBlurScope(root) {
     if (!(root instanceof HTMLElement)) return;
     const scope = root.querySelector('.dx-mobile-menu-scope-blur');
     const sheet = root.querySelector('.dx-mobile-menu-sheet');
     if (!(scope instanceof HTMLElement) || !(sheet instanceof HTMLElement)) return;
+
+    syncMobileMenuSheetOffset(root);
+
 
     const rect = sheet.getBoundingClientRect();
     if (!Number.isFinite(rect.width) || !Number.isFinite(rect.height) || rect.width <= 0 || rect.height <= 0) {
