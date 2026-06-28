@@ -274,6 +274,123 @@ async function syncProtectedAssetsAfterWrite(data, opts = {}) {
   };
 }
 
+function extractMarkedBlock(html, marker) {
+  const start = `<!-- DEX:${marker}_START -->`;
+  const end = `<!-- DEX:${marker}_END -->`;
+  const startIndex = String(html || '').indexOf(start);
+  const endIndex = String(html || '').indexOf(end);
+  if (startIndex < 0 || endIndex < startIndex) {
+    throw new Error(`Entry route is missing ${marker} markers`);
+  }
+  return String(html).slice(startIndex, endIndex + end.length);
+}
+
+function replaceMarkedBlock(html, marker, replacement) {
+  const current = extractMarkedBlock(html, marker);
+  return String(html).replace(current, replacement);
+}
+
+function readJsonScript(html, id) {
+  const pattern = new RegExp(`<script id="${id}" type="application/json">([\\s\\S]*?)<\\/script>`);
+  const match = String(html || '').match(pattern);
+  if (!match) throw new Error(`Entry route is missing script#${id}`);
+  return JSON.parse(match[1]);
+}
+
+function replaceJsonScript(html, id, value) {
+  const pattern = new RegExp(`(<script id="${id}" type="application/json">)[\\s\\S]*?(<\\/script>)`);
+  if (!pattern.test(String(html || ''))) throw new Error(`Entry route is missing script#${id}`);
+  return String(html).replace(pattern, `$1\n${JSON.stringify(value, null, 2)}\n$2`);
+}
+
+function buildProtectedDownloadFileTree(files = [], lookupNumber = '') {
+  const mediaTypes = ['audio', 'video'];
+  const buckets = [];
+  for (const bucket of ['A', 'B', 'C', 'D', 'E', 'X']) {
+    const types = [];
+    for (const mediaType of mediaTypes) {
+      const rows = (Array.isArray(files) ? files : [])
+        .filter((file) =>
+          toText(file?.bucket).toUpperCase() === bucket
+          && toText(file?.type).toLowerCase() === mediaType
+          && toText(file?.role || 'media').toLowerCase() === 'media')
+        .sort((a, b) => Number(a?.position || 0) - Number(b?.position || 0))
+        .map((file) => {
+          const r2Key = toText(file?.r2Key);
+          const filename = path.basename(r2Key) || toText(file?.sourceLabel || file?.label || file?.fileId);
+          const extension = path.extname(filename).replace(/^\./, '').toLowerCase();
+          const renditionMatch = filename.match(/-(1080p|4k|stereo)\.[^.]+$/i);
+          return {
+            fileId: toText(file?.fileId),
+            label: toText(file?.label || file?.sourceLabel || filename),
+            filename,
+            extension,
+            variantKey: renditionMatch ? renditionMatch[1].toLowerCase() : `default-${mediaType}`,
+          };
+        })
+        .filter((file) => file.fileId && file.filename);
+      if (rows.length) types.push({ mediaType, files: rows });
+    }
+    if (types.length) buckets.push({ bucket, types });
+  }
+  return buckets.length ? { lookup: toText(lookupNumber), buckets } : null;
+}
+
+function mergeGeneratedDescription(routeBlock, generatedBlock) {
+  const contentPattern = /(<div class="dex-entry-desc-content">)[\s\S]*?(<\/div>)/;
+  const generatedContent = String(generatedBlock || '').match(contentPattern);
+  if (!generatedContent) throw new Error('Generated entry is missing description content');
+  if (!contentPattern.test(String(routeBlock || ''))) throw new Error('Production route is missing description content');
+  return String(routeBlock).replace(contentPattern, `$1${generatedContent[0].slice(generatedContent[1].length, -generatedContent[2].length)}$2`);
+}
+
+export function buildProductionEntryRoute({ routeHtml, generatedHtml } = {}) {
+  const base = String(routeHtml || '');
+  const generated = String(generatedHtml || '');
+  if (!base || !generated) throw new Error('Production route build requires existing route HTML and generated entry HTML');
+  if (base.includes('id="spark-app"') || base.includes('<header data-test="header"')) {
+    throw new Error('Existing entry route is an editor/source document, not a production route shell');
+  }
+
+  const previousPage = readJsonScript(base, 'dex-sidebar-page-config');
+  const generatedPage = readJsonScript(generated, 'dex-sidebar-page-config');
+  const mergedPage = {
+    ...previousPage,
+    ...generatedPage,
+    downloads: {
+      ...(previousPage.downloads || {}),
+      ...(generatedPage.downloads || {}),
+      ...(previousPage?.downloads?.fileTree && !generatedPage?.downloads?.fileTree
+        ? { fileTree: previousPage.downloads.fileTree }
+        : {}),
+    },
+  };
+  // Folder ids and scan inventories are authoring data. The public route needs
+  // selected buckets, stable file-tree rows, and protected asset references.
+  delete mergedPage.downloads.bucketFolders;
+
+  let sidebarBlock = extractMarkedBlock(generated, 'SIDEBAR_PAGE_CONFIG');
+  sidebarBlock = replaceJsonScript(sidebarBlock, 'dex-sidebar-page-config', mergedPage);
+
+  let next = replaceMarkedBlock(base, 'SIDEBAR_PAGE_CONFIG', sidebarBlock);
+  for (const marker of ['TITLE', 'VIDEO']) {
+    next = replaceMarkedBlock(next, marker, extractMarkedBlock(generated, marker));
+  }
+  next = replaceMarkedBlock(
+    next,
+    'DESC',
+    mergeGeneratedDescription(extractMarkedBlock(base, 'DESC'), extractMarkedBlock(generated, 'DESC')),
+  );
+  next = next.replace(
+    /https:\/\/dexdsl\.github\.io\/assets\/dex-sidebar\.js/g,
+    '/assets/dex-sidebar.js',
+  );
+  if (next.includes('id="spark-app"') || next.includes('<header data-test="header"')) {
+    throw new Error('Production route build leaked the editor/source page shell');
+  }
+  return next;
+}
+
 export async function publishEntryRoute(slug, {
   rootDir = process.cwd(),
   entriesDir = path.resolve(rootDir, 'entries'),
@@ -285,7 +402,32 @@ export async function publishEntryRoute(slug, {
   }
   const sourcePath = path.resolve(entriesDir, normalizedSlug, 'index.html');
   const routePath = path.resolve(routeEntryDir, normalizedSlug, 'index.html');
-  const html = await fs.readFile(sourcePath, 'utf8');
+  const [generatedSourceHtml, routeHtml] = await Promise.all([
+    fs.readFile(sourcePath, 'utf8'),
+    fs.readFile(routePath, 'utf8'),
+  ]);
+  let generatedHtml = generatedSourceHtml;
+  const pageConfig = readJsonScript(generatedHtml, 'dex-sidebar-page-config');
+  try {
+    const assets = await readProtectedAssetsFile(path.resolve(rootDir, 'data', 'protected.assets.json'));
+    const lookupNumber = toText(pageConfig?.lookupNumber).toLowerCase();
+    const lookup = (assets.data.lookups || []).find(
+      (row) => toText(row?.lookupNumber).toLowerCase() === lookupNumber,
+    );
+    const fileTree = buildProtectedDownloadFileTree(lookup?.files || [], lookup?.lookupNumber || pageConfig?.lookupNumber);
+    if (fileTree) {
+      generatedHtml = replaceJsonScript(generatedHtml, 'dex-sidebar-page-config', {
+        ...pageConfig,
+        downloads: {
+          ...(pageConfig.downloads || {}),
+          fileTree,
+        },
+      });
+    }
+  } catch (error) {
+    if (String(error?.code || '') !== 'ENOENT' && !String(error?.message || '').includes('ENOENT')) throw error;
+  }
+  const html = buildProductionEntryRoute({ routeHtml, generatedHtml });
   await fs.mkdir(path.dirname(routePath), { recursive: true });
   await fs.writeFile(routePath, html, 'utf8');
   return { sourcePath, routePath, bytes: Buffer.byteLength(html) };

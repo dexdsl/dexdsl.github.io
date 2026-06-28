@@ -171,7 +171,7 @@ async function ensureGeneratedEntryRouteContract() {
     .filter((entry) => String(entry?.season || '').toUpperCase() === 'S1')
     .map((entry) => String(entry?.id || '').trim())
     .filter(Boolean);
-  const requiredSlugs = Array.from(new Set([...s1Slugs, 'tim-feeney']));
+  const requiredSlugs = Array.from(new Set([...s1Slugs, 'tim-feeney', 'prepared-oboe-sky-macklay']));
   if (!s1Slugs.length) fail('catalog.entries.json must include S1 entries for generated route contract');
 
   for (const slug of requiredSlugs) {
@@ -196,6 +196,46 @@ async function ensureGeneratedEntryRouteContract() {
       if (!html.includes(marker)) {
         fail(`${routePath} missing generated entry chrome marker: ${marker}`);
       }
+    }
+  }
+
+  const skyRoutePath = 'docs/entry/prepared-oboe-sky-macklay/index.html';
+  const skyHtml = await read(skyRoutePath);
+  if (/id="spark-app"|<header data-test="header"/i.test(skyHtml)) {
+    fail(`${skyRoutePath} must preserve the production route shell`);
+  }
+  const pageConfigMatch = skyHtml.match(
+    /<script id="dex-sidebar-page-config" type="application\/json">([\s\S]*?)<\/script>/,
+  );
+  if (!pageConfigMatch) fail(`${skyRoutePath} is missing sidebar page config`);
+  const pageConfig = JSON.parse(pageConfigMatch[1]);
+  const fileTree = pageConfig?.downloads?.fileTree;
+  if (String(fileTree?.lookup || '') !== 'W.Ob. Ma AV2024 S2') {
+    fail(`${skyRoutePath} download file tree must be keyed to Sky's lookup`);
+  }
+  const protectedAssets = JSON.parse(await read('data/protected.assets.json'));
+  const protectedLookup = (protectedAssets.lookups || []).find(
+    (row) => String(row?.lookupNumber || '') === 'W.Ob. Ma AV2024 S2',
+  );
+  const expectedCounts = new Map();
+  for (const file of protectedLookup?.files || []) {
+    const type = String(file?.type || '').toLowerCase();
+    if (!['audio', 'video'].includes(type) || String(file?.role || 'media') !== 'media') continue;
+    const bucket = String(file?.bucket || '').toUpperCase();
+    expectedCounts.set(bucket, (expectedCounts.get(bucket) || 0) + 1);
+  }
+  const actualCounts = new Map(
+    (fileTree?.buckets || []).map((bucketRow) => [
+      String(bucketRow?.bucket || '').toUpperCase(),
+      (bucketRow?.types || []).reduce(
+        (sum, typeRow) => sum + (Array.isArray(typeRow?.files) ? typeRow.files.length : 0),
+        0,
+      ),
+    ]),
+  );
+  for (const bucket of ['A', 'B', 'C', 'D', 'E', 'X']) {
+    if (!expectedCounts.get(bucket) || actualCounts.get(bucket) !== expectedCounts.get(bucket)) {
+      fail(`${skyRoutePath} bucket ${bucket} file count does not match protected assets`);
     }
   }
 }
