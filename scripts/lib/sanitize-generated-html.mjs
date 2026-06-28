@@ -165,6 +165,11 @@ const DEX_ENTRY_BG_SCRIPT = `
   window.__dexEntryGooeyBgInit = true;
 
   var start = function(){
+    // header-slot.js owns the gooey-mesh animation loop on every route. When it
+    // is present it sets this flag (before DOMContentLoaded, since it is a
+    // deferred head script), and this inline fallback must not start a second,
+    // competing loop. Without header-slot this still animates the mesh standalone.
+    if (window.__dxDisableRouteGooeyBootstrap) return;
     var mesh = document.getElementById('gooey-mesh-wrapper');
     var grad = document.getElementById('scroll-gradient-bg');
     if (!mesh) return;

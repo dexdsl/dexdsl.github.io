@@ -2852,6 +2852,7 @@ body.dx-entry-page .dex-footer .candid-seal {
   window.__dexEntryGooeyBgInit = true;
 
   var start = function(){
+    if (window.__dxDisableRouteGooeyBootstrap) return;
     var mesh = document.getElementById('gooey-mesh-wrapper');
     var grad = document.getElementById('scroll-gradient-bg');
     if (!mesh) return;

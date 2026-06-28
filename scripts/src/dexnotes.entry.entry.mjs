@@ -133,6 +133,10 @@ import { mountPollEmbeds } from './shared/dx-polls-embed.entry.mjs';
   }
 
   function startBlobMotion() {
+    // header-slot.js owns the gooey-mesh loop for the persistent wrapper on every
+    // route. When present it sets this flag, so this route-script must not start a
+    // second, competing loop (that double-drove the blobs / "sped up" the mesh).
+    if (window.__dxDisableRouteGooeyBootstrap) return;
     const activeRuntime = window[BLOB_RUNTIME_KEY];
     if (activeRuntime && activeRuntime.handle !== blobRuntimeHandle && typeof activeRuntime.stop === 'function') {
       try {

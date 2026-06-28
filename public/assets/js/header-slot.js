@@ -15,6 +15,11 @@
   const GOOEY_SPEED_MIN = 14.4;
   const GOOEY_SPEED_MAX = 28.8;
   const GOOEY_SPEED_DEFAULT = 21.6;
+  // Gentle pull toward viewport centre so blobs never fully disperse to the
+  // corners. Dispersal is what makes the goo alpha-threshold zero everything out
+  // and the mesh "goes blank after a while". Direction-only (speed is re-banded
+  // each frame), so it nudges without slowing the motion.
+  const GOOEY_RECENTER_STRENGTH = 0.16;
   const MOBILE_MENU_ROOT_ID = 'dx-mobile-menu';
   const MOBILE_PROFILE_PANEL_ID = 'dx-mobile-menu-profile-panel';
   const MOBILE_MENU_OPEN_CLASS = 'dx-mobile-menu-open';
@@ -122,6 +127,13 @@
   let iosSafariViewportSyncInstalled = false;
   let iosSafariViewportSyncRafId = 0;
   let profileFooterPortalState = { footer: null, anchor: null };
+  let gooeyDriverInstalled = false;
+  let gooeyDriverRafId = 0;
+  let gooeyDriverWatchdogId = 0;
+  let gooeyDriverLast = 0;
+  let gooeyDriverLastFrame = 0;
+  let gooeyDriverWrapper = null;
+  let gooeyDriverBlobs = [];
   const headingCanonicalTextByNode = new WeakMap();
   const headingRenderedTextByNode = new WeakMap();
 
@@ -1673,7 +1685,12 @@
       };
     }
 
-    const scale = GOOEY_SPEED_DEFAULT / speed;
+    // Clamp the magnitude into the [MIN, MAX] band rather than pinning every
+    // blob to a single DEFAULT speed. Pinning to DEFAULT made velocities visibly
+    // snap on every route change (the "speeds up/down" symptom); banding keeps
+    // each blob's own pace while preventing runaway/stall speeds.
+    const clampedSpeed = Math.min(GOOEY_SPEED_MAX, Math.max(GOOEY_SPEED_MIN, speed));
+    const scale = clampedSpeed / speed;
     return {
       vx: vx * scale,
       vy: vy * scale,
@@ -3093,6 +3110,139 @@
     normalizeLiveGooeyMeshVelocities();
   }
 
+  // ──────────────────────────────────────────────────────────────────────────
+  // Single-owner gooey-mesh animation driver.
+  //
+  // The #gooey-mesh-wrapper is persistent chrome (PRESERVED_IDS) that survives
+  // soft-nav, but the animation loop used to live in a per-entry-page inline
+  // script. That meant motion only existed if you *hard-loaded an entry page*,
+  // and was absent on the home/polls/settings routes (no inline driver) — the
+  // "sometimes doesn't show" symptom — while a second hard load could leave two
+  // loops fighting. This driver lives in the persistent header-slot script, so
+  // it is the sole owner regardless of entry point. It re-queries live blobs
+  // each tick, so it self-heals if a fallback path swaps the wrapper out.
+  // The inline entry script now defers to it via window.__dxDisableRouteGooeyBootstrap.
+  // ──────────────────────────────────────────────────────────────────────────
+
+  function ensureGooeyBlobKinematics(blob, index, vw, vh) {
+    if (!(blob instanceof HTMLElement)) return;
+    const radius = resolveGooeyBlobRadius(blob);
+    if (!Number.isFinite(Number(blob._rad)) || Number(blob._rad) <= 0) blob._rad = radius;
+    const r = Number(blob._rad) > 0 ? Number(blob._rad) : radius;
+    if (!Number.isFinite(Number(blob._x))) blob._x = r + Math.random() * Math.max(vw - r * 2, 1);
+    if (!Number.isFinite(Number(blob._y))) blob._y = r + Math.random() * Math.max(vh - r * 2, 1);
+    if (!Number.isFinite(Number(blob._vx)) || !Number.isFinite(Number(blob._vy))) {
+      const angle = (index + 1) * 2.399963229728653 + Math.random() * 0.6;
+      const speed = GOOEY_SPEED_MIN + Math.random() * (GOOEY_SPEED_MAX - GOOEY_SPEED_MIN);
+      blob._vx = Math.cos(angle) * speed;
+      blob._vy = Math.sin(angle) * speed;
+    }
+  }
+
+  function refreshGooeyDriverBlobs() {
+    const wrapper = document.getElementById('gooey-mesh-wrapper');
+    if (!wrapper) {
+      gooeyDriverWrapper = null;
+      gooeyDriverBlobs = [];
+      return;
+    }
+    const liveBlobs = Array.from(wrapper.querySelectorAll('.gooey-blob'));
+    const stale = wrapper !== gooeyDriverWrapper
+      || liveBlobs.length !== gooeyDriverBlobs.length
+      || gooeyDriverBlobs.some((blob) => !blob || !blob.isConnected);
+    if (!stale) return;
+    gooeyDriverWrapper = wrapper;
+    gooeyDriverBlobs = liveBlobs;
+    const vw = Math.max(window.innerWidth || 0, 1);
+    const vh = Math.max(window.innerHeight || 0, 1);
+    gooeyDriverBlobs.forEach((blob, index) => ensureGooeyBlobKinematics(blob, index, vw, vh));
+  }
+
+  function stepGooeyMesh(now) {
+    refreshGooeyDriverBlobs();
+    if (!gooeyDriverBlobs.length) {
+      gooeyDriverLast = now;
+      return;
+    }
+    const dt = Math.min(Math.max((now - gooeyDriverLast) / 1000, 0), 0.05);
+    gooeyDriverLast = now;
+    const vw = Math.max(window.innerWidth || 0, 1);
+    const vh = Math.max(window.innerHeight || 0, 1);
+    const centreX = vw / 2;
+    const centreY = vh / 2;
+
+    for (let index = 0; index < gooeyDriverBlobs.length; index += 1) {
+      const blob = gooeyDriverBlobs[index];
+      if (!(blob instanceof HTMLElement)) continue;
+      const radius = Number(blob._rad) > 0 ? Number(blob._rad) : resolveGooeyBlobRadius(blob);
+
+      // Direction-only pull toward centre, then re-band the speed so the nudge
+      // steers without changing pace.
+      blob._vx += (centreX - blob._x) * GOOEY_RECENTER_STRENGTH * dt;
+      blob._vy += (centreY - blob._y) * GOOEY_RECENTER_STRENGTH * dt;
+      const speed = Math.hypot(blob._vx, blob._vy);
+      if (speed > 0.0001) {
+        const banded = Math.min(GOOEY_SPEED_MAX, Math.max(GOOEY_SPEED_MIN, speed));
+        const scale = banded / speed;
+        blob._vx *= scale;
+        blob._vy *= scale;
+      }
+
+      blob._x += blob._vx * dt;
+      blob._y += blob._vy * dt;
+
+      if ((blob._x - radius <= 0 && blob._vx < 0) || (blob._x + radius >= vw && blob._vx > 0)) blob._vx *= -1;
+      if ((blob._y - radius <= 0 && blob._vy < 0) || (blob._y + radius >= vh && blob._vy > 0)) blob._vy *= -1;
+
+      blob._x = clampGooeyCoordinate(blob._x, radius, Math.max(vw - radius, radius));
+      blob._y = clampGooeyCoordinate(blob._y, radius, Math.max(vh - radius, radius));
+      blob.style.transform = `translate(${blob._x}px, ${blob._y}px) translate(-50%, -50%)`;
+    }
+    gooeyDriverLastFrame = now;
+  }
+
+  function gooeyMeshTick(now) {
+    gooeyDriverRafId = requestAnimationFrame(gooeyMeshTick);
+    if (document.hidden) {
+      gooeyDriverLast = now;
+      gooeyDriverLastFrame = now;
+      return;
+    }
+    try { stepGooeyMesh(now); } catch {}
+  }
+
+  function startGooeyMeshDriver() {
+    // Idempotent: only one loop per session. On later routes just refresh the
+    // blob references in case the wrapper was rebuilt by a fallback path.
+    if (gooeyDriverInstalled) {
+      refreshGooeyDriverBlobs();
+      return;
+    }
+    if (!document.getElementById('gooey-mesh-wrapper')) return;
+    gooeyDriverInstalled = true;
+    const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+    gooeyDriverLast = now;
+    gooeyDriverLastFrame = now;
+    refreshGooeyDriverBlobs();
+    gooeyDriverRafId = requestAnimationFrame(gooeyMeshTick);
+    // Watchdog keeps integrating if RAF is starved (throttled/background tab),
+    // so motion doesn't snap forward when the tab regains focus.
+    gooeyDriverWatchdogId = window.setInterval(() => {
+      if (document.hidden) return;
+      const tick = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+      if (tick - gooeyDriverLastFrame > 140) {
+        try { stepGooeyMesh(tick); } catch {}
+      }
+    }, 80);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) return;
+      const tick = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+      gooeyDriverLast = tick;
+      gooeyDriverLastFrame = tick;
+    });
+    window.addEventListener('resize', refreshGooeyDriverBlobs, { passive: true });
+  }
+
   function setRoutingState(active) {
     document.body.classList.toggle(ROUTING_CLASS, active);
 
@@ -3438,6 +3588,7 @@
       syncProfileRouteGlassFromHeader(document);
       seedInitialGooeyMeshPositionsIfStacked();
       normalizeLiveGooeyMeshVelocities();
+      startGooeyMeshDriver();
       persistGooeyMeshState();
     });
     installScrollStateTracker(scrollRoot);
@@ -3658,6 +3809,7 @@
       }
       seedInitialGooeyMeshPositionsIfStacked();
       normalizeLiveGooeyMeshVelocities();
+      startGooeyMeshDriver();
       if (initialScroll > 0) {
         scrollRoot.scrollTop = initialScroll;
       }
