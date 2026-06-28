@@ -479,29 +479,6 @@
       "kind": "catalog"
     },
     {
-      "id": "matt-leveque",
-      "title_raw": "“GROUND”, SOLO SNARE DRUM",
-      "performer_raw": "matt leveque",
-      "instrument_family": [
-        "PERCUSSION"
-      ],
-      "instrument_labels": [
-        "“GROUND”, SOLO SNARE DRUM"
-      ],
-      "lookup_raw": "P.Sdr. Le AV2024 S2",
-      "season": "S2",
-      "entry_href": "/entry/matt-leveque/",
-      "image_src": "https://images.squarespace-cdn.com/content/v1/63956a55e99f9772a8cd1742/c2962421-d7f8-483b-b403-cdbada9bb434/matt_l_dex_1.206.1.jpg",
-      "image_alt_raw": "",
-      "featured": false,
-      "sort_key": "S2::P.Sdr. Le AV2024 S2",
-      "title_norm": "“ground”, solo snare drum",
-      "performer_norm": "matt leveque",
-      "lookup_norm": "p.sdr. le av2024 s2",
-      "instrument_norm": "“ground”, solo snare drum",
-      "kind": "catalog"
-    },
-    {
       "id": "jakob-heinemann",
       "title_raw": "SPLINTERINGS for DOUBLE BAS‌S",
       "performer_raw": "Jakob Heinemann",

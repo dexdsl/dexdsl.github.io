@@ -346,25 +346,6 @@
     },
     {
       "kind": "catalog",
-      "id": "matt-leveque",
-      "entry_href": "/entry/matt-leveque/",
-      "season": "S2",
-      "title_raw": "“GROUND”, SOLO SNARE DRUM",
-      "performer_raw": "matt leveque",
-      "lookup_raw": "P.Sdr. Le AV2024 S2",
-      "instrument_family": [
-        "PERCUSSION"
-      ],
-      "site_norm": "",
-      "subject_norm": "",
-      "title_norm": "“ground”, solo snare drum",
-      "performer_norm": "matt leveque",
-      "lookup_norm": "p.sdr. le av2024 s2",
-      "instrument_norm": "percussion",
-      "search_blob": "“ground”, solo snare drum matt leveque p.sdr. le av2024 s2 percussion “ground”, solo snare drum"
-    },
-    {
-      "kind": "catalog",
       "id": "jakob-heinemann",
       "entry_href": "/entry/jakob-heinemann/",
       "season": "S2",
