@@ -25,9 +25,7 @@ const REQUIRED_DOC_PATHS = [
   'docs/catalog/lookup/index.html',
   'docs/dexfest/2024/day1/index.html',
   'docs/entry/submit/index.html',
-  'docs/entry/test-entry/index.html',
   'docs/messages.html',
-  'docs/test-title/description.html',
 ];
 
 function readText(filePath) {

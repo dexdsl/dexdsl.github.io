@@ -57,3 +57,25 @@
     grid-column: auto !important;
   }
 }
+
+/* Entry pages, mobile (single-column) ---------------------------------------
+   On desktop the sidebar is an outer glass card with its section cards inset
+   inside it, and that treatment is gated behind the "desktop-fixed" rail mode.
+   On mobile the rail collapses to "mobile-flow", which dropped both the outer
+   sidebar card padding (so the inner cards sat flush to the edges) and left the
+   main body column with no glass card at all. Re-establish both here so the
+   mobile entry reads like the desktop one: a glass card behind the body, and
+   the sidebar's inner cards inset within the sidebar's outer card. */
+@media (max-width: 960px) {
+  body.dx-entry-page .dex-entry-layout .dex-entry-main,
+  body.dx-entry-page .dex-entry-layout .dex-sidebar {
+    background: var(--liquid-bg, rgba(255, 255, 255, 0.18)) !important;
+    border: 1px solid var(--liquid-border, rgba(255, 255, 255, 0.42)) !important;
+    border-radius: var(--dx-radius-md, 10px) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+    padding: clamp(14px, 4vw, 20px) !important;
+    box-sizing: border-box !important;
+    -webkit-backdrop-filter: blur(var(--liquid-blur, 28px)) saturate(180%) contrast(1.12) brightness(1.06) !important;
+    backdrop-filter: blur(var(--liquid-blur, 28px)) saturate(180%) contrast(1.12) brightness(1.06) !important;
+  }
+}

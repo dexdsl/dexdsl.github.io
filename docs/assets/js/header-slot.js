@@ -2244,15 +2244,11 @@
     if (!(root instanceof HTMLElement)) return;
     const sheet = root.querySelector('.dx-mobile-menu-sheet');
     if (!(sheet instanceof HTMLElement)) return;
-    const headerFrame = document.querySelector('.header-announcement-bar-wrapper');
-    if (!(headerFrame instanceof HTMLElement)) return;
-
-    const headerRect = headerFrame.getBoundingClientRect();
-    if (!Number.isFinite(headerRect.bottom) || headerRect.height <= 0) return;
-
-    const top = Math.round(headerRect.bottom + 10);
-    sheet.style.top = `${top}px`;
-    sheet.style.maxHeight = `calc(100dvh - ${top + 12}px)`;
+    // The menu now renders as a centered modal rather than a header-anchored
+    // sheet, so positioning and height are owned entirely by CSS. Clear any
+    // legacy inline offsets a previous build may have written.
+    sheet.style.top = '';
+    sheet.style.maxHeight = '';
   }
 
   function syncMobileMenuBlurScope(root) {
@@ -2362,6 +2358,41 @@
     return unique;
   }
 
+  // Line-style glyphs for the mobile menu tiles, matched by route/label keyword.
+  function mobileMenuIcon(label, path) {
+    const key = `${String(label || '').toLowerCase()} ${String(path || '').toLowerCase()}`;
+    const has = (...words) => words.some((w) => key.includes(w));
+    const svg = (inner) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${inner}</svg>`;
+    if (has('catalog')) return svg('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>');
+    if (has('note')) return svg('<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/><path d="M9 13h7M9 17h5"/>');
+    if (has('about')) return svg('<circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><circle cx="12" cy="8" r="0.7" fill="currentColor" stroke="none"/>');
+    if (has('board')) return svg('<rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="11" rx="1"/><rect x="17" y="4" width="4" height="14" rx="1"/>');
+    if (has('message', 'inbox')) return svg('<path d="M4 5h16v11H8l-4 4z"/>');
+    if (has('setting')) return svg('<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>');
+    if (has('favorite', 'favourite')) return svg('<path d="M12 20s-7-4.6-7-9.4A3.6 3.6 0 0 1 12 7a3.6 3.6 0 0 1 7 3.6C19 15.4 12 20 12 20z"/>');
+    if (has('achievement')) return svg('<path d="M8 4h8v3a4 4 0 0 1-8 0z"/><path d="M8 5H5v2a3 3 0 0 0 3 3M16 5h3v2a3 3 0 0 1-3 3"/><path d="M10 12.5V16h4v-3.5M8 20h8M10 16h4"/>');
+    if (has('profile', 'account', 'member')) return svg('<circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/>');
+    if (has('dex', 'program')) return svg('<path d="M12 3l2.2 5.6L20 9.6l-4 4.2 1 6.2-5-3-5 3 1-6.2-4-4.2 5.8-1z"/>');
+    return svg('<circle cx="12" cy="12" r="9"/><path d="M10 8l4 4-4 4"/>');
+  }
+
+  // Rewrites a cloned nav anchor into an icon tile: a glyph keyed on the route
+  // plus the route label beneath it.
+  function decorateMobileNavTile(anchor, pathname) {
+    if (!(anchor instanceof HTMLElement)) return;
+    const labelText = String(anchor.textContent || '').trim();
+    anchor.textContent = '';
+    anchor.classList.add('dx-mobile-menu-tile');
+    anchor.insertAdjacentHTML(
+      'afterbegin',
+      `<span class="dx-mobile-menu-tile-icon" aria-hidden="true">${mobileMenuIcon(labelText, pathname)}</span>`
+    );
+    const labelSpan = document.createElement('span');
+    labelSpan.className = 'dx-mobile-menu-tile-label';
+    labelSpan.textContent = labelText;
+    anchor.appendChild(labelSpan);
+  }
+
   async function buildMobileMenuContent(root, { forceAuthRefresh = false } = {}) {
     if (!(root instanceof HTMLElement)) return;
     const buildSequence = ++mobileMenuBuildSequence;
@@ -2426,14 +2457,17 @@
       clone.setAttribute('data-dx-mobile-menu-route', normalizePathname(absoluteHref.pathname));
       clone.removeAttribute('target');
       clone.removeAttribute('rel');
+      decorateMobileNavTile(clone, absoluteHref.pathname);
       navHost.appendChild(clone);
     }
 
     if (authSnapshot.authenticated && authSnapshot.profileLinks.length > 0) {
       const profileToggle = document.createElement('button');
       profileToggle.type = 'button';
-      profileToggle.className = 'dx-mobile-menu-profile-toggle';
-      profileToggle.textContent = 'PROFILE';
+      profileToggle.className = 'dx-mobile-menu-tile dx-mobile-menu-profile-toggle';
+      profileToggle.innerHTML =
+        `<span class="dx-mobile-menu-tile-icon" aria-hidden="true">${mobileMenuIcon('account', '/account')}</span>` +
+        '<span class="dx-mobile-menu-tile-label">Account</span>';
       profileToggle.setAttribute('data-dx-mobile-profile-toggle', 'true');
       profileToggle.setAttribute('aria-controls', MOBILE_PROFILE_PANEL_ID);
       profileToggle.setAttribute('aria-expanded', 'false');
@@ -2531,11 +2565,17 @@
         <button class="dx-mobile-menu-backdrop" type="button" aria-label="Close menu" data-dx-mobile-menu-close="true"></button>
         <div class="dx-mobile-menu-scope-blur" aria-hidden="true"></div>
         <div class="dx-mobile-menu-sheet dx-glass-shell--header-match" role="dialog" aria-modal="true" aria-label="Site menu">
+          <div class="dx-mobile-menu-head">
+            <span class="dx-mobile-menu-eyebrow">Menu</span>
+            <button class="dx-mobile-menu-close" type="button" aria-label="Close menu" data-dx-mobile-menu-close="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+          </div>
+          <nav class="dx-mobile-menu-nav" aria-label="Site navigation"></nav>
           <div class="dx-mobile-menu-utility">
             <div class="dx-mobile-menu-social" aria-label="Social links"></div>
             <div class="dx-mobile-menu-actions" aria-label="Account and actions"></div>
           </div>
-          <nav class="dx-mobile-menu-nav" aria-label="Site navigation"></nav>
         </div>
       `;
       document.body.appendChild(root);

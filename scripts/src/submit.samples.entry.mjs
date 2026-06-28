@@ -3229,17 +3229,33 @@ import { animate } from 'framer-motion/dom';
     }
   }
 
-  function buildGateCard({ kicker, title, body, meta, onChoose }) {
+  function buildGateCard({ kicker, title, body, meta, image, imageAlt, imageFit, onChoose }) {
     const card = create('button', 'dx-submit-gate-card');
     card.type = 'button';
     card.setAttribute('data-dx-submit-gate-choice', 'true');
-    card.append(
+
+    if (image) {
+      const media = create('span', `dx-submit-gate-media${imageFit === 'contain' ? ' dx-submit-gate-media--contain' : ''}`);
+      const img = document.createElement('img');
+      img.className = 'dx-submit-gate-img';
+      img.src = image;
+      img.alt = text(imageAlt, '');
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      media.appendChild(img);
+      card.appendChild(media);
+    }
+
+    const copy = create('span', 'dx-submit-gate-copy');
+    copy.append(
       create('span', 'dx-submit-gate-kicker', kicker),
       create('span', 'dx-submit-gate-title', title),
       create('span', 'dx-submit-gate-body', body),
     );
-    if (meta) card.appendChild(create('span', 'dx-submit-gate-meta', meta));
-    card.appendChild(create('span', 'dx-submit-gate-cta', 'Choose →'));
+    if (meta) copy.appendChild(create('span', 'dx-submit-gate-meta', meta));
+    copy.appendChild(create('span', 'dx-submit-gate-cta', 'Choose →'));
+    card.appendChild(copy);
+
     if (typeof onChoose === 'function') card.addEventListener('click', onChoose);
     return card;
   }
@@ -3276,6 +3292,8 @@ import { animate } from 'framer-motion/dom';
       title: 'Sample submission',
       body: 'Add a recording to the Dex library. We split it into labelled A–E sections (plus X) so it is searchable and release-ready.',
       meta: 'Always open · weekly quota applies',
+      image: '/assets/catalog/snare-drum-matt-leveque.jpg',
+      imageAlt: 'A Dex catalog performer recording session',
       onChoose: () => chooseLane(FLOW_SAMPLE, ''),
     }));
 
@@ -3288,6 +3306,9 @@ import { animate } from 'framer-motion/dom';
         title: text(lane?.label, laneLabel(laneId)),
         body: text(lane?.helper, 'Lane-specific call proposal routed to the IN DEX panel.'),
         meta: cycle ? `Active cycle · ${cycle}` : 'Active call',
+        image: '/assets/series/index.png',
+        imageAlt: 'IN DEX program',
+        imageFit: 'contain',
         onChoose: () => chooseLane(FLOW_CALL, laneId),
       }));
     });

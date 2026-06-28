@@ -30,9 +30,7 @@ const FORCE_INCLUDE_PATHS = new Set([
   'catalog/lookup/index.html',
   'dexfest/2024/day1/index.html',
   'entry/submit/index.html',
-  'entry/test-entry/index.html',
   'messages.html',
-  'test-title/description.html',
 ]);
 
 const CONTENT_HINTS = [

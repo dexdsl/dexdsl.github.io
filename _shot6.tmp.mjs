@@ -1,0 +1,13 @@
+import { chromium } from 'playwright';
+const OUT = '/private/tmp/claude-501/-Users-seb-dexdsl-github-io/d496c22d-f4fd-461a-aa1c-0964bf55802d/scratchpad';
+const base = 'http://localhost:8092';
+const browser = await chromium.launch();
+const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 });
+const page = await ctx.newPage();
+const errs=[]; page.on('pageerror',e=>errs.push(e.message));
+await page.goto(base + '/entry/submit/', { waitUntil: 'networkidle' });
+await page.waitForTimeout(3000);
+const info = await page.evaluate(() => ({ cards: document.querySelectorAll('.dx-submit-gate-card').length, media: document.querySelectorAll('.dx-submit-gate-media').length, imgs: Array.from(document.querySelectorAll('.dx-submit-gate-img')).map(i=>({src:i.getAttribute('src'), w:i.naturalWidth, h:i.naturalHeight})) }));
+console.log('INFO', JSON.stringify(info)); console.log('ERRS', JSON.stringify(errs.slice(0,3)));
+await page.screenshot({ path: `${OUT}/submit-step0.png` });
+await browser.close();

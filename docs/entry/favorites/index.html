@@ -48,7 +48,7 @@
 <script src="/assets/dex-auth0-config.js"></script>
 <script defer src="/assets/dex-runtime-config.js"></script>
 <script src="/assets/dex-auth.js"></script>
-<script defer src="/assets/js/header-slot.js?v=20260528a"></script>
+<script defer src="/assets/js/header-slot.js?v=20260628a"></script>
 <script defer src="/assets/js/dx-scroll-dot.js"></script>
 <script defer src="/assets/js/interactive-hover.js"></script>
 <script defer src="/assets/js/dx-pagenav.js"></script>
@@ -2074,6 +2074,38 @@
     return 'Entry';
   }
 
+  // Performer credits arrive comma/slash/&-joined (e.g. "midori ataka, midori
+  // ataka"). Split on those separators only — never on words like "and" — so we
+  // don't mangle real names.
+  function splitPerformerNames(value){
+    return text(value)
+      .split(/\s*(?:,|\/|&|;|·|—)\s*/)
+      .map((part) => part.trim())
+      .filter(Boolean);
+  }
+
+  // Collapse a performer credit down to its unique names, case-insensitively.
+  function dedupePerformer(value){
+    const seen = new Set();
+    const out = [];
+    splitPerformerNames(value).forEach((name) => {
+      const key = name.toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+      out.push(name);
+    });
+    return out.join(', ');
+  }
+
+  // True when every name in the performer credit already appears in the title,
+  // so we don't append a redundant " — performer" that just repeats the title.
+  function titleCoversPerformer(title, performer){
+    const haystack = text(title).toLowerCase();
+    const names = splitPerformerNames(performer);
+    if (!names.length) return false;
+    return names.every((name) => haystack.includes(name.toLowerCase()));
+  }
+
   function rowTitle(row){
     if (row.kind === 'file') {
       const detail = [row.formatLabel || row.formatKey || '', row.fileId || ''].filter(Boolean).join(' · ');
@@ -2082,9 +2114,11 @@
     if (row.kind === 'bucket') {
       return row.title || `Bucket ${row.bucket || ''}`.trim();
     }
-    const entryTitle = row.title || '';
-    const performer = row.performer || '';
-    return [entryTitle, performer].filter(Boolean).join(' — ') || 'Entry';
+    const entryTitle = text(row.title || '').trim();
+    const performer = dedupePerformer(row.performer || '');
+    if (!entryTitle) return performer || 'Entry';
+    if (!performer || titleCoversPerformer(entryTitle, performer)) return entryTitle;
+    return `${entryTitle} — ${performer}`;
   }
 
   function rowOpenUrl(row){
