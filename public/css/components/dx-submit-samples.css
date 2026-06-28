@@ -287,8 +287,7 @@
 }
 
 #dex-submit .dx-submit-gate-card {
-  min-height: clamp(220px, 42vh, 360px);
-  align-content: center;
+  min-height: 0;
 }
 
 #dex-submit .dx-submit-grid {
@@ -483,6 +482,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(248px, 1fr));
   gap: clamp(12px, 1.5vw, 18px);
+  align-items: start;
 }
 
 #dex-submit .dx-submit-gate-card {
@@ -502,10 +502,12 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Catalog-carousel-style media: a full-bleed image capping the card. */
+/* Catalog-carousel-style media: a full-bleed image capping the card. A fixed,
+   compact height (rather than a wide aspect ratio) keeps the whole card — copy
+   and CTA included — inside the gate's available height so nothing clips. */
 #dex-submit .dx-submit-gate-media {
   display: block;
-  aspect-ratio: 16 / 9;
+  height: clamp(150px, 18vh, 210px);
   overflow: hidden;
   border-bottom: 1px solid var(--dx-submit-field-rim);
 }
