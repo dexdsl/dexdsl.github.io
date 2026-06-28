@@ -1,0 +1,29 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/bridge.squarespace.css">
+<link rel="stylesheet" href="/css/components/dx-layout.css">
+<link rel="stylesheet" href="/css/components/dx-surface.css">
+<link rel="stylesheet" href="/css/components/dx-controls.css">
+<link rel="stylesheet" href="/css/components/dx-nav.css">
+<link rel="stylesheet" href="/css/components/dx-submit-samples.css">
+<link rel="stylesheet" href="/css/fonts.css">
+<link rel="stylesheet" href="/assets/css/dex.css">
+<style>body{margin:0;min-height:100vh;background:linear-gradient(150deg,#2a2030,#241a30 45%,#0e1320);padding:48px;box-sizing:border-box}
+.panel{height:760px;border-radius:18px;overflow:hidden;background:rgba(20,16,26,.5)}</style>
+</head><body>
+<div class="panel"><div id="dex-submit" style="height:100%;display:block">
+<div class="dx-submit-shell dx-submit-shell--gate" data-dx-submit-shell="true" style="height:100%">
+<section class="dx-submit-main dx-submit-surface dx-submit-gate" data-dx-submit-step="flow-gate">
+<header class="dx-submit-heading"><p class="dx-submit-kicker">Submit</p><h1 class="dx-submit-heading-title">Where are you submitting?</h1><p class="dx-submit-copy">Pick a lane to begin. Each one routes your work to the right queue and reviewers — you can switch later.</p></header>
+<div class="dx-submit-gate-grid" id="g"></div>
+</section></div></div></div>
+<script>
+function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;}
+function card(o){const c=el('button','dx-submit-gate-card');c.type='button';
+ const m=el('span','dx-submit-gate-media'+(o.fit==='contain'?' dx-submit-gate-media--contain':''));const i=el('img','dx-submit-gate-img');i.src=o.image;i.alt='';m.appendChild(i);c.appendChild(m);
+ const cp=el('span','dx-submit-gate-copy');cp.appendChild(el('span','dx-submit-gate-kicker',o.k));cp.appendChild(el('span','dx-submit-gate-title',o.t));cp.appendChild(el('span','dx-submit-gate-body',o.b));if(o.m)cp.appendChild(el('span','dx-submit-gate-meta',o.m));cp.appendChild(el('span','dx-submit-gate-cta dx-button-element dx-button-size--md dx-button-element--primary','Choose →'));c.appendChild(cp);return c;}
+const g=document.getElementById('g');
+g.appendChild(card({k:'Open library',t:'Sample submission',b:'Add a recording to the Dex library. We split it into labelled A–E sections (plus X) so it is searchable and release-ready.',m:'Always open · weekly quota applies',image:'/assets/catalog/snare-drum-matt-leveque.jpg'}));
+g.appendChild(card({k:'IN DEX call',t:'MINI-DEX',b:'Short volunteer call entries with quick turnaround.',m:'Active cycle · IN DEX MINIDEX2023.2',image:'/assets/series/index.png',fit:'contain'}));
+</script></body></html>

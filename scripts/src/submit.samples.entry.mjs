@@ -3229,13 +3229,16 @@ import { animate } from 'framer-motion/dom';
     }
   }
 
+  // Mirrors the catalog-carousel slide: full-bleed media on top, then a copy
+  // block (kicker · title · supporting line · meta) capped by a full-width
+  // primary button — the gate's equivalent of the carousel's "VIEW COLLECTION".
   function buildGateCard({ kicker, title, body, meta, image, imageAlt, imageFit, onChoose }) {
     const card = create('button', 'dx-submit-gate-card');
     card.type = 'button';
     card.setAttribute('data-dx-submit-gate-choice', 'true');
 
+    const media = create('span', `dx-submit-gate-media${imageFit === 'contain' ? ' dx-submit-gate-media--contain' : ''}`);
     if (image) {
-      const media = create('span', `dx-submit-gate-media${imageFit === 'contain' ? ' dx-submit-gate-media--contain' : ''}`);
       const img = document.createElement('img');
       img.className = 'dx-submit-gate-img';
       img.src = image;
@@ -3243,17 +3246,15 @@ import { animate } from 'framer-motion/dom';
       img.loading = 'lazy';
       img.decoding = 'async';
       media.appendChild(img);
-      card.appendChild(media);
     }
+    card.appendChild(media);
 
     const copy = create('span', 'dx-submit-gate-copy');
-    copy.append(
-      create('span', 'dx-submit-gate-kicker', kicker),
-      create('span', 'dx-submit-gate-title', title),
-      create('span', 'dx-submit-gate-body', body),
-    );
+    copy.appendChild(create('span', 'dx-submit-gate-kicker', kicker));
+    copy.appendChild(create('span', 'dx-submit-gate-title', title));
+    copy.appendChild(create('span', 'dx-submit-gate-body', body));
     if (meta) copy.appendChild(create('span', 'dx-submit-gate-meta', meta));
-    copy.appendChild(create('span', 'dx-submit-gate-cta', 'Choose →'));
+    copy.appendChild(create('span', 'dx-submit-gate-cta dx-button-element dx-button-size--md dx-button-element--primary', 'Choose →'));
     card.appendChild(copy);
 
     if (typeof onChoose === 'function') card.addEventListener('click', onChoose);
