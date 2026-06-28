@@ -482,7 +482,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(248px, 1fr));
   gap: clamp(12px, 1.5vw, 18px);
-  align-items: start;
+  align-items: stretch;
 }
 
 /* Gate cards are a 1:1 port of the catalog-carousel slide: a light card with
@@ -497,7 +497,7 @@
   min-width: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto auto;
+  grid-template-rows: auto 1fr;
   gap: 0;
   padding: 0;
   border-radius: var(--dx-radius-md, 14px);
@@ -560,6 +560,9 @@
   flex-direction: column;
   gap: 7px;
   padding: clamp(16px, 1.6vw, 22px);
+  /* The card is a <button>, which inherits white-space: nowrap; reset it so the
+     copy lines wrap inside the card instead of overflowing and clipping. */
+  white-space: normal;
 }
 
 #dex-submit .dx-submit-gate-kicker {
@@ -597,7 +600,7 @@
 /* CTA — full-width primary button, the gate's "VIEW COLLECTION". Inherits the
    gradient/skin from .dx-button-element--primary; we only stretch it. */
 #dex-submit .dx-submit-gate-cta {
-  margin-top: 6px;
+  margin-top: auto;
   width: 100%;
   justify-content: center;
   text-align: center;
