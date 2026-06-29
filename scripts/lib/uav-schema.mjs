@@ -117,6 +117,11 @@ export const uavCollectionSchema = z.object({
   imageSrc: z.string().trim().default(''),
   previewUrl: z.string().trim().default(''),
   description: z.string().default(''),
+  recordingIndex: z.object({
+    sourceUrl: z.string().trim().default(''),
+    pdfRef: z.string().trim().default(''),
+    bundleRef: z.string().trim().default(''),
+  }).default({}),
   series: z.array(uavSeriesSchema).default([]),
   lifecycle: z.object({
     createdAt: z.string().min(1),

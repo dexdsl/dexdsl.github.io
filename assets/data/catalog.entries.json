@@ -1,6 +1,6 @@
 {
   "source": "live-dexdsl-com-catalog",
-  "generated_at": "2026-06-29T01:21:47.533Z",
+  "generated_at": "2026-06-29T04:01:50.010Z",
   "anchors": {
     "performer": "#dex-performer",
     "instrument": "#dex-instrument",
@@ -40,7 +40,8 @@
       "TWO ORGANS",
       "VOICE W/ EVERYDAY OBJECT MANIPULATION"
     ],
-    "protected_char_count": 28
+    "protected_char_count": 28,
+    "uav_count": 1
   },
   "spotlight": {
     "entry_id": "tim-feeney",
@@ -56,7 +57,6 @@
       "id": "electric-guitar-pedals-ethan-bailey-gould",
       "title_raw": "ELECTRIC GUITAR + PEDALS",
       "performer_raw": "ethan bailey-gould",
-      "performer_display": "Bailey-Gould, Ethan",
       "instrument_family": [
         "ELECTRIC GUITAR + pedals"
       ],
@@ -75,31 +75,12 @@
       "lookup_norm": "e.gtr. ba av2023 s1",
       "instrument_norm": "electric guitar + pedals",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Bailey-Gould",
-          "given": "Ethan",
-          "display": "Bailey-Gould, Ethan",
-          "sort": "bailey-gould, ethan"
-        }
-      ],
-      "lookup": {
-        "family": "E",
-        "family_label": "Electronics",
-        "instrument": "Gtr",
-        "cutter": "Ba",
-        "medium": "AV",
-        "medium_label": "Audiovisual",
-        "year": 2023,
-        "season": "S1"
-      }
+      "kind": "catalog"
     },
     {
       "id": "amplified-knives-tyler-jordan",
       "title_raw": "AMPLIFIED KNIVES",
       "performer_raw": "tyler jordan",
-      "performer_display": "Jordan, Tyler",
       "instrument_family": [
         "AMPLIFIED KNIVES"
       ],
@@ -118,31 +99,12 @@
       "lookup_norm": "e.kni. jo av2023 s1",
       "instrument_norm": "amplified knives",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Jordan",
-          "given": "Tyler",
-          "display": "Jordan, Tyler",
-          "sort": "jordan, tyler"
-        }
-      ],
-      "lookup": {
-        "family": "E",
-        "family_label": "Electronics",
-        "instrument": "Kni",
-        "cutter": "Jo",
-        "medium": "AV",
-        "medium_label": "Audiovisual",
-        "year": 2023,
-        "season": "S1"
-      }
+      "kind": "catalog"
     },
     {
       "id": "no-input-mixer-jared-murphy",
       "title_raw": "NO INPUT MIXER SET",
       "performer_raw": "jared murphy",
-      "performer_display": "Murphy, Jared",
       "instrument_family": [
         "NO IMPUT MIXING BOARD"
       ],
@@ -161,31 +123,12 @@
       "lookup_norm": "e.noi. mu av2023 s1",
       "instrument_norm": "no imput mixing board",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Murphy",
-          "given": "Jared",
-          "display": "Murphy, Jared",
-          "sort": "murphy, jared"
-        }
-      ],
-      "lookup": {
-        "family": "E",
-        "family_label": "Electronics",
-        "instrument": "Noi",
-        "cutter": "Mu",
-        "medium": "AV",
-        "medium_label": "Audiovisual",
-        "year": 2023,
-        "season": "S1"
-      }
+      "kind": "catalog"
     },
     {
       "id": "prepared-harpsichord-suarez-solis",
       "title_raw": "PREPARED HARPSICHORD",
       "performer_raw": "suarez-solis, sebastian",
-      "performer_display": "Suarez-Solis, Sebastian",
       "instrument_family": [
         "PREPARED HARPSICHORD"
       ],
@@ -204,31 +147,12 @@
       "lookup_norm": "k.hps. su av2023 s1",
       "instrument_norm": "prepared harpsichord",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Suarez-Solis",
-          "given": "Sebastian",
-          "display": "Suarez-Solis, Sebastian",
-          "sort": "suarez-solis, sebastian"
-        }
-      ],
-      "lookup": {
-        "family": "K",
-        "family_label": "Keyboards",
-        "instrument": "Hps",
-        "cutter": "Su",
-        "medium": "AV",
-        "medium_label": "Audiovisual",
-        "year": 2023,
-        "season": "S1"
-      }
+      "kind": "catalog"
     },
     {
       "id": "2-organs-midori-ataka",
       "title_raw": "“2 ORGANS”: PIPE ORGAN (“GRISWOLD”), PORTATIVE ORGAN",
       "performer_raw": "midori ataka",
-      "performer_display": "Ataka, Midori",
       "instrument_family": [
         "TWO ORGANS"
       ],
@@ -247,31 +171,12 @@
       "lookup_norm": "k.org. at av2023 s1",
       "instrument_norm": "two organs",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Ataka",
-          "given": "Midori",
-          "display": "Ataka, Midori",
-          "sort": "ataka, midori"
-        }
-      ],
-      "lookup": {
-        "family": "K",
-        "family_label": "Keyboards",
-        "instrument": "Org",
-        "cutter": "At",
-        "medium": "AV",
-        "medium_label": "Audiovisual",
-        "year": 2023,
-        "season": "S1"
-      }
+      "kind": "catalog"
     },
     {
       "id": "hammered-dulcimer-cameron-church",
       "title_raw": "PREPARED HAM‌MERED DULCIMER + DIGITAL SIGNAL PROCES‌SOR",
       "performer_raw": "cameron church",
-      "performer_display": "Church, Cameron",
       "instrument_family": [
         "PREPARED HAM‌MERED DULCIMER + DIGITAL SIGNAL PROCES‌SOR"
       ],
@@ -290,31 +195,12 @@
       "lookup_norm": "p.hdl. ch av2023 s1",
       "instrument_norm": "prepared hammered dulcimer + digital signal processor prepared hammered dulcimer",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Church",
-          "given": "Cameron",
-          "display": "Church, Cameron",
-          "sort": "church, cameron"
-        }
-      ],
-      "lookup": {
-        "family": "P",
-        "family_label": "Percussion",
-        "instrument": "Hdl",
-        "cutter": "Ch",
-        "medium": "AV",
-        "medium_label": "Audiovisual",
-        "year": 2023,
-        "season": "S1"
-      }
+      "kind": "catalog"
     },
     {
       "id": "prepared-bass-viol-suarez-solis",
       "title_raw": "PREPARED BAS‌S VIOL",
       "performer_raw": "suarez-solis, sebastian",
-      "performer_display": "Suarez-Solis, Sebastian",
       "instrument_family": [
         "PREPARED BAS‌S VIOL"
       ],
@@ -333,31 +219,12 @@
       "lookup_norm": "s.vdg. su av2023 s1",
       "instrument_norm": "prepared bass viol",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Suarez-Solis",
-          "given": "Sebastian",
-          "display": "Suarez-Solis, Sebastian",
-          "sort": "suarez-solis, sebastian"
-        }
-      ],
-      "lookup": {
-        "family": "S",
-        "family_label": "Strings",
-        "instrument": "VdG",
-        "cutter": "Su",
-        "medium": "AV",
-        "medium_label": "Audiovisual",
-        "year": 2023,
-        "season": "S1"
-      }
+      "kind": "catalog"
     },
     {
       "id": "cello-emmanuel-losa",
       "title_raw": "CEL‌LO",
       "performer_raw": "emmanuel losa",
-      "performer_display": "Losa, Emmanuel",
       "instrument_family": [
         "CEL‌LO"
       ],
@@ -376,31 +243,12 @@
       "lookup_norm": "s.vlc. lo av2023 s1",
       "instrument_norm": "cello",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Losa",
-          "given": "Emmanuel",
-          "display": "Losa, Emmanuel",
-          "sort": "losa, emmanuel"
-        }
-      ],
-      "lookup": {
-        "family": "S",
-        "family_label": "Strings",
-        "instrument": "Vlc",
-        "cutter": "Lo",
-        "medium": "AV",
-        "medium_label": "Audiovisual",
-        "year": 2023,
-        "season": "S1"
-      }
+      "kind": "catalog"
     },
     {
       "id": "voice-everyday-object-manipulation-levi-lu",
       "title_raw": "VOICE W/ EVERYDAY OBJECT MANIPULATION",
       "performer_raw": "qiujiang levi lu",
-      "performer_display": "Lu, Qiujiang Levi",
       "instrument_family": [
         "VOICE W/ EVERYDAY OBJECT MANIPULATION"
       ],
@@ -419,31 +267,12 @@
       "lookup_norm": "v.obj. lu a2023 s1",
       "instrument_norm": "voice w/ everyday object manipulation",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Lu",
-          "given": "Qiujiang Levi",
-          "display": "Lu, Qiujiang Levi",
-          "sort": "lu, qiujiang levi"
-        }
-      ],
-      "lookup": {
-        "family": "V",
-        "family_label": "Voice + Body",
-        "instrument": "Obj",
-        "cutter": "Lu",
-        "medium": "A",
-        "medium_label": "Audio",
-        "year": 2023,
-        "season": "S1"
-      }
+      "kind": "catalog"
     },
     {
       "id": "cybernetic-scat-paul-hermansen",
       "title_raw": "CYBERNETIC SCAT",
       "performer_raw": "paul* hermansen",
-      "performer_display": "Hermansen, Paul",
       "instrument_family": [
         "CYBERNETIC SCAT"
       ],
@@ -458,35 +287,16 @@
       "featured": false,
       "sort_key": "S1::V.Sc. He A2023 S1",
       "title_norm": "cybernetic scat",
-      "performer_norm": "hermansen, paul",
+      "performer_norm": "hermansen, paul*",
       "lookup_norm": "v.sc. he a2023 s1",
       "instrument_norm": "cybernetic scat",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Hermansen",
-          "given": "Paul",
-          "display": "Hermansen, Paul",
-          "sort": "hermansen, paul"
-        }
-      ],
-      "lookup": {
-        "family": "V",
-        "family_label": "Voice + Body",
-        "instrument": "Sc",
-        "cutter": "He",
-        "medium": "A",
-        "medium_label": "Audio",
-        "year": 2023,
-        "season": "S1"
-      }
+      "kind": "catalog"
     },
     {
       "id": "amplified-tv-sam-pluta",
       "title_raw": "FEEDBACK TELEVISIONS",
       "performer_raw": "sam pluta",
-      "performer_display": "Pluta, Sam",
       "instrument_family": [
         "FE‌EDBACK TELEVISIONS"
       ],
@@ -505,31 +315,12 @@
       "lookup_norm": "x.tlv. pl av2023 s1",
       "instrument_norm": "feedback televisions",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Pluta",
-          "given": "Sam",
-          "display": "Pluta, Sam",
-          "sort": "pluta, sam"
-        }
-      ],
-      "lookup": {
-        "family": "X",
-        "family_label": "Other",
-        "instrument": "Tlv",
-        "cutter": "Pl",
-        "medium": "AV",
-        "medium_label": "Audiovisual",
-        "year": 2023,
-        "season": "S1"
-      }
+      "kind": "catalog"
     },
     {
       "id": "andrew-chanover",
       "title_raw": "ELECTRIC GUITAR",
       "performer_raw": "Andrew Chanover",
-      "performer_display": "Chanover, Andrew",
       "instrument_family": [
         "ELECTRIC GUITAR"
       ],
@@ -548,31 +339,12 @@
       "lookup_norm": "e.gtr. ch av2024 s2",
       "instrument_norm": "electric guitar",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Chanover",
-          "given": "Andrew",
-          "display": "Chanover, Andrew",
-          "sort": "chanover, andrew"
-        }
-      ],
-      "lookup": {
-        "family": "E",
-        "family_label": "Electronics",
-        "instrument": "Gtr",
-        "cutter": "Ch",
-        "medium": "AV",
-        "medium_label": "Audiovisual",
-        "year": 2024,
-        "season": "S2"
-      }
+      "kind": "catalog"
     },
     {
       "id": "electric-guitar-chris-mann",
       "title_raw": "ELECTRIC GUITAR",
       "performer_raw": "Chris Mann",
-      "performer_display": "Mann, Chris",
       "instrument_family": [
         "Electric Guitar"
       ],
@@ -591,31 +363,12 @@
       "lookup_norm": "e.gtr. ma a2024 s2",
       "instrument_norm": "dholak and electronics electric guitar",
       "status": "draft",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Mann",
-          "given": "Chris",
-          "display": "Mann, Chris",
-          "sort": "mann, chris"
-        }
-      ],
-      "lookup": {
-        "family": "E",
-        "family_label": "Electronics",
-        "instrument": "Gtr",
-        "cutter": "Ma",
-        "medium": "A",
-        "medium_label": "Audio",
-        "year": 2024,
-        "season": "S2"
-      }
+      "kind": "catalog"
     },
     {
       "id": "bojun-zhang",
       "title_raw": "MODULAR SYNTH",
       "performer_raw": "Bojun Zhang",
-      "performer_display": "Zhang, Bojun",
       "instrument_family": [
         "MODULAR SYNTH"
       ],
@@ -634,31 +387,12 @@
       "lookup_norm": "e.mod. zh av2024 s2",
       "instrument_norm": "modular synth",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Zhang",
-          "given": "Bojun",
-          "display": "Zhang, Bojun",
-          "sort": "zhang, bojun"
-        }
-      ],
-      "lookup": {
-        "family": "E",
-        "family_label": "Electronics",
-        "instrument": "Mod",
-        "cutter": "Zh",
-        "medium": "AV",
-        "medium_label": "Audiovisual",
-        "year": 2024,
-        "season": "S2"
-      }
+      "kind": "catalog"
     },
     {
       "id": "anant-shah",
       "title_raw": "DHOLAK AND ELECTRONICS",
       "performer_raw": "Anant Shah",
-      "performer_display": "Shah, Anant",
       "instrument_family": [
         "ant shah"
       ],
@@ -677,31 +411,12 @@
       "lookup_norm": "p.dho. sh av2024 s2",
       "instrument_norm": "ant shah dholak and electronics",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Shah",
-          "given": "Anant",
-          "display": "Shah, Anant",
-          "sort": "shah, anant"
-        }
-      ],
-      "lookup": {
-        "family": "P",
-        "family_label": "Percussion",
-        "instrument": "Dho",
-        "cutter": "Sh",
-        "medium": "AV",
-        "medium_label": "Audiovisual",
-        "year": 2024,
-        "season": "S2"
-      }
+      "kind": "catalog"
     },
     {
       "id": "as-though-im-slipping",
       "title_raw": "AS THOUGH I’M SLIP‌PING - MIXED ENSEMBLE",
       "performer_raw": "Paul Yorke, Sofi Jacquez",
-      "performer_display": "Yorke, Paul & Jáquez, Sofí",
       "instrument_family": [
         "AS THOUGH I’M SLIP‌PING"
       ],
@@ -716,41 +431,16 @@
       "featured": false,
       "sort_key": "S2::P.Ens. JaYo AV2024 S2",
       "title_norm": "as though i’m slipping - mixed ensemble",
-      "performer_norm": "yorke, paul & jáquez, sofí",
+      "performer_norm": "jáquez, sofí & yorke, paul",
       "lookup_norm": "p.ens. jayo av2024 s2",
       "instrument_norm": "as though i’m slipping",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Yorke",
-          "given": "Paul",
-          "display": "Yorke, Paul",
-          "sort": "yorke, paul"
-        },
-        {
-          "family": "Jáquez",
-          "given": "Sofí",
-          "display": "Jáquez, Sofí",
-          "sort": "jáquez, sofí"
-        }
-      ],
-      "lookup": {
-        "family": "P",
-        "family_label": "Percussion",
-        "instrument": "Ens",
-        "cutter": "JaYo",
-        "medium": "AV",
-        "medium_label": "Audiovisual",
-        "year": 2024,
-        "season": "S2"
-      }
+      "kind": "catalog"
     },
     {
       "id": "multiperc",
       "title_raw": "MULTIPLE PERCUS‌SION",
       "performer_raw": "Ben Giroux",
-      "performer_display": "Giroux, Ben",
       "instrument_family": [
         "MULTIPLE PERCUSSION"
       ],
@@ -769,31 +459,12 @@
       "lookup_norm": "p.mpc. gi av2024 s2",
       "instrument_norm": "multiple percussion",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Giroux",
-          "given": "Ben",
-          "display": "Giroux, Ben",
-          "sort": "giroux, ben"
-        }
-      ],
-      "lookup": {
-        "family": "P",
-        "family_label": "Percussion",
-        "instrument": "Mpc",
-        "cutter": "Gi",
-        "medium": "AV",
-        "medium_label": "Audiovisual",
-        "year": 2024,
-        "season": "S2"
-      }
+      "kind": "catalog"
     },
     {
       "id": "tim-feeney",
       "title_raw": "PREPARED FLO‌OR TOM",
       "performer_raw": "Tim Feeney",
-      "performer_display": "Feeney, Tim",
       "instrument_family": [
         "Prepared Floor Tom"
       ],
@@ -812,31 +483,12 @@
       "lookup_norm": "p.pto. fe av2024 s2",
       "instrument_norm": "prepared floor tom",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Feeney",
-          "given": "Tim",
-          "display": "Feeney, Tim",
-          "sort": "feeney, tim"
-        }
-      ],
-      "lookup": {
-        "family": "P",
-        "family_label": "Percussion",
-        "instrument": "Pto",
-        "cutter": "Fe",
-        "medium": "AV",
-        "medium_label": "Audiovisual",
-        "year": 2024,
-        "season": "S2"
-      }
+      "kind": "catalog"
     },
     {
       "id": "jakob-heinemann",
       "title_raw": "SPLINTERINGS for DOUBLE BAS‌S",
       "performer_raw": "Jakob Heinemann",
-      "performer_display": "Heinemann, Jakob",
       "instrument_family": [
         "SPLINTERINGS for DOUBLE BAS‌S"
       ],
@@ -851,35 +503,16 @@
       "featured": false,
       "sort_key": "S2::S.Pdb. He AV2024 S2",
       "title_norm": "splinterings for double bass",
-      "performer_norm": "heinemann, jakob",
+      "performer_norm": "jakob heinemann",
       "lookup_norm": "s.pdb. he av2024 s2",
       "instrument_norm": "splinterings for double bass",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Heinemann",
-          "given": "Jakob",
-          "display": "Heinemann, Jakob",
-          "sort": "heinemann, jakob"
-        }
-      ],
-      "lookup": {
-        "family": "S",
-        "family_label": "Strings",
-        "instrument": "Pdb",
-        "cutter": "He",
-        "medium": "AV",
-        "medium_label": "Audiovisual",
-        "year": 2024,
-        "season": "S2"
-      }
+      "kind": "catalog"
     },
     {
       "id": "aidan-yeats",
       "title_raw": "GUITAR AND VOICE",
       "performer_raw": "Aidan Yeats",
-      "performer_display": "Yeats, Aidan",
       "instrument_family": [
         "GUITAR AND VOICE"
       ],
@@ -898,31 +531,12 @@
       "lookup_norm": "v.sng. ye av2024 s2",
       "instrument_norm": "guitar and voice",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Yeats",
-          "given": "Aidan",
-          "display": "Yeats, Aidan",
-          "sort": "yeats, aidan"
-        }
-      ],
-      "lookup": {
-        "family": "V",
-        "family_label": "Voice + Body",
-        "instrument": "Sng",
-        "cutter": "Ye",
-        "medium": "AV",
-        "medium_label": "Audiovisual",
-        "year": 2024,
-        "season": "S2"
-      }
+      "kind": "catalog"
     },
     {
       "id": "bassoon-and-electronics",
       "title_raw": "BAS‌SO‌ON + ELECTRONICS WITH GENERATIVE VIDEO",
       "performer_raw": "Arlo Tomecek, Max Coleman",
-      "performer_display": "Tomecek, Arlo & Coleman, Max",
       "instrument_family": [
         "BAS‌SO‌ON + ELECTRONICS WITH GENERATIVE VIDEO"
       ],
@@ -937,41 +551,16 @@
       "featured": false,
       "sort_key": "S2::W.Bsn. CoTo AV2024 S2",
       "title_norm": "bassoon + electronics with generative video",
-      "performer_norm": "tomecek, arlo & coleman, max",
+      "performer_norm": "coleman, max & tomecek, arlo",
       "lookup_norm": "w.bsn. coto av2024 s2",
       "instrument_norm": "bassoon + electronics with generative video",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Tomecek",
-          "given": "Arlo",
-          "display": "Tomecek, Arlo",
-          "sort": "tomecek, arlo"
-        },
-        {
-          "family": "Coleman",
-          "given": "Max",
-          "display": "Coleman, Max",
-          "sort": "coleman, max"
-        }
-      ],
-      "lookup": {
-        "family": "W",
-        "family_label": "Winds",
-        "instrument": "Bsn",
-        "cutter": "CoTo",
-        "medium": "AV",
-        "medium_label": "Audiovisual",
-        "year": 2024,
-        "season": "S2"
-      }
+      "kind": "catalog"
     },
     {
       "id": "prepared-oboe-sky-macklay",
       "title_raw": "PREPARED OBOE",
       "performer_raw": "Sky Macklay",
-      "performer_display": "Macklay, Sky",
       "instrument_family": [
         "PREPARED OBOE"
       ],
@@ -990,31 +579,12 @@
       "lookup_norm": "w.ob. ma av2024 s2",
       "instrument_norm": "prepared oboe",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Macklay",
-          "given": "Sky",
-          "display": "Macklay, Sky",
-          "sort": "macklay, sky"
-        }
-      ],
-      "lookup": {
-        "family": "W",
-        "family_label": "Winds",
-        "instrument": "Ob",
-        "cutter": "Ma",
-        "medium": "AV",
-        "medium_label": "Audiovisual",
-        "year": 2024,
-        "season": "S2"
-      }
+      "kind": "catalog"
     },
     {
       "id": "this-is-a-tangible-space",
       "title_raw": "THIS IS A TANGIBLE SPACE - MULTIMEDIA",
       "performer_raw": "Grant Johnson",
-      "performer_display": "Johnson, Grant",
       "instrument_family": [
         "THIS IS A TANGIBLE SPACE for MULTIMEDIA"
       ],
@@ -1033,31 +603,12 @@
       "lookup_norm": "x.mul. jo av2024 s2",
       "instrument_norm": "this is a tangible space for multimedia this is a tangible space",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Johnson",
-          "given": "Grant",
-          "display": "Johnson, Grant",
-          "sort": "johnson, grant"
-        }
-      ],
-      "lookup": {
-        "family": "X",
-        "family_label": "Other",
-        "instrument": "Mul",
-        "cutter": "Jo",
-        "medium": "AV",
-        "medium_label": "Audiovisual",
-        "year": 2024,
-        "season": "S2"
-      }
+      "kind": "catalog"
     },
     {
       "id": "amplified-printer",
       "title_raw": "AMPLIFIED PRINTER",
       "performer_raw": "Cameron Church",
-      "performer_display": "Church, Cameron",
       "instrument_family": [
         "AMPLIFIED PRINTER"
       ],
@@ -1076,31 +627,12 @@
       "lookup_norm": "x.prt. ch av2024 s2",
       "instrument_norm": "amplified printer",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "Church",
-          "given": "Cameron",
-          "display": "Church, Cameron",
-          "sort": "church, cameron"
-        }
-      ],
-      "lookup": {
-        "family": "X",
-        "family_label": "Other",
-        "instrument": "Prt",
-        "cutter": "Ch",
-        "medium": "AV",
-        "medium_label": "Audiovisual",
-        "year": 2024,
-        "season": "S2"
-      }
+      "kind": "catalog"
     },
     {
       "id": "snare-drum-matt-leveque",
       "title_raw": "SNARE DRUM",
       "performer_raw": "Matt LeVeque",
-      "performer_display": "LeVeque, Matt",
       "instrument_family": [
         "SNARE DRUM"
       ],
@@ -1115,29 +647,11 @@
       "featured": false,
       "sort_key": "snare-drum-matt-leveque",
       "title_norm": "",
-      "performer_norm": "leveque, matt",
-      "lookup_norm": "p.sdr. le av2024 s2",
+      "performer_norm": "",
+      "lookup_norm": "",
       "instrument_norm": "",
       "status": "active",
-      "kind": "catalog",
-      "performers": [
-        {
-          "family": "LeVeque",
-          "given": "Matt",
-          "display": "LeVeque, Matt",
-          "sort": "leveque, matt"
-        }
-      ],
-      "lookup": {
-        "family": "P",
-        "family_label": "Percussion",
-        "instrument": "Sdr",
-        "cutter": "Le",
-        "medium": "AV",
-        "medium_label": "Audiovisual",
-        "year": 2024,
-        "season": "S2"
-      }
+      "kind": "catalog"
     },
     {
       "kind": "uav",
@@ -1146,10 +660,10 @@
       "lookup_raw": "DR.Win. Mo 2026 T1",
       "lookup_norm": "dr.win. mo 2026 t1",
       "entry_href": "/uav/mojave-wind-farm/",
-      "image_src": "https://i.ytimg.com/vi/YVLwwSe4m9I/maxresdefault.jpg",
+      "image_src": "https://i.ytimg.com/vi/WaLW7mVWWss/maxresdefault.jpg",
       "image_alt_raw": "Mojave Desert – Wind Farms",
       "featured": false,
-      "status": "draft",
+      "status": "active",
       "sort_key": "UAV::DR.Win. Mo 2026 T1",
       "title_norm": "mojave desert – wind farms",
       "site_norm": "mojave desert california, united states",
@@ -1223,16 +737,7 @@
             "spectrum": "FS"
           }
         ]
-      },
-      "performer_norm": "unknown performer",
-      "performers": [
-        {
-          "family": "Unknown performer",
-          "given": "",
-          "display": "Unknown performer",
-          "sort": "unknown performer"
-        }
-      ]
+      }
     }
   ]
 }

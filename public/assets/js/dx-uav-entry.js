@@ -131,51 +131,75 @@
       });
       shared.refreshFavoriteButtons?.(favorites, document);
 
-      shared.attachUnifiedDownload?.(
-        buildDownloadConfig(record),
-        '#downloads .btn-download',
-        { lookup: collection.lookupRaw, entryHref, favoritesApi: favorites },
-      );
+      // Bind a button to a direct secure bundle download of the given tokens,
+      // mirroring the shared sidebar download-state lifecycle.
+      const bindDirectBundleDownload = (button, tokens) => {
+        if (!(button instanceof HTMLButtonElement) || button.dataset.dxUavDownloadBound === 'true') return;
+        button.dataset.dxUavDownloadBound = 'true';
+        button.addEventListener('click', async () => {
+          const row = button.closest('#downloads') || button.parentElement;
+          shared.setDownloadState?.(row, 'resolving', 'Resolving secure download…');
+          button.disabled = true;
+          try {
+            const result = await shared.requestBundleDownload?.({
+              lookup: collection.lookupRaw,
+              tokens,
+              onQueuedTick: () => shared.setDownloadState?.(row, 'queued', 'Preparing bundle…'),
+            });
+            shared.setDownloadState?.(row, 'ready', 'Ready. Opening download…');
+            shared.openSignedUrl?.(result?.signedUrl);
+          } catch (error) {
+            const code = String(error?.code || '').toLowerCase();
+            shared.setDownloadState?.(
+              row,
+              code === 'forbidden' ? 'forbidden' : code === 'not-found' ? 'not-found' : 'error',
+              code === 'forbidden'
+                ? 'Access denied (403).'
+                : code === 'not-found'
+                ? 'Download not found (404).'
+                : 'Download failed (DX-DL-500).',
+            );
+          } finally {
+            button.disabled = false;
+          }
+        });
+      };
+
+      // GET FILES: when the collection declares a curated recording-index bundle
+      // ref (bundle:…), download it directly; otherwise fall back to the unified
+      // per-file selection flow built from the manifest.
+      const bundleRef = String(collection.recordingIndex?.bundleRef || '').trim();
+      const bundleToken = /^bundle:[A-Za-z0-9._:\- ]{3,240}$/i.test(bundleRef) ? bundleRef : '';
+      if (bundleToken) {
+        bindDirectBundleDownload(document.querySelector('#downloads .btn-download'), [bundleToken]);
+      } else {
+        shared.attachUnifiedDownload?.(
+          buildDownloadConfig(record),
+          '#downloads .btn-download',
+          { lookup: collection.lookupRaw, entryHref, favoritesApi: favorites },
+        );
+      }
 
       const recordingButton = document.querySelector('[data-dx-uav-recording-index="1"]');
       const recordingFile = (record?.manifest?.groups || [])
         .flatMap((group) => group.buckets || [])
         .flatMap((bucket) => bucket.files || [])
         .find((file) => !file.missing && file.role === 'recording_index_pdf');
+      // Prefer the explicit per-collection recording-index PDF ref (asset:/lookup:),
+      // falling back to the X-bucket recording_index_pdf file when no ref is set.
+      const pdfRef = String(collection.recordingIndex?.pdfRef || '').trim();
+      const recordingToken = /^(asset|lookup):/i.test(pdfRef)
+        ? pdfRef
+        : recordingFile
+        ? `asset:${recordingFile.driveFileId}`
+        : '';
       if (recordingButton instanceof HTMLButtonElement) {
-        if (!recordingFile) {
+        if (!recordingToken) {
           recordingButton.disabled = true;
           recordingButton.setAttribute('aria-disabled', 'true');
           recordingButton.title = 'Recording index PDF unavailable';
-        } else if (recordingButton.dataset.dxUavDownloadBound !== 'true') {
-          recordingButton.dataset.dxUavDownloadBound = 'true';
-          recordingButton.addEventListener('click', async () => {
-            const row = recordingButton.closest('#downloads') || recordingButton.parentElement;
-            shared.setDownloadState?.(row, 'resolving', 'Resolving secure download…');
-            recordingButton.disabled = true;
-            try {
-              const result = await shared.requestBundleDownload?.({
-                lookup: collection.lookupRaw,
-                tokens: [`asset:${recordingFile.driveFileId}`],
-                onQueuedTick: () => shared.setDownloadState?.(row, 'queued', 'Preparing bundle…'),
-              });
-              shared.setDownloadState?.(row, 'ready', 'Ready. Opening download…');
-              shared.openSignedUrl?.(result?.signedUrl);
-            } catch (error) {
-              const code = String(error?.code || '').toLowerCase();
-              shared.setDownloadState?.(
-                row,
-                code === 'forbidden' ? 'forbidden' : code === 'not-found' ? 'not-found' : 'error',
-                code === 'forbidden'
-                  ? 'Access denied (403).'
-                  : code === 'not-found'
-                  ? 'Download not found (404).'
-                  : 'Download failed (DX-DL-500).',
-              );
-            } finally {
-              recordingButton.disabled = false;
-            }
-          });
+        } else {
+          bindDirectBundleDownload(recordingButton, [recordingToken]);
         }
       }
       body.dataset.dxUavComponentsBound = 'true';

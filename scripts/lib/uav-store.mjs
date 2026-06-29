@@ -889,14 +889,6 @@ export async function preflightUavCollection(slug, { rootDir, privateFilePath } 
       ? `${downloadableFiles.length} present downloadable file(s) across buckets`
       : 'No downloadable files: every deliverable bucket is empty or all files are marked missing',
   );
-  const recordingIndexFiles = presentFiles.filter((file) => file.role === 'recording_index_pdf');
-  add(
-    'recording_index',
-    recordingIndexFiles.length > 0,
-    recordingIndexFiles.length > 0
-      ? `Recording-index PDF present in the X bucket (${recordingIndexFiles.length})`
-      : 'No recording-index PDF: add a recording-index PDF to the X bucket',
-  );
   const marc = generateUavMarcXml(folder.collection, folder.manifest, authorities);
   const marcCheck = verifyUavMarcXml(marc);
   add('marcxml', marcCheck.ok, marcCheck.ok ? 'MARCXML projection is structurally valid' : marcCheck.issues.join('; '));

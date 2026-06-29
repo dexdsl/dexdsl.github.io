@@ -15,8 +15,80 @@
         },
         {
           "bucket": "X",
-          "folderId": "",
-          "files": []
+          "folderId": "1t8McgYk9Aj7sqkUjnUZCJzuWUuRpIy1S",
+          "scannedAt": "2026-06-29T03:59:57.456Z",
+          "files": [
+            {
+              "driveFileId": "1yRKiERCE58W_U71Jq60STUjhisYOYtu_",
+              "bucketNumber": "X.1",
+              "lookupRaw": "DR.Win. Mo V2026 T1 [FS] X.1",
+              "originalName": "DJI_0872.MOV",
+              "relativePath": "DJI_0872.MOV",
+              "mime": "video/quicktime",
+              "sizeBytes": 3758909579,
+              "missing": false,
+              "role": "raw",
+              "qualifiers": [],
+              "sourceXItems": [],
+              "technical": {}
+            },
+            {
+              "driveFileId": "1bZ6Wv8Nv7PqD-OtYH6lDYpGa3epYqQy-",
+              "bucketNumber": "X.2",
+              "lookupRaw": "DR.Win. Mo V2026 T1 [FS] X.2",
+              "originalName": "DJI_0873.MOV",
+              "relativePath": "DJI_0873.MOV",
+              "mime": "video/quicktime",
+              "sizeBytes": 2698477493,
+              "missing": false,
+              "role": "raw",
+              "qualifiers": [],
+              "sourceXItems": [],
+              "technical": {}
+            },
+            {
+              "driveFileId": "172U2iEcwdP4BjvkbS3kazO33-Q9odXpu",
+              "bucketNumber": "X.3",
+              "lookupRaw": "DR.Win. Mo V2026 T1 [FS] X.3",
+              "originalName": "DJI_0874.MOV",
+              "relativePath": "DJI_0874.MOV",
+              "mime": "video/quicktime",
+              "sizeBytes": 3523066596,
+              "missing": false,
+              "role": "raw",
+              "qualifiers": [],
+              "sourceXItems": [],
+              "technical": {}
+            },
+            {
+              "driveFileId": "1AVk6SE5RvNMGhIgQvjqp0hiqq_j8VPZM",
+              "bucketNumber": "X.4",
+              "lookupRaw": "DR.Win. Mo V2026 T1 [FS] X.4",
+              "originalName": "DJI_0876.MOV",
+              "relativePath": "DJI_0876.MOV",
+              "mime": "video/quicktime",
+              "sizeBytes": 2703461887,
+              "missing": false,
+              "role": "raw",
+              "qualifiers": [],
+              "sourceXItems": [],
+              "technical": {}
+            },
+            {
+              "driveFileId": "1f2ALFmxbOvUnDICs-8Jw5K2Wa_PJN7lH",
+              "bucketNumber": "X.5",
+              "lookupRaw": "DR.Win. Mo V2026 T1 [FS] X.5",
+              "originalName": "DJI_0877.MOV",
+              "relativePath": "DJI_0877.MOV",
+              "mime": "video/quicktime",
+              "sizeBytes": 3455928488,
+              "missing": false,
+              "role": "raw",
+              "qualifiers": [],
+              "sourceXItems": [],
+              "technical": {}
+            }
+          ]
         }
       ]
     }

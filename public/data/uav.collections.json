@@ -1,9 +1,9 @@
 {
   "version": "uav-collections-v1",
-  "generatedAt": "2026-06-29T01:01:19.568Z",
+  "generatedAt": "2026-06-29T04:01:50.005Z",
   "authorities": {
     "version": "uav-authorities-v1",
-    "updatedAt": "2026-06-29T01:01:19.560Z",
+    "updatedAt": "2026-06-29T04:01:50.000Z",
     "subjects": [
       {
         "id": "subject-win",
@@ -65,7 +65,7 @@
       "kind": "uav",
       "slug": "mojave-wind-farm",
       "title": "Mojave Desert – Wind Farms",
-      "status": "draft",
+      "status": "active",
       "lookupRaw": "DR.Win. Mo 2026 T1",
       "lookupNorm": "dr.win. mo 2026 t1",
       "identity": {
@@ -93,9 +93,14 @@
         "Kolari Vision"
       ],
       "creditLinks": {},
-      "imageSrc": "https://i.ytimg.com/vi/YVLwwSe4m9I/maxresdefault.jpg",
-      "previewUrl": "https://www.youtube.com/watch?v=YVLwwSe4m9I",
+      "imageSrc": "https://i.ytimg.com/vi/WaLW7mVWWss/maxresdefault.jpg",
+      "previewUrl": "",
       "description": "Mojave Desert wind farms documented by Dex Digital Sample Library during a full-spectrum UAV capture tour on April 2, 2026. The collection preserves aerial-video deliverables and their associated raw and support materials under CC BY 4.0.",
+      "recordingIndex": {
+        "sourceUrl": "https://docs.google.com/spreadsheets/d/1w-mnwQj-uZTLk7pO3ObfrVw10WSQBhQNfrhkdMBgXhM/edit?usp=drive_link",
+        "pdfRef": "",
+        "bundleRef": ""
+      },
       "series": [
         {
           "id": "aerial-video-fs",
@@ -120,7 +125,7 @@
       ],
       "lifecycle": {
         "createdAt": "2026-06-27T18:44:14.296Z",
-        "updatedAt": "2026-06-28T05:50:49.587Z",
+        "updatedAt": "2026-06-29T04:01:49.981Z",
         "publishedAt": "2026-06-27T18:45:00.192Z"
       }
     }
@@ -133,10 +138,10 @@
       "lookup_raw": "DR.Win. Mo 2026 T1",
       "lookup_norm": "dr.win. mo 2026 t1",
       "entry_href": "/uav/mojave-wind-farm/",
-      "image_src": "https://i.ytimg.com/vi/YVLwwSe4m9I/maxresdefault.jpg",
+      "image_src": "https://i.ytimg.com/vi/WaLW7mVWWss/maxresdefault.jpg",
       "image_alt_raw": "Mojave Desert – Wind Farms",
       "featured": false,
-      "status": "draft",
+      "status": "active",
       "sort_key": "UAV::DR.Win. Mo 2026 T1",
       "title_norm": "mojave desert – wind farms",
       "site_norm": "mojave desert california, united states",

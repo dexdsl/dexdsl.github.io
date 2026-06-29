@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-29T01:21:47.533Z",
+  "generated_at": "2026-06-29T04:01:50.010Z",
   "total": 26,
   "entries": [
     {
@@ -483,8 +483,11 @@
       "entry_href": "/uav/mojave-wind-farm/",
       "title_raw": "Mojave Desert – Wind Farms",
       "lookup_raw": "DR.Win. Mo 2026 T1",
+      "title_norm": "mojave desert – wind farms",
+      "lookup_norm": "dr.win. mo 2026 t1",
       "site_norm": "mojave desert",
       "subject_norm": "wind power plants wind power plants mojave desert",
+      "search_blob": "mojave desert – wind farms dr.win. mo 2026 t1 mojave desert california, united states wind power plants wind power plants mojave desert v fs",
       "uav": {
         "collection_lookup": "DR.Win. Mo 2026 T1",
         "site": {
@@ -554,12 +557,7 @@
             "spectrum": "FS"
           }
         ]
-      },
-      "title_norm": "mojave desert – wind farms",
-      "performer_norm": "",
-      "lookup_norm": "dr.win. mo 2026 t1",
-      "instrument_norm": "",
-      "search_blob": "mojave desert – wind farms dr.win. mo 2026 t1 mojave desert california, united states wind power plants wind power plants mojave desert v fs"
+      }
     }
   ]
 }
