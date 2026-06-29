@@ -1,15 +1,31 @@
 {
+  "slug": "electric-guitar-chris-mann",
+  "title": "ELECTRIC GUITAR",
   "canonical": {
     "instrument": "Electric Guitar",
     "artistName": "Chris Mann"
   },
+  "lifecycle": {
+    "publishedAt": "2026-06-29T02:02:26.318Z",
+    "updatedAt": "2026-06-29T02:02:26.318Z"
+  },
+  "video": {
+    "mode": "url",
+    "dataUrl": "",
+    "dataUrlOriginal": "",
+    "dataHtml": ""
+  },
   "descriptionText": "Chris Mann is an electric guitarist who specializes in improvised noise & ambience performance. He got his start in the indie band Ethan Durelle, who recorded 3 LP’s and played hundreds of shows in the south and midwest. After his band broke up, Chris kept writing music and grew to enjoy the process of testing the limits of sound layering, first through his electronic music project, Trauma Like Rain, and then as a composer, sound designer, and audio editor for indie and branded podcasts. After several years working mainly inside digital work stations, Chris craved the analogue feel of real instruments and hardware, of turning knobs and playing chords. For the last few years, he has been honing his skills as an improv noise guitarist, once again testing the limits of sound layering, only this time with a much greater sense of unpredictability. Each performance is an exploration of juxtapositions - chaos and calm, discordance and beauty, constriction and breath - as well as a practice of loving what is and embracing uncertainty.",
+  "series": "dex",
+  "selectedBuckets": [
+    "A"
+  ],
   "fileSpecs": {
     "bitDepth": 24,
     "channels": "stereo",
     "sampleRate": 48000,
     "staticSizes": {
-      "A": "",
+      "A": "1.3 GB",
       "B": "",
       "C": "",
       "D": "",
@@ -17,18 +33,10 @@
       "X": ""
     }
   },
-  "lifecycle": {
-    "publishedAt": "2026-06-29T01:07:16.672Z",
-    "updatedAt": "2026-06-29T01:57:49.357Z"
-  },
   "metadata": {
     "sampleLength": "",
     "tags": []
   },
-  "selectedBuckets": [
-    "A"
-  ],
-  "series": "dex",
   "sidebarPageConfig": {
     "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Chris Mann.",
     "buckets": [
@@ -130,13 +138,5 @@
     },
     "series": "dex",
     "specialEventImage": "/assets/series/dex.png"
-  },
-  "slug": "electric-guitar-chris-mann",
-  "title": "ELECTRIC GUITAR",
-  "video": {
-    "dataHtml": "",
-    "dataUrl": "",
-    "dataUrlOriginal": "",
-    "mode": "url"
   }
 }
