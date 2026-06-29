@@ -326,6 +326,34 @@
       "points": 50
     },
     {
+          "id": "found-404",
+          "title": "Found a Missing Packet",
+          "category": "profile",
+          "tier": "bronze",
+          "glyph": "explorer",
+          "metricKey": "found404Visits",
+          "threshold": 1,
+          "secret": false,
+          "clueGrowlix": "",
+          "description": "Visited a missing page on Dex.",
+          "sortOrder": 235,
+          "points": 10
+        },
+    {
+      "id": "808-easter-egg",
+      "title": "Vault Visitor",
+      "category": "secret",
+      "tier": "silver",
+      "glyph": "vault",
+      "metricKey": "secretClaimVault",
+      "threshold": 1,
+      "secret": true,
+      "clueGrowlix": "the iconic **-&&& rhythm composer as a page slug",
+      "description": "Claim the vault easter egg.",
+      "sortOrder": 230,
+      "points": 50
+    },
+    {
       "id": "cross-lane-veteran",
       "title": "Cross-lane Veteran",
       "category": "secret",

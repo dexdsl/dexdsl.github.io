@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#e8ebf1">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta charset="utf-8">
-    <title>Redirecting...</title>
+    <title>Page not found — Dex</title>
     <script>
       (function () {
         var p = location.pathname || '/';
@@ -73,17 +73,27 @@
             '</main>'
           ].join('');
         } else {
-          // Default 404 content
+          // Enhanced 404 content (utility-first, mildly playful)
+          var attempted = (location.pathname || '/') + (location.search || '') + (location.hash || '');
+          document.title = '404 — Page not found';
           document.body.innerHTML = [
             '<main id="page" class="dx-utility-wrap" tabindex="-1">',
             '  <section class="dx-404-section">',
-            '    <div class="dx-404-content">',
-            '      <h1>Page Not Found</h1>',
-            '      <p>Sorry, the page you\'re looking for doesn\'t exist.</p>',
-            '      <a href="/" class="dx-button-element dx-button-element--primary">Go Home</a>',
-            '    </div>',
+            '    <div class="dx-404-inner">',
+            '      <div class="dx-404-panel">',
+            '        <div class="dx-404-code" aria-hidden="true">404</div>',
+            '        <h1 class="dx-404-title">We can\'t find that page</h1>',
+            '        <p class="dx-404-desc">Looks like this packet went missing. You tried: <code id="dx-404-path">' + attempted.replace(/</g, '&lt;') + '</code></p>',
+            '        <div class="dx-404-actions" id="dx-404-cta-mount">',
+            '          <a href="/" class="dx-button-element dx-button-element--primary">Go Home</a>',
+            '          <a href="/dexnotes/" class="dx-button-element dx-button-element--secondary">Browse Dexnotes</a>',
+            '          <a href="/catalog/" class="dx-button-element dx-button-element--secondary">Catalog</a>',
+            '          <a href="/polls" class="dx-button-element dx-button-element--secondary">Polls</a>',
+            '          <a href="/contact/" class="dx-button-element dx-button-element--secondary">Contact</a>',
+            '        </div>',
+            '        <p class="dx-404-suggest" id="dx-404-suggest" aria-live="polite"></p>',
             '  </section>',
-            '</main>'
+            '</main>',
           ].join('');
         }
         
@@ -101,6 +111,93 @@
           script.async = false;
           document.body.appendChild(script);
         });
+
+        // Achievements integrations:
+        // - Grant the regular 404 achievement (found-404) for signed-in users on any 404 visit.
+        // - Inject a visible CTA on the specific /808 route that, when clicked, attempts to claim the secret '808-easter-egg' and then navigates to the achievements page.
+        (function () {
+          try {
+            var pathNorm = (location.pathname || '/').replace(/\/+$/,'') || '/';
+
+            function claimBadgeIfAuthenticated(badgeId) {
+              try {
+                if (!window.DEX_AUTH || typeof window.DEX_AUTH.ready === 'undefined') return;
+                window.DEX_AUTH.ready.then(function () {
+                  if (typeof window.DEX_AUTH.isAuthenticated !== 'function') return;
+                  window.DEX_AUTH.isAuthenticated().then(function (isAuth) {
+                    if (!isAuth) return;
+                    try {
+                      window.DEX_AUTH.getAccessToken().then(function (token) {
+                        if (!token) return;
+                        var reqId = 'achv-claim-' + badgeId + '-' + Date.now() + '-' + Math.random().toString(16).slice(2,8);
+                        // attempt to POST claim; server behavior may accept secret-claim for recorded unlocks
+                        fetch('/me/achievements/secret-claim', {
+                          method: 'POST',
+                          credentials: 'same-origin',
+                          headers: {
+                            'Authorization': 'Bearer ' + token,
+                            'Content-Type': 'application/json',
+                            'x-dx-request-id': reqId
+                          },
+                          body: JSON.stringify({ claim: badgeId, badgeId: badgeId, clientRequestId: reqId })
+                        }).catch(function () { /* ignore errors */ });
+                      }).catch(function(){/*ignore*/});
+                    } catch (e) { /* ignore */ }
+                  }).catch(function(){});
+                }).catch(function(){});
+              } catch (e) { /* ignore */ }
+            }
+
+            // grant regular 404 achievement (non-secret) when signed-in
+            claimBadgeIfAuthenticated('found-404');
+
+            // inject CTA on /808 for secret claim (visible to all)
+            if (pathNorm === '/808') {
+              var mount = document.getElementById('dx-404-cta-mount');
+              if (mount) {
+                var secretBtn = document.createElement('a');
+                secretBtn.href = '/entry/achievements/';
+                secretBtn.id = 'dx-808-achv-cta';
+                secretBtn.className = 'dx-button-element dx-button-element--primary dx-button-size--md';
+                secretBtn.textContent = 'Open Achievements';
+                secretBtn.style.marginLeft = '8px';
+                mount.appendChild(secretBtn);
+
+                secretBtn.addEventListener('click', function (ev) {
+                  ev.preventDefault();
+                  // Try to claim secret if we have auth token; otherwise navigate and let guard handle sign-in.
+                  (function () {
+                    try {
+                      if (!window.DEX_AUTH || typeof window.DEX_AUTH.ready === 'undefined') { location.assign('/entry/achievements/'); return; }
+                      window.DEX_AUTH.ready.then(function () {
+                        var isAuth = typeof window.DEX_AUTH.isAuthenticated === 'function' ? window.DEX_AUTH.isAuthenticated() : Promise.resolve(false);
+                        isAuth.then(function (auth) {
+                          if (!auth) { location.assign('/entry/achievements/'); return; }
+                          // get token and POST claim
+                          window.DEX_AUTH.getAccessToken().then(function (token) {
+                            if (!token) { location.assign('/entry/achievements/'); return; }
+                            var reqId = '808-claim-' + Date.now() + '-' + Math.random().toString(16).slice(2,8);
+                            fetch('/me/achievements/secret-claim', {
+                              method: 'POST',
+                              credentials: 'same-origin',
+                              headers: {
+                                'Authorization': 'Bearer ' + token,
+                                'Content-Type': 'application/json',
+                                'x-dx-request-id': reqId
+                              },
+                              body: JSON.stringify({ claim: '808-easter-egg', badgeId: '808-easter-egg', clientRequestId: reqId })
+                            }).catch(function(){/*ignore*/}).finally(function(){ location.assign('/entry/achievements/'); });
+                          }).catch(function(){ location.assign('/entry/achievements/'); });
+                        }).catch(function(){ location.assign('/entry/achievements/'); });
+                      }).catch(function(){ location.assign('/entry/achievements/'); });
+                    } catch (e) { location.assign('/entry/achievements/'); }
+                  })();
+                }, { passive: true });
+              }
+            }
+          } catch (e) { /* ignore */ }
+        })();
+
       })();
     </script>
   </body>
