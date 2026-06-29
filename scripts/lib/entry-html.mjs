@@ -408,6 +408,8 @@ function extractVideoSourceFromRegion(regionHtml = '') {
 
 function injectVideoRegionPreservingMarkup(regionHtml = '', video = {}) {
   const originalUrl = resolveVideoSourceUrl(video);
+  // No video for this entry: collapse the region so no (broken/empty) player renders.
+  if (!originalUrl) return '';
   const parsed = parseVideoUrl(originalUrl);
   if (parsed.provider === 'unknown') {
     console.warn(`[dex] unrecognized video provider: ${originalUrl}`);
@@ -789,13 +791,14 @@ function resolveVideoSourceUrl(video) {
     const src = iframeSrcFromHtml(rawEmbedHtml);
     if (src) return src;
   }
-  const url = String(video?.dataUrl || '').trim();
-  if (!url) throw new Error('Video URL is required for injection.');
-  return url;
+  // Video is optional. When no URL is present the caller renders an empty video
+  // region (no embed) rather than failing the save/publish pipeline.
+  return String(video?.dataUrl || '').trim();
 }
 
 function injectVideoRegion(regionHtml, video) {
   const originalUrl = resolveVideoSourceUrl(video);
+  if (!originalUrl) return '';
   const parsed = parseVideoUrl(originalUrl);
   if (parsed.provider === 'unknown') {
     console.warn(`[dex] unrecognized video provider: ${originalUrl}`);

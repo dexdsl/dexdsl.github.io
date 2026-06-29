@@ -19,7 +19,7 @@
   },
   "lifecycle": {
     "publishedAt": "2026-06-29T01:07:16.672Z",
-    "updatedAt": "2026-06-29T01:14:20.469Z"
+    "updatedAt": "2026-06-29T01:57:49.357Z"
   },
   "metadata": {
     "sampleLength": "",
@@ -40,21 +40,34 @@
       ],
       "artistAlt": null,
       "audio": {
-        "master": [],
-        "mix": [],
-        "recording": []
+        "master": [
+          "Chris Mann"
+        ],
+        "mix": [
+          "Chris Mann"
+        ],
+        "recording": [
+          "Chris Mann"
+        ]
       },
       "instrumentLinksEnabled": true,
       "instruments": [
-        "Electric Guitar"
+        "Electric Guitar",
+        "Electronics"
       ],
       "linksByPerson": {},
       "location": "Baltimore, MD",
       "season": "S2",
       "video": {
-        "cinematography": [],
-        "director": [],
-        "editing": []
+        "cinematography": [
+          "N/A"
+        ],
+        "director": [
+          "N/A"
+        ],
+        "editing": [
+          "N/A"
+        ]
       },
       "year": 2024
     },
@@ -122,8 +135,8 @@
   "title": "ELECTRIC GUITAR",
   "video": {
     "dataHtml": "",
-    "dataUrl": "https://youtu.be/n8hrxOz6-Tg",
-    "dataUrlOriginal": "https://youtu.be/n8hrxOz6-Tg",
+    "dataUrl": "",
+    "dataUrlOriginal": "",
     "mode": "url"
   }
 }
