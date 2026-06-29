@@ -1,6 +1,6 @@
 {
   "source": "live-dexdsl-com-catalog",
-  "generated_at": "2026-06-28T23:26:14.071Z",
+  "generated_at": "2026-06-29T00:21:12.400Z",
   "anchors": {
     "performer": "#dex-performer",
     "instrument": "#dex-instrument",
@@ -27,7 +27,7 @@
       "FE‌EDBACK TELEVISIONS",
       "GUITAR AND VOICE",
       "MODULAR SYNTH",
-      "MULTIPLE PERCUS‌SION",
+      "MULTIPLE PERCUSSION",
       "NO IMPUT MIXING BOARD",
       "PERCUSSION",
       "PREPARED BAS‌S VIOL",
@@ -41,7 +41,7 @@
       "TWO ORGANS",
       "VOICE W/ EVERYDAY OBJECT MANIPULATION"
     ],
-    "protected_char_count": 30
+    "protected_char_count": 28
   },
   "spotlight": {
     "entry_id": "tim-feeney",
@@ -74,7 +74,7 @@
       "performer_norm": "bailey-gould, ethan",
       "lookup_norm": "e.gtr. ba av2023 s1",
       "instrument_norm": "electric guitar + pedals",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {
@@ -98,7 +98,7 @@
       "performer_norm": "jordan, tyler",
       "lookup_norm": "e.kni. jo av2023 s1",
       "instrument_norm": "amplified knives",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {
@@ -122,7 +122,7 @@
       "performer_norm": "murphy, jared",
       "lookup_norm": "e.noi. mu av2023 s1",
       "instrument_norm": "no imput mixing board",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {
@@ -146,7 +146,7 @@
       "performer_norm": "suarez-solis, sebastian",
       "lookup_norm": "k.hps. su av2023 s1",
       "instrument_norm": "prepared harpsichord",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {
@@ -170,7 +170,7 @@
       "performer_norm": "ataka, midori",
       "lookup_norm": "k.org. at av2023 s1",
       "instrument_norm": "two organs",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {
@@ -194,7 +194,7 @@
       "performer_norm": "church, cameron",
       "lookup_norm": "p.hdl. ch av2023 s1",
       "instrument_norm": "prepared hammered dulcimer + digital signal processor prepared hammered dulcimer",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {
@@ -218,7 +218,7 @@
       "performer_norm": "suarez-solis, sebastian",
       "lookup_norm": "s.vdg. su av2023 s1",
       "instrument_norm": "prepared bass viol",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {
@@ -242,7 +242,7 @@
       "performer_norm": "losa, emmanuel",
       "lookup_norm": "s.vlc. lo av2023 s1",
       "instrument_norm": "cello",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {
@@ -266,7 +266,7 @@
       "performer_norm": "lu, qiujiang levi",
       "lookup_norm": "v.obj. lu a2023 s1",
       "instrument_norm": "voice w/ everyday object manipulation",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {
@@ -290,12 +290,12 @@
       "performer_norm": "hermansen, paul*",
       "lookup_norm": "v.sc. he a2023 s1",
       "instrument_norm": "cybernetic scat",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {
       "id": "amplified-tv-sam-pluta",
-      "title_raw": "AMPLIFIED TV SETS",
+      "title_raw": "FEEDBACK TELEVISIONS",
       "performer_raw": "sam pluta",
       "instrument_family": [
         "FE‌EDBACK TELEVISIONS"
@@ -314,7 +314,7 @@
       "performer_norm": "pluta, sam",
       "lookup_norm": "x.tlv. pl av2023 s1",
       "instrument_norm": "feedback televisions",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {
@@ -338,7 +338,7 @@
       "performer_norm": "chanover, andrew",
       "lookup_norm": "e.gtr. ch av2024 s2",
       "instrument_norm": "electric guitar",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {
@@ -410,7 +410,7 @@
       "performer_norm": "shah, anant",
       "lookup_norm": "p.dho. sh av2024 s2",
       "instrument_norm": "ant shah dholak and electronics",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {
@@ -442,10 +442,10 @@
       "title_raw": "MULTIPLE PERCUS‌SION",
       "performer_raw": "Ben Giroux",
       "instrument_family": [
-        "MULTIPLE PERCUS‌SION"
+        "MULTIPLE PERCUSSION"
       ],
       "instrument_labels": [
-        "MULTIPLE PERCUS‌SION"
+        "MULTIPLE PERCUSSION"
       ],
       "lookup_raw": "P.Mpc. Gi AV2024 S2",
       "season": "S2",
@@ -458,7 +458,7 @@
       "performer_norm": "giroux, ben",
       "lookup_norm": "p.mpc. gi av2024 s2",
       "instrument_norm": "multiple percussion",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {
@@ -482,7 +482,30 @@
       "performer_norm": "feeney, tim",
       "lookup_norm": "p.pto. fe av2024 s2",
       "instrument_norm": "prepared floor tom",
-      "status": "active",
+      "status": "draft",
+      "kind": "catalog"
+    },
+    {
+      "id": "matt-leveque",
+      "title_raw": "“GROUND”, SOLO SNARE DRUM",
+      "performer_raw": "matt leveque",
+      "instrument_family": [
+        "PERCUSSION"
+      ],
+      "instrument_labels": [
+        "“GROUND”, SOLO SNARE DRUM"
+      ],
+      "lookup_raw": "P.Sdr. Le AV2024 S2",
+      "season": "S2",
+      "entry_href": "/entry/matt-leveque/",
+      "image_src": "https://images.squarespace-cdn.com/content/v1/63956a55e99f9772a8cd1742/c2962421-d7f8-483b-b403-cdbada9bb434/matt_l_dex_1.206.1.jpg",
+      "image_alt_raw": "",
+      "featured": false,
+      "sort_key": "S2::P.Sdr. Le AV2024 S2",
+      "title_norm": "“ground”, solo snare drum",
+      "performer_norm": "matt leveque",
+      "lookup_norm": "p.sdr. le av2024 s2",
+      "instrument_norm": "“ground”, solo snare drum",
       "kind": "catalog"
     },
     {
@@ -506,7 +529,7 @@
       "performer_norm": "jakob heinemann",
       "lookup_norm": "s.pdb. he av2024 s2",
       "instrument_norm": "splinterings for double bass",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {
@@ -530,7 +553,7 @@
       "performer_norm": "yeats, aidan",
       "lookup_norm": "v.sng. ye av2024 s2",
       "instrument_norm": "guitar and voice",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {
@@ -554,7 +577,7 @@
       "performer_norm": "coleman, max & tomecek, arlo",
       "lookup_norm": "w.bsn. coto av2024 s2",
       "instrument_norm": "bassoon + electronics with generative video",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {
@@ -602,7 +625,7 @@
       "performer_norm": "johnson, grant",
       "lookup_norm": "x.mul. jo av2024 s2",
       "instrument_norm": "this is a tangible space for multimedia this is a tangible space",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {
@@ -626,7 +649,7 @@
       "performer_norm": "church, cameron",
       "lookup_norm": "x.prt. ch av2024 s2",
       "instrument_norm": "amplified printer",
-      "status": "active",
+      "status": "draft",
       "kind": "catalog"
     },
     {

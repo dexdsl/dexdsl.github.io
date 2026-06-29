@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-28T23:26:14.071Z",
+  "generated_at": "2026-06-29T00:21:12.400Z",
   "total": 27,
   "entries": [
     {
@@ -197,7 +197,7 @@
       "id": "amplified-tv-sam-pluta",
       "entry_href": "/entry/amplified-tv-sam-pluta/",
       "season": "S1",
-      "title_raw": "AMPLIFIED TV SETS",
+      "title_raw": "FEEDBACK TELEVISIONS",
       "performer_raw": "sam pluta",
       "lookup_raw": "X.Tlv. Pl AV2023 S1",
       "instrument_family": [
@@ -205,11 +205,11 @@
       ],
       "site_norm": "",
       "subject_norm": "",
-      "title_norm": "amplified tv sets",
+      "title_norm": "feedback televisions",
       "performer_norm": "sam pluta",
       "lookup_norm": "x.tlv. pl av2023 s1",
       "instrument_norm": "feedback televisions",
-      "search_blob": "amplified tv sets sam pluta x.tlv. pl av2023 s1 feedback televisions feedback televisions"
+      "search_blob": "feedback televisions sam pluta x.tlv. pl av2023 s1 feedback televisions feedback televisions"
     },
     {
       "kind": "catalog",
@@ -315,7 +315,7 @@
       "performer_raw": "Ben Giroux",
       "lookup_raw": "P.Mpc. Gi AV2024 S2",
       "instrument_family": [
-        "MULTIPLE PERCUS‌SION"
+        "MULTIPLE PERCUSSION"
       ],
       "site_norm": "",
       "subject_norm": "",
@@ -343,6 +343,25 @@
       "lookup_norm": "p.pto. fe av2024 s2",
       "instrument_norm": "prepared floor tom",
       "search_blob": "prepared floor tom tim feeney p.pto. fe av2024 s2 prepared floor tom prepared floor tom"
+    },
+    {
+      "kind": "catalog",
+      "id": "matt-leveque",
+      "entry_href": "/entry/matt-leveque/",
+      "season": "S2",
+      "title_raw": "“GROUND”, SOLO SNARE DRUM",
+      "performer_raw": "matt leveque",
+      "lookup_raw": "P.Sdr. Le AV2024 S2",
+      "instrument_family": [
+        "PERCUSSION"
+      ],
+      "site_norm": "",
+      "subject_norm": "",
+      "title_norm": "“ground”, solo snare drum",
+      "performer_norm": "matt leveque",
+      "lookup_norm": "p.sdr. le av2024 s2",
+      "instrument_norm": "percussion",
+      "search_blob": "“ground”, solo snare drum matt leveque p.sdr. le av2024 s2 percussion “ground”, solo snare drum"
     },
     {
       "kind": "catalog",

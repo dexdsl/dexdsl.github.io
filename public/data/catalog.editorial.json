@@ -1,6 +1,6 @@
 {
   "version": "catalog-editorial-v1",
-  "updatedAt": "2026-06-28T23:26:12.242Z",
+  "updatedAt": "2026-06-29T00:21:11.148Z",
   "manifest": [
     {
       "entry_id": "2-organs-midori-ataka",
@@ -12,7 +12,7 @@
       "instrument": "TWO ORGANS",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "aidan-yeats",
@@ -24,7 +24,7 @@
       "instrument": "GUITAR AND VOICE",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "amplified-knives-tyler-jordan",
@@ -36,7 +36,7 @@
       "instrument": "AMPLIFIED KNIVES",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "amplified-printer",
@@ -48,19 +48,19 @@
       "instrument": "AMPLIFIED PRINTER",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "amplified-tv-sam-pluta",
       "entry_href": "/entry/amplified-tv-sam-pluta/",
-      "title_raw": "AMPLIFIED TV SETS",
+      "title_raw": "FEEDBACK TELEVISIONS",
       "lookup_number": "X.Tlv. Pl AV2023 S1",
       "season": "S1",
       "performer": "sam pluta",
       "instrument": "FE‌EDBACK TELEVISIONS",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "anant-shah",
@@ -72,7 +72,7 @@
       "instrument": "ant shah",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "andrew-chanover",
@@ -84,7 +84,7 @@
       "instrument": "ELECTRIC GUITAR",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "as-though-im-slipping",
@@ -108,7 +108,7 @@
       "instrument": "BAS‌SO‌ON + ELECTRONICS WITH GENERATIVE VIDEO",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "bojun-zhang",
@@ -128,11 +128,11 @@
       "title_raw": "CEL‌LO",
       "lookup_number": "S.Vlc. Lo AV2023 S1",
       "season": "S1",
-      "performer": "emmanuel losa",
+      "performer": "em‎‏‏‎manuel losa",
       "instrument": "CEL‌LO",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "cybernetic-scat-paul-hermansen",
@@ -144,7 +144,7 @@
       "instrument": "CYBERNETIC SCAT",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "electric-guitar-chris-mann",
@@ -168,7 +168,7 @@
       "instrument": "ELECTRIC GUITAR + pedals",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "hammered-dulcimer-cameron-church",
@@ -180,7 +180,7 @@
       "instrument": "PREPARED HAM‌MERED DULCIMER + DIGITAL SIGNAL PROCES‌SOR",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "jakob-heinemann",
@@ -192,7 +192,7 @@
       "instrument": "SPLINTERINGS for DOUBLE BAS‌S",
       "image_src": "/assets/catalog/jakob-heinemann.webp",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "multiperc",
@@ -201,10 +201,10 @@
       "lookup_number": "P.Mpc. Gi AV2024 S2",
       "season": "S2",
       "performer": "Ben Giroux",
-      "instrument": "MULTIPLE PERCUS‌SION",
+      "instrument": "MULTIPLE PERCUS‏‏‎SION",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "no-input-mixer-jared-murphy",
@@ -216,7 +216,7 @@
       "instrument": "NO IMPUT MIXING BOARD",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "prepared-bass-viol-suarez-solis",
@@ -224,11 +224,11 @@
       "title_raw": "PREPARED BAS‌S VIOL",
       "lookup_number": "S.VdG. Su AV2023 S1",
       "season": "S1",
-      "performer": "suarez-solis, sebastian",
+      "performer": "sebastian suarez-solis",
       "instrument": "PREPARED BAS‌S VIOL",
       "image_src": "/assets/catalog/prepared-bass-viol-suarez-solis.png",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "prepared-harpsichord-suarez-solis",
@@ -236,11 +236,11 @@
       "title_raw": "PREPARED HARPSICHORD",
       "lookup_number": "K.Hps. Su AV2023 S1",
       "season": "S1",
-      "performer": "suarez-solis, sebastian",
+      "performer": "sebastian suarez-solis",
       "instrument": "PREPARED HARPSICHORD",
       "image_src": "/assets/catalog/prepared-harpsichord-suarez-solis.webp",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "prepared-oboe-sky-macklay",
@@ -276,7 +276,7 @@
       "instrument": "THIS IS A TANGIBLE SPACE for MULTIMEDIA",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "tim-feeney",
@@ -288,7 +288,7 @@
       "instrument": "Prepared Floor Tom",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "voice-everyday-object-manipulation-levi-lu",
@@ -300,7 +300,7 @@
       "instrument": "VOICE W/ EVERYDAY OBJECT MANIPULATION",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     }
   ],
   "spotlight": {
