@@ -65,7 +65,7 @@
       "kind": "uav",
       "slug": "mojave-wind-farm",
       "title": "Mojave Desert – Wind Farms",
-      "status": "active",
+      "status": "draft",
       "lookupRaw": "DR.Win. Mo 2026 T1",
       "lookupNorm": "dr.win. mo 2026 t1",
       "identity": {
@@ -136,7 +136,7 @@
       "image_src": "https://i.ytimg.com/vi/YVLwwSe4m9I/maxresdefault.jpg",
       "image_alt_raw": "Mojave Desert – Wind Farms",
       "featured": false,
-      "status": "active",
+      "status": "draft",
       "sort_key": "UAV::DR.Win. Mo 2026 T1",
       "title_norm": "mojave desert – wind farms",
       "site_norm": "mojave desert california, united states",

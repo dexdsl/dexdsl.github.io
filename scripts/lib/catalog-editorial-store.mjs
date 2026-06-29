@@ -115,8 +115,10 @@ function createSyntheticEntry(row) {
     lookup_raw: toText(row.lookup_number),
     season: toText(row.season),
     entry_href: href,
-    image_src: '',
-    image_alt_raw: '',
+    // Editorial-managed artwork must survive for entries that only exist locally
+    // (not in the live scrape), otherwise their catalog photo renders blank.
+    image_src: toText(row.image_src),
+    image_alt_raw: toText(row.image_alt_raw),
     featured: false,
     sort_key: id || href,
     title_norm: '',

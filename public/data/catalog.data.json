@@ -1,6 +1,6 @@
 {
   "source": "live-dexdsl-com-catalog",
-  "generated_at": "2026-06-29T00:21:11.844Z",
+  "generated_at": "2026-06-29T00:36:56.880Z",
   "anchors": {
     "performer": "#dex-performer",
     "instrument": "#dex-instrument",
@@ -9,8 +9,8 @@
     "symbols": "#list-of-identifiers"
   },
   "stats": {
-    "entries_count": 27,
-    "lookup_count": 27,
+    "entries_count": 26,
+    "lookup_count": 26,
     "seasons": [
       "S2",
       "S1"
@@ -31,7 +31,6 @@
       "MODULAR SYNTH",
       "MULTIPLE PERCUSSION",
       "NO IMPUT MIXING BOARD",
-      "PERCUSSION",
       "PREPARED BAS‌S VIOL",
       "Prepared Floor Tom",
       "PREPARED HAM‌MERED DULCIMER + DIGITAL SIGNAL PROCES‌SOR",
@@ -67,7 +66,7 @@
       "performer_norm": "bailey-gould, ethan",
       "lookup_norm": "e.gtr. ba av2023 s1",
       "instrument_norm": "electric guitar + pedals",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -91,7 +90,7 @@
       "performer_norm": "jordan, tyler",
       "lookup_norm": "e.kni. jo av2023 s1",
       "instrument_norm": "amplified knives",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -115,7 +114,7 @@
       "performer_norm": "murphy, jared",
       "lookup_norm": "e.noi. mu av2023 s1",
       "instrument_norm": "no imput mixing board",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -139,7 +138,7 @@
       "performer_norm": "suarez-solis, sebastian",
       "lookup_norm": "k.hps. su av2023 s1",
       "instrument_norm": "prepared harpsichord",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -163,7 +162,7 @@
       "performer_norm": "ataka, midori",
       "lookup_norm": "k.org. at av2023 s1",
       "instrument_norm": "two organs",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -187,7 +186,7 @@
       "performer_norm": "church, cameron",
       "lookup_norm": "p.hdl. ch av2023 s1",
       "instrument_norm": "prepared hammered dulcimer + digital signal processor prepared hammered dulcimer",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -211,7 +210,7 @@
       "performer_norm": "suarez-solis, sebastian",
       "lookup_norm": "s.vdg. su av2023 s1",
       "instrument_norm": "prepared bass viol",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -235,7 +234,7 @@
       "performer_norm": "losa, emmanuel",
       "lookup_norm": "s.vlc. lo av2023 s1",
       "instrument_norm": "cello",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -259,7 +258,7 @@
       "performer_norm": "lu, qiujiang levi",
       "lookup_norm": "v.obj. lu a2023 s1",
       "instrument_norm": "voice w/ everyday object manipulation",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -283,7 +282,7 @@
       "performer_norm": "hermansen, paul*",
       "lookup_norm": "v.sc. he a2023 s1",
       "instrument_norm": "cybernetic scat",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -307,7 +306,7 @@
       "performer_norm": "pluta, sam",
       "lookup_norm": "x.tlv. pl av2023 s1",
       "instrument_norm": "feedback televisions",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -331,7 +330,7 @@
       "performer_norm": "chanover, andrew",
       "lookup_norm": "e.gtr. ch av2024 s2",
       "instrument_norm": "electric guitar",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -379,7 +378,7 @@
       "performer_norm": "zhang, bojun",
       "lookup_norm": "e.mod. zh av2024 s2",
       "instrument_norm": "modular synth",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -403,7 +402,7 @@
       "performer_norm": "shah, anant",
       "lookup_norm": "p.dho. sh av2024 s2",
       "instrument_norm": "ant shah dholak and electronics",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -427,7 +426,7 @@
       "performer_norm": "jáquez, sofí & yorke, paul",
       "lookup_norm": "p.ens. jayo av2024 s2",
       "instrument_norm": "as though i’m slipping",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -451,7 +450,7 @@
       "performer_norm": "giroux, ben",
       "lookup_norm": "p.mpc. gi av2024 s2",
       "instrument_norm": "multiple percussion",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -475,30 +474,7 @@
       "performer_norm": "feeney, tim",
       "lookup_norm": "p.pto. fe av2024 s2",
       "instrument_norm": "prepared floor tom",
-      "status": "draft",
-      "kind": "catalog"
-    },
-    {
-      "id": "matt-leveque",
-      "title_raw": "“GROUND”, SOLO SNARE DRUM",
-      "performer_raw": "matt leveque",
-      "instrument_family": [
-        "PERCUSSION"
-      ],
-      "instrument_labels": [
-        "“GROUND”, SOLO SNARE DRUM"
-      ],
-      "lookup_raw": "P.Sdr. Le AV2024 S2",
-      "season": "S2",
-      "entry_href": "/entry/matt-leveque/",
-      "image_src": "https://images.squarespace-cdn.com/content/v1/63956a55e99f9772a8cd1742/c2962421-d7f8-483b-b403-cdbada9bb434/matt_l_dex_1.206.1.jpg",
-      "image_alt_raw": "",
-      "featured": false,
-      "sort_key": "S2::P.Sdr. Le AV2024 S2",
-      "title_norm": "“ground”, solo snare drum",
-      "performer_norm": "matt leveque",
-      "lookup_norm": "p.sdr. le av2024 s2",
-      "instrument_norm": "“ground”, solo snare drum",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -522,7 +498,7 @@
       "performer_norm": "jakob heinemann",
       "lookup_norm": "s.pdb. he av2024 s2",
       "instrument_norm": "splinterings for double bass",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -546,7 +522,7 @@
       "performer_norm": "yeats, aidan",
       "lookup_norm": "v.sng. ye av2024 s2",
       "instrument_norm": "guitar and voice",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -570,7 +546,7 @@
       "performer_norm": "coleman, max & tomecek, arlo",
       "lookup_norm": "w.bsn. coto av2024 s2",
       "instrument_norm": "bassoon + electronics with generative video",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -594,7 +570,7 @@
       "performer_norm": "macklay, sky",
       "lookup_norm": "w.ob. ma av2024 s2",
       "instrument_norm": "prepared oboe",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -618,7 +594,7 @@
       "performer_norm": "johnson, grant",
       "lookup_norm": "x.mul. jo av2024 s2",
       "instrument_norm": "this is a tangible space for multimedia this is a tangible space",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -642,7 +618,7 @@
       "performer_norm": "church, cameron",
       "lookup_norm": "x.prt. ch av2024 s2",
       "instrument_norm": "amplified printer",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -658,7 +634,7 @@
       "lookup_raw": "P.Sdr. Le AV2024 S2",
       "season": "S2",
       "entry_href": "/entry/snare-drum-matt-leveque/",
-      "image_src": "",
+      "image_src": "/assets/catalog/snare-drum-matt-leveque.jpg",
       "image_alt_raw": "",
       "featured": false,
       "sort_key": "snare-drum-matt-leveque",
@@ -666,7 +642,7 @@
       "performer_norm": "",
       "lookup_norm": "",
       "instrument_norm": "",
-      "status": "draft",
+      "status": "active",
       "kind": "catalog"
     },
     {
@@ -679,7 +655,7 @@
       "image_src": "https://i.ytimg.com/vi/YVLwwSe4m9I/maxresdefault.jpg",
       "image_alt_raw": "Mojave Desert – Wind Farms",
       "featured": false,
-      "status": "active",
+      "status": "draft",
       "sort_key": "UAV::DR.Win. Mo 2026 T1",
       "title_norm": "mojave desert – wind farms",
       "site_norm": "mojave desert california, united states",
