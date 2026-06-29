@@ -338,8 +338,17 @@ body.dx-bag-page .content {
 
 #dex-bag .dx-bag-icon-btn svg {
   width: 1rem;
+  min-width: 1rem;
+  max-width: 1rem;
   height: 1rem;
+  flex: 0 0 1rem;
   display: block;
+  fill: none;
+  stroke: currentColor;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: none;
+  vector-effect: non-scaling-stroke;
 }
 
 #dex-bag .dx-bag-card-thumb {
@@ -468,8 +477,17 @@ body.dx-bag-page .content {
 
 #dex-bag .dx-bag-receipt-remove svg {
   width: 0.78rem;
+  min-width: 0.78rem;
+  max-width: 0.78rem;
   height: 0.78rem;
+  flex: 0 0 0.78rem;
   display: block;
+  fill: none;
+  stroke: currentColor;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: none;
+  vector-effect: non-scaling-stroke;
 }
 
 #dex-bag .dx-bag-receipt li:hover .dx-bag-receipt-remove,

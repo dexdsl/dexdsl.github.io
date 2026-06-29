@@ -42,6 +42,9 @@ test('sidebar runtime and css expose download + credits contracts', async ({ pag
   expect(runtime).toContain('WHOLE FILES');
   expect(runtime).toContain("const BAG_ROUTE_PATH = '/entry/bag/'");
   expect(runtime).toContain('data-dx-download-kind="recording-index-pdf"');
+  expect(runtime).toContain("delivery === 'multi'");
+  expect(runtime).toContain('openDownloadDelivery');
+  expect(runtime).toContain('recordingIndexPdfExportUrl');
   expect(runtime).toContain('[data-person-linkable="true"][data-person]');
 
   const cssRes = await page.request.get('/assets/css/dex.css');

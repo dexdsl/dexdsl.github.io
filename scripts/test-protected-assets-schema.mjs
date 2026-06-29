@@ -55,6 +55,17 @@ catalogLookupFixture.lookups[0].lookupNumber = 'X.Gtr. Ch AV2024 S1';
 const catalogLookup = normalizeProtectedAssetsFile(catalogLookupFixture);
 assert.equal(catalogLookup.lookups[0].lookupNumber, 'X.Gtr. Ch AV2024 S1');
 
+const uavLookupFixture = makeValidFixture();
+uavLookupFixture.settings.allowedBuckets.push('V', 'I');
+uavLookupFixture.lookups[0].lookupNumber = 'DR.Win. Mo 2026 T1';
+uavLookupFixture.lookups[0].season = 'T1';
+uavLookupFixture.lookups[0].files[0].bucketNumber = 'V.1';
+uavLookupFixture.lookups[0].files[0].bucket = 'V';
+const uavLookup = normalizeProtectedAssetsFile(uavLookupFixture);
+assert.equal(uavLookup.lookups[0].lookupNumber, 'DR.Win. Mo 2026 T1');
+assert.equal(uavLookup.lookups[0].season, 'T1');
+assert.equal(uavLookup.lookups[0].files[0].bucket, 'V');
+
 const duplicateLookup = makeValidFixture();
 duplicateLookup.lookups.push({ ...duplicateLookup.lookups[0] });
 assert.throws(() => normalizeProtectedAssetsFile(duplicateLookup), /Duplicate lookupNumber/);

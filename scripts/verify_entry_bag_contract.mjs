@@ -53,7 +53,7 @@ function ensureBagAppSource(appSource) {
     'getBundleJobMaxElapsedMs',
     'shouldFallbackToLookupBundles',
     'formatBundlePollStatus',
-    'Merged bundle is still preparing. Retrying via lookup bundles',
+    'retrying via lookup links',
     'dex:bag:resume:v1',
     'Signed in as',
     "auth.signIn(BAG_ROUTE_PATH)",
@@ -63,6 +63,8 @@ function ensureBagAppSource(appSource) {
     'estimateBytesFromLookupFiles',
     'estimateBytesFromSelectionRows',
     'countFilesFromSelectionRows',
+    'dx-bag-control-glyph--edit',
+    'dx-bag-control-glyph--remove',
   ];
   for (const marker of required) {
     if (!appSource.includes(marker)) {
@@ -95,6 +97,8 @@ function ensureSidebarUnifiedDownload(runtimeJs) {
     "downloadNowButton.textContent = 'DOWNLOAD NOW'",
     "const BAG_ROUTE_PATH = '/entry/bag/'",
     "randomizeTitleWithJoiners('Get Files'",
+    "delivery === 'multi'",
+    'openDownloadDelivery',
   ];
   for (const marker of required) {
     if (!runtimeJs.includes(marker)) {

@@ -3011,8 +3011,19 @@
     return payload;
   };
 
+  const normalizeDownloadList = (payload) => {
+    const rows = Array.isArray(payload?.downloads) ? payload.downloads : [];
+    return rows
+      .map((item) => ({
+        name: String(item?.name || '').trim(),
+        href: String(item?.href || item?.signedUrl || item?.url || item?.downloadUrl || '').trim(),
+      }))
+      .filter((item) => item.href);
+  };
+
   const resolveBundleReadyPayload = (payload) => {
     const status = String(payload?.status || '').toLowerCase();
+    const delivery = String(payload?.delivery || '').toLowerCase();
     if (status === 'forbidden') {
       const err = new Error('forbidden');
       err.code = 'forbidden';
@@ -3027,6 +3038,14 @@
       const err = new Error(payload?.message || 'failed');
       err.code = 'failed';
       throw err;
+    }
+    const downloads = normalizeDownloadList(payload);
+    if (delivery === 'multi' && downloads.length) {
+      return {
+        delivery: 'multi',
+        downloads,
+        fileCount: Number(payload?.fileCount || downloads.length),
+      };
     }
     const signedUrl = String(payload?.signedUrl || payload?.url || payload?.downloadUrl || '').trim();
     if (status === 'ready' && signedUrl) {
@@ -3067,6 +3086,51 @@
     return true;
   };
 
+  const DOWNLOAD_STAGGER_MS = 320;
+
+  const triggerAnchorDownload = (url, name = '') => {
+    const href = String(url || '').trim();
+    if (!href) return false;
+    try {
+      const anchor = document.createElement('a');
+      anchor.href = href;
+      if (String(name || '').trim()) anchor.download = String(name || '').trim();
+      anchor.target = '_blank';
+      anchor.rel = 'noopener';
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      return true;
+    } catch {
+      return openSignedUrl(href);
+    }
+  };
+
+  const openDownloadDelivery = async (payload, onProgress = null) => {
+    const downloads = normalizeDownloadList(payload);
+    if (downloads.length) {
+      let opened = 0;
+      for (let index = 0; index < downloads.length; index += 1) {
+        if (index > 0) {
+          await new Promise((resolve) => window.setTimeout(resolve, DOWNLOAD_STAGGER_MS));
+        }
+        const item = downloads[index];
+        if (triggerAnchorDownload(item.href, item.name)) opened += 1;
+        if (typeof onProgress === 'function') {
+          try {
+            onProgress(opened, downloads.length);
+          } catch {}
+        }
+      }
+      return { opened, total: downloads.length };
+    }
+    const href = String(payload?.signedUrl || payload?.url || payload?.downloadUrl || '').trim();
+    return {
+      opened: href && openSignedUrl(href) ? 1 : 0,
+      total: href ? 1 : 0,
+    };
+  };
+
   const requestBundleDownload = async ({ lookup, tokens, onQueuedTick }) => {
     const safeLookup = String(lookup || '').trim();
     if (!safeLookup) {
@@ -3101,6 +3165,23 @@
     const err = new Error('unsupported bundle response');
     err.code = 'failed';
     throw err;
+  };
+
+  const recordingIndexPdfExportUrl = (sourceUrl) => {
+    const raw = String(sourceUrl || '').trim();
+    if (!raw) return '';
+    try {
+      const parsed = new URL(raw);
+      if (!/(^|\.)docs\.google\.com$/i.test(parsed.hostname)) return '';
+      const match = parsed.pathname.match(/\/spreadsheets\/d\/([^/]+)/i);
+      const sheetId = String(match?.[1] || '').trim();
+      if (!sheetId) return '';
+      const hashParams = new URLSearchParams(String(parsed.hash || '').replace(/^#/, ''));
+      const gid = String(parsed.searchParams.get('gid') || hashParams.get('gid') || '0').trim() || '0';
+      return `https://docs.google.com/spreadsheets/d/${encodeURIComponent(sheetId)}/export?format=pdf&gid=${encodeURIComponent(gid)}`;
+    } catch {
+      return '';
+    }
   };
 
   const bucketHasAnyAsset = (cfg, bucket) => {
@@ -4210,8 +4291,8 @@
                   },
                 });
                 setDownloadState(row, 'ready', 'Ready. Opening download…');
-                setModalStatus('ready', 'Bundle ready. Opening signed URL…');
-                openSignedUrl(result?.signedUrl);
+                setModalStatus('ready', 'Download ready. Starting…');
+                await openDownloadDelivery(result);
                 window.setTimeout(() => setDownloadState(row, 'idle', ''), 2200);
               } catch (error) {
                 const code = String(error?.code || '').toLowerCase();
@@ -4281,8 +4362,8 @@
             lookup: context?.lookup,
             tokens: Array.from(selectedTokens),
           });
-          setModalStatus('ready', 'Batch bundle ready. Opening signed URL…');
-          openSignedUrl(result?.signedUrl);
+          setModalStatus('ready', 'Batch download ready. Starting…');
+          await openDownloadDelivery(result);
         } catch (error) {
           const msg = String(error?.code || 'failed').toLowerCase();
           if (msg === 'forbidden') setModalStatus('forbidden', 'Batch request denied (DX-DL-403).');
@@ -5545,8 +5626,8 @@
               if (delivery === 'sync') {
                 const signedUrl = String(payload?.signedUrl || payload?.url || '').trim();
                 if (!signedUrl) throw new Error('missing signed url');
-                setModalStatus('ready', 'Bundle ready. Opening signed URL…');
-                openSignedUrl(signedUrl);
+                setModalStatus('ready', 'Download ready. Starting…');
+                await openDownloadDelivery({ signedUrl });
                 return;
               }
               if (delivery === 'async') {
@@ -5554,14 +5635,16 @@
                 const result = await pollBundleReady(jobId, () => {
                   setModalStatus('queued', 'Preparing secure bundle…');
                 });
-                setModalStatus('ready', 'Bundle ready. Opening signed URL…');
-                openSignedUrl(result?.signedUrl);
+                setModalStatus('ready', 'Download ready. Starting…');
+                await openDownloadDelivery(result);
                 return;
               }
               const fallback = resolveBundleReadyPayload(payload);
               if (fallback) {
-                setModalStatus('ready', 'Bundle ready. Opening signed URL…');
-                openSignedUrl(fallback?.signedUrl);
+                setModalStatus('ready', 'Download ready. Starting…');
+                await openDownloadDelivery(fallback, (opened, total) => {
+                  setModalStatus('ready', `Starting download ${opened} of ${total}…`);
+                });
                 return;
               }
               throw new Error('unsupported bag bundle response');
@@ -5579,8 +5662,10 @@
                   setModalStatus('queued', 'Preparing secure bundle…');
                 },
               });
-              setModalStatus('ready', 'Bundle ready. Opening signed URL…');
-              openSignedUrl(result?.signedUrl);
+              setModalStatus('ready', 'Download ready. Starting…');
+              await openDownloadDelivery(result, (opened, total) => {
+                setModalStatus('ready', `Starting download ${opened} of ${total}…`);
+              });
             }
           } catch (error) {
             const code = String(error?.code || '').toLowerCase();
@@ -5700,17 +5785,19 @@
       const row = btn.closest('[data-dx-recording-index-row]');
       const pdfTokenRaw = String(cfg?.downloads?.recordingIndexPdfRef || '').trim();
       const bundleTokenRaw = String(cfg?.downloads?.recordingIndexBundleRef || '').trim();
+      const sourceUrlRaw = String(cfg?.downloads?.recordingIndexSourceUrl || '').trim();
       const parsedPdfToken = parseRecordingIndexPdfToken(pdfTokenRaw);
       const parsedBundleToken = parseRecordingIndexBundleToken(bundleTokenRaw);
+      const pdfExportUrl = recordingIndexPdfExportUrl(sourceUrlRaw);
 
       if (!row) return;
       row.setAttribute('data-dx-download-kind', 'recording-index-pdf');
       row.setAttribute('data-dx-download-state', 'idle');
 
-      if (!parsedPdfToken || !parsedBundleToken) {
+      if (!pdfExportUrl && (!parsedPdfToken || !parsedBundleToken)) {
         btn.disabled = true;
         btn.setAttribute('aria-disabled', 'true');
-        setDownloadState(row, 'not-found', 'Recording index bundle unavailable.');
+        setDownloadState(row, 'not-found', 'Recording index PDF unavailable.');
         return;
       }
 
@@ -5721,6 +5808,18 @@
         setDownloadState(row, 'resolving', 'Resolving secure download…');
         btn.disabled = true;
         try {
+          if (pdfExportUrl) {
+            setDownloadState(row, 'ready', 'Recording index ready. Starting download…');
+            await openDownloadDelivery({
+              delivery: 'multi',
+              downloads: [{
+                name: `${String(context?.lookup || 'recording-index').trim() || 'recording-index'} recording-index.pdf`,
+                signedUrl: pdfExportUrl,
+              }],
+            });
+            window.setTimeout(() => setDownloadState(row, 'idle', ''), 2200);
+            return;
+          }
           const authState = await resolveDownloadAuthState();
           if (authState && !authState.authenticated) {
             setDownloadState(row, 'resolving', 'Sign in required for download.');
@@ -5758,7 +5857,7 @@
             },
           });
           setDownloadState(row, 'ready', 'Ready. Opening download…');
-          openSignedUrl(result?.signedUrl);
+          await openDownloadDelivery(result);
           window.setTimeout(() => setDownloadState(row, 'idle', ''), 2200);
         } catch (error) {
           const code = String(error?.code || '').toLowerCase();
@@ -6054,7 +6153,9 @@
       ensureFavoritesApi,
       ensureInteractiveHoverRuntime,
       getFavoritesApi: () => activateFavoritesApi(getFavoritesApi()),
+      openDownloadDelivery,
       openSignedUrl,
+      recordingIndexPdfExportUrl,
       refreshFavoriteButtons,
       requestBundleDownload,
       setDownloadState,

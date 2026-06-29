@@ -26,6 +26,7 @@ import {
   DEX_FOOTER_MARKUP,
   getDexCollectionContractCss,
 } from './sanitize-generated-html.mjs';
+import { normalizeProtectedAssetsFile } from './protected-assets-schema.mjs';
 
 function text(value) {
   return String(value ?? '').trim();
@@ -111,6 +112,80 @@ async function atomicWrite(filePath, content) {
 
 async function writeJson(filePath, value) {
   await atomicWrite(filePath, `${JSON.stringify(value, null, 2)}\n`);
+}
+
+export function buildUavProtectedLookup(collectionInput, manifestInput) {
+  const collection = collectionInput && typeof collectionInput === 'object' ? collectionInput : {};
+  const manifest = manifestInput && typeof manifestInput === 'object' ? manifestInput : {};
+  const files = [];
+  let position = 0;
+  for (const group of manifest.groups || []) {
+    const mediaType = String(group?.captureClass || '').toUpperCase() === 'A' ? 'audio' : 'video';
+    for (const bucket of group?.buckets || []) {
+      for (const file of bucket?.files || []) {
+        const driveFileId = text(file?.driveFileId);
+        if (!driveFileId || file?.missing || file?.role === 'recording_index_pdf') continue;
+        position += 1;
+        const bucketCode = text(bucket?.bucket).toUpperCase();
+        const originalName = text(file?.originalName || file?.relativePath || file?.lookupRaw || driveFileId);
+        files.push({
+          bucketNumber: text(file?.bucketNumber),
+          fileId: `asset:${driveFileId}`,
+          bucket: bucketCode,
+          r2Key: `uav/${text(collection.slug)}/${bucketCode.toLowerCase()}/${driveFileId}-${originalName}`,
+          driveFileId,
+          sizeBytes: Number(file?.sizeBytes || 0),
+          mime: text(file?.mime) || (mediaType === 'audio' ? 'audio/octet-stream' : 'video/octet-stream'),
+          position,
+          label: text(file?.lookupRaw || originalName),
+          sourceLabel: originalName,
+          type: mediaType,
+          availableTypes: [mediaType],
+          role: 'media',
+        });
+      }
+    }
+  }
+  if (!files.length) return null;
+  return {
+    lookupNumber: text(collection.lookupRaw),
+    title: text(collection.title),
+    status: text(collection.status || 'draft'),
+    season: text(collection?.identity?.tour).toUpperCase(),
+    files,
+    entitlements: [{ type: 'role', value: 'authenticated' }],
+  };
+}
+
+async function syncUavProtectedAssets(root, uavLookups) {
+  const sourcePath = path.join(root, 'data', 'protected.assets.json');
+  const current = await readJson(sourcePath, {
+    version: 'protected-assets-v1',
+    updatedAt: new Date().toISOString(),
+    settings: {},
+    lookups: [],
+    exemptions: [],
+  });
+  const standardLookups = (current.lookups || []).filter((lookup) => !/^DR\./i.test(text(lookup?.lookupNumber)));
+  const nextLookups = [...standardLookups, ...(uavLookups || [])];
+  const requiredBuckets = nextLookups.flatMap((lookup) => (lookup.files || []).map((file) => text(file?.bucket).toUpperCase()));
+  const allowedBuckets = Array.from(new Set([
+    ...(current?.settings?.allowedBuckets || []),
+    ...requiredBuckets,
+  ].filter(Boolean)));
+  const normalized = normalizeProtectedAssetsFile({
+    ...current,
+    updatedAt: new Date().toISOString(),
+    settings: {
+      ...(current.settings || {}),
+      allowedBuckets,
+    },
+    lookups: nextLookups,
+  });
+  for (const servedRoot of ['data', 'docs/data', 'public/data']) {
+    await writeJson(path.join(root, servedRoot, 'protected.assets.json'), normalized);
+  }
+  return normalized;
 }
 
 export async function readUavAuthorities(rootDir) {
@@ -649,6 +724,7 @@ export async function buildUavOutputs({ rootDir, privateFilePath } = {}) {
   const slugs = await listUavSlugs(root);
   const collections = [];
   const catalogEntries = [];
+  const protectedLookups = [];
   const seenLookups = new Map();
   const failures = [];
 
@@ -685,6 +761,10 @@ export async function buildUavOutputs({ rootDir, privateFilePath } = {}) {
       }
       collections.push(checked.collection);
       catalogEntries.push(uavCollectionToCatalogEntry(checked.collection, authorities));
+      if (checked.collection.status === 'active') {
+        const protectedLookup = buildUavProtectedLookup(checked.collection, checked.manifest);
+        if (protectedLookup) protectedLookups.push(protectedLookup);
+      }
     } catch (error) {
       failures.push(`${slug}: ${error?.message || error}`);
     }
@@ -701,6 +781,7 @@ export async function buildUavOutputs({ rootDir, privateFilePath } = {}) {
   for (const servedRoot of ['data', 'docs/data', 'public/data']) {
     await writeJson(path.join(root, servedRoot, 'uav.collections.json'), aggregate);
   }
+  await syncUavProtectedAssets(root, protectedLookups);
   return { aggregate, slugs, collections: collections.length, lookups: seenLookups.size };
 }
 

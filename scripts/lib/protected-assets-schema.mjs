@@ -3,14 +3,15 @@ import { BUCKETS } from './entry-schema.mjs';
 
 export const PROTECTED_ASSETS_VERSION = 'protected-assets-v1';
 export const PROTECTED_ASSETS_SYNC_STRATEGY = 'manifest-publish';
-export const PROTECTED_ASSETS_DEFAULT_ALLOWED_BUCKETS = [...BUCKETS];
+export const PROTECTED_ASSETS_DEFAULT_ALLOWED_BUCKETS = [...BUCKETS, 'V', 'I'];
 export const PROTECTED_ASSETS_DEFAULT_STORAGE_BUCKET = 'dex-protected-assets';
 
 const LOOKUP_SUBMISSION_PATTERN = /^SUB\d{2,4}-[A-Z]\.[A-Za-z]{3}\s[A-Za-z]{2}\s(?:AV|A|V|O)\d{4}$/i;
 const LOOKUP_CATALOG_PATTERN = /^[A-Z]\.[A-Za-z]{2,4}\.\s[A-Za-z]{2,8}\s(?:AV|A|V|O)\d{4}(?:\sS\d+)?$/i;
+const LOOKUP_UAV_COLLECTION_PATTERN = /^DR\.[A-Za-z]{2,4}\.\s[A-Za-z]{2,8}\s\d{4}\sT\d+$/i;
 const BUCKET_NUMBER_PATTERN = /^([A-Z])\.([0-9]{1,6})$/;
 const DRIVE_FILE_ID_PATTERN = /^[A-Za-z0-9_-]{10,}$/;
-const SEASON_PATTERN = /^S\d+$/i;
+const SEASON_PATTERN = /^(?:S|T)\d+$/i;
 const FILE_TYPE_VALUES = new Set(['audio', 'video', 'pdf', 'unknown']);
 const FILE_ROLE_VALUES = new Set(['media', 'recording_index_pdf']);
 const STATUS_VALUES = new Set([
@@ -106,7 +107,11 @@ function normalizeText(value) {
 
 function normalizeLookupNumber(value) {
   const normalized = normalizeText(value);
-  if (!LOOKUP_SUBMISSION_PATTERN.test(normalized) && !LOOKUP_CATALOG_PATTERN.test(normalized)) {
+  if (
+    !LOOKUP_SUBMISSION_PATTERN.test(normalized)
+    && !LOOKUP_CATALOG_PATTERN.test(normalized)
+    && !LOOKUP_UAV_COLLECTION_PATTERN.test(normalized)
+  ) {
     throw new Error(`Invalid lookupNumber: ${normalized || '(empty)'}`);
   }
   return normalized;

@@ -44,6 +44,7 @@
             variantKey: String(file.outputSpectrum || series.spectrum || file.role || 'source').toLowerCase(),
             variantLabel: file.outputSpectrum || series.spectrum || file.role || 'Source',
           }));
+        if (!files.length) continue;
         const existing = buckets.find((row) => row.bucket === bucket.bucket);
         const type = { mediaType, files };
         if (existing) existing.types.push(type);
@@ -147,7 +148,11 @@
               onQueuedTick: () => shared.setDownloadState?.(row, 'queued', 'Preparing bundle…'),
             });
             shared.setDownloadState?.(row, 'ready', 'Ready. Opening download…');
-            shared.openSignedUrl?.(result?.signedUrl);
+            if (typeof shared.openDownloadDelivery === 'function') {
+              await shared.openDownloadDelivery(result);
+            } else {
+              shared.openSignedUrl?.(result?.signedUrl);
+            }
           } catch (error) {
             const code = String(error?.code || '').toLowerCase();
             shared.setDownloadState?.(
@@ -159,6 +164,28 @@
                 ? 'Download not found (404).'
                 : 'Download failed (DX-DL-500).',
             );
+          } finally {
+            button.disabled = false;
+          }
+        });
+      };
+
+      const bindDirectUrlDownload = (button, url, name) => {
+        if (!(button instanceof HTMLButtonElement) || !url || button.dataset.dxUavDownloadBound === 'true') return;
+        button.dataset.dxUavDownloadBound = 'true';
+        button.addEventListener('click', async () => {
+          const row = button.closest('#downloads') || button.parentElement;
+          button.disabled = true;
+          shared.setDownloadState?.(row, 'ready', 'Recording index ready. Starting download…');
+          try {
+            if (typeof shared.openDownloadDelivery === 'function') {
+              await shared.openDownloadDelivery({
+                delivery: 'multi',
+                downloads: [{ name, signedUrl: url }],
+              });
+            } else {
+              shared.openSignedUrl?.(url);
+            }
           } finally {
             button.disabled = false;
           }
@@ -188,6 +215,7 @@
       // Prefer the explicit per-collection recording-index PDF ref (asset:/lookup:),
       // falling back to the X-bucket recording_index_pdf file when no ref is set.
       const pdfRef = String(collection.recordingIndex?.pdfRef || '').trim();
+      const recordingExportUrl = shared.recordingIndexPdfExportUrl?.(collection.recordingIndex?.sourceUrl) || '';
       const recordingToken = /^(asset|lookup):/i.test(pdfRef)
         ? pdfRef
         : recordingFile
@@ -195,9 +223,20 @@
         : '';
       if (recordingButton instanceof HTMLButtonElement) {
         if (!recordingToken) {
-          recordingButton.disabled = true;
-          recordingButton.setAttribute('aria-disabled', 'true');
-          recordingButton.title = 'Recording index PDF unavailable';
+          if (recordingExportUrl) {
+            recordingButton.disabled = false;
+            recordingButton.removeAttribute('aria-disabled');
+            recordingButton.removeAttribute('title');
+            bindDirectUrlDownload(
+              recordingButton,
+              recordingExportUrl,
+              `${collection.lookupRaw || 'recording-index'} recording-index.pdf`,
+            );
+          } else {
+            recordingButton.disabled = true;
+            recordingButton.setAttribute('aria-disabled', 'true');
+            recordingButton.title = 'Recording index PDF unavailable';
+          }
         } else {
           bindDirectBundleDownload(recordingButton, [recordingToken]);
         }
