@@ -312,20 +312,6 @@
       "points": 220
     },
     {
-      "id": "vault-easter-egg",
-      "title": "Vault Visitor",
-      "category": "secret",
-      "tier": "silver",
-      "glyph": "vault",
-      "metricKey": "secretClaimVault",
-      "threshold": 1,
-      "secret": true,
-      "clueGrowlix": "@@@ find the hidden claim @@@",
-      "description": "Claim the vault easter egg.",
-      "sortOrder": 230,
-      "points": 50
-    },
-    {
           "id": "found-404",
           "title": "Found a Missing Packet",
           "category": "profile",
@@ -340,18 +326,18 @@
           "points": 10
         },
     {
-      "id": "808-easter-egg",
-      "title": "Vault Visitor",
+      "id": "vault-easter-egg",
+      "title": "404... again.",
       "category": "secret",
       "tier": "silver",
       "glyph": "vault",
       "metricKey": "secretClaimVault",
       "threshold": 1,
       "secret": true,
-      "clueGrowlix": "the iconic **-&&& rhythm composer as a page slug",
+      "clueGrowlix": "The iconic **-&&& beat machine as a page slug.",
       "description": "Claim the vault easter egg.",
       "sortOrder": 230,
-      "points": 50
+      "points": 90
     },
     {
       "id": "cross-lane-veteran",
