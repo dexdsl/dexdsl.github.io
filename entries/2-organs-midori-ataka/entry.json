@@ -6,8 +6,8 @@
     "artistName": "midori ataka"
   },
   "lifecycle": {
-    "publishedAt": "2026-06-08T21:40:02.511Z",
-    "updatedAt": "2026-06-08T21:40:02.511Z"
+    "publishedAt": "2026-06-29T00:11:33.531Z",
+    "updatedAt": "2026-06-29T00:11:33.531Z"
   },
   "video": {
     "mode": "url",
@@ -18,37 +18,38 @@
   "descriptionText": "When we came to Midori with an inquiry regarding a possible dex recording, we had no idea she would record what is one of our flagship recordings of our first season 1 drop. Of course, we never doubted her – anyone who has seen her on the organ is aware of her most graceful command of the instrument. We recorded her collection of organ music, titled “2 Organs”, on Thursday May, 11, 2023, on the Peabody Conservatory Griswold Hall organ, as well as Peabody’s portative organ. Accompanied by plaster casts of an early Greek frieze and a 16th century tapestry, this collection is drenched in drama, a sort of visual tension which mirrors the harmonic tension in Midori’s organ performance.",
   "series": "dex",
   "selectedBuckets": [
-    "A"
+    "A",
+    "B"
   ],
   "creditsData": {
     "artist": [
       "midori ataka"
     ],
     "artistAlt": null,
+    "audio": {
+      "master": [],
+      "mix": [],
+      "recording": []
+    },
     "instruments": [
       "TWO ORGANS"
     ],
+    "location": "Unknown",
+    "season": "S1",
     "video": {
-      "director": [],
       "cinematography": [],
+      "director": [],
       "editing": []
     },
-    "audio": {
-      "recording": [],
-      "mix": [],
-      "master": []
-    },
-    "year": 2023,
-    "season": "S1",
-    "location": "Unknown"
+    "year": 2023
   },
   "fileSpecs": {
     "bitDepth": 24,
-    "sampleRate": 48000,
     "channels": "stereo",
+    "sampleRate": 48000,
     "staticSizes": {
-      "A": "",
-      "B": "",
+      "A": "8.3 GB",
+      "B": "8.2 GB",
       "C": "",
       "D": "",
       "E": "",
@@ -60,92 +61,211 @@
     "tags": []
   },
   "sidebarPageConfig": {
-    "lookupNumber": "K.Org. At AV2023 S1",
+    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Midori Ataka.",
     "buckets": [
       "A",
       "B"
     ],
-    "specialEventImage": "/assets/series/dex.png",
-    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and midori ataka.",
     "credits": {
       "artist": [
-        "midori ataka"
+        "Midori Ataka"
       ],
       "artistAlt": null,
+      "audio": {
+        "master": [
+          "Sebastian Suarez-Solis"
+        ],
+        "mix": [
+          "Sebastian Suarez-Solis"
+        ],
+        "recording": [
+          "Tyler Jordan",
+          "Cameron Church"
+        ]
+      },
+      "instrumentLinksEnabled": true,
       "instruments": [
         "TWO ORGANS"
       ],
-      "video": {
-        "director": [],
-        "cinematography": [],
-        "editing": []
-      },
-      "audio": {
-        "recording": [],
-        "mix": [],
-        "master": []
-      },
-      "year": 2023,
+      "linksByPerson": {},
+      "location": "Baltimore, MD",
       "season": "S1",
-      "location": "Unknown"
-    },
-    "fileSpecs": {
-      "bitDepth": 24,
-      "sampleRate": 48000,
-      "channels": "stereo",
-      "staticSizes": {
-        "A": "",
-        "B": "",
-        "C": "",
-        "D": "",
-        "E": "",
-        "X": ""
-      }
-    },
-    "metadata": {
-      "sampleLength": "AUTO",
-      "tags": []
+      "video": {
+        "cinematography": [
+          "Tyler Jordan",
+          "Cameron Church"
+        ],
+        "director": [
+          "Sebastian Suarez-Solis"
+        ],
+        "editing": [
+          "Sebastian Suarez-Solis"
+        ]
+      },
+      "year": 2023
     },
     "downloads": {
-      "recordingIndexPdfRef": "asset:2-organs-midori-ataka-recording-index-pdf",
-      "recordingIndexBundleRef": "bundle:recording-index:K.Org. At AV2023 S1:all",
-      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1AHjmoqS4r6DnI2KY3GsqBlrYbP0xAPAJMYS0E6MSQAE/edit?gid=0#gid=0",
+      "bucketFolders": {
+        "A": {
+          "fileCount": 3,
+          "files": [
+            {
+              "id": "1c3pJRMgjk3rZMeDtSdczDPJy1CdfLI-3",
+              "mimeType": "video/quicktime",
+              "name": "K.Org. At AV2023 S1 A.1 [4K].mov",
+              "size": 5425775073
+            },
+            {
+              "id": "1ReYckrwpQCs9THtyFjm4Blb3IlwbeAAB",
+              "mimeType": "video/quicktime",
+              "name": "K.Org. At AV2023 S1 A.1 [1080p].mov",
+              "size": 2889753989
+            },
+            {
+              "id": "1RabLpQZiQvAW8Z-FagHzOGjAYUd7msnf",
+              "mimeType": "audio/x-wav",
+              "name": "K.Org. At AV2023 S1 A.1 [ste].wav",
+              "size": 556489080
+            }
+          ],
+          "folderId": "1RR-RdzBLRU6VuVPAGip8fESOUtzshYD2",
+          "scannedAt": "2026-06-28T23:00:24.043Z",
+          "totalBytes": 8872018142
+        },
+        "B": {
+          "fileCount": 15,
+          "files": [
+            {
+              "id": "1Ro1HtoeQCsMwsB4p-YOcwFBCC65LvDpd",
+              "mimeType": "video/quicktime",
+              "name": "K.Org. At AV2023 S1 B.1 [4K].mov",
+              "size": 1091792340
+            },
+            {
+              "id": "1RrZIpK9E3yXntSjmDcXuNdAAatR9Dfmr",
+              "mimeType": "video/quicktime",
+              "name": "K.Org. At AV2023 S1 B.2 [4K].mov",
+              "size": 619520891
+            },
+            {
+              "id": "1RvYeYi-MARMw3E2cONlDKx5BlFNG2xip",
+              "mimeType": "video/quicktime",
+              "name": "K.Org. At AV2023 S1 B.3 [4K].mov",
+              "size": 565957824
+            },
+            {
+              "id": "1S0ABPAq5mwJ_ZpFn_Yv_-AIrsTdEU59R",
+              "mimeType": "video/quicktime",
+              "name": "K.Org. At AV2023 S1 B.4 [4K].mov",
+              "size": 1646029219
+            },
+            {
+              "id": "1S0LXU_8hQY5vjZiam3pjfLy6nUjnAR1k",
+              "mimeType": "video/quicktime",
+              "name": "K.Org. At AV2023 S1 B.5 [4K].mov",
+              "size": 1469955122
+            },
+            {
+              "id": "1SJHRnrNsxBdSR4eLmVk98yZgnvN7HLn-",
+              "mimeType": "video/quicktime",
+              "name": "K.Org. At AV2023 S1 B.1 [1080p].mov",
+              "size": 582139482
+            },
+            {
+              "id": "1SV4qtPALc2ANuICbbz-5wORuzE6asplD",
+              "mimeType": "video/quicktime",
+              "name": "K.Org. At AV2023 S1 B.2 [1080p].mov",
+              "size": 330644776
+            },
+            {
+              "id": "1SZFSuYmWHtVYTXUcumVXHNNLg9qrc03U",
+              "mimeType": "video/quicktime",
+              "name": "K.Org. At AV2023 S1 B.3 [1080p].mov",
+              "size": 301953426
+            },
+            {
+              "id": "1ScDradrypl9GlID4KBINzsuyOIfGCyjw",
+              "mimeType": "video/quicktime",
+              "name": "K.Org. At AV2023 S1 B.4 [1080p].mov",
+              "size": 878540102
+            },
+            {
+              "id": "1SjYWRXMlDz4Gh2rCZG9oMKki4DfAHj61",
+              "mimeType": "video/quicktime",
+              "name": "K.Org. At AV2023 S1 B.5 [1080p].mov",
+              "size": 784463611
+            },
+            {
+              "id": "1SeCttd64TNH2e4Ro0_RM-CRhOpYKcz2_",
+              "mimeType": "audio/wav",
+              "name": "K.Org. At AV2023 S1 B.1 [ste].wav",
+              "size": 102157236
+            },
+            {
+              "id": "1R7SB0ZqHhuEW8GM_c-FWnzmmekDE7WIC",
+              "mimeType": "audio/wav",
+              "name": "K.Org. At AV2023 S1 B.2 [ste].wav",
+              "size": 57794058
+            },
+            {
+              "id": "1SFiWmvQBqmmvUbeErkrw4-oaUP_SYLlS",
+              "mimeType": "audio/wav",
+              "name": "K.Org. At AV2023 S1 B.3 [ste].wav",
+              "size": 53389226
+            },
+            {
+              "id": "1NOSDyGbw2kdMrHampUZ_29GR1s8vz4Uk",
+              "mimeType": "audio/wav",
+              "name": "K.Org. At AV2023 S1 B.4 [ste].wav",
+              "size": 154873672
+            },
+            {
+              "id": "1BID3tVe0xSzlJeQYySqvT99Xs9Rz0pcE",
+              "mimeType": "audio/wav",
+              "name": "K.Org. At AV2023 S1 B.5 [ste].wav",
+              "size": 139628298
+            }
+          ],
+          "folderId": "1JgFnHHW3qiolEBkUZFnTo9xRKTJMgmoN",
+          "scannedAt": "2026-06-28T23:00:34.528Z",
+          "totalBytes": 8778839283
+        }
+      },
       "fileTree": {
-        "lookup": "K.Org. At AV2023 S1",
         "buckets": [
           {
             "bucket": "A",
             "types": [
               {
-                "mediaType": "audio",
                 "files": [
                   {
-                    "fileId": "2-organs-midori-ataka-a-001-stereo",
-                    "label": "K.Org. At AV2023 S1 A.1 [ste].wav",
-                    "filename": "001-stereo.wav",
                     "extension": "wav",
+                    "fileId": "2-organs-midori-ataka-a-001-stereo",
+                    "filename": "001-stereo.wav",
+                    "label": "K.Org. At AV2023 S1 A.1 [ste].wav",
                     "variantKey": "default-audio"
                   }
-                ]
+                ],
+                "mediaType": "audio"
               },
               {
-                "mediaType": "video",
                 "files": [
                   {
-                    "fileId": "2-organs-midori-ataka-a-001-1080p",
-                    "label": "K.Org. At AV2023 S1 A.1 [1080p].mov",
-                    "filename": "001-1080p.mov",
                     "extension": "mov",
+                    "fileId": "2-organs-midori-ataka-a-001-1080p",
+                    "filename": "001-1080p.mov",
+                    "label": "K.Org. At AV2023 S1 A.1 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
-                    "fileId": "2-organs-midori-ataka-a-001-4k",
-                    "label": "K.Org. At AV2023 S1 A.1 [4K].mov",
-                    "filename": "001-4k.mov",
                     "extension": "mov",
+                    "fileId": "2-organs-midori-ataka-a-001-4k",
+                    "filename": "001-4k.mov",
+                    "label": "K.Org. At AV2023 S1 A.1 [4K].mov",
                     "variantKey": "default-video"
                   }
-                ]
+                ],
+                "mediaType": "video"
               }
             ]
           },
@@ -153,124 +273,151 @@
             "bucket": "B",
             "types": [
               {
-                "mediaType": "audio",
                 "files": [
                   {
+                    "extension": "wav",
                     "fileId": "2-organs-midori-ataka-b-001-stereo",
-                    "label": "K.Org. At AV2023 S1 B.1 [ste].wav",
                     "filename": "001-stereo.wav",
-                    "extension": "wav",
+                    "label": "K.Org. At AV2023 S1 B.1 [ste].wav",
                     "variantKey": "default-audio"
                   },
                   {
+                    "extension": "wav",
                     "fileId": "2-organs-midori-ataka-b-002-stereo",
-                    "label": "K.Org. At AV2023 S1 B.2 [ste].wav",
                     "filename": "002-stereo.wav",
-                    "extension": "wav",
+                    "label": "K.Org. At AV2023 S1 B.2 [ste].wav",
                     "variantKey": "default-audio"
                   },
                   {
+                    "extension": "wav",
                     "fileId": "2-organs-midori-ataka-b-003-stereo",
-                    "label": "K.Org. At AV2023 S1 B.3 [ste].wav",
                     "filename": "003-stereo.wav",
-                    "extension": "wav",
+                    "label": "K.Org. At AV2023 S1 B.3 [ste].wav",
                     "variantKey": "default-audio"
                   },
                   {
+                    "extension": "wav",
                     "fileId": "2-organs-midori-ataka-b-004-stereo",
-                    "label": "K.Org. At AV2023 S1 B.4 [ste].wav",
                     "filename": "004-stereo.wav",
-                    "extension": "wav",
+                    "label": "K.Org. At AV2023 S1 B.4 [ste].wav",
                     "variantKey": "default-audio"
                   },
                   {
-                    "fileId": "2-organs-midori-ataka-b-005-stereo",
-                    "label": "K.Org. At AV2023 S1 B.5 [ste].wav",
-                    "filename": "005-stereo.wav",
                     "extension": "wav",
+                    "fileId": "2-organs-midori-ataka-b-005-stereo",
+                    "filename": "005-stereo.wav",
+                    "label": "K.Org. At AV2023 S1 B.5 [ste].wav",
                     "variantKey": "default-audio"
                   }
-                ]
+                ],
+                "mediaType": "audio"
               },
               {
-                "mediaType": "video",
                 "files": [
                   {
+                    "extension": "mov",
                     "fileId": "2-organs-midori-ataka-b-001-1080p",
-                    "label": "K.Org. At AV2023 S1 B.1 [1080p].mov",
                     "filename": "001-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Org. At AV2023 S1 B.1 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "2-organs-midori-ataka-b-001-4k",
-                    "label": "K.Org. At AV2023 S1 B.1 [4K].mov",
                     "filename": "001-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Org. At AV2023 S1 B.1 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "2-organs-midori-ataka-b-002-1080p",
-                    "label": "K.Org. At AV2023 S1 B.2 [1080p].mov",
                     "filename": "002-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Org. At AV2023 S1 B.2 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "2-organs-midori-ataka-b-002-4k",
-                    "label": "K.Org. At AV2023 S1 B.2 [4K].mov",
                     "filename": "002-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Org. At AV2023 S1 B.2 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "2-organs-midori-ataka-b-003-1080p",
-                    "label": "K.Org. At AV2023 S1 B.3 [1080p].mov",
                     "filename": "003-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Org. At AV2023 S1 B.3 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "2-organs-midori-ataka-b-003-4k",
-                    "label": "K.Org. At AV2023 S1 B.3 [4K].mov",
                     "filename": "003-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Org. At AV2023 S1 B.3 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "2-organs-midori-ataka-b-004-1080p",
-                    "label": "K.Org. At AV2023 S1 B.4 [1080p].mov",
                     "filename": "004-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Org. At AV2023 S1 B.4 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "2-organs-midori-ataka-b-004-4k",
-                    "label": "K.Org. At AV2023 S1 B.4 [4K].mov",
                     "filename": "004-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Org. At AV2023 S1 B.4 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "2-organs-midori-ataka-b-005-1080p",
-                    "label": "K.Org. At AV2023 S1 B.5 [1080p].mov",
                     "filename": "005-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Org. At AV2023 S1 B.5 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
-                    "fileId": "2-organs-midori-ataka-b-005-4k",
-                    "label": "K.Org. At AV2023 S1 B.5 [4K].mov",
-                    "filename": "005-4k.mov",
                     "extension": "mov",
+                    "fileId": "2-organs-midori-ataka-b-005-4k",
+                    "filename": "005-4k.mov",
+                    "label": "K.Org. At AV2023 S1 B.5 [4K].mov",
                     "variantKey": "default-video"
                   }
-                ]
+                ],
+                "mediaType": "video"
               }
             ]
           }
-        ]
+        ],
+        "lookup": "K.Org. At AV2023 S1"
+      },
+      "recordingIndexBundleRef": "bundle:recording-index:K.Org. At AV2023 S1:all",
+      "recordingIndexPdfRef": "asset:2-organs-midori-ataka-recording-index-pdf",
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1AHjmoqS4r6DnI2KY3GsqBlrYbP0xAPAJMYS0E6MSQAE/edit?usp=drive_link",
+      "selectedBuckets": [
+        "A",
+        "B"
+      ]
+    },
+    "fileSpecs": {
+      "bitDepth": 24,
+      "channels": "stereo",
+      "sampleRate": 48000,
+      "staticSizes": {
+        "A": "8.3 GB",
+        "B": "8.2 GB",
+        "C": "",
+        "D": "",
+        "E": "",
+        "X": ""
       }
-    }
+    },
+    "lookupNumber": "K.Org. At AV2023 S1",
+    "metadata": {
+      "sampleLength": "AUTO",
+      "tags": []
+    },
+    "specialEventImage": "/assets/series/dex.png"
   }
 }

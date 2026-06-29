@@ -6,8 +6,8 @@
     "artistName": "Arlo Tomecek, Max Coleman"
   },
   "lifecycle": {
-    "publishedAt": "2026-03-25T20:32:35.735Z",
-    "updatedAt": "2026-03-25T20:32:35.735Z"
+    "publishedAt": "2026-06-29T00:08:49.199Z",
+    "updatedAt": "2026-06-29T00:08:49.199Z"
   },
   "video": {
     "mode": "url",
@@ -15,44 +15,45 @@
     "dataUrlOriginal": "https://www.youtube.com/watch?v=6uW9VfE8DP0",
     "dataHtml": ""
   },
-  "descriptionText": "BAS‌SO‌ON + ELECTRONICS WITH GENERATIVE VIDEO.",
+  "descriptionText": "A series of collaborative videos between bassoonist Max Coleman and visual artist Arlo Tomecek.",
   "series": "dex",
   "selectedBuckets": [
     "A",
     "B",
-    "C"
+    "C",
+    "D"
   ],
   "creditsData": {
     "artist": [
       "Arlo Tomecek, Max Coleman"
     ],
     "artistAlt": null,
+    "audio": {
+      "master": [],
+      "mix": [],
+      "recording": []
+    },
     "instruments": [
       "BAS‌SO‌ON + ELECTRONICS WITH GENERATIVE VIDEO"
     ],
+    "location": "Unknown",
+    "season": "S2",
     "video": {
-      "director": [],
       "cinematography": [],
+      "director": [],
       "editing": []
     },
-    "audio": {
-      "recording": [],
-      "mix": [],
-      "master": []
-    },
-    "year": 2024,
-    "season": "S2",
-    "location": "Unknown"
+    "year": 2024
   },
   "fileSpecs": {
     "bitDepth": 24,
-    "sampleRate": 48000,
     "channels": "stereo",
+    "sampleRate": 48000,
     "staticSizes": {
-      "A": "",
-      "B": "",
-      "C": "",
-      "D": "",
+      "A": "60.9 GB",
+      "B": "6.1 GB",
+      "C": "5.9 GB",
+      "D": "6.0 GB",
       "E": "",
       "X": ""
     }
@@ -62,57 +63,2104 @@
     "tags": []
   },
   "sidebarPageConfig": {
-    "lookupNumber": "W.Bsn. CoTo AV2024 S2",
+    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Arlo Tomecek, Max Coleman.",
     "buckets": [
       "A",
       "B",
-      "C"
+      "C",
+      "D"
     ],
-    "specialEventImage": "/assets/series/dex.png",
-    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Arlo Tomecek, Max Coleman.",
     "credits": {
       "artist": [
         "Arlo Tomecek, Max Coleman"
       ],
       "artistAlt": null,
-      "instruments": [
-        "BAS‌SO‌ON + ELECTRONICS WITH GENERATIVE VIDEO"
-      ],
-      "video": {
-        "director": [],
-        "cinematography": [],
-        "editing": []
-      },
       "audio": {
-        "recording": [],
-        "mix": [],
-        "master": []
+        "master": [
+          "Sebastian Suarez-Solis"
+        ],
+        "mix": [
+          "Sebastian Suarez-Solis"
+        ],
+        "recording": [
+          "Cameron Church"
+        ]
       },
-      "year": 2024,
+      "instrumentLinksEnabled": true,
+      "instruments": [
+        "Bassoon",
+        "Electronics",
+        "Generative Video"
+      ],
+      "linksByPerson": {
+        "Cameron Church": [
+          {
+            "href": "https://cameronchurch.com",
+            "label": "Website"
+          }
+        ],
+        "Sebastian Suarez-Solis": [
+          {
+            "href": "https://dexdsl.github.io/u/cbassuarez",
+            "label": "Website"
+          }
+        ]
+      },
+      "location": "Baltimore, MD/Los Angeles, CA",
       "season": "S2",
-      "location": "Unknown"
+      "video": {
+        "cinematography": [
+          "Sebastian Suarez-Solis",
+          "Arlo Tomecek"
+        ],
+        "director": [
+          "Sebastian Suarez-Solis"
+        ],
+        "editing": [
+          "Sebastian Suarez-Solis",
+          "Cameron Church"
+        ]
+      },
+      "year": 2024
+    },
+    "downloads": {
+      "bucketFolders": {
+        "A": {
+          "fileCount": 5,
+          "files": [
+            {
+              "id": "1QYaRkSv1BhqNYAOgeZ9HgQSxy4nCn4Mk",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 A.1 [4K].mov",
+              "size": 3823056317
+            },
+            {
+              "id": "1Q_mbWslxkLOaa9sRkn0yc1-Y_tReGt4M",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 A.1 [1080p].mov",
+              "size": 2046049627
+            },
+            {
+              "id": "1QaOPWSW4U-i5MVAlKnUNt-96rpb9iWzJ",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 A.1 [ste].wav",
+              "size": 403705080
+            },
+            {
+              "id": "1gBzpmcUOsQYNqc_YbJvVdYsRxsx9WdGu",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 A.2 (Blob) [4K].mov",
+              "size": 28439538766
+            },
+            {
+              "id": "133D_r-Kh1Vh-Z5Q7foXRcFVxibC_jImm",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 A.3 (Kiki) [4K].mov",
+              "size": 30627938335
+            }
+          ],
+          "folderId": "10Nj09W3-LqSxd-T3klVdSsZYeCNCEq8r",
+          "scannedAt": "2026-06-28T23:41:22.106Z",
+          "totalBytes": 65340288125
+        },
+        "B": {
+          "fileCount": 9,
+          "files": [
+            {
+              "id": "19ITTgVlgqf7zmqLqav1X21nK6PprN79n",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 B.1 [4K].mov",
+              "size": 2861580244
+            },
+            {
+              "id": "1LFO8S7K5sF5IF0h_X7HrsV4RSXmdHnz7",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 B.2 [4K].mov",
+              "size": 494395100
+            },
+            {
+              "id": "1SoZ7H9N2wmccYQbonoUFsjbq7jwadZhG",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 B.3 [4K].mov",
+              "size": 773780608
+            },
+            {
+              "id": "1JLjkuRKmNO_E4K9DrWuQmDhVu0mAvN9Q",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 B.1 [1080p].mov",
+              "size": 1384389850
+            },
+            {
+              "id": "1JO0UsWGjdedkZUx7zuxNoaVcznW56POi",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 B.2 [1080p].mov",
+              "size": 267281186
+            },
+            {
+              "id": "1JQAAP23EmfYKHgzBbJplQShWv1Slfj2g",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 B.3 [1080p].mov",
+              "size": 416693403
+            },
+            {
+              "id": "1E23IaqstQukX0RfbuXTX3432Zl2nopEI",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 B.1 [ste].wav",
+              "size": 271297080
+            },
+            {
+              "id": "1E4zp8U_dlLquSI_Frpia7TrNwUsCfIDt",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 B.2 [ste].wav",
+              "size": 49213080
+            },
+            {
+              "id": "1E7Aq-YW-BmMygwibFvtenwEjpapSOUnh",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 B.3 [ste].wav",
+              "size": 78889080
+            }
+          ],
+          "folderId": "10Ldk1jT4tdA_roqfDTxr8nhXTQ_UElnk",
+          "scannedAt": "2026-06-28T23:41:29.974Z",
+          "totalBytes": 6597519631
+        },
+        "C": {
+          "fileCount": 66,
+          "files": [
+            {
+              "id": "12iWN6O_jjJvDgo9gZ2ShNNeLPgrYrbMD",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.1 [4K].mov",
+              "size": 178464095
+            },
+            {
+              "id": "12lq6LgLuANFRZaFjFp67simZ7i3POPiM",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.2 [4K].mov",
+              "size": 85125744
+            },
+            {
+              "id": "12rk0N90sPAPd-a1qScXVz5FdD6e1x74D",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.3 [4K].mov",
+              "size": 188334790
+            },
+            {
+              "id": "12zt5cND8a0P6CknXxOhiN5TgqrCpHzUA",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.4 [4K].mov",
+              "size": 164977643
+            },
+            {
+              "id": "13CEjDgUAcN6GkRyhqssKaMbTTH9m3r6j",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.5 [4K].mov",
+              "size": 305794379
+            },
+            {
+              "id": "13M9v8Xzcu6tgUv52Ec41uKZVhIT4IeOX",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.6 [4K].mov",
+              "size": 202592830
+            },
+            {
+              "id": "13MLDXEh2xnLMeK7wlHbHjDZVPRa2n4Eg",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.7 [4K].mov",
+              "size": 452468929
+            },
+            {
+              "id": "13NQxWo0nK5n4dfD20NkADwVz6DX7Vrbd",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.8 [4K].mov",
+              "size": 520764283
+            },
+            {
+              "id": "13OMYNxY1JQJc-wpqtKyl6jeDeh8ek_Hl",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.9 [4K].mov",
+              "size": 251989530
+            },
+            {
+              "id": "13RH8ogxo6X8OUtM__-r1j6Hr9hHpBQyx",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.10 [4K].mov",
+              "size": 110821779
+            },
+            {
+              "id": "13WkSpmLxRm8GVjOsLfjStNhyUX9CayJR",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.11 [4K].mov",
+              "size": 127656972
+            },
+            {
+              "id": "13kxqArWj3GcSA6vo7LD4mqrXzKqFiBdy",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.12 [4K].mov",
+              "size": 125227147
+            },
+            {
+              "id": "13vGsoEaAMsamkjEed-sDmq1jW8paigeY",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.13 [4K].mov",
+              "size": 167417813
+            },
+            {
+              "id": "13w86f7YPuFHKyz_4pHyUpqY7zgepKL6v",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.14 [4K].mov",
+              "size": 111394022
+            },
+            {
+              "id": "14-AYNbVa1-7FWkFHR_BQGycQWdJ4U3bI",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.15 [4K].mov",
+              "size": 83273996
+            },
+            {
+              "id": "140cbjUNANOD3s39wy2hrkT6KRgqDfCpw",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.16 [4K].mov",
+              "size": 59824166
+            },
+            {
+              "id": "146lqYRAKWyTtJxGERFk059mu2gaaXacc",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.17 [4K].mov",
+              "size": 111884016
+            },
+            {
+              "id": "14AZEZ89cfV2EXJ8xqRjd4IYD6JLZZJqV",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.18 [4K].mov",
+              "size": 44403602
+            },
+            {
+              "id": "14Dnk0l64GCrKUtka2olnvLv0GNWubH8w",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.19 [4K].mov",
+              "size": 105009635
+            },
+            {
+              "id": "14Js3tnIP31D0ta6dUzNPRwb1j2eFZp4v",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.20 [4K].mov",
+              "size": 64850174
+            },
+            {
+              "id": "14KycZkY_AEvETbJvnjV0zajTBoaXnWl4",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.21 [4K].mov",
+              "size": 219226535
+            },
+            {
+              "id": "14dbyZvFnyogaCnESxMGJNrRv6l6hpwgz",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.22 [4K].mov",
+              "size": 167396082
+            },
+            {
+              "id": "1JTxE4a6sRQuXfn2k1bA7c6YIelwiipos",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.1 [1080p].mov",
+              "size": 95203116
+            },
+            {
+              "id": "1JWkqUP3ycFcrRsqkCBgNooucXZ8jMN8d",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.2 [1080p].mov",
+              "size": 45019509
+            },
+            {
+              "id": "1JYDW-WjC4EK7DSEtobvjlEWHqhDynpg6",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.3 [1080p].mov",
+              "size": 100013127
+            },
+            {
+              "id": "1JZHtYgRcjafWbvKgX_dg7JnoarMQe6H1",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.4 [1080p].mov",
+              "size": 87716611
+            },
+            {
+              "id": "1J_Clqa3OYFHby7lCG04RAV_TuiJFX0f1",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.5 [1080p].mov",
+              "size": 162570094
+            },
+            {
+              "id": "1JdclBJH5t7iv56zujKIeTFDdjQC-1D5q",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.6 [1080p].mov",
+              "size": 107789156
+            },
+            {
+              "id": "1Jdl9KaQJnf738PDsbPh02pFGKfDK1s5J",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.7 [1080p].mov",
+              "size": 241581047
+            },
+            {
+              "id": "1JpgF88CJWkPXratUpPwF6COmmgIgwmiI",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.8 [1080p].mov",
+              "size": 277740675
+            },
+            {
+              "id": "1JsIqm3OIsnCISqUab7F1f6PudJuhXOo-",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.9 [1080p].mov",
+              "size": 134346130
+            },
+            {
+              "id": "1K2FUKzaUnQ40mYr7P5BDpbeoatd02_SM",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.10 [1080p].mov",
+              "size": 58399841
+            },
+            {
+              "id": "1K2uRXnc3qenqyc3thHzFTZn1zqoCRyk5",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.11 [1080p].mov",
+              "size": 69093811
+            },
+            {
+              "id": "1K4cgNoNXuhWGPiVYfcrDfhCyF2JJLqkY",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.12 [1080p].mov",
+              "size": 66511729
+            },
+            {
+              "id": "1K9_mz7OrevM64G4ngf6bIC8Svo2gAZLH",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.13 [1080p].mov",
+              "size": 89475752
+            },
+            {
+              "id": "1KH_pSWaucORaJsFfRASNseN_UR8mojYJ",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.14 [1080p].mov",
+              "size": 59129643
+            },
+            {
+              "id": "1KMT6feFExQeDs_uGp3oA05YTAHTYDNPD",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.15 [1080p].mov",
+              "size": 44421468
+            },
+            {
+              "id": "1KNoOo4mH-FipWT2zO6UroxzV0LXJK8V8",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.16 [1080p].mov",
+              "size": 31949549
+            },
+            {
+              "id": "1KOzcEk99PzLJOyoPgzucSNH97siz5wxE",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.17 [1080p].mov",
+              "size": 59843844
+            },
+            {
+              "id": "1KV9oCxZgvHQtDZcQQqr1H0UJQj7oy8YR",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.18 [1080p].mov",
+              "size": 23279020
+            },
+            {
+              "id": "1KXK6wl8zPeoi77BFoIIlLZCSVmxOs3oj",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.19 [1080p].mov",
+              "size": 55709054
+            },
+            {
+              "id": "1KXl18ycVoJ9evkslU94mWOFKtFPAsGRk",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.20 [1080p].mov",
+              "size": 34103704
+            },
+            {
+              "id": "1KgdUEagaEDisF3qKRzU1QcQOkbRQcT_Z",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.21 [1080p].mov",
+              "size": 116647403
+            },
+            {
+              "id": "1Kjc60Vql6azu7S4Crk6diCyw3yvijq0r",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 C.22 [1080p].mov",
+              "size": 89428929
+            },
+            {
+              "id": "1CXe1u7DIg18wyl3OQhxnZHygyFxa74W6",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 C.1 [ste].wav",
+              "size": 18373080
+            },
+            {
+              "id": "1CY_wtfny9LjfoUKWqR0P3s2VbC4LlCkc",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 C.2 [ste].wav",
+              "size": 8605080
+            },
+            {
+              "id": "1Cgbzvwo2YvSFKX0F_haRJ60vbCowafV1",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 C.3 [ste].wav",
+              "size": 19189080
+            },
+            {
+              "id": "1ChX-w-tB-ZGikCZP-wYMb9-nwAILZZzW",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 C.4 [ste].wav",
+              "size": 16909080
+            },
+            {
+              "id": "1CuOd2oAD0-XybuEkAqV5mH1h41iwGD1u",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 C.5 [ste].wav",
+              "size": 31321080
+            },
+            {
+              "id": "1D-AbmDeIJJiQthkj98PyE4_dDApRUY1q",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 C.6 [ste].wav",
+              "size": 20785080
+            },
+            {
+              "id": "1D4x2-A6pCLSsX4AemjvL2PXKOYqBp5xN",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 C.7 [ste].wav",
+              "size": 46657080
+            },
+            {
+              "id": "1D6kYwhRfjJGZb0pYl9ez9e6NDh7PhJbv",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 C.8 [ste].wav",
+              "size": 53605080
+            },
+            {
+              "id": "1D8zpsLpg7-D8ebASd_b6xffSrQojtI7R",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 C.9 [ste].wav",
+              "size": 26257080
+            },
+            {
+              "id": "1DCyJAXuqTgXUU7z20H2a8H_NlqnXVeqZ",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 C.10 [ste].wav",
+              "size": 14317080
+            },
+            {
+              "id": "1DGHJmyLW7pYms0UvBR002LRtExK1Feu9",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 C.11 [ste].wav",
+              "size": 15289080
+            },
+            {
+              "id": "1DHJB5ADX9dMqNAfnZvUYatulwHpImhNL",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 C.12 [ste].wav",
+              "size": 12805080
+            },
+            {
+              "id": "1DIdjnqOO9Uu0NuO2DQpOIsSBsVtMxg7v",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 C.13 [ste].wav",
+              "size": 17257080
+            },
+            {
+              "id": "1DKAQGV4oXiyzzDJBya907CS8GBTeNGLL",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 C.14 [ste].wav",
+              "size": 11257080
+            },
+            {
+              "id": "1DUryVOOW2-qSs64Z_xXIuXmO_JUVYgS6",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 C.15 [ste].wav",
+              "size": 8593080
+            },
+            {
+              "id": "1DOAwbi8HPDA4PzYWWMFlfRD-Avj38LJe",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 C.16 [ste].wav",
+              "size": 6001080
+            },
+            {
+              "id": "1DYMIxHRVnUYgoMXt8kPXetl2cgWwX7hR",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 C.17 [ste].wav",
+              "size": 11509080
+            },
+            {
+              "id": "1Dac7FgbkGFmYJezdzyHy5vF-t8gFozRG",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 C.18 [ste].wav",
+              "size": 4369080
+            },
+            {
+              "id": "1DfrmpJXPIs6rwq1I7teaH-SjyG-NhvA5",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 C.19 [ste].wav",
+              "size": 10705080
+            },
+            {
+              "id": "1DkTsnuZ2DF2MKFDJXnij2y-Hxjyj4-JC",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 C.20 [ste].wav",
+              "size": 6481080
+            },
+            {
+              "id": "1Dm-8imp7Sav0e_SB3M69nB-u82Uqm95z",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 C.21 [ste].wav",
+              "size": 22525080
+            },
+            {
+              "id": "1DubO3EcWcbk6j4HNVr5MJq7U3u46vv-L",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 C.22 [ste].wav",
+              "size": 17305080
+            }
+          ],
+          "folderId": "10LQX6WtEdqpSofQO1zofKUPsJXshHNWZ",
+          "scannedAt": "2026-06-28T23:41:38.111Z",
+          "totalBytes": 6298987134
+        },
+        "D": {
+          "fileCount": 249,
+          "files": [
+            {
+              "id": "153_KOqb9A-sA4x3irVvm3egEHfUOP87o",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.1 [4K].mov",
+              "size": 29853251
+            },
+            {
+              "id": "153fnPdygpbb-etTMvRG36Gi9mTLzLAyA",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.2 [4K].mov",
+              "size": 19026759
+            },
+            {
+              "id": "155Cc7o59ctESsrT3sIO3vt6J2Svh21Fq",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.3 [4K].mov",
+              "size": 43796104
+            },
+            {
+              "id": "158LJ_jThRO2oYG2u0N03vbtBrBdS83hf",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.4 [4K].mov",
+              "size": 50150106
+            },
+            {
+              "id": "15Cny6aq3K-eZTVMrzpT5t5gbGF6fQihL",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.5 [4K].mov",
+              "size": 17384265
+            },
+            {
+              "id": "15IBq6k0HwX3ZoqxJVaENP0Yj47zcpakG",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.6 [4K].mov",
+              "size": 28856658
+            },
+            {
+              "id": "15Jz-UB2AbPW1OWh0HhjzSgS9C-k5kS7a",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.7 [4K].mov",
+              "size": 48858755
+            },
+            {
+              "id": "15OAMb59tZUoA5Sds0LBOQKQ_lDwFQmzh",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.8 [4K].mov",
+              "size": 38655274
+            },
+            {
+              "id": "15PYFl5aVVrfeiMBtjdAd0rmxVbn-sMtm",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.9 [4K].mov",
+              "size": 33528861
+            },
+            {
+              "id": "15_XuW4PjW5YlkBQanjMjnE7sNzy3JFmY",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.10 [4K].mov",
+              "size": 32470624
+            },
+            {
+              "id": "15exiFqAX6gA9FFvasacpe3yVxAOmrJRC",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.11 [4K].mov",
+              "size": 41298360
+            },
+            {
+              "id": "15i0dBg69fHqZnIHVwd8bc5VUWX8WQXW1",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.12 [4K].mov",
+              "size": 87355637
+            },
+            {
+              "id": "15r4oWBU1MkBEV9E68b_cyKFCOgmvPoIQ",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.13 [4K].mov",
+              "size": 19596088
+            },
+            {
+              "id": "15uNrD3LS_WfPtAcaZ7987tUBz771ikeC",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.14 [4K].mov",
+              "size": 59933414
+            },
+            {
+              "id": "15uQn0krERMU24-A4GUnCiXNLquLfHsrY",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.15 [4K].mov",
+              "size": 30429408
+            },
+            {
+              "id": "15yUE8Wp8Y88FlvLp9F8InWp_SKjcs1gF",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.16 [4K].mov",
+              "size": 60288244
+            },
+            {
+              "id": "15ycIq1h0iJnsiwwrH8_N2BXw4AcGqkkP",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.17 [4K].mov",
+              "size": 38481865
+            },
+            {
+              "id": "1632mwyaijF0XmrNZinKZ6YsPkBS3a942",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.18 [4K].mov",
+              "size": 38919732
+            },
+            {
+              "id": "1636TXbh9N_0NBe55wbwoEx1LLUmMGMfe",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.19 [4K].mov",
+              "size": 74625969
+            },
+            {
+              "id": "164thp1p87_RKpQFR5vcRZZ7JCo-sQiDM",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.20 [4K].mov",
+              "size": 43772473
+            },
+            {
+              "id": "166wyieuA5QEFS2suKSzqfjRGeKNx1Vvb",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.21 [4K].mov",
+              "size": 34549000
+            },
+            {
+              "id": "16A6YiWeNIWz7aCFcbhVpnR0ZGCGzRJRt",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.22 [4K].mov",
+              "size": 29145923
+            },
+            {
+              "id": "16GfXIjR-5mu0QfFzx30252OyqyC09ozL",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.23 [4K].mov",
+              "size": 55265296
+            },
+            {
+              "id": "16WGb5WsUM2N1-Trfg41AixGdQdjTv6yh",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.24 [4K].mov",
+              "size": 35715456
+            },
+            {
+              "id": "16YxV71bwjSJLrOsvhF60AKkYB7TbR9Cc",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.25 [4K].mov",
+              "size": 31817323
+            },
+            {
+              "id": "16hZt4BfUe7O5SRDGMeslh9BHR2pqkx9I",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.26 [4K].mov",
+              "size": 30407369
+            },
+            {
+              "id": "16hqMHUHex722jtoj0NfdR8G4JUiFOAov",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.27 [4K].mov",
+              "size": 54010371
+            },
+            {
+              "id": "16mQboCYW_sc_ORV-d6D9T5zEYP22cjg_",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.28 [4K].mov",
+              "size": 57198188
+            },
+            {
+              "id": "16tQsumcQeLH_QA7KAK5-OpSzOmxD5Q-K",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.29 [4K].mov",
+              "size": 24842944
+            },
+            {
+              "id": "176OaV8XERRwb29pDwIIEKJ4KEIBrNj6B",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.30 [4K].mov",
+              "size": 41766133
+            },
+            {
+              "id": "176h9S9Kiia_CZj0qtoV__PCRyBoiFS4g",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.31 [4K].mov",
+              "size": 46341061
+            },
+            {
+              "id": "176oeIyj0Nhsv-AhF2seuR_We4b1TmC4p",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.32 [4K].mov",
+              "size": 44033340
+            },
+            {
+              "id": "177sX2RLJG3mFsR-U-nQveroAApQKYXbB",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.33 [4K].mov",
+              "size": 31447035
+            },
+            {
+              "id": "178L6Rnj2eyOVitAVkhMdunz9gIFwe49-",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.34 [4K].mov",
+              "size": 40072391
+            },
+            {
+              "id": "17BBwQ_UWCDMZJ4lOlYY27W2vyLC1qTid",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.35 [4K].mov",
+              "size": 37036254
+            },
+            {
+              "id": "17DQN8oCuWD08GHY4oS0xIyjTe0es_ivV",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.36 [4K].mov",
+              "size": 74739264
+            },
+            {
+              "id": "17GXrOGofCCNCpJ_eEnT7CVuQjWX8L0GL",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.37 [4K].mov",
+              "size": 126074714
+            },
+            {
+              "id": "17IjGCBgIOF9yCYB_6rtEORMMvxMie2wt",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.38 [4K].mov",
+              "size": 55062060
+            },
+            {
+              "id": "17U2yZYq2byEuxbYOUr29GFRVp0RP3qNF",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.39 [4K].mov",
+              "size": 84567028
+            },
+            {
+              "id": "17dDjmNzxhZsBwA7AbYfAmbDRWNK93Ljm",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.40 [4K].mov",
+              "size": 53677963
+            },
+            {
+              "id": "17drS0HVdqE0cbp16jyrnvPssmltLWzDf",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.41 [4K].mov",
+              "size": 74480275
+            },
+            {
+              "id": "17eAY0QgvC9AbPJHzMas_e1ck30zTgAgV",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.42 [4K].mov",
+              "size": 97174457
+            },
+            {
+              "id": "17kP18VNbtIW8yOjYA9z4VaTRvdbOLKN6",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.43 [4K].mov",
+              "size": 113504086
+            },
+            {
+              "id": "183Y-YZAnuZliR80TxKQnXpnHuD_HncIT",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.44 [4K].mov",
+              "size": 49440988
+            },
+            {
+              "id": "1848eOOzHLnOGXsjLKoazIveyZ76rC3cp",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.45 [4K].mov",
+              "size": 157245137
+            },
+            {
+              "id": "18Lx4gGbMmj5HclIFZQI5J9muBsTJ8fq8",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.46 [4K].mov",
+              "size": 96916668
+            },
+            {
+              "id": "18MeoWiHDX1bpZA7dj4VDaRf3WqGusQpA",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.47 [4K].mov",
+              "size": 28650367
+            },
+            {
+              "id": "18Ss4t16wMSDh0YZzxXFVOUrf3Spi3ysS",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.48 [4K].mov",
+              "size": 39918255
+            },
+            {
+              "id": "18Xsl2SUmhloJ7psbCaULbgLQQuNz0TMS",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.49 [4K].mov",
+              "size": 42860291
+            },
+            {
+              "id": "18YGoG01q7odTt3VzymtSrzQZMQYKe8Yu",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.50 [4K].mov",
+              "size": 41187619
+            },
+            {
+              "id": "18ePEuHTvS2Izi-QFm4X_R2rgSNMuc77g",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.51 [4K].mov",
+              "size": 36220213
+            },
+            {
+              "id": "18jfjdwGUWoOsJ1nCpMsKm-nUwH2uk3Sc",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.52 [4K].mov",
+              "size": 53535541
+            },
+            {
+              "id": "18oIshva_8zTTBkQc34XViHwRUK2neqps",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.53 [4K].mov",
+              "size": 27220886
+            },
+            {
+              "id": "18zR76kS08rbPOhSPRDbbStm20XH0zEkA",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.54 [4K].mov",
+              "size": 40037035
+            },
+            {
+              "id": "191ejJ2iavgpY256XsKGf-9mk5eBBBSl3",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.55 [4K].mov",
+              "size": 20266646
+            },
+            {
+              "id": "19BdqiG6Uabj4wQZY5PeB4bW3HxWw3I-Y",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.56 [4K].mov",
+              "size": 41463298
+            },
+            {
+              "id": "19GKD_jQzJ8wA1Cx4pTsAoAbUI4KJlWoL",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.57 [4K].mov",
+              "size": 40346543
+            },
+            {
+              "id": "19_PR0TiI3lRND_EUGjYjXKht7yoV5lOv",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.58 [4K].mov",
+              "size": 42207737
+            },
+            {
+              "id": "19_RrQegCeYQgYva2yC2CKFCej21ug-wi",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.59 [4K].mov",
+              "size": 86728527
+            },
+            {
+              "id": "19_iZEaHrEVHMLPpBRDE7lGEUENKBXpCn",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.60 [4K].mov",
+              "size": 49481858
+            },
+            {
+              "id": "19aPBTkxC_BHLoYO_iQpzQVDiNYxDkKOj",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.61 [4K].mov",
+              "size": 63080847
+            },
+            {
+              "id": "19b7VfcPrXYcv05rCtMQH-CDBshssndDR",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.62 [4K].mov",
+              "size": 26040510
+            },
+            {
+              "id": "19cAW_ooZkwbTaVValxwxnni50OMmsssz",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.63 [4K].mov",
+              "size": 59000891
+            },
+            {
+              "id": "19eoqSbTD_cRahsUylbEacBFl35YHxnyq",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.64 [4K].mov",
+              "size": 35807733
+            },
+            {
+              "id": "19fH2YW62o8_vS_Ik-Wg8Y9G1e-eM9qvb",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.65 [4K].mov",
+              "size": 24920679
+            },
+            {
+              "id": "19frfyljenl4bkeolJXihw7aFVDlyVRdN",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.66 [4K].mov",
+              "size": 75092122
+            },
+            {
+              "id": "19lPoFPWv56xZTNTxYjKJhCKJAL0G0IZL",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.67 [4K].mov",
+              "size": 38331638
+            },
+            {
+              "id": "1A0vJH6rbf_gHMEWw3xm8Wl5VjsWUkTQf",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.68 [4K].mov",
+              "size": 25863503
+            },
+            {
+              "id": "1A5HEWmgegCed69IjmHHh_BgpZB1RvlGo",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.69 [4K].mov",
+              "size": 20603086
+            },
+            {
+              "id": "1ACkJVLkNDZ10xx9pbUGjbwW10uwgSvIK",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.70 [4K].mov",
+              "size": 32435769
+            },
+            {
+              "id": "1AN70ohG4nLIggBMkAL6Rx1EpujoYWpHr",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.71 [4K].mov",
+              "size": 50295251
+            },
+            {
+              "id": "1ANJxaFj_aoCaDdNXG1fKupy2v0FQbngt",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.72 [4K].mov",
+              "size": 23260673
+            },
+            {
+              "id": "1ANiLJr0LsgK1DljoazmFyaCi23FonJ8f",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.73 [4K].mov",
+              "size": 51926302
+            },
+            {
+              "id": "1AQHQHazlN39LQRGMyK3LtKOcoh7qwe42",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.74 [4K].mov",
+              "size": 15184181
+            },
+            {
+              "id": "1AQnX_sc7ty9_AW-r0vu2jUDKaMekh3Rf",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.75 [4K].mov",
+              "size": 36165909
+            },
+            {
+              "id": "1ARZnHdf1bnsgOse86pHmrjPhO30dR2o9",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.76 [4K].mov",
+              "size": 47455389
+            },
+            {
+              "id": "1ASLAsVqXDh-xaYyEHGY7eLPFSOqsIR4M",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.77 [4K].mov",
+              "size": 28800476
+            },
+            {
+              "id": "1AX7K83kAjHv8tGK80X209GS7pnIbR_v_",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.78 [4K].mov",
+              "size": 28860606
+            },
+            {
+              "id": "1Ada05i3couNyQgBgd--QqKMLAgNbmhKa",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.79 [4K].mov",
+              "size": 31336879
+            },
+            {
+              "id": "1AjhLRDtchXzLokILU-GSoehKbYjgjQ3K",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.80 [4K].mov",
+              "size": 56412061
+            },
+            {
+              "id": "1Av0zP9ZLkzBoMnqa93-ZKG6ee3niQSMF",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.81 [4K].mov",
+              "size": 25417409
+            },
+            {
+              "id": "1B8CZrpOOJOFRDFfekgroEj39TDm6EvVq",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.82 [4K].mov",
+              "size": 61133429
+            },
+            {
+              "id": "1BCPEP-Qw65tBvgUOielzC9oCm30ABFtw",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.83 [4K].mov",
+              "size": 83587629
+            },
+            {
+              "id": "1KnLkPplE8U29D5euqp014dgl5j48trMq",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.1 [1080p].mov",
+              "size": 15492018
+            },
+            {
+              "id": "1Ktz5M6ZDMrQqErY1BCkzaxUauVwy2kTs",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.2 [1080p].mov",
+              "size": 9801463
+            },
+            {
+              "id": "1KnzRfFvenLMuQ7BVdjnZONrK0EmDkVn2",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.3 [1080p].mov",
+              "size": 22701887
+            },
+            {
+              "id": "1Kw303RfgB4laEgysr-9LWqEuDt5_LkFK",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.4 [1080p].mov",
+              "size": 26188349
+            },
+            {
+              "id": "1L6L68GYMX7vyPXdrcBd5a3McEwmip-mN",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.5 [1080p].mov",
+              "size": 8908240
+            },
+            {
+              "id": "1KxQSwZa3qPBLG9JQL9tds-ucwlCOCn7K",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.6 [1080p].mov",
+              "size": 15354842
+            },
+            {
+              "id": "1LCE3eJi7e0QyeUE_YY2LvNiD5EFl94KZ",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.7 [1080p].mov",
+              "size": 25790485
+            },
+            {
+              "id": "1LChHi6Nb_IFoy6TJfNxPmL9_d7gRNxid",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.8 [1080p].mov",
+              "size": 20122736
+            },
+            {
+              "id": "1LIiGItvbbsTT2Q_KZbwBZ9Wgzg6-7yxR",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.9 [1080p].mov",
+              "size": 17537360
+            },
+            {
+              "id": "1LNYbdRXOBo1j7ahUS9D9aF3pfCxcqosd",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.10 [1080p].mov",
+              "size": 16948420
+            },
+            {
+              "id": "1LPZsy_EMlQ-ouH6uC2SZji6dqFIJm2kA",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.11 [1080p].mov",
+              "size": 21339483
+            },
+            {
+              "id": "1LYNfPckRbP9pS9wAQ42tYlnN94AjIKmb",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.12 [1080p].mov",
+              "size": 46229648
+            },
+            {
+              "id": "1LaC5xxiEAfapPgeP7-MpC3yWt9W_6ynN",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.13 [1080p].mov",
+              "size": 10382302
+            },
+            {
+              "id": "1L_eWXlpe-4POKMMgv7TQgq0e3rwk-dR9",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.14 [1080p].mov",
+              "size": 31156553
+            },
+            {
+              "id": "1LgGe01FM_CqBKjQ0o3fCvqzYHHZyLX5j",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.15 [1080p].mov",
+              "size": 15944773
+            },
+            {
+              "id": "1LjiOR819G6JKNEJBIg3GDIZqoezSW-oG",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.16 [1080p].mov",
+              "size": 31928728
+            },
+            {
+              "id": "1Ln4apwJb5NeVPDTOPiTSQ8jS0CLwFVVU",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.17 [1080p].mov",
+              "size": 20265445
+            },
+            {
+              "id": "1LpszeFWA6ZlkqglfID9GxrzQEL1Hdvj6",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.18 [1080p].mov",
+              "size": 20270078
+            },
+            {
+              "id": "1LzAW_yuLaRVHs2IjugpjtPk40npVbu2a",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.19 [1080p].mov",
+              "size": 39056653
+            },
+            {
+              "id": "1M1PQhpTY7Z1FKcN-s4uH_0SMcAAiMalH",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.20 [1080p].mov",
+              "size": 23216799
+            },
+            {
+              "id": "1M6yV5hhrXARKaM1UTtE1nCJThwRdFqlf",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.21 [1080p].mov",
+              "size": 18427677
+            },
+            {
+              "id": "1M8f5xNJxl9btUCq-nZPRHiUKr-V48juY",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.22 [1080p].mov",
+              "size": 15335712
+            },
+            {
+              "id": "1MF0EVpSFD8Yg-wXf9-_FX5J48WRhnMgG",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.23 [1080p].mov",
+              "size": 28844997
+            },
+            {
+              "id": "1MGKqE4G7-CP2DP1GI-33R7262nBNJ-1d",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.24 [1080p].mov",
+              "size": 19021398
+            },
+            {
+              "id": "1MGpMEXVzFwcYvo_CGtWC9gqeXpZ-dlmp",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.25 [1080p].mov",
+              "size": 16486990
+            },
+            {
+              "id": "1MMsmoBLoH_nagnZq6UyWWDQrqlktAccB",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.26 [1080p].mov",
+              "size": 15901648
+            },
+            {
+              "id": "1MQCRWGnlSVwuw2GGPe48iIZ98yJVEUmr",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.27 [1080p].mov",
+              "size": 28590738
+            },
+            {
+              "id": "1MTb3UrFTGLMvuQTmwAVnPx2dwaJRejRQ",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.28 [1080p].mov",
+              "size": 30279651
+            },
+            {
+              "id": "1Mg67xB6LZmAuCXJp0J3ailqHeJouq7g6",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.29 [1080p].mov",
+              "size": 12908475
+            },
+            {
+              "id": "1MdYlwfhiyAue1hovJ1eBNME54uC9Fj0Q",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.30 [1080p].mov",
+              "size": 22381153
+            },
+            {
+              "id": "1MhLFGx0kbcZxPjAx476W8CKcL4aNQrkK",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.31 [1080p].mov",
+              "size": 24455828
+            },
+            {
+              "id": "1MmoXzTWySSWrwlAxwrXCQdqlfKJUGGWO",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.32 [1080p].mov",
+              "size": 23213024
+            },
+            {
+              "id": "1Mmw9AExC_MNhSEtK2SOGkLC-0aTKNEN-",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.33 [1080p].mov",
+              "size": 16328440
+            },
+            {
+              "id": "1MnLGKDeuv_EhRzr06iqauJmbSp4wh0RJ",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.34 [1080p].mov",
+              "size": 21028881
+            },
+            {
+              "id": "1MpVg8XrY0RfKFojBjxatsNMZ1HHR1sv1",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.35 [1080p].mov",
+              "size": 19592049
+            },
+            {
+              "id": "1Mu-wDoXWfJ-kVTeUTRRo7-qtNwcc9ghg",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.36 [1080p].mov",
+              "size": 39394813
+            },
+            {
+              "id": "1N-3NR9BAA-9amTCngzVSXVUBqAJtW-cW",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.37 [1080p].mov",
+              "size": 67375106
+            },
+            {
+              "id": "1N0k6V1BGQ4dGCafteX6Xjrgl2SC7sEWP",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.38 [1080p].mov",
+              "size": 29003445
+            },
+            {
+              "id": "1N6DvD_wQRknsYPDd7lmv4pmMhRgVeir_",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.39 [1080p].mov",
+              "size": 45176720
+            },
+            {
+              "id": "1NCnawDNJ4oP70MdwNfNlLbehZOTuzZwG",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.40 [1080p].mov",
+              "size": 28360751
+            },
+            {
+              "id": "1NFDChTekVgr9BeCABicCIct3gY5RTYsM",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.41 [1080p].mov",
+              "size": 39409053
+            },
+            {
+              "id": "1NJw-sLKT6SVqHApg3zn-88w4fmHZOfPd",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.42 [1080p].mov",
+              "size": 51624535
+            },
+            {
+              "id": "1NKjbvAvJUvN3Myi9oiSK-dwncaIRe65h",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.43 [1080p].mov",
+              "size": 60583529
+            },
+            {
+              "id": "1NaCS7COGfBdOlbI79OMfNhoaTTklj6Ef",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.44 [1080p].mov",
+              "size": 26189119
+            },
+            {
+              "id": "1NcsfSTTHAFfe4EGgaxNZZ3H2vwbs3wh7",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.45 [1080p].mov",
+              "size": 83032758
+            },
+            {
+              "id": "1NeemZrNTraBpb9qM7786E-1Nsw5jz2ay",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.46 [1080p].mov",
+              "size": 51593023
+            },
+            {
+              "id": "1Nq02qQ3owY33YVrkK9G2ILv23c2t-glg",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.47 [1080p].mov",
+              "size": 15285318
+            },
+            {
+              "id": "1NziC6A8j8EAv3YdVYpHub-8sj8KZDltt",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.48 [1080p].mov",
+              "size": 20684476
+            },
+            {
+              "id": "1O6z3-lumEvU9oMy3cRSpOdviohL1KGCR",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.49 [1080p].mov",
+              "size": 22579813
+            },
+            {
+              "id": "1OIzXMDxUkyTuiIJQgPz2TXpZfJ7_YF0j",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.50 [1080p].mov",
+              "size": 21618591
+            },
+            {
+              "id": "1OLlB3mG8zuD-210o7IB4IqfSAD_2h87k",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.51 [1080p].mov",
+              "size": 18965516
+            },
+            {
+              "id": "1OMjEt1yB236kP4movZwEhW2nDclQ2h5p",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.52 [1080p].mov",
+              "size": 29568136
+            },
+            {
+              "id": "1OU0PzFa0b5YU4CF7e9xK4JVOQ8dTXDLG",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.53 [1080p].mov",
+              "size": 14204847
+            },
+            {
+              "id": "1OjsQ3MR5gFN078m13HpTlnEeHSLoJx_9",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.54 [1080p].mov",
+              "size": 21117711
+            },
+            {
+              "id": "1P-YG5iA_gOyLUqoSt-BAqf7W4-G3A74v",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.55 [1080p].mov",
+              "size": 10503153
+            },
+            {
+              "id": "1OwSlQ5w9xza8gz8myhwzbBw-XUdR4DQm",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.56 [1080p].mov",
+              "size": 21826693
+            },
+            {
+              "id": "1P11vODD91UERpozzWh8SaG_sOGyi9PCR",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.57 [1080p].mov",
+              "size": 21325894
+            },
+            {
+              "id": "1P3mXcCjlsT9O-bTAApfvGJe9_4cYsAXn",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.58 [1080p].mov",
+              "size": 22472264
+            },
+            {
+              "id": "1P67DeOonrbNvmvnr4zaAtOPU7UdUEhKo",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.59 [1080p].mov",
+              "size": 46359652
+            },
+            {
+              "id": "1P6FJPHgNijK1MlC_0Y-4nsbMTvyJyjeQ",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.60 [1080p].mov",
+              "size": 26128642
+            },
+            {
+              "id": "1PDwiR7TJq_rXAQtofCAgwDa8HI7pABNA",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.61 [1080p].mov",
+              "size": 33416635
+            },
+            {
+              "id": "1PJYY1WQlElEbGRw1l8tBavQuZ0fRmte0",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.62 [1080p].mov",
+              "size": 13410232
+            },
+            {
+              "id": "1PJPyjieM5Z3T_GNFZVFfpShxpDL-U_Ml",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.63 [1080p].mov",
+              "size": 31422413
+            },
+            {
+              "id": "1PNjP_kxst6UnDX9uJXVyGeMytzJgkNd7",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.64 [1080p].mov",
+              "size": 18982652
+            },
+            {
+              "id": "1PYDBSfiC0Fyq97TwId5ign0EcCJE2cT_",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.65 [1080p].mov",
+              "size": 13405332
+            },
+            {
+              "id": "1PPA-g3HLSsnuhiEj99XXx1wxm3Dqe_et",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.66 [1080p].mov",
+              "size": 39694454
+            },
+            {
+              "id": "1PZ3nTekJUa_pkOwNlhp9LAmJtCIFO24-",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.67 [1080p].mov",
+              "size": 20579531
+            },
+            {
+              "id": "1PiYq9QXFHtvce5-ThMCe_SqRnsBtnThb",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.68 [1080p].mov",
+              "size": 13402322
+            },
+            {
+              "id": "1PcmaUW_YPgqfs4kc1vzHKBgwoUkrKWkd",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.69 [1080p].mov",
+              "size": 10588070
+            },
+            {
+              "id": "1Pm1o9IGzxnX6BOvHS7Us5ZSc6QWX13HL",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.70 [1080p].mov",
+              "size": 17256417
+            },
+            {
+              "id": "1PsfqmGhajWATaAAjV3-3srxvoKjZWHra",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.71 [1080p].mov",
+              "size": 26938096
+            },
+            {
+              "id": "1Q4aF_pvueR5BHvf5mlvqso3DYUG7t-tF",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.72 [1080p].mov",
+              "size": 12177863
+            },
+            {
+              "id": "1Px9MhnJhWN4jZ8S7CRNGU2BN0HPPbHRU",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.73 [1080p].mov",
+              "size": 27161784
+            },
+            {
+              "id": "1Q5bS1iyS85wy3eoTOmqOWNVqjms0-nAz",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.74 [1080p].mov",
+              "size": 7383670
+            },
+            {
+              "id": "1Q5ZvQILCRp2zlj9ya3sEG_KG7bkVU9cT",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.75 [1080p].mov",
+              "size": 18539682
+            },
+            {
+              "id": "1Q8srr5uPAt2JpNxxVpK-6M_6EzFSwMMH",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.76 [1080p].mov",
+              "size": 24962792
+            },
+            {
+              "id": "1QE05bQ6h4htAHVTJQO2-LIF2HtMfx8QE",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.77 [1080p].mov",
+              "size": 14724807
+            },
+            {
+              "id": "1QEu6-WdSE0LIMofgTLu2effaw61M1gZz",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.78 [1080p].mov",
+              "size": 15183486
+            },
+            {
+              "id": "1QHSXIApDANcUPwhin7BY2GwuKRSGsuEJ",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.79 [1080p].mov",
+              "size": 16402966
+            },
+            {
+              "id": "1QJ-irZ_om93Z1jVyNfDRdByklOizYLNI",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.80 [1080p].mov",
+              "size": 29738143
+            },
+            {
+              "id": "1QWnROE3DfmCiihPvYP412gdogtpP8uOP",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.81 [1080p].mov",
+              "size": 13285933
+            },
+            {
+              "id": "1QRTa8XgKXACVuJXhBtu9UfrRRocRQvLz",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.82 [1080p].mov",
+              "size": 32273829
+            },
+            {
+              "id": "1QWzY7-Lb5xhoFndXQ0do8NNP3MHTzBw_",
+              "mimeType": "video/quicktime",
+              "name": "W.Bsn. CoTo AV2024 S2 D.83 [1080p].mov",
+              "size": 44701206
+            },
+            {
+              "id": "1E9ywWS-nDYMmaslhHa2mM2lzVYRdgr-I",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.1 [ste].wav",
+              "size": 2845080
+            },
+            {
+              "id": "1E8-sg00Je1-EVK6Aij_oSUZxs32k6HWA",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.2 [ste].wav",
+              "size": 1765080
+            },
+            {
+              "id": "1ELALViY_vF-vXDFlQAbMJ_HyGi4pspei",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.3 [ste].wav",
+              "size": 4273080
+            },
+            {
+              "id": "1ELhmbdYUp0oTbZdxo7se5By3lCgdGWN5",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.4 [ste].wav",
+              "size": 4945080
+            },
+            {
+              "id": "1ELF6VJj_9V2vGSJCHhJyrHCjRB90gCKV",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.5 [ste].wav",
+              "size": 1633080
+            },
+            {
+              "id": "1EMqF8xMNxxmIOcBi2D91O7d--6a4ZZHm",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.6 [ste].wav",
+              "size": 2917080
+            },
+            {
+              "id": "1EWcJzYGbcnaac2PjrrzgNrr_e49Vz_RH",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.7 [ste].wav",
+              "size": 4825080
+            },
+            {
+              "id": "1EZz0C8QKvbXMLE6BvLAmsNjaKgQCRJq9",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.8 [ste].wav",
+              "size": 3781080
+            },
+            {
+              "id": "1EcHCRHZeAsmuQU9S9aTlL875adm8Q5rf",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.9 [ste].wav",
+              "size": 3241080
+            },
+            {
+              "id": "1EpbXdsGfGjjLvie3h6ivQswph0ewd3bH",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.10 [ste].wav",
+              "size": 3133080
+            },
+            {
+              "id": "1EvpLpsqxISEVVnvnCaQEnPu_NQE2noZc",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.11 [ste].wav",
+              "size": 4057080
+            },
+            {
+              "id": "1F4iKcLSvR2onuQ6-uc6NlO9ytZxu5Yzb",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.12 [ste].wav",
+              "size": 8761080
+            },
+            {
+              "id": "1EwFslyug_FnstSIMrFmHoAvFWbD85nTJ",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.13 [ste].wav",
+              "size": 1897080
+            },
+            {
+              "id": "1F8PrfaPwUtuhymih1WTM38Gh6B15B0vI",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.14 [ste].wav",
+              "size": 5929080
+            },
+            {
+              "id": "1F9MVoU_ztcJKhXymvomLJpSCWAsa2vET",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.15 [ste].wav",
+              "size": 2977080
+            },
+            {
+              "id": "1FBwC97xpP1Yfnlijq6qL662c22dE3wFJ",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.16 [ste].wav",
+              "size": 6109080
+            },
+            {
+              "id": "1FGg9UE-xV5ybDyinskdaL9mU5GfCI9TL",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.17 [ste].wav",
+              "size": 3805080
+            },
+            {
+              "id": "1FGuJ14U9h15CeXHFdu-HGdQC2DXxyuSm",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.18 [ste].wav",
+              "size": 3829080
+            },
+            {
+              "id": "1FOanDhroZ2RiQvDLcgGoKGxp8ap3Xp-p",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.19 [ste].wav",
+              "size": 7477080
+            },
+            {
+              "id": "1FSrcoGqRfUDcRqK_sRTXl-wePTO0OwxT",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.20 [ste].wav",
+              "size": 4393080
+            },
+            {
+              "id": "1FUuk4sNIVSXzpF_-6lg5nnRjDwoa2qh9",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.21 [ste].wav",
+              "size": 3445080
+            },
+            {
+              "id": "1FaUBNVtexuhlo9acFZCCJG0UIzQrXefA",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.22 [ste].wav",
+              "size": 2869080
+            },
+            {
+              "id": "1FjU5fy_Dz_e7mrVNb7XgvxPCd64MjTE8",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.23 [ste].wav",
+              "size": 5509080
+            },
+            {
+              "id": "1FjSkZBumbgD7B9zH4piV_IAaT8c7Nhh9",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.24 [ste].wav",
+              "size": 3625080
+            },
+            {
+              "id": "1FkkKJdb-cNkEpANfdBaauz78MYWJwwBu",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.25 [ste].wav",
+              "size": 3049080
+            },
+            {
+              "id": "1FoqyQYixqcZrk-3ZGfNt-yByIDXmdu7K",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.26 [ste].wav",
+              "size": 2989080
+            },
+            {
+              "id": "1G3ieWZBuGieeAxuGqJ-46sVebR5whY1l",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.27 [ste].wav",
+              "size": 5365080
+            },
+            {
+              "id": "1G5Ym3VhF5XoLFF8ZnV6h7TXuRjHmu0ZV",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.28 [ste].wav",
+              "size": 5761080
+            },
+            {
+              "id": "1G92za7-GXG4pCty0VhDC118175_cPTfE",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.29 [ste].wav",
+              "size": 2413080
+            },
+            {
+              "id": "1GBDDPY6_qPNMDgzDWgxRi2OKrIu2NTnV",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.30 [ste].wav",
+              "size": 4237080
+            },
+            {
+              "id": "1GBXB-Ru_67-atXknKx2gYwWY9wVBZM8C",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.31 [ste].wav",
+              "size": 4645080
+            },
+            {
+              "id": "1GI-c-cE5iWBRHU48NKymCAuPKMtNf-76",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.32 [ste].wav",
+              "size": 4345080
+            },
+            {
+              "id": "1GJCO4ig75JrmeF5N6EtFOJlL9yveAwlq",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.33 [ste].wav",
+              "size": 3013080
+            },
+            {
+              "id": "1GNi2zli3fOV2dHuCBi10szXw6f-McTeZ",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.34 [ste].wav",
+              "size": 3937080
+            },
+            {
+              "id": "1GNP-XXb3auzmA4_CkGFDYRz9CV8gHoJW",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.35 [ste].wav",
+              "size": 3661080
+            },
+            {
+              "id": "1GS5rtsOm6ZPxs9u8lZZZrhPuvOsCadjE",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.36 [ste].wav",
+              "size": 7477080
+            },
+            {
+              "id": "1GZ1fI3R-k6Dqegc8sjXkaq3fO83-S5Nq",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.37 [ste].wav",
+              "size": 12937080
+            },
+            {
+              "id": "1Gfz3XAoz0kkyWvR6SE5wF3XXCkuUALH9",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.38 [ste].wav",
+              "size": 5533080
+            },
+            {
+              "id": "1GhtPLpshTtkZSTLr_wPPCSU78vZcJY11",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.39 [ste].wav",
+              "size": 8689080
+            },
+            {
+              "id": "1Gi8rLUBxlCVWtJTbkD1KCIPhReTErWLr",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.40 [ste].wav",
+              "size": 5401080
+            },
+            {
+              "id": "1GlKFyIcLFvo0c497g0j1AC7mm8CJV5TQ",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.41 [ste].wav",
+              "size": 7537080
+            },
+            {
+              "id": "1GoobzWGPeDRjMmufuPPUk72lMeKL3hzm",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.42 [ste].wav",
+              "size": 9865080
+            },
+            {
+              "id": "1GpVhuarOpIh7_-Az_1gCcwIl9q01Wi7z",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.43 [ste].wav",
+              "size": 11665080
+            },
+            {
+              "id": "1GrwPB03wf7qtFbuXbr0yP86MOWvGqaqO",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.44 [ste].wav",
+              "size": 4921080
+            },
+            {
+              "id": "1GxEXcLHdGJAxqkSRsqqB5YU5aHMtQFiX",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.45 [ste].wav",
+              "size": 16021080
+            },
+            {
+              "id": "1H-eAX_VS2f21ZRAXX5itcrtpDeLZPrjk",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.46 [ste].wav",
+              "size": 10237080
+            },
+            {
+              "id": "1H0Hjzvvi38k0OxQrVFPVWDJBHufYnzCB",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.47 [ste].wav",
+              "size": 5821080
+            },
+            {
+              "id": "1H1FYh6wSrowXC2jhqB64w9vcfzGMYcga",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.48 [ste].wav",
+              "size": 4237080
+            },
+            {
+              "id": "1H1fbzhtJ-dcCyFYhCAI1OXMs9x8ZhJuD",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.49 [ste].wav",
+              "size": 4261080
+            },
+            {
+              "id": "1HC6wZbepos--jO50PCGkJrzpIFPso-kK",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.50 [ste].wav",
+              "size": 4057080
+            },
+            {
+              "id": "1HBFnieC2XD7NG28qSdBEeNUG5cwzb6LH",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.51 [ste].wav",
+              "size": 3601080
+            },
+            {
+              "id": "1HMaSzPLrw8qvT7We7q1lKd3Eiop0t1gi",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.52 [ste].wav",
+              "size": 7633080
+            },
+            {
+              "id": "1HHIjyjy7gjMQctTkgmLX84sYv669uuPR",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.53 [ste].wav",
+              "size": 2677080
+            },
+            {
+              "id": "1HNzHIX6ILq7Lqm6-6u1YFCytAlxHbCPY",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.54 [ste].wav",
+              "size": 4009080
+            },
+            {
+              "id": "1HNCJcaRsWxKixsJMA6Gn5TXLOK4i0zfn",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.55 [ste].wav",
+              "size": 1969080
+            },
+            {
+              "id": "1HOXzAkBfyKHN7G4GbauAak8l8CkSowAI",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.56 [ste].wav",
+              "size": 4153080
+            },
+            {
+              "id": "1HmvlYyPVDd-_gebxYHlfgqa-ABkO24EX",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.57 [ste].wav",
+              "size": 4045080
+            },
+            {
+              "id": "1Hq1Hb1MgFad9oR1hQZWyg7ufu-HfoL-E",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.58 [ste].wav",
+              "size": 4297080
+            },
+            {
+              "id": "1HwhGHKyhKSVsjAGKitA6g0Lf7eiaPETt",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.59 [ste].wav",
+              "size": 8917080
+            },
+            {
+              "id": "1I2kVf1l70KuqXkkf4br6qPaRa6tkLJYi",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.60 [ste].wav",
+              "size": 4981080
+            },
+            {
+              "id": "1I7HhTa4ypI1eSQm4Qrh0vutKcJH17yeT",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.61 [ste].wav",
+              "size": 6277080
+            },
+            {
+              "id": "1I8hLk9OkixECdPAeDupZZOb4vntmqIH2",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.62 [ste].wav",
+              "size": 2509080
+            },
+            {
+              "id": "1I9am29ninx3-vI1yVxybymt3sty_t5kk",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.63 [ste].wav",
+              "size": 6085080
+            },
+            {
+              "id": "1IAvhTnCQQVb-gBUILa3Nh_hSEqXo8MiD",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.64 [ste].wav",
+              "size": 3517080
+            },
+            {
+              "id": "1IEXahVgoq9NtSIEW9DIQLrNb3vAcehKR",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.65 [ste].wav",
+              "size": 2485080
+            },
+            {
+              "id": "1IMwkNO-rHlRrlniywj-SW1ABeI2Brccz",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.66 [ste].wav",
+              "size": 7597080
+            },
+            {
+              "id": "1ILGM6cnVXRWq-dtta0pba0lJkMx8Sz2a",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.67 [ste].wav",
+              "size": 3913080
+            },
+            {
+              "id": "1IFSnCKW9U3KzhwAj_o0RxHbO-rPncDHh",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.68 [ste].wav",
+              "size": 2449080
+            },
+            {
+              "id": "1IX2U2NWh7zU8u-1Bh9ksgqGTskRXHr6E",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.69 [ste].wav",
+              "size": 1921080
+            },
+            {
+              "id": "1ISId27_IFbpJZqwmMLQWdLlw_HErNLQr",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.70 [ste].wav",
+              "size": 3289080
+            },
+            {
+              "id": "1IePupGNOANarK9CjT4SYaer5ppodlJjl",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.71 [ste].wav",
+              "size": 5149080
+            },
+            {
+              "id": "1Id3HjC0kPS19yYU-_qeDJxgL7HDFZhIW",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.72 [ste].wav",
+              "size": 2269080
+            },
+            {
+              "id": "1Ih_zl_YwEDtOPcWQMakyxtBx-yUXH9vN",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.73 [ste].wav",
+              "size": 5125080
+            },
+            {
+              "id": "1Iiav7N0ovrBnOqZTQqmZj_mtHEPEWyPL",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.74 [ste].wav",
+              "size": 1357080
+            },
+            {
+              "id": "1IqkfgNdilzffIO0I3KWed9-4UPopVWKv",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.75 [ste].wav",
+              "size": 3469080
+            },
+            {
+              "id": "1J7Q3rQqtik_W28YH0zvOA_1sxw_AWVt5",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.76 [ste].wav",
+              "size": 4729080
+            },
+            {
+              "id": "1J7_kfmQjGny81-n8LsG-CP-DmzsuKEus",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.77 [ste].wav",
+              "size": 2773080
+            },
+            {
+              "id": "1J8y27zt6LtOUIMwmhzfGNxaQ-9Ga6_jk",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.78 [ste].wav",
+              "size": 2833080
+            },
+            {
+              "id": "1JC5L1Ihs41i-jwh2w97i0BfM2-Jhcqb4",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.79 [ste].wav",
+              "size": 3025080
+            },
+            {
+              "id": "1J9coTuopL2FegenV_pTr0hIFrSXTwij2",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.80 [ste].wav",
+              "size": 5701080
+            },
+            {
+              "id": "1JGgFcyTr8UbGbnt5p3VAGAL1fEMlThOH",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.81 [ste].wav",
+              "size": 2497080
+            },
+            {
+              "id": "1JHFdZFuptAJJfP-XPelOviNsLVyPpplG",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.82 [ste].wav",
+              "size": 6169080
+            },
+            {
+              "id": "1JLHwP6mqZ4ytlY6l0XnYPvK-pb8Xd3CU",
+              "mimeType": "audio/x-wav",
+              "name": "W.Bsn. CoTo AV2024 S2 D.83 [ste].wav",
+              "size": 8641080
+            }
+          ],
+          "folderId": "10Kc-Gz_yLmO5tT_ZX_kNdER47KYhBpVi",
+          "scannedAt": "2026-06-28T23:41:45.981Z",
+          "totalBytes": 6426580795
+        }
+      },
+      "recordingIndexBundleRef": "bundle:recording-index:W.Bsn. CoTo AV2024 S2:all",
+      "recordingIndexPdfRef": "asset:bassoon-and-electronics-recording-index-pdf",
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1TPhEoNoGlHYaANKdKlBvLDa4JHrpDkNwfm7EwwUwIxo/edit?usp=drive_link",
+      "selectedBuckets": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ]
     },
     "fileSpecs": {
       "bitDepth": 24,
-      "sampleRate": 48000,
       "channels": "stereo",
+      "sampleRate": 48000,
       "staticSizes": {
-        "A": "",
-        "B": "",
-        "C": "",
-        "D": "",
+        "A": "60.9 GB",
+        "B": "6.1 GB",
+        "C": "5.9 GB",
+        "D": "6.0 GB",
         "E": "",
         "X": ""
       }
     },
+    "lookupNumber": "W.Bsn. CoTo AV2024 S2",
     "metadata": {
       "sampleLength": "AUTO",
       "tags": []
     },
-    "downloads": {
-      "recordingIndexPdfRef": "asset:bassoon-and-electronics-recording-index-pdf",
-      "recordingIndexBundleRef": "bundle:recording-index:W.Bsn. CoTo AV2024 S2:all",
-      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1TPhEoNoGlHYaANKdKlBvLDa4JHrpDkNwfm7EwwUwIxo/edit?gid=0#gid=0"
-    }
+    "series": "dex",
+    "specialEventImage": "/assets/series/dex.png"
   }
 }

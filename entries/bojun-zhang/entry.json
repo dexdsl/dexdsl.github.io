@@ -6,8 +6,8 @@
     "artistName": "Bojun Zhang"
   },
   "lifecycle": {
-    "publishedAt": "2026-06-28T12:24:39.269Z",
-    "updatedAt": "2026-06-28T12:24:39.269Z"
+    "publishedAt": "2026-06-29T00:09:42.925Z",
+    "updatedAt": "2026-06-29T00:09:42.925Z"
   },
   "video": {
     "mode": "url",
@@ -76,21 +76,34 @@
       ],
       "artistAlt": null,
       "audio": {
-        "master": [],
-        "mix": [],
-        "recording": []
+        "master": [
+          "Sebastian Suarez-Solis"
+        ],
+        "mix": [
+          "Sebastian Suarez-Solis"
+        ],
+        "recording": [
+          "Cameron Church",
+          "Sebastian Suarez-Solis"
+        ]
       },
       "instrumentLinksEnabled": true,
       "instruments": [
         "MODULAR SYNTH"
       ],
       "linksByPerson": {},
-      "location": "Unknown",
+      "location": "Los Angeles, CA",
       "season": "S2",
       "video": {
-        "cinematography": [],
-        "director": [],
-        "editing": []
+        "cinematography": [
+          "Sebastian Suarez-Solis"
+        ],
+        "director": [
+          "Gabrielle Milman"
+        ],
+        "editing": [
+          "Sebastian Suarez-Solis"
+        ]
       },
       "year": 2024
     },
@@ -1651,6 +1664,7 @@
       "sampleLength": "AUTO",
       "tags": []
     },
-    "specialEventImage": "/assets/series/dex.png"
+    "series": "dexFest 2024",
+    "specialEventImage": "/assets/series/dexfest.png"
   }
 }

@@ -6,8 +6,8 @@
     "artistName": "tyler jordan"
   },
   "lifecycle": {
-    "publishedAt": "2026-06-08T21:40:04.891Z",
-    "updatedAt": "2026-06-08T21:40:04.891Z"
+    "publishedAt": "2026-06-29T00:11:06.992Z",
+    "updatedAt": "2026-06-29T00:11:06.992Z"
   },
   "video": {
     "mode": "url",
@@ -18,37 +18,38 @@
   "descriptionText": "AMPLIFIED KNIVES. tyler jordan is part of dex digital sample library's first Season 1 drop. we officially launched this repository with our first season 1 drop on June 1st, 2023, with a portal available to download audio and video files for each recording. what started out as a recording project at the Peabody Conservatory is now an open-access collection of new-music sounds, licensed for use under Creative Commons.",
   "series": "dex",
   "selectedBuckets": [
-    "A"
+    "A",
+    "B"
   ],
   "creditsData": {
     "artist": [
       "tyler jordan"
     ],
     "artistAlt": null,
+    "audio": {
+      "master": [],
+      "mix": [],
+      "recording": []
+    },
     "instruments": [
       "AMPLIFIED KNIVES"
     ],
+    "location": "Unknown",
+    "season": "S1",
     "video": {
-      "director": [],
       "cinematography": [],
+      "director": [],
       "editing": []
     },
-    "audio": {
-      "recording": [],
-      "mix": [],
-      "master": []
-    },
-    "year": 2023,
-    "season": "S1",
-    "location": "Unknown"
+    "year": 2023
   },
   "fileSpecs": {
     "bitDepth": 24,
-    "sampleRate": 48000,
     "channels": "stereo",
+    "sampleRate": 48000,
     "staticSizes": {
-      "A": "",
-      "B": "",
+      "A": "14.0 GB",
+      "B": "9.1 GB",
       "C": "",
       "D": "",
       "E": "",
@@ -60,99 +61,236 @@
     "tags": []
   },
   "sidebarPageConfig": {
-    "lookupNumber": "E.Kni. Jo AV2023 S1",
+    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Tyler Jordan.",
     "buckets": [
       "A",
       "B"
     ],
-    "specialEventImage": "/assets/series/dex.png",
-    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and tyler jordan.",
     "credits": {
       "artist": [
-        "tyler jordan"
+        "Tyler Jordan"
       ],
       "artistAlt": null,
+      "audio": {
+        "master": [
+          "Sebastian Suarez-Solis"
+        ],
+        "mix": [
+          "Sebastian Suarez-Solis"
+        ],
+        "recording": [
+          "Sebastian Suarez-Solis",
+          "Tyler Jordan"
+        ]
+      },
+      "instrumentLinksEnabled": true,
       "instruments": [
         "AMPLIFIED KNIVES"
       ],
-      "video": {
-        "director": [],
-        "cinematography": [],
-        "editing": []
-      },
-      "audio": {
-        "recording": [],
-        "mix": [],
-        "master": []
-      },
-      "year": 2023,
+      "linksByPerson": {},
+      "location": "Baltimore, MD",
       "season": "S1",
-      "location": "Unknown"
-    },
-    "fileSpecs": {
-      "bitDepth": 24,
-      "sampleRate": 48000,
-      "channels": "stereo",
-      "staticSizes": {
-        "A": "",
-        "B": "",
-        "C": "",
-        "D": "",
-        "E": "",
-        "X": ""
-      }
-    },
-    "metadata": {
-      "sampleLength": "AUTO",
-      "tags": []
+      "video": {
+        "cinematography": [
+          "Sebastian Suarez-Solis"
+        ],
+        "director": [
+          "Sebastian Suarez-Solis",
+          "Tyler Jordan"
+        ],
+        "editing": [
+          "Sebastian Suarez-Solis"
+        ]
+      },
+      "year": 2022
     },
     "downloads": {
-      "recordingIndexPdfRef": "asset:amplified-knives-tyler-jordan-recording-index-pdf",
-      "recordingIndexBundleRef": "bundle:recording-index:E.Kni. Jo AV2023 S1:all",
-      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1egkj32jcWJO8Np1SdaopJRtLAdX6atDdLGbNq6e4pDc/edit?gid=0#gid=0",
+      "bucketFolders": {
+        "A": {
+          "fileCount": 4,
+          "files": [
+            {
+              "id": "1LXWVNP87KRlvce8GqvpYKFArA6bIHIkd",
+              "mimeType": "video/quicktime",
+              "name": "X.Kni. Jo AV2023 S1 A.1 [4K].mov",
+              "size": 8806232987
+            },
+            {
+              "id": "1W3Wd0-YijQ2nxfQuSOPvXCY2Ocql_9Ch",
+              "mimeType": "video/quicktime",
+              "name": "X.Kni. Jo AV2023 S1 A.1 [1080p].mov",
+              "size": 5191807909
+            },
+            {
+              "id": "1rmUBHgV4Kb0bcA9oeer4xneLQBE3xp-P",
+              "mimeType": "audio/mpeg",
+              "name": "X.Kni. Jo AV2023 S1 A.1 [ste].mp3",
+              "size": 69791263
+            },
+            {
+              "id": "1intEjxHgBb_ifXr5jFUOxKApYtQdDEqX",
+              "mimeType": "audio/wav",
+              "name": "X.Kni. Jo AV2023 S1 A.1 [ste].wav",
+              "size": 924545582
+            }
+          ],
+          "folderId": "1C7a4mZFeFP2aA8k5WsW_9JNdOkx-pXKb",
+          "scannedAt": "2026-06-28T23:15:29.493Z",
+          "totalBytes": 14992377741
+        },
+        "B": {
+          "fileCount": 17,
+          "files": [
+            {
+              "id": "1A4PNCYNkzzAyrDioIAyLXtay6YG3dC3K",
+              "mimeType": "video/quicktime",
+              "name": "X.Kni. Jo AV2023 S1 B.1 [4K].mov",
+              "size": 718592882
+            },
+            {
+              "id": "1LzoqfgyR89Y0JplBJ2pRP9Qxs9lj7gHf",
+              "mimeType": "video/quicktime",
+              "name": "X.Kni. Jo AV2023 S1 B.2 [4K].mov",
+              "size": 566873122
+            },
+            {
+              "id": "1VX06jBw5uX9j2YCQnVhofUZJK7VdHZgV",
+              "mimeType": "video/quicktime",
+              "name": "X.Kni. Jo AV2023 S1 B.3 [4K].mov",
+              "size": 219803385
+            },
+            {
+              "id": "1lknF8OYOrRdP8AtqCPbhunI9tRwVLHYF",
+              "mimeType": "video/quicktime",
+              "name": "X.Kni. Jo AV2023 S1 B.4 [4K].mov",
+              "size": 402574552
+            },
+            {
+              "id": "1SP1v7w-mnuSnIgcnp3bDGIS8o27QC4MU",
+              "mimeType": "video/quicktime",
+              "name": "X.Kni. Jo AV2023 S1 B.5 [4K].mov",
+              "size": 245703291
+            },
+            {
+              "id": "1wPSSOzvPiRzFlKVe_uErsycTYue-LB-A",
+              "mimeType": "video/quicktime",
+              "name": "X.Kni. Jo AV2023 S1 B.6 [4K].mov",
+              "size": 512824192
+            },
+            {
+              "id": "10ly7jJT9IAoA7CXgbLNwlU7pQHFDmKdc",
+              "mimeType": "video/quicktime",
+              "name": "X.Kni. Jo AV2023 S1 B.7 [4K].mov",
+              "size": 193949761
+            },
+            {
+              "id": "1oss4oI-pUZuVi0jxZZ05kb5E6w_Xq-si",
+              "mimeType": "video/quicktime",
+              "name": "X.Kni. Jo AV2023 S1 B.8 [4K].mov",
+              "size": 247942722
+            },
+            {
+              "id": "1PRzDsjyleNNO86t2zCsxrX1C5JPsltRF",
+              "mimeType": "video/quicktime",
+              "name": "X.Kni. Jo AV2023 S1 B.9 [4K].mov",
+              "size": 785438895
+            },
+            {
+              "id": "1VTUYELsyQ-XDBwRC_R7yTeVELDdj-OaF",
+              "mimeType": "video/quicktime",
+              "name": "X.Kni. Jo AV2023 S1 B.10 [4K].mov",
+              "size": 482297877
+            },
+            {
+              "id": "1xm8CO_Xtyl_3WQOMhUvrj3wotKXNTLMw",
+              "mimeType": "video/quicktime",
+              "name": "X.Kni. Jo AV2023 S1 B.11 [4K].mov",
+              "size": 227512492
+            },
+            {
+              "id": "1v9wf7zJoyxxWRTaX706Q3n519iqhUSBc",
+              "mimeType": "video/quicktime",
+              "name": "X.Kni. Jo AV2023 S1 B.12 [4K].mov",
+              "size": 304944798
+            },
+            {
+              "id": "1y9fAt4XUFqEDaGQG-gnbkpAaBNlxjstT",
+              "mimeType": "video/quicktime",
+              "name": "X.Kni. Jo AV2023 S1 B.13 [4K].mov",
+              "size": 510528679
+            },
+            {
+              "id": "19tuu6VEAwJkFdJ4oPbUCzdJP5R-3aZL2",
+              "mimeType": "video/quicktime",
+              "name": "X.Kni. Jo AV2023 S1 B.14 [4K].mov",
+              "size": 275493927
+            },
+            {
+              "id": "1LlN5R7thbpbCE2zAyKRPWokwVZOCTRVg",
+              "mimeType": "video/quicktime",
+              "name": "X.Kni. Jo AV2023 S1 B.15 [4K].mov",
+              "size": 1284613203
+            },
+            {
+              "id": "1jd3-cTQ4gGMEEvEKFmk70MsMc5PvQ_j_",
+              "mimeType": "video/quicktime",
+              "name": "X.Kni. Jo AV2023 S1 B.16 [4K].mov",
+              "size": 1178610458
+            },
+            {
+              "id": "1JuNkUDYwgswS-c4OrGoIV1DuhKhtI9Hc",
+              "mimeType": "video/quicktime",
+              "name": "X.Kni. Jo AV2023 S1 B.17 [4K].mov",
+              "size": 1571732080
+            }
+          ],
+          "folderId": "1Emml5tcJNx3kdiFkfnC78CF_Yxli5iSU",
+          "scannedAt": "2026-06-28T23:15:37.654Z",
+          "totalBytes": 9729436316
+        }
+      },
       "fileTree": {
-        "lookup": "E.Kni. Jo AV2023 S1",
         "buckets": [
           {
             "bucket": "A",
             "types": [
               {
-                "mediaType": "audio",
                 "files": [
                   {
-                    "fileId": "amplified-knives-tyler-jordan-a-001-stereo",
-                    "label": "X.Kni. Jo AV2023 S1 A.1 [ste].mp3",
-                    "filename": "001-stereo.mp3",
                     "extension": "mp3",
+                    "fileId": "amplified-knives-tyler-jordan-a-001-stereo",
+                    "filename": "001-stereo.mp3",
+                    "label": "X.Kni. Jo AV2023 S1 A.1 [ste].mp3",
                     "variantKey": "default-audio"
                   },
                   {
-                    "fileId": "amplified-knives-tyler-jordan-a-001-stereo-2",
-                    "label": "X.Kni. Jo AV2023 S1 A.1 [ste].wav",
-                    "filename": "001-stereo.wav",
                     "extension": "wav",
+                    "fileId": "amplified-knives-tyler-jordan-a-001-stereo-2",
+                    "filename": "001-stereo.wav",
+                    "label": "X.Kni. Jo AV2023 S1 A.1 [ste].wav",
                     "variantKey": "default-audio"
                   }
-                ]
+                ],
+                "mediaType": "audio"
               },
               {
-                "mediaType": "video",
                 "files": [
                   {
-                    "fileId": "amplified-knives-tyler-jordan-a-001-1080p",
-                    "label": "X.Kni. Jo AV2023 S1 A.1 [1080p].mov",
-                    "filename": "001-1080p.mov",
                     "extension": "mov",
+                    "fileId": "amplified-knives-tyler-jordan-a-001-1080p",
+                    "filename": "001-1080p.mov",
+                    "label": "X.Kni. Jo AV2023 S1 A.1 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
-                    "fileId": "amplified-knives-tyler-jordan-a-001-4k",
-                    "label": "X.Kni. Jo AV2023 S1 A.1 [4K].mov",
-                    "filename": "001-4k.mov",
                     "extension": "mov",
+                    "fileId": "amplified-knives-tyler-jordan-a-001-4k",
+                    "filename": "001-4k.mov",
+                    "label": "X.Kni. Jo AV2023 S1 A.1 [4K].mov",
                     "variantKey": "default-video"
                   }
-                ]
+                ],
+                "mediaType": "video"
               }
             ]
           },
@@ -160,133 +298,160 @@
             "bucket": "B",
             "types": [
               {
-                "mediaType": "video",
                 "files": [
                   {
+                    "extension": "mov",
                     "fileId": "amplified-knives-tyler-jordan-b-001-4k",
-                    "label": "X.Kni. Jo AV2023 S1 B.1 [4K].mov",
                     "filename": "001-4k.mov",
-                    "extension": "mov",
+                    "label": "X.Kni. Jo AV2023 S1 B.1 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "amplified-knives-tyler-jordan-b-002-4k",
-                    "label": "X.Kni. Jo AV2023 S1 B.2 [4K].mov",
                     "filename": "002-4k.mov",
-                    "extension": "mov",
+                    "label": "X.Kni. Jo AV2023 S1 B.2 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "amplified-knives-tyler-jordan-b-003-4k",
-                    "label": "X.Kni. Jo AV2023 S1 B.3 [4K].mov",
                     "filename": "003-4k.mov",
-                    "extension": "mov",
+                    "label": "X.Kni. Jo AV2023 S1 B.3 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "amplified-knives-tyler-jordan-b-004-4k",
-                    "label": "X.Kni. Jo AV2023 S1 B.4 [4K].mov",
                     "filename": "004-4k.mov",
-                    "extension": "mov",
+                    "label": "X.Kni. Jo AV2023 S1 B.4 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "amplified-knives-tyler-jordan-b-005-4k",
-                    "label": "X.Kni. Jo AV2023 S1 B.5 [4K].mov",
                     "filename": "005-4k.mov",
-                    "extension": "mov",
+                    "label": "X.Kni. Jo AV2023 S1 B.5 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "amplified-knives-tyler-jordan-b-006-4k",
-                    "label": "X.Kni. Jo AV2023 S1 B.6 [4K].mov",
                     "filename": "006-4k.mov",
-                    "extension": "mov",
+                    "label": "X.Kni. Jo AV2023 S1 B.6 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "amplified-knives-tyler-jordan-b-007-4k",
-                    "label": "X.Kni. Jo AV2023 S1 B.7 [4K].mov",
                     "filename": "007-4k.mov",
-                    "extension": "mov",
+                    "label": "X.Kni. Jo AV2023 S1 B.7 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "amplified-knives-tyler-jordan-b-008-4k",
-                    "label": "X.Kni. Jo AV2023 S1 B.8 [4K].mov",
                     "filename": "008-4k.mov",
-                    "extension": "mov",
+                    "label": "X.Kni. Jo AV2023 S1 B.8 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "amplified-knives-tyler-jordan-b-009-4k",
-                    "label": "X.Kni. Jo AV2023 S1 B.9 [4K].mov",
                     "filename": "009-4k.mov",
-                    "extension": "mov",
+                    "label": "X.Kni. Jo AV2023 S1 B.9 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "amplified-knives-tyler-jordan-b-010-4k",
-                    "label": "X.Kni. Jo AV2023 S1 B.10 [4K].mov",
                     "filename": "010-4k.mov",
-                    "extension": "mov",
+                    "label": "X.Kni. Jo AV2023 S1 B.10 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "amplified-knives-tyler-jordan-b-011-4k",
-                    "label": "X.Kni. Jo AV2023 S1 B.11 [4K].mov",
                     "filename": "011-4k.mov",
-                    "extension": "mov",
+                    "label": "X.Kni. Jo AV2023 S1 B.11 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "amplified-knives-tyler-jordan-b-012-4k",
-                    "label": "X.Kni. Jo AV2023 S1 B.12 [4K].mov",
                     "filename": "012-4k.mov",
-                    "extension": "mov",
+                    "label": "X.Kni. Jo AV2023 S1 B.12 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "amplified-knives-tyler-jordan-b-013-4k",
-                    "label": "X.Kni. Jo AV2023 S1 B.13 [4K].mov",
                     "filename": "013-4k.mov",
-                    "extension": "mov",
+                    "label": "X.Kni. Jo AV2023 S1 B.13 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "amplified-knives-tyler-jordan-b-014-4k",
-                    "label": "X.Kni. Jo AV2023 S1 B.14 [4K].mov",
                     "filename": "014-4k.mov",
-                    "extension": "mov",
+                    "label": "X.Kni. Jo AV2023 S1 B.14 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "amplified-knives-tyler-jordan-b-015-4k",
-                    "label": "X.Kni. Jo AV2023 S1 B.15 [4K].mov",
                     "filename": "015-4k.mov",
-                    "extension": "mov",
+                    "label": "X.Kni. Jo AV2023 S1 B.15 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "amplified-knives-tyler-jordan-b-016-4k",
-                    "label": "X.Kni. Jo AV2023 S1 B.16 [4K].mov",
                     "filename": "016-4k.mov",
-                    "extension": "mov",
+                    "label": "X.Kni. Jo AV2023 S1 B.16 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
-                    "fileId": "amplified-knives-tyler-jordan-b-017-4k",
-                    "label": "X.Kni. Jo AV2023 S1 B.17 [4K].mov",
-                    "filename": "017-4k.mov",
                     "extension": "mov",
+                    "fileId": "amplified-knives-tyler-jordan-b-017-4k",
+                    "filename": "017-4k.mov",
+                    "label": "X.Kni. Jo AV2023 S1 B.17 [4K].mov",
                     "variantKey": "default-video"
                   }
-                ]
+                ],
+                "mediaType": "video"
               }
             ]
           }
-        ]
+        ],
+        "lookup": "E.Kni. Jo AV2023 S1"
+      },
+      "recordingIndexBundleRef": "bundle:recording-index:E.Kni. Jo AV2023 S1:all",
+      "recordingIndexPdfRef": "asset:amplified-knives-tyler-jordan-recording-index-pdf",
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1egkj32jcWJO8Np1SdaopJRtLAdX6atDdLGbNq6e4pDc/edit?usp=drive_link",
+      "selectedBuckets": [
+        "A",
+        "B"
+      ]
+    },
+    "fileSpecs": {
+      "bitDepth": 24,
+      "channels": "stereo",
+      "sampleRate": 48000,
+      "staticSizes": {
+        "A": "14.0 GB",
+        "B": "9.1 GB",
+        "C": "",
+        "D": "",
+        "E": "",
+        "X": ""
       }
-    }
+    },
+    "lookupNumber": "E.Kni. Jo AV2023 S1",
+    "metadata": {
+      "sampleLength": "AUTO",
+      "tags": []
+    },
+    "specialEventImage": "/assets/series/dex.png"
   }
 }

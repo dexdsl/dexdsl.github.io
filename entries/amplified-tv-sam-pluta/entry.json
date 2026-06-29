@@ -1,13 +1,13 @@
 {
   "slug": "amplified-tv-sam-pluta",
-  "title": "AMPLIFIED TV SETS",
+  "title": "FEEDBACK TELEVISIONS",
   "canonical": {
     "instrument": "FE‌EDBACK TELEVISIONS",
     "artistName": "sam pluta"
   },
   "lifecycle": {
-    "publishedAt": "2026-06-08T21:40:07.771Z",
-    "updatedAt": "2026-06-08T21:40:07.771Z"
+    "publishedAt": "2026-06-29T00:11:13.692Z",
+    "updatedAt": "2026-06-29T00:11:13.692Z"
   },
   "video": {
     "mode": "url",
@@ -15,7 +15,7 @@
     "dataUrlOriginal": "https://youtu.be/n8hrxOz6-Tg",
     "dataHtml": ""
   },
-  "descriptionText": "AMPLIFIED TV SETS. sam pluta is part of dex digital sample library's first Season 1 drop. we officially launched this repository with our first season 1 drop on June 1st, 2023, with a portal available to download audio and video files for each recording. what started out as a recording project at the Peabody Conservatory is now an open-access collection of new-music sounds, licensed for use under Creative Commons.",
+  "descriptionText": "sam pluta is part of dex digital sample library's first Season 1 drop. we officially launched this repository with our first season 1 drop on June 1st, 2023, with a portal available to download audio and video files for each recording. what started out as a recording project at the Peabody Conservatory is now an open-access collection of new-music sounds, licensed for use under Creative Commons.",
   "series": "dex",
   "selectedBuckets": [
     "A"
@@ -25,29 +25,29 @@
       "sam pluta"
     ],
     "artistAlt": null,
+    "audio": {
+      "master": [],
+      "mix": [],
+      "recording": []
+    },
     "instruments": [
       "FE‌EDBACK TELEVISIONS"
     ],
+    "location": "Unknown",
+    "season": "S1",
     "video": {
-      "director": [],
       "cinematography": [],
+      "director": [],
       "editing": []
     },
-    "audio": {
-      "recording": [],
-      "mix": [],
-      "master": []
-    },
-    "year": 2023,
-    "season": "S1",
-    "location": "Unknown"
+    "year": 2023
   },
   "fileSpecs": {
     "bitDepth": 24,
-    "sampleRate": 48000,
     "channels": "stereo",
+    "sampleRate": 48000,
     "staticSizes": {
-      "A": "",
+      "A": "15.1 GB",
       "B": "",
       "C": "",
       "D": "",
@@ -60,40 +60,146 @@
     "tags": []
   },
   "sidebarPageConfig": {
-    "lookupNumber": "X.Tlv. Pl AV2023 S1",
+    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and sam pluta.",
     "buckets": [
       "A"
     ],
-    "specialEventImage": "/assets/series/dex.png",
-    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and sam pluta.",
     "credits": {
       "artist": [
-        "sam pluta"
+        "Sam Pluta"
       ],
       "artistAlt": null,
+      "audio": {
+        "master": [
+          "Sebastian Suarez-Solis"
+        ],
+        "mix": [
+          "Sebastian Suarez-Solis"
+        ],
+        "recording": [
+          "Cameron Church",
+          "Tyler Jordan"
+        ]
+      },
+      "instrumentLinksEnabled": true,
       "instruments": [
         "FE‌EDBACK TELEVISIONS"
       ],
-      "video": {
-        "director": [],
-        "cinematography": [],
-        "editing": []
-      },
-      "audio": {
-        "recording": [],
-        "mix": [],
-        "master": []
-      },
-      "year": 2023,
+      "linksByPerson": {},
+      "location": "Baltimore, MD",
       "season": "S1",
-      "location": "Unknown"
+      "video": {
+        "cinematography": [
+          "Cameron Church",
+          "Tyler Jordan",
+          "Sebastian Suarez-Solis"
+        ],
+        "director": [
+          "Sebastian Suarez-Solis"
+        ],
+        "editing": [
+          "Sebastian Suarez-Solis",
+          "Cameron Church"
+        ]
+      },
+      "year": 2023
+    },
+    "downloads": {
+      "bucketFolders": {
+        "A": {
+          "fileCount": 4,
+          "files": [
+            {
+              "id": "1e_Ko5Zn9FckRRO0tiY__VCg3-KJfrvjx",
+              "mimeType": "video/quicktime",
+              "name": "X.Tlv. Pl AV2023 S1 A.1 [4K].mov",
+              "size": 9934925721
+            },
+            {
+              "id": "1TueiZZ5eqPCZQJ87EvEhAdztX42iLw6X",
+              "mimeType": "video/quicktime",
+              "name": "X.Tlv. Pl AV2023 S1 A.1 [1080p].mov",
+              "size": 5208027847
+            },
+            {
+              "id": "12IasTtRR08xcPpC39-dHCeA6S74t-U5B",
+              "mimeType": "audio/mpeg",
+              "name": "X.Tlv. Pl AV2023 S1 A.1 [ste].mp3",
+              "size": 71373761
+            },
+            {
+              "id": "1TX9Y2U4iPEaYcqfGWwT4HJHL7aPHy00F",
+              "mimeType": "audio/x-wav",
+              "name": "X.Tlv. Pl AV2023 S1 A.1 [ste].wav",
+              "size": 945508674
+            }
+          ],
+          "folderId": "15eIU2v-NcpUBBkz5miUKAau9OJ9GYjIB",
+          "scannedAt": "2026-06-28T23:02:51.126Z",
+          "totalBytes": 16159836003
+        }
+      },
+      "fileTree": {
+        "buckets": [
+          {
+            "bucket": "A",
+            "types": [
+              {
+                "files": [
+                  {
+                    "extension": "mp3",
+                    "fileId": "amplified-tv-sam-pluta-a-001-stereo",
+                    "filename": "001-stereo.mp3",
+                    "label": "X.Tlv. Pl AV2023 S1 A.1 [ste].mp3",
+                    "variantKey": "default-audio"
+                  },
+                  {
+                    "extension": "wav",
+                    "fileId": "amplified-tv-sam-pluta-a-001-stereo-2",
+                    "filename": "001-stereo.wav",
+                    "label": "X.Tlv. Pl AV2023 S1 A.1 [ste].wav",
+                    "variantKey": "default-audio"
+                  }
+                ],
+                "mediaType": "audio"
+              },
+              {
+                "files": [
+                  {
+                    "extension": "mov",
+                    "fileId": "amplified-tv-sam-pluta-a-001-1080p",
+                    "filename": "001-1080p.mov",
+                    "label": "X.Tlv. Pl AV2023 S1 A.1 [1080p].mov",
+                    "variantKey": "default-video"
+                  },
+                  {
+                    "extension": "mov",
+                    "fileId": "amplified-tv-sam-pluta-a-001-4k",
+                    "filename": "001-4k.mov",
+                    "label": "X.Tlv. Pl AV2023 S1 A.1 [4K].mov",
+                    "variantKey": "default-video"
+                  }
+                ],
+                "mediaType": "video"
+              }
+            ]
+          }
+        ],
+        "lookup": "X.Tlv. Pl AV2023 S1"
+      },
+      "recordingIndexBundleRef": "bundle:recording-index:X.Tlv. Pl AV2023 S1:all",
+      "recordingIndexPdfRef": "asset:amplified-tv-sam-pluta-recording-index-pdf",
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1MWEHmhya6BWV_hGWqGgBHAgi1aYrOo_Ayz9bZ5fVOzs/edit?usp=drive_link",
+      "selectedBuckets": [
+        "A"
+      ]
     },
     "fileSpecs": {
       "bitDepth": 24,
-      "sampleRate": 48000,
       "channels": "stereo",
+      "sampleRate": 48000,
       "staticSizes": {
-        "A": "",
+        "A": "15.1 GB",
         "B": "",
         "C": "",
         "D": "",
@@ -101,62 +207,11 @@
         "X": ""
       }
     },
+    "lookupNumber": "X.Tlv. Pl AV2023 S1",
     "metadata": {
       "sampleLength": "AUTO",
       "tags": []
     },
-    "downloads": {
-      "recordingIndexPdfRef": "asset:amplified-tv-sam-pluta-recording-index-pdf",
-      "recordingIndexBundleRef": "bundle:recording-index:X.Tlv. Pl AV2023 S1:all",
-      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1MWEHmhya6BWV_hGWqGgBHAgi1aYrOo_Ayz9bZ5fVOzs/edit?gid=0#gid=0",
-      "fileTree": {
-        "lookup": "X.Tlv. Pl AV2023 S1",
-        "buckets": [
-          {
-            "bucket": "A",
-            "types": [
-              {
-                "mediaType": "audio",
-                "files": [
-                  {
-                    "fileId": "amplified-tv-sam-pluta-a-001-stereo",
-                    "label": "X.Tlv. Pl AV2023 S1 A.1 [ste].mp3",
-                    "filename": "001-stereo.mp3",
-                    "extension": "mp3",
-                    "variantKey": "default-audio"
-                  },
-                  {
-                    "fileId": "amplified-tv-sam-pluta-a-001-stereo-2",
-                    "label": "X.Tlv. Pl AV2023 S1 A.1 [ste].wav",
-                    "filename": "001-stereo.wav",
-                    "extension": "wav",
-                    "variantKey": "default-audio"
-                  }
-                ]
-              },
-              {
-                "mediaType": "video",
-                "files": [
-                  {
-                    "fileId": "amplified-tv-sam-pluta-a-001-1080p",
-                    "label": "X.Tlv. Pl AV2023 S1 A.1 [1080p].mov",
-                    "filename": "001-1080p.mov",
-                    "extension": "mov",
-                    "variantKey": "default-video"
-                  },
-                  {
-                    "fileId": "amplified-tv-sam-pluta-a-001-4k",
-                    "label": "X.Tlv. Pl AV2023 S1 A.1 [4K].mov",
-                    "filename": "001-4k.mov",
-                    "extension": "mov",
-                    "variantKey": "default-video"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    }
+    "specialEventImage": "/assets/series/dex.png"
   }
 }

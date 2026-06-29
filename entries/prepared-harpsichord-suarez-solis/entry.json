@@ -6,8 +6,8 @@
     "artistName": "sebastian suarez-solis"
   },
   "lifecycle": {
-    "publishedAt": "2026-06-08T21:40:09.161Z",
-    "updatedAt": "2026-06-08T21:40:09.161Z"
+    "publishedAt": "2026-06-29T00:10:46.109Z",
+    "updatedAt": "2026-06-29T00:10:46.109Z"
   },
   "video": {
     "mode": "url",
@@ -18,37 +18,38 @@
   "descriptionText": "“That’s why, to me, performance is everything.” A tinkerer at heart, Sebastian performs on just about anything it can get its hands on, like prepared viola da gamba or prepared zarb. To them, the word instrument has gotten too formalized. “We as artists should only require from ourselves that we create. I am not merely what I am – nor what I believe in or play, or write, etc. I am what I do. That’s why, to me, performance is everything. In an atomized world, our particularities are performances.”",
   "series": "dex",
   "selectedBuckets": [
-    "A"
+    "A",
+    "B"
   ],
   "creditsData": {
     "artist": [
       "sebastian suarez-solis"
     ],
     "artistAlt": null,
+    "audio": {
+      "master": [],
+      "mix": [],
+      "recording": []
+    },
     "instruments": [
       "PREPARED HARPSICHORD"
     ],
+    "location": "Unknown",
+    "season": "S1",
     "video": {
-      "director": [],
       "cinematography": [],
+      "director": [],
       "editing": []
     },
-    "audio": {
-      "recording": [],
-      "mix": [],
-      "master": []
-    },
-    "year": 2023,
-    "season": "S1",
-    "location": "Unknown"
+    "year": 2023
   },
   "fileSpecs": {
     "bitDepth": 24,
-    "sampleRate": 48000,
     "channels": "stereo",
+    "sampleRate": 48000,
     "staticSizes": {
-      "A": "",
-      "B": "",
+      "A": "15.0 GB",
+      "B": "14.5 GB",
       "C": "",
       "D": "",
       "E": "",
@@ -60,92 +61,432 @@
     "tags": []
   },
   "sidebarPageConfig": {
-    "lookupNumber": "K.Hps. Su AV2023 S1",
+    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and sebastian suarez-solis.",
     "buckets": [
       "A",
       "B"
     ],
-    "specialEventImage": "/assets/series/dex.png",
-    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and sebastian suarez-solis.",
     "credits": {
       "artist": [
-        "sebastian suarez-solis"
+        "Sebastian Suarez-Solis"
       ],
       "artistAlt": null,
+      "audio": {
+        "master": [
+          "Sebastian Suarez-Solis"
+        ],
+        "mix": [
+          "Sebastian Suarez-Solis"
+        ],
+        "recording": [
+          "Tyler Jordan",
+          "Sebastian Suarez-Solis"
+        ]
+      },
+      "instrumentLinksEnabled": true,
       "instruments": [
         "PREPARED HARPSICHORD"
       ],
-      "video": {
-        "director": [],
-        "cinematography": [],
-        "editing": []
-      },
-      "audio": {
-        "recording": [],
-        "mix": [],
-        "master": []
-      },
-      "year": 2023,
+      "linksByPerson": {},
+      "location": "Baltimore, MD",
       "season": "S1",
-      "location": "Unknown"
-    },
-    "fileSpecs": {
-      "bitDepth": 24,
-      "sampleRate": 48000,
-      "channels": "stereo",
-      "staticSizes": {
-        "A": "",
-        "B": "",
-        "C": "",
-        "D": "",
-        "E": "",
-        "X": ""
-      }
-    },
-    "metadata": {
-      "sampleLength": "AUTO",
-      "tags": []
+      "video": {
+        "cinematography": [
+          "Tyler Jordan"
+        ],
+        "director": [
+          "Sebastian Suarez-Solis"
+        ],
+        "editing": [
+          "Sebastian Suarez-Solis"
+        ]
+      },
+      "year": 2023
     },
     "downloads": {
-      "recordingIndexPdfRef": "asset:prepared-harpsichord-suarez-solis-recording-index-pdf",
-      "recordingIndexBundleRef": "bundle:recording-index:K.Hps. Su AV2023 S1:all",
-      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1SYil4lH1p0jj3DRlgroRb_hWYAGipa1jLrsPez9IL_U/edit?gid=0#gid=0",
+      "bucketFolders": {
+        "A": {
+          "fileCount": 3,
+          "files": [
+            {
+              "id": "10_4cQDz9fWWg1hGMSCVJaERu7F8jDl3V",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 A.1 [4K].mov",
+              "size": 9760938016
+            },
+            {
+              "id": "1Vv0Eyf3rZ0szn_8fcWyZqTSNBWu01JTb",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 A.1 [1080p].mov",
+              "size": 5389191094
+            },
+            {
+              "id": "1G3sigkNa-24T6lPTxwFSiL-lYUOkjuzp",
+              "mimeType": "audio/x-wav",
+              "name": "K.Hps. Su AV2023 S1 A.1 [ste].wav",
+              "size": 957276626
+            }
+          ],
+          "folderId": "1Im9ZFGvJc82WVSvcGPrV9mp1voFuidSV",
+          "scannedAt": "2026-06-28T23:12:42.626Z",
+          "totalBytes": 16107405736
+        },
+        "B": {
+          "fileCount": 52,
+          "files": [
+            {
+              "id": "1Hi1qn7xeoPXnqzgEmnPpNyHjOuj6IlH7",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.1 [4K].mov",
+              "size": 513216129
+            },
+            {
+              "id": "1qK_8Ut_iR_6m9So1qVlCtn6O3aWN84yN",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.2 [4K].mov",
+              "size": 508734099
+            },
+            {
+              "id": "1iAiLGqepIsJasHCZfo4sbz5JfeYhyWqh",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.3 [4K].mov",
+              "size": 606171894
+            },
+            {
+              "id": "1w_Br6aGDdd1liOZpROOhtFwzWo9rwOXk",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.4 [4K].mov",
+              "size": 268720043
+            },
+            {
+              "id": "101Yd_9yeO6nwnLT-F9Pp05FLiGM8-mxU",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.5 [4K].mov",
+              "size": 199564579
+            },
+            {
+              "id": "1v1MfvwRGcu9GKGo9zaEyYQnzJBZHdTGL",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.6 [4K].mov",
+              "size": 66777071
+            },
+            {
+              "id": "16qV93voG_jTincvVx658_EZ4W0pzmVgc",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.7 [4K].mov",
+              "size": 712984872
+            },
+            {
+              "id": "1ZrAWzURo8XXQS7dbd0-bgwm4tVVD2cZL",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.8 [4K].mov",
+              "size": 254377250
+            },
+            {
+              "id": "1P8bazJiNuBVLesp8JCH-tEhohioykDZk",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.9 [4K].mov",
+              "size": 182353080
+            },
+            {
+              "id": "1b8O2EgpE33ZRoYgbovQHgkI2MbBvZyF1",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.10 [4K].mov",
+              "size": 690943610
+            },
+            {
+              "id": "1oq2VG3lpCiDmYvBmfW67b8DU_BhWKFqQ",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.11 [4K].mov",
+              "size": 286081860
+            },
+            {
+              "id": "1y0cR8VXMvmcnOhW0IgVokdNhwrhGPvw7",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.12 [4K].mov",
+              "size": 125045942
+            },
+            {
+              "id": "1sJ9MpmEviQynBoKgJ6ESG4hKJW442Moq",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.13 [4K].mov",
+              "size": 17974071
+            },
+            {
+              "id": "1RwUmQYWow-_KPEQIq-VvMlomgBeY5Jns",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.14 [4K].mov",
+              "size": 1223976997
+            },
+            {
+              "id": "1hFgapBKWpuHUMpiIyJKvhirfR6RSg4kB",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.15 [4K].mov",
+              "size": 126461189
+            },
+            {
+              "id": "1zdbCC_kuN2OBzreJoP_7TferoT-NdyVS",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.16 [4K].mov",
+              "size": 6777069
+            },
+            {
+              "id": "1AeBIBPtqZzVWMFYunpFE8sqqVNrs7SrV",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.17 [4K].mov",
+              "size": 1188631343
+            },
+            {
+              "id": "1P2TYTdLEudfg-HUUYjBbSersZrWQYpEH",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.18 [4K].mov",
+              "size": 36258362
+            },
+            {
+              "id": "1Q7MeyzxsrxAHvFfVlPcH1VUflu8TY1W0",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.19 [4K].mov",
+              "size": 79576977
+            },
+            {
+              "id": "1MbL2wPLURdoebqS8C3bFsfqYu05Bc0Kt",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.20 [4K].mov",
+              "size": 53780100
+            },
+            {
+              "id": "1BhhwNRYAFuDmhoDF1_KHyqbIoToDTX4W",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.21 [4K].mov",
+              "size": 333101396
+            },
+            {
+              "id": "1bnVZ97uExlDWr8bNjz76Wk1UZxZLwyTa",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.22 [4K].mov",
+              "size": 384488620
+            },
+            {
+              "id": "1LxZkEWFmNxZavcwaMdZXC73QqAa_NJQW",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.23 [4K].mov",
+              "size": 379213477
+            },
+            {
+              "id": "1LpiLbYhVvwQ-zHX3mZM7B1c1OYHw-p9_",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.24 [4K].mov",
+              "size": 869782059
+            },
+            {
+              "id": "1gRNdgzDSiXNQfAZKPf7OYfVlXspLO3vA",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.25 [4K].mov",
+              "size": 492091836
+            },
+            {
+              "id": "1tt-UqtUBWXwfxnbqqWPRxgtKwP6h1dCz",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.26 [4K].mov",
+              "size": 514611238
+            },
+            {
+              "id": "1fj5z6O5BtT58SytwDjIyPu6FzpQxYJWm",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.1 [1080p].mov",
+              "size": 273779325
+            },
+            {
+              "id": "1xQzr1Rooz0owdUzW6AUU78YaQGcq0_FU",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.2 [1080p].mov",
+              "size": 271527325
+            },
+            {
+              "id": "14_yX2q48xRkoBzu8VIjDY3JkMD3D5gxV",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.3 [1080p].mov",
+              "size": 323585922
+            },
+            {
+              "id": "1o7qsgDXpJENMD743-ze0wQeg8dEB4HiX",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.4 [1080p].mov",
+              "size": 143180171
+            },
+            {
+              "id": "1rdCLVU4QIwqEQq8NerjSmHUQoZ7wcTS1",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.5 [1080p].mov",
+              "size": 105930934
+            },
+            {
+              "id": "14Eb7eHh2BE8C83vCTDbW-hO6ift5CweV",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.6 [1080p].mov",
+              "size": 35047718
+            },
+            {
+              "id": "1_KBRdkeSphVo6_SQlx8YzfrhqJg1wUUk",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.7 [1080p].mov",
+              "size": 380300204
+            },
+            {
+              "id": "1qGFkIgNBJFWqeVN9zMYx81yP--9vpWd8",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.8 [1080p].mov",
+              "size": 135691121
+            },
+            {
+              "id": "1dYeaVS_18kGVTFNO0XNuDoF8CjUO0NQY",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.9 [1080p].mov",
+              "size": 97013962
+            },
+            {
+              "id": "10KdIDH2-nuOBZGUuKMmsc3RiPOVjFOzr",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.10 [1080p].mov",
+              "size": 368488211
+            },
+            {
+              "id": "19yJB4SrNWATMckrfx9Z9wkbFzwoVdg5K",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.11 [1080p].mov",
+              "size": 152525527
+            },
+            {
+              "id": "1by_mIJqoXsw2ZoOS6W47EXRbfSzyau2n",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.12 [1080p].mov",
+              "size": 66273527
+            },
+            {
+              "id": "1XE6uQ7L0K5HM2zgDa6VwJu-nHzHmrcvl",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.13 [1080p].mov",
+              "size": 9113524
+            },
+            {
+              "id": "1dVsWiFnBqtib7S8-stJx4PeJDGt7QsLD",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.14 [1080p].mov",
+              "size": 653197704
+            },
+            {
+              "id": "1L840mb1EYcfx3M2y6a4-87qzPvfkFlMa",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.15 [1080p].mov",
+              "size": 67242512
+            },
+            {
+              "id": "1g5gZaLpqVNZ1UOJ00PZXEQpcKOyUCmAR",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.16 [1080p].mov",
+              "size": 3689616
+            },
+            {
+              "id": "1qtxHcoPhkA1wf0Q2ndvCe4b2-cFNhkJw",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.17 [1080p].mov",
+              "size": 634031959
+            },
+            {
+              "id": "1Xn9lkRUgRX43pgokvoj8yrz_cQvsjvZS",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.18 [1080p].mov",
+              "size": 19169726
+            },
+            {
+              "id": "15gQKfMpa3b_7vvONLNk96PAAPZUUvieC",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.19 [1080p].mov",
+              "size": 42365736
+            },
+            {
+              "id": "1DiDOrZFXWeanFHMzLJyELiWG1LDU6e3t",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.20 [1080p].mov",
+              "size": 28467832
+            },
+            {
+              "id": "1Ki_-Glof02WcxlAZ1FxdNsa7m4SlboAU",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.21 [1080p].mov",
+              "size": 177525472
+            },
+            {
+              "id": "1x7thLyOaBOWLBdY7bjB96DFjS9mk3iRO",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.22 [1080p].mov",
+              "size": 204811104
+            },
+            {
+              "id": "1QzKtQccPXQhsS2aAIn6aEdGBZ1lh9-F4",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.23 [1080p].mov",
+              "size": 201814122
+            },
+            {
+              "id": "1Rhi1oHnKLYFQLpRvkpk6Hy0zLXGPS8tL",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.24 [1080p].mov",
+              "size": 463691861
+            },
+            {
+              "id": "10Ooe3QGHjy0C1nP4n0L6u5PmCYfwkk05",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.25 [1080p].mov",
+              "size": 262191757
+            },
+            {
+              "id": "1QWIfC2mLCLLNsXQun57z3Qme_CReyqZN",
+              "mimeType": "video/quicktime",
+              "name": "K.Hps. Su AV2023 S1 B.26 [1080p].mov",
+              "size": 274276121
+            }
+          ],
+          "folderId": "1Vr4lVxv9VpbYSFhNcLeK1IeaK5SiRLSE",
+          "scannedAt": "2026-06-28T23:12:49.445Z",
+          "totalBytes": 15516628156
+        }
+      },
       "fileTree": {
-        "lookup": "K.Hps. Su AV2023 S1",
         "buckets": [
           {
             "bucket": "A",
             "types": [
               {
-                "mediaType": "audio",
                 "files": [
                   {
-                    "fileId": "prepared-harpsichord-suarez-solis-a-001-stereo",
-                    "label": "K.Hps. Su AV2023 S1 A.1 [ste].wav",
-                    "filename": "001-stereo.wav",
                     "extension": "wav",
+                    "fileId": "prepared-harpsichord-suarez-solis-a-001-stereo",
+                    "filename": "001-stereo.wav",
+                    "label": "K.Hps. Su AV2023 S1 A.1 [ste].wav",
                     "variantKey": "default-audio"
                   }
-                ]
+                ],
+                "mediaType": "audio"
               },
               {
-                "mediaType": "video",
                 "files": [
                   {
-                    "fileId": "prepared-harpsichord-suarez-solis-a-001-1080p",
-                    "label": "K.Hps. Su AV2023 S1 A.1 [1080p].mov",
-                    "filename": "001-1080p.mov",
                     "extension": "mov",
+                    "fileId": "prepared-harpsichord-suarez-solis-a-001-1080p",
+                    "filename": "001-1080p.mov",
+                    "label": "K.Hps. Su AV2023 S1 A.1 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
-                    "fileId": "prepared-harpsichord-suarez-solis-a-001-4k",
-                    "label": "K.Hps. Su AV2023 S1 A.1 [4K].mov",
-                    "filename": "001-4k.mov",
                     "extension": "mov",
+                    "fileId": "prepared-harpsichord-suarez-solis-a-001-4k",
+                    "filename": "001-4k.mov",
+                    "label": "K.Hps. Su AV2023 S1 A.1 [4K].mov",
                     "variantKey": "default-video"
                   }
-                ]
+                ],
+                "mediaType": "video"
               }
             ]
           },
@@ -153,378 +494,405 @@
             "bucket": "B",
             "types": [
               {
-                "mediaType": "video",
                 "files": [
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-001-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.1 [1080p].mov",
                     "filename": "001-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.1 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-001-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.1 [4K].mov",
                     "filename": "001-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.1 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-002-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.2 [1080p].mov",
                     "filename": "002-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.2 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-002-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.2 [4K].mov",
                     "filename": "002-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.2 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-003-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.3 [1080p].mov",
                     "filename": "003-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.3 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-003-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.3 [4K].mov",
                     "filename": "003-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.3 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-004-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.4 [1080p].mov",
                     "filename": "004-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.4 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-004-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.4 [4K].mov",
                     "filename": "004-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.4 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-005-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.5 [1080p].mov",
                     "filename": "005-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.5 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-005-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.5 [4K].mov",
                     "filename": "005-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.5 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-006-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.6 [1080p].mov",
                     "filename": "006-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.6 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-006-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.6 [4K].mov",
                     "filename": "006-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.6 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-007-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.7 [1080p].mov",
                     "filename": "007-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.7 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-007-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.7 [4K].mov",
                     "filename": "007-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.7 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-008-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.8 [1080p].mov",
                     "filename": "008-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.8 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-008-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.8 [4K].mov",
                     "filename": "008-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.8 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-009-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.9 [1080p].mov",
                     "filename": "009-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.9 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-009-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.9 [4K].mov",
                     "filename": "009-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.9 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-010-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.10 [1080p].mov",
                     "filename": "010-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.10 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-010-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.10 [4K].mov",
                     "filename": "010-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.10 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-011-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.11 [1080p].mov",
                     "filename": "011-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.11 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-011-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.11 [4K].mov",
                     "filename": "011-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.11 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-012-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.12 [1080p].mov",
                     "filename": "012-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.12 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-012-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.12 [4K].mov",
                     "filename": "012-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.12 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-013-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.13 [1080p].mov",
                     "filename": "013-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.13 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-013-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.13 [4K].mov",
                     "filename": "013-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.13 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-014-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.14 [1080p].mov",
                     "filename": "014-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.14 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-014-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.14 [4K].mov",
                     "filename": "014-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.14 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-015-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.15 [1080p].mov",
                     "filename": "015-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.15 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-015-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.15 [4K].mov",
                     "filename": "015-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.15 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-016-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.16 [1080p].mov",
                     "filename": "016-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.16 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-016-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.16 [4K].mov",
                     "filename": "016-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.16 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-017-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.17 [1080p].mov",
                     "filename": "017-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.17 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-017-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.17 [4K].mov",
                     "filename": "017-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.17 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-018-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.18 [1080p].mov",
                     "filename": "018-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.18 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-018-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.18 [4K].mov",
                     "filename": "018-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.18 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-019-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.19 [1080p].mov",
                     "filename": "019-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.19 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-019-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.19 [4K].mov",
                     "filename": "019-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.19 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-020-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.20 [1080p].mov",
                     "filename": "020-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.20 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-020-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.20 [4K].mov",
                     "filename": "020-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.20 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-021-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.21 [1080p].mov",
                     "filename": "021-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.21 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-021-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.21 [4K].mov",
                     "filename": "021-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.21 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-022-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.22 [1080p].mov",
                     "filename": "022-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.22 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-022-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.22 [4K].mov",
                     "filename": "022-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.22 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-023-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.23 [1080p].mov",
                     "filename": "023-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.23 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-023-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.23 [4K].mov",
                     "filename": "023-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.23 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-024-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.24 [1080p].mov",
                     "filename": "024-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.24 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-024-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.24 [4K].mov",
                     "filename": "024-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.24 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-025-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.25 [1080p].mov",
                     "filename": "025-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.25 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-025-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.25 [4K].mov",
                     "filename": "025-4k.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.25 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "prepared-harpsichord-suarez-solis-b-026-1080p",
-                    "label": "K.Hps. Su AV2023 S1 B.26 [1080p].mov",
                     "filename": "026-1080p.mov",
-                    "extension": "mov",
+                    "label": "K.Hps. Su AV2023 S1 B.26 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
-                    "fileId": "prepared-harpsichord-suarez-solis-b-026-4k",
-                    "label": "K.Hps. Su AV2023 S1 B.26 [4K].mov",
-                    "filename": "026-4k.mov",
                     "extension": "mov",
+                    "fileId": "prepared-harpsichord-suarez-solis-b-026-4k",
+                    "filename": "026-4k.mov",
+                    "label": "K.Hps. Su AV2023 S1 B.26 [4K].mov",
                     "variantKey": "default-video"
                   }
-                ]
+                ],
+                "mediaType": "video"
               }
             ]
           }
-        ]
+        ],
+        "lookup": "K.Hps. Su AV2023 S1"
+      },
+      "recordingIndexBundleRef": "bundle:recording-index:K.Hps. Su AV2023 S1:all",
+      "recordingIndexPdfRef": "asset:prepared-harpsichord-suarez-solis-recording-index-pdf",
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/1SYil4lH1p0jj3DRlgroRb_hWYAGipa1jLrsPez9IL_U/edit?usp=drive_link",
+      "selectedBuckets": [
+        "A",
+        "B"
+      ]
+    },
+    "fileSpecs": {
+      "bitDepth": 24,
+      "channels": "stereo",
+      "sampleRate": 48000,
+      "staticSizes": {
+        "A": "15.0 GB",
+        "B": "14.5 GB",
+        "C": "",
+        "D": "",
+        "E": "",
+        "X": ""
       }
-    }
+    },
+    "lookupNumber": "K.Hps. Su AV2023 S1",
+    "metadata": {
+      "sampleLength": "AUTO",
+      "tags": []
+    },
+    "specialEventImage": "/assets/series/dex.png"
   }
 }

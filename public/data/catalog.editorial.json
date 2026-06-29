@@ -1,6 +1,6 @@
 {
   "version": "catalog-editorial-v1",
-  "updatedAt": "2026-06-28T19:51:47.434Z",
+  "updatedAt": "2026-06-28T23:26:12.242Z",
   "manifest": [
     {
       "entry_id": "2-organs-midori-ataka",
@@ -190,7 +190,7 @@
       "season": "S2",
       "performer": "Jakob Heinemann",
       "instrument": "SPLINTERINGS for DOUBLE BAS‌S",
-      "image_src": "",
+      "image_src": "/assets/catalog/jakob-heinemann.webp",
       "image_alt_raw": "",
       "status": "active"
     },
@@ -226,7 +226,7 @@
       "season": "S1",
       "performer": "suarez-solis, sebastian",
       "instrument": "PREPARED BAS‌S VIOL",
-      "image_src": "",
+      "image_src": "/assets/catalog/prepared-bass-viol-suarez-solis.png",
       "image_alt_raw": "",
       "status": "active"
     },
@@ -238,7 +238,7 @@
       "season": "S1",
       "performer": "suarez-solis, sebastian",
       "instrument": "PREPARED HARPSICHORD",
-      "image_src": "",
+      "image_src": "/assets/catalog/prepared-harpsichord-suarez-solis.webp",
       "image_alt_raw": "",
       "status": "active"
     },

@@ -6,8 +6,8 @@
     "artistName": "Andrew Chanover"
   },
   "lifecycle": {
-    "publishedAt": "2026-03-25T20:32:32.669Z",
-    "updatedAt": "2026-03-25T20:32:32.669Z"
+    "publishedAt": "2026-06-29T00:08:42.713Z",
+    "updatedAt": "2026-06-29T00:08:42.713Z"
   },
   "video": {
     "mode": "url",
@@ -15,7 +15,7 @@
     "dataUrlOriginal": "https://www.youtube.com/watch?v=oifj5JZYoWI",
     "dataHtml": ""
   },
-  "descriptionText": "ELECTRIC GUITAR.",
+  "descriptionText": "Andrew is a drummer, electronic music maker, guitarist, vocalist, songwriter, composer, creative coder, and lover of music. They are based in LA and currently a member of Shearling, Hayes, and Cellswan.\n\nCheck out their website at https://andrewchanovermusic.neocities.org",
   "series": "dex",
   "selectedBuckets": [
     "A",
@@ -27,31 +27,31 @@
       "Andrew Chanover"
     ],
     "artistAlt": null,
+    "audio": {
+      "master": [],
+      "mix": [],
+      "recording": []
+    },
     "instruments": [
       "ELECTRIC GUITAR"
     ],
+    "location": "Unknown",
+    "season": "S2",
     "video": {
-      "director": [],
       "cinematography": [],
+      "director": [],
       "editing": []
     },
-    "audio": {
-      "recording": [],
-      "mix": [],
-      "master": []
-    },
-    "year": 2024,
-    "season": "S2",
-    "location": "Unknown"
+    "year": 2024
   },
   "fileSpecs": {
     "bitDepth": 24,
-    "sampleRate": 48000,
     "channels": "stereo",
+    "sampleRate": 48000,
     "staticSizes": {
-      "A": "",
-      "B": "",
-      "C": "",
+      "A": "15.8 GB",
+      "B": "21.8 GB",
+      "C": "16.1 GB",
       "D": "",
       "E": "",
       "X": ""
@@ -62,57 +62,789 @@
     "tags": []
   },
   "sidebarPageConfig": {
-    "lookupNumber": "E.Gtr. Ch AV2024 S2",
+    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Andrew Chanover.",
     "buckets": [
       "A",
       "B",
       "C"
     ],
-    "specialEventImage": "/assets/series/dex.png",
-    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Andrew Chanover.",
     "credits": {
       "artist": [
         "Andrew Chanover"
       ],
       "artistAlt": null,
+      "audio": {
+        "master": [
+          "Sebastian Suarez-Solis"
+        ],
+        "mix": [
+          "Sebastian Suarez-Solis"
+        ],
+        "recording": [
+          "Cameron Church"
+        ]
+      },
+      "instrumentLinksEnabled": true,
       "instruments": [
         "ELECTRIC GUITAR"
       ],
-      "video": {
-        "director": [],
-        "cinematography": [],
-        "editing": []
+      "linksByPerson": {
+        "Cameron Church": [
+          {
+            "href": "https://cameronchurch.com",
+            "label": "Website"
+          }
+        ],
+        "Sebastian Suarez-Solis": [
+          {
+            "href": "https://dexdsl.github.io/u/cbassuarez",
+            "label": "Website"
+          }
+        ]
       },
-      "audio": {
-        "recording": [],
-        "mix": [],
-        "master": []
-      },
-      "year": 2024,
+      "location": "Los Angeles, CA",
       "season": "S2",
-      "location": "Unknown"
+      "video": {
+        "cinematography": [
+          "Sebastian Suarez-Solis",
+          "Gabrielle Milman"
+        ],
+        "director": [
+          "Gabrielle Milman"
+        ],
+        "editing": [
+          "Sebastian Suarez-Solis"
+        ]
+      },
+      "year": 2024
+    },
+    "downloads": {
+      "bucketFolders": {
+        "A": {
+          "fileCount": 3,
+          "files": [
+            {
+              "id": "1mVUHxj8GELgODGWxI3Wmd7l0LeMkw8Zs",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 A.1 [4K].mov",
+              "size": 14518938128
+            },
+            {
+              "id": "1mVgdfz8Tgxl2rNfXYc2yWYy3ysiQA-uO",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 A.1 [1080p].mov",
+              "size": 2181296084
+            },
+            {
+              "id": "1mXskUlcWgTJK27AXTfr69I8xPm56v70M",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 A.1 [ste].wav",
+              "size": 274823628
+            }
+          ],
+          "folderId": "1iqo31Bh9Ik4RoZoj3VvJjDjB0C16V_lM",
+          "scannedAt": "2026-06-28T23:47:04.523Z",
+          "totalBytes": 16975057840
+        },
+        "B": {
+          "fileCount": 16,
+          "files": [
+            {
+              "id": "1sC4TWIm58ELqzBEu8lXo_OdkHQzGhhFh",
+              "mimeType": "application/x-zip-compressed",
+              "name": "[TEST] E.Gtr. Ch AV2024 S2 B [4K].zip",
+              "size": 6395148146
+            },
+            {
+              "id": "1md04SWm1ORB7IeR0TC8ccVsNTTNvfvPM",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 B.1 [4K].mov",
+              "size": 4704381028
+            },
+            {
+              "id": "1mfaYKAoc3rHIf1daUY9YOC12of80QnTN",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 B.2 [4K].mov",
+              "size": 1690766616
+            },
+            {
+              "id": "1mlO2y1pXfsuRAhydZ5dmSysNFlwfiOFO",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 B.3 [4K].mov",
+              "size": 3167241925
+            },
+            {
+              "id": "1mnF_Tfv2WKs7fIPIq-Uo0fj4RRRhEc92",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 B.4 [4K].mov",
+              "size": 2019752175
+            },
+            {
+              "id": "1msQkfYmK8EbrYk-dYPjVZDes0Dm_i3fz",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 B.5 [4K].mov",
+              "size": 2962408620
+            },
+            {
+              "id": "1msw6fT-0azVeBAZJOKV22W4cr_shpefY",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 B.1 [1080p].mov",
+              "size": 704576770
+            },
+            {
+              "id": "1mvwUeYvWV-FPEOimYfRoJoN2p22N1OpY",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 B.2 [1080p].mov",
+              "size": 252192211
+            },
+            {
+              "id": "1mxyEPACbdvx3cRXvOa0MuWYI_njZo0gv",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 B.3 [1080p].mov",
+              "size": 473027776
+            },
+            {
+              "id": "1n0jJ2iy696-yUu0ujXPoZa4Dwhg0Blle",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 B.4 [1080p].mov",
+              "size": 301000417
+            },
+            {
+              "id": "1nDZbZJN4yhwSDgBznBznWnxWqcX1Ztme",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 B.5 [1080p].mov",
+              "size": 442653380
+            },
+            {
+              "id": "1nGH972RzkoSB7RictS_gB26clXzUIuzR",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 B.1 [ste].wav",
+              "size": 89430420
+            },
+            {
+              "id": "1nJblw5Fh-iTC4Q0a7STNjBoEELeiLdze",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 B.2 [ste].wav",
+              "size": 31652700
+            },
+            {
+              "id": "1nKAj1T5hF6UbY4HUR--jDWYAEgpWiTGY",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 B.3 [ste].wav",
+              "size": 59448468
+            },
+            {
+              "id": "1nKB16uFZcABVCd8jFELVyIPkdL2IIXZT",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 B.4 [ste].wav",
+              "size": 37826868
+            },
+            {
+              "id": "1nTrUrda7yW_ScjPSNoLyANwi32d0KtSH",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 B.5 [ste].wav",
+              "size": 55688712
+            }
+          ],
+          "folderId": "1ip4qtjl0cCgBy-DHVUAokf8sUlFG-jMD",
+          "scannedAt": "2026-06-28T23:47:12.161Z",
+          "totalBytes": 23387196232
+        },
+        "C": {
+          "fileCount": 93,
+          "files": [
+            {
+              "id": "1pi9-SDQbuwiaWXFf-IQaUHRNIvG15BRW",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.1 [4K].mov",
+              "size": 625737964
+            },
+            {
+              "id": "1pjlGPe-UMwGjR8ESo79Sf8Auim7YrSs8",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.2 [4K].mov",
+              "size": 442263964
+            },
+            {
+              "id": "1pk2tNSFU8ox2Z1WNT8ezXeHdd6OXHTd_",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.3 [4K].mov",
+              "size": 500213170
+            },
+            {
+              "id": "1pn2XsNBb5dtWQfRTofpEakV1xjHeAlz4",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.4 [4K].mov",
+              "size": 489411178
+            },
+            {
+              "id": "1po7qppFp5jyxzjT0tiRw_sggDYyaXrYl",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.5 [4K].mov",
+              "size": 527802427
+            },
+            {
+              "id": "1q9gTqSzEr84zRxTEJYCjqldqztvMAo9I",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.6 [4K].mov",
+              "size": 628379002
+            },
+            {
+              "id": "1qD75gumUp0VleR3aoU4zReSmr25SVCUB",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.7 [4K].mov",
+              "size": 719401356
+            },
+            {
+              "id": "1qI2SuT1PZ_9slKhMgvZ3-wVVnNliRbBi",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.8 [4K].mov",
+              "size": 510762554
+            },
+            {
+              "id": "1qRdDO0EysNmBbU1f-IenrSslafCg88Xb",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.9 [4K].mov",
+              "size": 349524821
+            },
+            {
+              "id": "1qWR84Spf_BTLNLH-bAuKZgVqNrjgHlr9",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.10 [4K].mov",
+              "size": 251214148
+            },
+            {
+              "id": "1qhdbe8mr4uungLrSeC8ea1vNhzz8hUy9",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.11 [4K].mov",
+              "size": 313122576
+            },
+            {
+              "id": "1qnzNJZH1VOdOjofwtSeqa1Y_oWT1N3ey",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.12 [4K].mov",
+              "size": 337370383
+            },
+            {
+              "id": "1r57Dl5owt21E0OLfAGApnK8CwvN8rSU6",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.13 [4K].mov",
+              "size": 181009425
+            },
+            {
+              "id": "1r5V-Bky7beAwd4TdOPSS4xpyDiCzaP6N",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.14 [4K].mov",
+              "size": 380637416
+            },
+            {
+              "id": "1r65ta9wO4gdlqEMyCz9DgqVegOAoOq2i",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.15 [4K].mov",
+              "size": 280942476
+            },
+            {
+              "id": "1rCJIQXaKISfhmJtIAjrG0Ml2SsEoLHxw",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.16 [4K].mov",
+              "size": 827445688
+            },
+            {
+              "id": "1rJKHXTPw2zW-cRRySlPc5cMH_xLCBe8O",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.17 [4K].mov",
+              "size": 560583835
+            },
+            {
+              "id": "1rTn9qRAQ0Qmjc6Z4S053bIUdjfINMos9",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.18 [4K].mov",
+              "size": 901075150
+            },
+            {
+              "id": "1rTxMH4j2LEasFKqu9j9tYRgi7FQjFA19",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.19 [4K].mov",
+              "size": 669417414
+            },
+            {
+              "id": "1rX6fp5PW2aCR1ECBQb_w4XySjJumEOZe",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.20 [4K].mov",
+              "size": 252482537
+            },
+            {
+              "id": "1r_U0Hpj3_EG1H1CaQEHZEZVdsB1lZSyu",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.21 [4K].mov",
+              "size": 609808441
+            },
+            {
+              "id": "1rcrXqsHUR31WbpQwcj0MM_cMPzh3e_4a",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.22 [4K].mov",
+              "size": 567426970
+            },
+            {
+              "id": "1rdG5gX0oxwpNCZO0G_l1s_BaJTZU_PfL",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.23 [4K].mov",
+              "size": 467938833
+            },
+            {
+              "id": "1rfrYaUYS7I0VfuHVGxpX9WZXklK8Ax8s",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.24 [4K].mov",
+              "size": 406742960
+            },
+            {
+              "id": "1roQqYGWaqNZvkm1Ad-b41QPLSEXd7TQM",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.25 [4K].mov",
+              "size": 296867974
+            },
+            {
+              "id": "1rywyevsmI-53l1bOiySHXVZCqUzesoCU",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.26 [4K].mov",
+              "size": 365330664
+            },
+            {
+              "id": "1s56q5pR3Ns1eGjp4FDtKUOsgk3uao6CX",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.27 [4K].mov",
+              "size": 460955493
+            },
+            {
+              "id": "1s7etNaXby8JjgNFsvF8fLgrkg3EV--UU",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.28 [4K].mov",
+              "size": 474441579
+            },
+            {
+              "id": "1s8LhraBlgd7w01JbbkYG-8PkgM5n5HIH",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.29 [4K].mov",
+              "size": 381544915
+            },
+            {
+              "id": "1sAnzTzABqAC0YEt9VvJB4ITch4soJxXa",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.30 [4K].mov",
+              "size": 398793316
+            },
+            {
+              "id": "1sO6dXqNt6J6MoIzG4w5GoF2cGlf3D-_x",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.31 [4K].mov",
+              "size": 648989566
+            },
+            {
+              "id": "1sVbWd5QvyGiF18UIZy3jVXO0L7m50Mli",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.1 [1080p].mov",
+              "size": 93768376
+            },
+            {
+              "id": "1sWFG3YN8hY3BaeDn10M0c006Hzbn7Nz8",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.2 [1080p].mov",
+              "size": 65107766
+            },
+            {
+              "id": "1sifl5E3c91RKgMzNzpw2f_MAOFVDw55D",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.3 [1080p].mov",
+              "size": 73742439
+            },
+            {
+              "id": "1ssUXgSUV5V09JjjRDGHpJ0KtS9WLbwq1",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.4 [1080p].mov",
+              "size": 72171713
+            },
+            {
+              "id": "1styCi-hUXHQtJW9a8-Pw7DAp3G4PNpJF",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.5 [1080p].mov",
+              "size": 77838707
+            },
+            {
+              "id": "1t03I-rAM5L5KnKMiR9cjuJv_P4aAJOGe",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.6 [1080p].mov",
+              "size": 93066579
+            },
+            {
+              "id": "1t0eHqukt5obn-0fwAZz-4q1hpxjK5Wbc",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.7 [1080p].mov",
+              "size": 106583909
+            },
+            {
+              "id": "1t1U2tByRCy0vCO-R2McAQyOaDcCUQbWu",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.8 [1080p].mov",
+              "size": 75298379
+            },
+            {
+              "id": "1t3eqJ7Nmy4zi_m5MMzcHC7kURIjps0zD",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.9 [1080p].mov",
+              "size": 51577282
+            },
+            {
+              "id": "1t4TaebAHKqxyB0mkgVjuLeR9JjR7gH3g",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.10 [1080p].mov",
+              "size": 36667738
+            },
+            {
+              "id": "1tN6Ftmqe0pJzOlXbOJbHiaCti6dkOLBc",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.11 [1080p].mov",
+              "size": 45971261
+            },
+            {
+              "id": "1tVmXEl554MlC4t5lsI4n0ZAlWrXRXFAI",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.12 [1080p].mov",
+              "size": 49439141
+            },
+            {
+              "id": "1tcPSq-REwstWSbF0cXEPiHV0S6ujUpsB",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.13 [1080p].mov",
+              "size": 26015775
+            },
+            {
+              "id": "1tiOMGKC7de1ddP2Y4Doh7jHKJHnMl-et",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.14 [1080p].mov",
+              "size": 55871074
+            },
+            {
+              "id": "1tjAdjgcIaVw0uopy7UporLv-61sAmsu7",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.15 [1080p].mov",
+              "size": 41278355
+            },
+            {
+              "id": "1tmB4yMMyIc8Neyc6KZ6iuDkG82T-vAJ7",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.16 [1080p].mov",
+              "size": 122744012
+            },
+            {
+              "id": "1tongbOv2_b_omT_auwfT9l5eyeiLqmtf",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.17 [1080p].mov",
+              "size": 83821691
+            },
+            {
+              "id": "1txMUbCeQgUTE9nYu1ReEvTrSUaOjig6L",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.18 [1080p].mov",
+              "size": 133707830
+            },
+            {
+              "id": "1u-H48OzUkFVMQdRjTKPS007XQeWqy5cE",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.19 [1080p].mov",
+              "size": 99069936
+            },
+            {
+              "id": "1uE8VSproud19rIDpjPl6e4GPxn9Bvq8h",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.20 [1080p].mov",
+              "size": 36611108
+            },
+            {
+              "id": "1uI7v4IUomPBvtAdW_WeMkZ_-pKBXjqHJ",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.21 [1080p].mov",
+              "size": 90869651
+            },
+            {
+              "id": "1uIK8QyxFGAE0KZwkk6re5cgZ5-cXbx1t",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.22 [1080p].mov",
+              "size": 83928635
+            },
+            {
+              "id": "1ujYkpo2w3nCqNtrCuF8djo7H3zQJxIBk",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.23 [1080p].mov",
+              "size": 69074964
+            },
+            {
+              "id": "1uk8Y7QDgDYGf9UIJu49dSKjW1v01DIaN",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.24 [1080p].mov",
+              "size": 59840333
+            },
+            {
+              "id": "1uxeR3OshGQU0xl7CJsG5_WKxs_PjDkDj",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.25 [1080p].mov",
+              "size": 43310147
+            },
+            {
+              "id": "1v3UNMa-YYsHKRRICLm0UTGUp01cZg-ot",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.26 [1080p].mov",
+              "size": 53532403
+            },
+            {
+              "id": "1v5XuVYv1zBujKyMvJw4Klsnus_ZX1tf9",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.27 [1080p].mov",
+              "size": 67799435
+            },
+            {
+              "id": "1v8jf7It6iO2tfGyfClmvP8CM0TwcY-fz",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.28 [1080p].mov",
+              "size": 70198214
+            },
+            {
+              "id": "1vRIEELjZfhFWmzDRNNwBE5vuAbDNUJC9",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.29 [1080p].mov",
+              "size": 56035587
+            },
+            {
+              "id": "1vT4Xb7WfgPvXOuXHDXmlvTWuxeLW-9JR",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.30 [1080p].mov",
+              "size": 58637652
+            },
+            {
+              "id": "1vT4YPNoEBkKiiA-FeDWglOxBNSlrtYdG",
+              "mimeType": "video/quicktime",
+              "name": "E.Gtr. Ch AV2024 S2 C.31 [1080p].mov",
+              "size": 96544453
+            },
+            {
+              "id": "1nVOsjwY28eWvbGfjyX9f5j2C4EJOdm78",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.1 [ste].wav",
+              "size": 12601668
+            },
+            {
+              "id": "1nVpIPVOJ98TKJ9BbAqekoJ4ZmjN6DzSZ",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.2 [ste].wav",
+              "size": 8121192
+            },
+            {
+              "id": "1nWczT2pueOBHrRKZYMeMDZwEfVzug3w1",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.3 [ste].wav",
+              "size": 9202272
+            },
+            {
+              "id": "1no40JtWuUz9IYqdwBBnaxwlyxC7d6blZ",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.4 [ste].wav",
+              "size": 9010080
+            },
+            {
+              "id": "1noVmyjzskHq4N1UrgjlY-t6iSwC42xhi",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.5 [ste].wav",
+              "size": 9730800
+            },
+            {
+              "id": "1ns-c2EV3dddB2GDJqcwogFF7W1U0POr0",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.6 [ste].wav",
+              "size": 11640708
+            },
+            {
+              "id": "1ny-MRh22p92LZ9kTVrjSqAu1Crfb8zw1",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.7 [ste].wav",
+              "size": 13346412
+            },
+            {
+              "id": "1oAf7uvzDrfbRE5jbXENo_gZZqwT4KzXV",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.8 [ste].wav",
+              "size": 9418488
+            },
+            {
+              "id": "1oHUl7XJkvqvQ94AD42qrGV_LKGB5T_IM",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.9 [ste].wav",
+              "size": 6367440
+            },
+            {
+              "id": "1o8OpaWRVdHBaXWLQGqSPOlEBYcCz0xIb",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.10 [ste].wav",
+              "size": 4541616
+            },
+            {
+              "id": "1oD-TXEZ57H99eZa_7yhqZsZFYQGcFnp3",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.11 [ste].wav",
+              "size": 5706780
+            },
+            {
+              "id": "1oPs3VMb-nNbq3Sc3JUmcVM5eYEFFU8Oo",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.12 [ste].wav",
+              "size": 6151224
+            },
+            {
+              "id": "1oNCJGmcsOu3-RZlbeA4wZmui-o-XOEVq",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.13 [ste].wav",
+              "size": 3196272
+            },
+            {
+              "id": "1ocm7XwGOguw8G24hlgdWf3j3Nn9b3-nR",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.14 [ste].wav",
+              "size": 6968040
+            },
+            {
+              "id": "1oY7Lv_lwnBcd-XSWYX_3d0U45sS_s2y_",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.15 [ste].wav",
+              "size": 5094168
+            },
+            {
+              "id": "1oivQGL6ucuQXwH99ANVXzOUYTBIIB5ok",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.16 [ste].wav",
+              "size": 15376440
+            },
+            {
+              "id": "1or3QGmc8Z0JEdkmc8oIGatTcgLHe58rU",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.17 [ste].wav",
+              "size": 10367436
+            },
+            {
+              "id": "1otbEzG-J_lzk4B_WzQPmXw3b54_M7WW4",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.18 [ste].wav",
+              "size": 16757820
+            },
+            {
+              "id": "1otx9EL9SswcsG0KvghkhFegdUvfwz4UX",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.19 [ste].wav",
+              "size": 12409476
+            },
+            {
+              "id": "1oN9bEW0HCpAERoBFH4A-1wYHDbEQcdTb",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.20 [ste].wav",
+              "size": 4541616
+            },
+            {
+              "id": "1ovVATCpctPfQnu1JVMCIELt3qYwGo_M9",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.21 [ste].wav",
+              "size": 11268336
+            },
+            {
+              "id": "1ozQfDqfW4QK4S_usynWiHJ5uaoNpyM9Y",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.22 [ste].wav",
+              "size": 10487556
+            },
+            {
+              "id": "1ozdmWUZKwELizbcdwAb9nFp8JVX9bh00",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.23 [ste].wav",
+              "size": 8601672
+            },
+            {
+              "id": "1p7vlbbYIHGOj7iMrVlKzXyG8dVP5SwAX",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.24 [ste].wav",
+              "size": 7472544
+            },
+            {
+              "id": "1p4nlfyYXOwOoz2qShy9J65p45ebxZZ6g",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.25 [ste].wav",
+              "size": 5382456
+            },
+            {
+              "id": "1pTu7HkbcCes5vZwrDKMN-XWn8SOrxCg6",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.26 [ste].wav",
+              "size": 6667740
+            },
+            {
+              "id": "1pZqkXBZX9Wkrl6hrGK4w0hXsxoevTL6o",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.27 [ste].wav",
+              "size": 8481552
+            },
+            {
+              "id": "1pZtDiMM1smVgY594wFlU4bMGBz58eoMY",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.28 [ste].wav",
+              "size": 8733804
+            },
+            {
+              "id": "1pLgUBiUj82xPVVCFu1Pg3WvDHuSnVb48",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.29 [ste].wav",
+              "size": 6980052
+            },
+            {
+              "id": "1pc8-h6unJPoKgJaRMuxZyaX8C3w4zdFf",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.30 [ste].wav",
+              "size": 7304376
+            },
+            {
+              "id": "1pfvf0mTxv33wE34Wu5Q01OzUKs2rfGfc",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ch AV2024 S2 C.31 [ste].wav",
+              "size": 12145212
+            }
+          ],
+          "folderId": "1im2SZKczL0-62_aF6IA0hQgWhSfA2Bcv",
+          "scannedAt": "2026-06-28T23:47:22.022Z",
+          "totalBytes": 17291837988
+        }
+      },
+      "recordingIndexBundleRef": "bundle:recording-index:E.Gtr. Ch AV2024 S2:all",
+      "recordingIndexPdfRef": "asset:andrew-chanover-recording-index-pdf",
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/10cMq02K7fiTmw-eWSnbmsXO6kTgkfs23ripJurJrmws/edit?usp=drive_link",
+      "selectedBuckets": [
+        "A",
+        "B",
+        "C"
+      ]
     },
     "fileSpecs": {
       "bitDepth": 24,
-      "sampleRate": 48000,
       "channels": "stereo",
+      "sampleRate": 48000,
       "staticSizes": {
-        "A": "",
-        "B": "",
-        "C": "",
+        "A": "15.8 GB",
+        "B": "21.8 GB",
+        "C": "16.1 GB",
         "D": "",
         "E": "",
         "X": ""
       }
     },
+    "lookupNumber": "E.Gtr. Ch AV2024 S2",
     "metadata": {
       "sampleLength": "AUTO",
       "tags": []
     },
-    "downloads": {
-      "recordingIndexPdfRef": "asset:andrew-chanover-recording-index-pdf",
-      "recordingIndexBundleRef": "bundle:recording-index:E.Gtr. Ch AV2024 S2:all",
-      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/10cMq02K7fiTmw-eWSnbmsXO6kTgkfs23ripJurJrmws/edit?gid=0#gid=0"
-    }
+    "series": "dexFest 2024",
+    "specialEventImage": "/assets/series/dexfest.png"
   }
 }

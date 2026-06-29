@@ -200,6 +200,24 @@
 
 <style id="dex-layout-patch" data-managed="1">
 #dex-layout-patch[data-managed="1"] { display: block; }
+html:not([data-dex-sidebar-rendered="1"]) body.dx-entry-page #page,
+html:not([data-dex-sidebar-rendered="1"]) body.dx-entry-page .dex-footer {
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+html[data-dex-sidebar-rendered="1"] body.dx-entry-page #page,
+html[data-dex-sidebar-rendered="1"] body.dx-entry-page .dex-footer {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+body.dx-entry-page .dex-entry-host .sqs-block-content,
+body.dx-entry-page .dex-entry-host .dx-block-content {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
 .dex-entry-host .dx-code-container,
 .dex-entry-host .sqs-code-container {
   --dex-entry-outer-gap: clamp(12px, 1.6vw, 20px);
@@ -226,7 +244,6 @@
 #footer-sections.sections > .page-section:first-child { margin-top: 0 !important; padding-top: 0 !important; }
 html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-entry-section {
   margin-bottom: var(--dx-entry-footer-gap, clamp(14px, 1.2vw, 20px)) !important;
-  padding-top: clamp(10px, 0.9vw, 14px) !important;
 }
 .dex-entry-layout {
   --dex-entry-frame-radius: var(--radius-md, 8px);
@@ -235,7 +252,7 @@ html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-entry-sect
   gap: clamp(16px, 2vw, 24px) !important;
   align-items: stretch !important;
 }
-@media (max-width: 899px) {
+@media (max-width: 960px) {
   .dex-entry-layout {
     grid-template-columns: 1fr !important;
     align-items: start !important;
@@ -255,40 +272,13 @@ html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-entry-sect
   gap: clamp(14px, 1.8vw, 24px);
   overflow: visible !important;
   min-height: 0;
-  --dx-rail-fade-edge-top: clamp(14px, 1.3vw, 18px);
-  --dx-rail-fade-edge-bottom: clamp(12px, 1.1vw, 16px);
-  --dx-rail-fade-top-alpha: 0;
-  --dx-rail-fade-bottom-alpha: 0;
-}
-html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-entry-main[data-dx-rail-fades="true"] {
-  isolation: isolate;
-  --dx-rail-mask-top-alpha: calc(1 - var(--dx-rail-fade-top-alpha, 0));
-  --dx-rail-mask-bottom-alpha: calc(1 - var(--dx-rail-fade-bottom-alpha, 0));
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, var(--dx-rail-mask-top-alpha)) 0%,
-    rgba(0, 0, 0, 1) var(--dx-rail-fade-edge-top),
-    rgba(0, 0, 0, 1) calc(100% - var(--dx-rail-fade-edge-bottom)),
-    rgba(0, 0, 0, var(--dx-rail-mask-bottom-alpha)) 100%
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, var(--dx-rail-mask-top-alpha)) 0%,
-    rgba(0, 0, 0, 1) var(--dx-rail-fade-edge-top),
-    rgba(0, 0, 0, 1) calc(100% - var(--dx-rail-fade-edge-bottom)),
-    rgba(0, 0, 0, var(--dx-rail-mask-bottom-alpha)) 100%
-  );
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
 }
 .dex-sidebar {
   grid-column: 2;
   grid-row: 1;
   align-self: stretch;
 }
-@media (max-width: 899px) {
+@media (max-width: 960px) {
   .dex-entry-main,
   .dex-sidebar {
     grid-column: 1;
@@ -340,30 +330,11 @@ html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-entry-main
 }
 .dex-entry-desc-content > :first-child { margin-top: 0; }
 .dex-entry-desc-content > :last-child { margin-bottom: 0; }
-@media (max-width: 899px) {
-  html[data-dx-entry-rail-mode="mobile-flow"] body.dx-entry-page #sections section.dex-entry-section.page-section.content-width--wide {
-    width: calc(100% - 16px) !important;
-    max-width: calc(100% - 16px) !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
-  html[data-dx-entry-rail-mode="mobile-flow"] body.dx-entry-page .dex-entry-layout .dex-sidebar,
-  html[data-dx-entry-rail-mode="mobile-flow"] body.dx-entry-page .dex-sidebar {
-    box-sizing: border-box !important;
-    padding: clamp(8px, 2vw, 12px) !important;
-  }
+@media (max-width: 960px) {
   .dex-entry-desc-scroll {
     height: auto !important;
     max-height: none !important;
     overflow: visible !important;
-  }
-  #dx-slot-scroll-root,
-  body.dx-entry-page .dex-entry-main,
-  body.dx-entry-page .dex-video-shell,
-  body.dx-entry-page .dex-video-aspect,
-  body.dx-entry-page .dex-video-aspect iframe,
-  body.dx-entry-page .dex-entry-desc-scroll {
-    touch-action: pan-y pinch-zoom !important;
   }
   .dex-entry-desc-heading {
     font-size: clamp(0.9rem, 3.6vw, 1.05rem);
@@ -429,7 +400,7 @@ html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-entry-main
   text-transform: lowercase;
   color: rgba(30, 30, 30, 0.78);
 }
-@media (max-width: 899px) {
+@media (max-width: 960px) {
   .dex-entry-header {
     margin-bottom: 14px;
     gap: 5px;
@@ -601,7 +572,7 @@ body.dx-entry-page .dex-overview .overview-lookup {
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   text-align: center !important;
-  font-family: var(--font-heading, "Typefesse", sans-serif) !important;
+  font-family: var(--font-heading, "Stretch Pro", system-ui, sans-serif) !important;
   font-size: var(--dx-entry-overview-lookup-size, clamp(1.02rem, 1.72vw, 1.58rem)) !important;
   font-weight: 800 !important;
   letter-spacing: 0.03em !important;
@@ -624,10 +595,6 @@ body.dx-entry-page .dex-overview .overview-label {
   text-align: center !important;
   width: 100% !important;
   font-size: clamp(0.72rem, 1.02vw, 0.9rem) !important;
-}
-body.dx-entry-page .dex-overview .overview-label--lookup,
-body.dx-entry-page .dex-overview .overview-label--series {
-  text-transform: uppercase !important;
 }
 body.dx-entry-page .dex-collections {
   --dx-entry-tile-height: clamp(28px, 1.85vw, 34px);
@@ -708,7 +675,6 @@ body.dx-entry-page .dex-collections .dx-bucket-tile {
 body.dx-entry-page .dex-collections .dx-bucket-tile[data-dx-tooltip] {
   position: relative !important;
   cursor: help !important;
-  pointer-events: auto !important;
   overflow: visible !important;
   isolation: isolate !important;
   transform: translate3d(0, 0, 0) scale(1) !important;
@@ -719,9 +685,6 @@ body.dx-entry-page .dex-collections .dx-bucket-tile[data-dx-tooltip] {
     opacity 180ms ease,
     filter 200ms ease,
     box-shadow 220ms ease !important;
-}
-body.dx-entry-page .dex-collections .dx-bucket-tile[data-dx-tooltip] .dx-bucket-label {
-  pointer-events: none !important;
 }
 body.dx-entry-page .dex-collections .overview-buckets-grid {
   overflow: visible !important;
@@ -783,6 +746,11 @@ body.dx-entry-page .dex-collections .overview-item--favorite-collection .dx-fav-
   width: 100% !important;
   border-radius: var(--dx-entry-tile-radius) !important;
 }
+body.dx-entry-page .dex-collections .overview-item--favorite-buckets .dx-fav-bucket-toggle.dx-fav-heart-btn:not(.is-active) {
+  border-color: transparent !important;
+  background: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: none !important;
+}
 .dex-sidebar .dex-license-controls .copy-btn,
 .dex-sidebar .dex-license-controls .usage-btn,
 .dex-sidebar #downloads .btn-audio,
@@ -795,33 +763,19 @@ body.dx-entry-page .dex-collections .overview-item--favorite-collection .dx-fav-
   gap: 0.5rem;
   padding: 0.6rem 0.85rem !important;
   border-radius: 4px !important;
-  border: 1px solid rgba(0, 0, 0, 0.15) !important;
-  background: linear-gradient(130deg, var(--dex-accent, #ff1910), orange) !important;
+  border: 0 !important;
+  background: var(--dx-btn-primary-bg, linear-gradient(130deg, var(--dex-accent, #ff1910), #ff9810)) !important;
   color: #fff !important;
   text-decoration: none !important;
   text-transform: uppercase !important;
   letter-spacing: 0.02em !important;
-  font: 800 clamp(18px, 1.5vw, 36px) "Stretch Pro", sans-serif !important;
-  font-variant-ligatures: common-ligatures discretionary-ligatures contextual !important;
-  font-feature-settings: "liga" 1, "clig" 1, "dlig" 1, "calt" 1, "kern" 1 !important;
-  text-rendering: optimizeLegibility !important;
+  font: 800 clamp(18px, 1.5vw, 36px) var(--font-heading, "Typefesse", sans-serif) !important;
   line-height: 1 !important;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35) inset, 0 10px 30px rgba(255, 0, 80, 0.25) !important;
   cursor: pointer !important;
   filter: none !important;
   -webkit-appearance: none !important;
   appearance: none !important;
-}
-.dex-sidebar .dex-license-controls .copy-btn .copy-text,
-.dex-sidebar .dex-license-controls .usage-btn,
-.dex-sidebar #downloads .btn-audio > span,
-.dex-sidebar #downloads .btn-video > span,
-.dex-sidebar #downloads .btn-recording-index > span,
-body.dx-entry-page .dex-sidebar .dex-file-info .file-info-tabs button {
-  font-family: "Stretch Pro", sans-serif !important;
-  font-variant-ligatures: common-ligatures discretionary-ligatures contextual !important;
-  font-feature-settings: "liga" 1, "clig" 1, "dlig" 1, "calt" 1, "kern" 1 !important;
-  text-rendering: optimizeLegibility !important;
 }
 .dex-sidebar #downloads .btn-audio,
 .dex-sidebar #downloads .btn-video {
@@ -1766,12 +1720,12 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
     "instruments": [
       "<span class=\"person-text\" data-person-linkable=\"false\">Prepared Floor Tom</span>"
     ],
-    "instrumentLinksEnabled": false,
+    "instrumentLinksEnabled": true,
     "linksByPerson": {
-      "tim feeney": [
+      "cameron church": [
         {
           "label": "website",
-          "href": "https://timfeeney.com/"
+          "href": "https://cameronchurch.com/"
         }
       ],
       "sebastian suarez-solis": [
@@ -1780,10 +1734,10 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
           "href": "https://cbassuarez.com/"
         }
       ],
-      "cameron church": [
+      "tim feeney": [
         {
           "label": "website",
-          "href": "https://cameronchurch.com/"
+          "href": "https://timfeeney.com/"
         }
       ]
     },
@@ -1803,12 +1757,12 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
   },
   "fileSpecs": {
     "bitDepth": 24,
-    "sampleRate": 48000,
     "channels": "stereo",
+    "sampleRate": 48000,
     "staticSizes": {
-      "A": "",
-      "B": "",
-      "C": "",
+      "A": "7.7 GB",
+      "B": "7.7 GB",
+      "C": "7.8 GB",
       "D": "",
       "E": "",
       "X": ""
@@ -1837,11 +1791,11 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
               "mediaType": "audio",
               "files": [
                 {
-                  "fileId": "tim-feeney-a-001",
-                  "label": "A.1 (0:00 - 30:28)\n4K  |  1080p  |  ste",
-                  "filename": "001.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-a-001-stereo",
+                  "label": "A.1 (0:00 - 30:28) 4K | 1080p | ste",
+                  "filename": "001-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 }
               ]
             },
@@ -1849,11 +1803,18 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
               "mediaType": "video",
               "files": [
                 {
-                  "fileId": "tim-feeney-a-001",
-                  "label": "A.1 (0:00 - 30:28)\n4K  |  1080p  |  ste",
-                  "filename": "001.mov",
+                  "fileId": "tim-feeney-a-001-4k",
+                  "label": "A.1 (0:00 - 30:28) 4K | 1080p | ste",
+                  "filename": "001-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
+                },
+                {
+                  "fileId": "tim-feeney-a-001-1080p",
+                  "label": "A.1 (0:00 - 30:28) 4K | 1080p | ste",
+                  "filename": "001-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
                 }
               ]
             }
@@ -1866,53 +1827,53 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
               "mediaType": "audio",
               "files": [
                 {
-                  "fileId": "tim-feeney-b-001",
-                  "label": "B.1 (0:00 - 4:46)\n4K  |  1080p  |  ste",
-                  "filename": "001.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-b-001-stereo",
+                  "label": "B.1 (0:00 - 4:46) 4K | 1080p | ste",
+                  "filename": "001-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-b-002",
-                  "label": "B.2 (4:46 - 11:08)\n4K  |  1080p  |  ste",
-                  "filename": "002.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-b-002-stereo",
+                  "label": "B.2 (4:46 - 11:08) 4K | 1080p | ste",
+                  "filename": "002-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-b-003",
-                  "label": "B.3 (11:08 - 16:16)\n4K  |  1080p  |  ste",
-                  "filename": "003.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-b-003-stereo",
+                  "label": "B.3 (11:08 - 16:16) 4K | 1080p | ste",
+                  "filename": "003-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-b-004",
-                  "label": "B.4 (16:16 - 19:14)\n4K  |  1080p  |  ste",
-                  "filename": "004.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-b-004-stereo",
+                  "label": "B.4 (16:16 - 19:14) 4K | 1080p | ste",
+                  "filename": "004-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-b-005",
-                  "label": "B.5 (19:14 - 22:03)\n4K  |  1080p  |  ste",
-                  "filename": "005.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-b-005-stereo",
+                  "label": "B.5 (19:14 - 22:03) 4K | 1080p | ste",
+                  "filename": "005-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-b-006",
-                  "label": "B.6 (22:03 - 25:35)\n4K  |  1080p  |  ste",
-                  "filename": "006.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-b-006-stereo",
+                  "label": "B.6 (22:03 - 25:35) 4K | 1080p | ste",
+                  "filename": "006-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-b-007",
-                  "label": "B.7 (25:35 - 30:28)\n4K  |  1080p  |  ste",
-                  "filename": "007.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-b-007-stereo",
+                  "label": "B.7 (25:35 - 30:28) 4K | 1080p | ste",
+                  "filename": "007-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 }
               ]
             },
@@ -1920,53 +1881,102 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
               "mediaType": "video",
               "files": [
                 {
-                  "fileId": "tim-feeney-b-001",
-                  "label": "B.1 (0:00 - 4:46)\n4K  |  1080p  |  ste",
-                  "filename": "001.mov",
+                  "fileId": "tim-feeney-b-001-4k",
+                  "label": "B.1 (0:00 - 4:46) 4K | 1080p | ste",
+                  "filename": "001-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-b-002",
-                  "label": "B.2 (4:46 - 11:08)\n4K  |  1080p  |  ste",
-                  "filename": "002.mov",
+                  "fileId": "tim-feeney-b-002-4k",
+                  "label": "B.2 (4:46 - 11:08) 4K | 1080p | ste",
+                  "filename": "002-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-b-003",
-                  "label": "B.3 (11:08 - 16:16)\n4K  |  1080p  |  ste",
-                  "filename": "003.mov",
+                  "fileId": "tim-feeney-b-003-4k",
+                  "label": "B.3 (11:08 - 16:16) 4K | 1080p | ste",
+                  "filename": "003-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-b-004",
-                  "label": "B.4 (16:16 - 19:14)\n4K  |  1080p  |  ste",
-                  "filename": "004.mov",
+                  "fileId": "tim-feeney-b-004-4k",
+                  "label": "B.4 (16:16 - 19:14) 4K | 1080p | ste",
+                  "filename": "004-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-b-005",
-                  "label": "B.5 (19:14 - 22:03)\n4K  |  1080p  |  ste",
-                  "filename": "005.mov",
+                  "fileId": "tim-feeney-b-005-4k",
+                  "label": "B.5 (19:14 - 22:03) 4K | 1080p | ste",
+                  "filename": "005-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-b-006",
-                  "label": "B.6 (22:03 - 25:35)\n4K  |  1080p  |  ste",
-                  "filename": "006.mov",
+                  "fileId": "tim-feeney-b-006-4k",
+                  "label": "B.6 (22:03 - 25:35) 4K | 1080p | ste",
+                  "filename": "006-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-b-007",
-                  "label": "B.7 (25:35 - 30:28)\n4K  |  1080p  |  ste",
-                  "filename": "007.mov",
+                  "fileId": "tim-feeney-b-007-4k",
+                  "label": "B.7 (25:35 - 30:28) 4K | 1080p | ste",
+                  "filename": "007-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
+                },
+                {
+                  "fileId": "tim-feeney-b-001-1080p",
+                  "label": "B.1 (0:00 - 4:46) 4K | 1080p | ste",
+                  "filename": "001-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-b-002-1080p",
+                  "label": "B.2 (4:46 - 11:08) 4K | 1080p | ste",
+                  "filename": "002-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-b-003-1080p",
+                  "label": "B.3 (11:08 - 16:16) 4K | 1080p | ste",
+                  "filename": "003-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-b-004-1080p",
+                  "label": "B.4 (16:16 - 19:14) 4K | 1080p | ste",
+                  "filename": "004-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-b-005-1080p",
+                  "label": "B.5 (19:14 - 22:03) 4K | 1080p | ste",
+                  "filename": "005-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-b-006-1080p",
+                  "label": "B.6 (22:03 - 25:35) 4K | 1080p | ste",
+                  "filename": "006-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-b-007-1080p",
+                  "label": "B.7 (25:35 - 30:28) 4K | 1080p | ste",
+                  "filename": "007-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
                 }
               ]
             }
@@ -1979,256 +1989,256 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
               "mediaType": "audio",
               "files": [
                 {
-                  "fileId": "tim-feeney-c-001",
-                  "label": "C.1 (0:00 - 1:00)\n4K  |  1080p  |  ste",
-                  "filename": "001.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-001-stereo",
+                  "label": "C.1 (0:00 - 1:00) 4K | 1080p | ste",
+                  "filename": "001-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-002",
-                  "label": "C.2 (1:00 - 1:26)\n4K  |  1080p  |  ste",
-                  "filename": "002.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-002-stereo",
+                  "label": "C.2 (1:00 - 1:26) 4K | 1080p | ste",
+                  "filename": "002-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-003",
-                  "label": "C.3 (1:26 - 2:07)\n4K  |  1080p  |  ste",
-                  "filename": "003.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-003-stereo",
+                  "label": "C.3 (1:26 - 2:07) 4K | 1080p | ste",
+                  "filename": "003-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-004",
-                  "label": "C.4 (2:07 - 2:55)\n4K  |  1080p  |  ste",
-                  "filename": "004.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-004-stereo",
+                  "label": "C.4 (2:07 - 2:55) 4K | 1080p | ste",
+                  "filename": "004-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-005",
-                  "label": "C.5 (2:55 - 3:33)\n4K  |  1080p  |  ste",
-                  "filename": "005.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-005-stereo",
+                  "label": "C.5 (2:55 - 3:33) 4K | 1080p | ste",
+                  "filename": "005-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-006",
-                  "label": "C.6 (3:33 - 4:46)\n4K  |  1080p  |  ste",
-                  "filename": "006.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-006-stereo",
+                  "label": "C.6 (3:33 - 4:46) 4K | 1080p | ste",
+                  "filename": "006-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-007",
-                  "label": "C.7 (4:46 - 6:10)\n4K  |  1080p  |  ste",
-                  "filename": "007.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-007-stereo",
+                  "label": "C.7 (4:46 - 6:10) 4K | 1080p | ste",
+                  "filename": "007-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-008",
-                  "label": "C.8 (6:10 - 7:27)\n4K  |  1080p  |  ste",
-                  "filename": "008.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-008-stereo",
+                  "label": "C.8 (6:10 - 7:27) 4K | 1080p | ste",
+                  "filename": "008-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-009",
-                  "label": "C.9 (7:27 - 8:59)\n4K  |  1080p  |  ste",
-                  "filename": "009.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-009-stereo",
+                  "label": "C.9 (7:27 - 8:59) 4K | 1080p | ste",
+                  "filename": "009-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-010",
-                  "label": "C.10 (8:59 - 9:57)\n4K  |  1080p  |  ste",
-                  "filename": "010.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-010-stereo",
+                  "label": "C.10 (8:59 - 9:57) 4K | 1080p | ste",
+                  "filename": "010-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-011",
-                  "label": "C.11 (9:57 - 10:38)\n4K  |  1080p  |  ste",
-                  "filename": "011.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-011-stereo",
+                  "label": "C.11 (9:57 - 10:38) 4K | 1080p | ste",
+                  "filename": "011-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-012",
-                  "label": "C.12 (10:38 - 11:08)\n4K  |  1080p  |  ste",
-                  "filename": "012.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-012-stereo",
+                  "label": "C.12 (10:38 - 11:08) 4K | 1080p | ste",
+                  "filename": "012-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-013",
-                  "label": "C.13 (11:08 - 11:43)\n4K  |  1080p  |  ste",
-                  "filename": "013.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-013-stereo",
+                  "label": "C.13 (11:08 - 11:43) 4K | 1080p | ste",
+                  "filename": "013-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-014",
-                  "label": "C.14 (11:43 - 12:36)\n4K  |  1080p  |  ste",
-                  "filename": "014.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-014-stereo",
+                  "label": "C.14 (11:43 - 12:36) 4K | 1080p | ste",
+                  "filename": "014-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-015",
-                  "label": "C.15 (12:36 - 13:16)\n4K  |  1080p  |  ste",
-                  "filename": "015.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-015-stereo",
+                  "label": "C.15 (12:36 - 13:16) 4K | 1080p | ste",
+                  "filename": "015-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-016",
-                  "label": "C.16 (13:16 - 13:52)\n4K  |  1080p  |  ste",
-                  "filename": "016.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-016-stereo",
+                  "label": "C.16 (13:16 - 13:52) 4K | 1080p | ste",
+                  "filename": "016-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-017",
-                  "label": "C.17 (13:52 - 14:49)\n4K  |  1080p  |  ste",
-                  "filename": "017.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-017-stereo",
+                  "label": "C.17 (13:52 - 14:49) 4K | 1080p | ste",
+                  "filename": "017-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-018",
-                  "label": "C.18 (14:49 - 15:14)\n4K  |  1080p  |  ste",
-                  "filename": "018.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-018-stereo",
+                  "label": "C.18 (14:49 - 15:14) 4K | 1080p | ste",
+                  "filename": "018-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-019",
-                  "label": "C.19 (15:14 - 15:46)\n4K  |  1080p  |  ste",
-                  "filename": "019.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-019-stereo",
+                  "label": "C.19 (15:14 - 15:46) 4K | 1080p | ste",
+                  "filename": "019-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-020",
-                  "label": "C.20 (15:46 - 16:16)\n4K  |  1080p  |  ste",
-                  "filename": "020.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-020-stereo",
+                  "label": "C.20 (15:46 - 16:16) 4K | 1080p | ste",
+                  "filename": "020-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-021",
-                  "label": "C.21 (16:16 - 16:45)\n4K  |  1080p  |  ste",
-                  "filename": "021.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-021-stereo",
+                  "label": "C.21 (16:16 - 16:45) 4K | 1080p | ste",
+                  "filename": "021-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-022",
-                  "label": "C.22 (16:45 - 17:27)\n4K  |  1080p  |  ste",
-                  "filename": "022.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-022-stereo",
+                  "label": "C.22 (16:45 - 17:27) 4K | 1080p | ste",
+                  "filename": "022-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-023",
-                  "label": "C.23 (17:27 - 18:39)\n4K  |  1080p  |  ste",
-                  "filename": "023.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-023-stereo",
+                  "label": "C.23 (17:27 - 18:39) 4K | 1080p | ste",
+                  "filename": "023-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-024",
-                  "label": "C.24 (18:39 - 19:14)\n4K  |  1080p  |  ste",
-                  "filename": "024.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-024-stereo",
+                  "label": "C.24 (18:39 - 19:14) 4K | 1080p | ste",
+                  "filename": "024-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-025",
-                  "label": "C.25 (19:14 - 20:24)\n4K  |  1080p  |  ste",
-                  "filename": "025.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-025-stereo",
+                  "label": "C.25 (19:14 - 20:24) 4K | 1080p | ste",
+                  "filename": "025-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-026",
-                  "label": "C.26 (20:24 - 21:06)\n4K  |  1080p  |  ste",
-                  "filename": "026.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-026-stereo",
+                  "label": "C.26 (20:24 - 21:06) 4K | 1080p | ste",
+                  "filename": "026-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-027",
-                  "label": "C.27 (21:06 - 22:03)\n4K  |  1080p  |  ste",
-                  "filename": "027.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-027-stereo",
+                  "label": "C.27 (21:06 - 22:03) 4K | 1080p | ste",
+                  "filename": "027-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-028",
-                  "label": "C.28 (22:03 - 23:20)\n4K  |  1080p  |  ste",
-                  "filename": "028.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-028-stereo",
+                  "label": "C.28 (22:03 - 23:20) 4K | 1080p | ste",
+                  "filename": "028-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-029",
-                  "label": "C.29 (23:20 - 24:24)\n4K  |  1080p  |  ste",
-                  "filename": "029.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-029-stereo",
+                  "label": "C.29 (23:20 - 24:24) 4K | 1080p | ste",
+                  "filename": "029-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-030",
-                  "label": "C.30 (24:24 - 25:06)\n4K  |  1080p  |  ste",
-                  "filename": "030.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-030-stereo",
+                  "label": "C.30 (24:24 - 25:06) 4K | 1080p | ste",
+                  "filename": "030-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-031",
-                  "label": "C.31 (25:06 - 25:35)\n4K  |  1080p  |  ste",
-                  "filename": "031.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-031-stereo",
+                  "label": "C.31 (25:06 - 25:35) 4K | 1080p | ste",
+                  "filename": "031-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-032",
-                  "label": "C.32 (25:35 - 26:37)\n4K  |  1080p  |  ste",
-                  "filename": "032.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-032-stereo",
+                  "label": "C.32 (25:35 - 26:37) 4K | 1080p | ste",
+                  "filename": "032-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-033",
-                  "label": "C.33 (26:37 - 27:24)\n4K  |  1080p  |  ste",
-                  "filename": "033.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-033-stereo",
+                  "label": "C.33 (26:37 - 27:24) 4K | 1080p | ste",
+                  "filename": "033-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-034",
-                  "label": "C.34 (27:24 - 28:31)\n4K  |  1080p  |  ste",
-                  "filename": "034.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-034-stereo",
+                  "label": "C.34 (27:24 - 28:31) 4K | 1080p | ste",
+                  "filename": "034-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-035",
-                  "label": "C.35 (28:31 - 29:01)\n4K  |  1080p  |  ste",
-                  "filename": "035.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-035-stereo",
+                  "label": "C.35 (28:31 - 29:01) 4K | 1080p | ste",
+                  "filename": "035-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 },
                 {
-                  "fileId": "tim-feeney-c-036",
-                  "label": "C.36 (29:01 - 30:28)\n4K  |  1080p  |  ste",
-                  "filename": "036.mov",
-                  "extension": "mov",
-                  "variantKey": "default-audio"
+                  "fileId": "tim-feeney-c-036-stereo",
+                  "label": "C.36 (29:01 - 30:28) 4K | 1080p | ste",
+                  "filename": "036-stereo.wav",
+                  "extension": "wav",
+                  "variantKey": "stereo"
                 }
               ]
             },
@@ -2236,266 +2246,524 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
               "mediaType": "video",
               "files": [
                 {
-                  "fileId": "tim-feeney-c-001",
-                  "label": "C.1 (0:00 - 1:00)\n4K  |  1080p  |  ste",
-                  "filename": "001.mov",
+                  "fileId": "tim-feeney-c-025-4k",
+                  "label": "C.25 (19:14 - 20:24) 4K | 1080p | ste",
+                  "filename": "025-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-002",
-                  "label": "C.2 (1:00 - 1:26)\n4K  |  1080p  |  ste",
-                  "filename": "002.mov",
+                  "fileId": "tim-feeney-c-026-4k",
+                  "label": "C.26 (20:24 - 21:06) 4K | 1080p | ste",
+                  "filename": "026-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-003",
-                  "label": "C.3 (1:26 - 2:07)\n4K  |  1080p  |  ste",
-                  "filename": "003.mov",
+                  "fileId": "tim-feeney-c-027-4k",
+                  "label": "C.27 (21:06 - 22:03) 4K | 1080p | ste",
+                  "filename": "027-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-004",
-                  "label": "C.4 (2:07 - 2:55)\n4K  |  1080p  |  ste",
-                  "filename": "004.mov",
+                  "fileId": "tim-feeney-c-028-4k",
+                  "label": "C.28 (22:03 - 23:20) 4K | 1080p | ste",
+                  "filename": "028-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-005",
-                  "label": "C.5 (2:55 - 3:33)\n4K  |  1080p  |  ste",
-                  "filename": "005.mov",
+                  "fileId": "tim-feeney-c-029-4k",
+                  "label": "C.29 (23:20 - 24:24) 4K | 1080p | ste",
+                  "filename": "029-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-006",
-                  "label": "C.6 (3:33 - 4:46)\n4K  |  1080p  |  ste",
-                  "filename": "006.mov",
+                  "fileId": "tim-feeney-c-030-4k",
+                  "label": "C.30 (24:24 - 25:06) 4K | 1080p | ste",
+                  "filename": "030-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-007",
-                  "label": "C.7 (4:46 - 6:10)\n4K  |  1080p  |  ste",
-                  "filename": "007.mov",
+                  "fileId": "tim-feeney-c-032-4k",
+                  "label": "C.32 (25:35 - 26:37) 4K | 1080p | ste",
+                  "filename": "032-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-008",
-                  "label": "C.8 (6:10 - 7:27)\n4K  |  1080p  |  ste",
-                  "filename": "008.mov",
+                  "fileId": "tim-feeney-c-033-4k",
+                  "label": "C.33 (26:37 - 27:24) 4K | 1080p | ste",
+                  "filename": "033-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-009",
-                  "label": "C.9 (7:27 - 8:59)\n4K  |  1080p  |  ste",
-                  "filename": "009.mov",
+                  "fileId": "tim-feeney-c-034-4k",
+                  "label": "C.34 (27:24 - 28:31) 4K | 1080p | ste",
+                  "filename": "034-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-010",
-                  "label": "C.10 (8:59 - 9:57)\n4K  |  1080p  |  ste",
-                  "filename": "010.mov",
+                  "fileId": "tim-feeney-c-036-4k",
+                  "label": "C.36 (29:01 - 30:28) 4K | 1080p | ste",
+                  "filename": "036-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-011",
-                  "label": "C.11 (9:57 - 10:38)\n4K  |  1080p  |  ste",
-                  "filename": "011.mov",
+                  "fileId": "tim-feeney-c-001-4k",
+                  "label": "C.1 (0:00 - 1:00) 4K | 1080p | ste",
+                  "filename": "001-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-012",
-                  "label": "C.12 (10:38 - 11:08)\n4K  |  1080p  |  ste",
-                  "filename": "012.mov",
+                  "fileId": "tim-feeney-c-002-4k",
+                  "label": "C.2 (1:00 - 1:26) 4K | 1080p | ste",
+                  "filename": "002-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-013",
-                  "label": "C.13 (11:08 - 11:43)\n4K  |  1080p  |  ste",
-                  "filename": "013.mov",
+                  "fileId": "tim-feeney-c-003-4k",
+                  "label": "C.3 (1:26 - 2:07) 4K | 1080p | ste",
+                  "filename": "003-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-014",
-                  "label": "C.14 (11:43 - 12:36)\n4K  |  1080p  |  ste",
-                  "filename": "014.mov",
+                  "fileId": "tim-feeney-c-004-4k",
+                  "label": "C.4 (2:07 - 2:55) 4K | 1080p | ste",
+                  "filename": "004-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-015",
-                  "label": "C.15 (12:36 - 13:16)\n4K  |  1080p  |  ste",
-                  "filename": "015.mov",
+                  "fileId": "tim-feeney-c-005-4k",
+                  "label": "C.5 (2:55 - 3:33) 4K | 1080p | ste",
+                  "filename": "005-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-016",
-                  "label": "C.16 (13:16 - 13:52)\n4K  |  1080p  |  ste",
-                  "filename": "016.mov",
+                  "fileId": "tim-feeney-c-006-4k",
+                  "label": "C.6 (3:33 - 4:46) 4K | 1080p | ste",
+                  "filename": "006-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-017",
-                  "label": "C.17 (13:52 - 14:49)\n4K  |  1080p  |  ste",
-                  "filename": "017.mov",
+                  "fileId": "tim-feeney-c-007-4k",
+                  "label": "C.7 (4:46 - 6:10) 4K | 1080p | ste",
+                  "filename": "007-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-018",
-                  "label": "C.18 (14:49 - 15:14)\n4K  |  1080p  |  ste",
-                  "filename": "018.mov",
+                  "fileId": "tim-feeney-c-008-4k",
+                  "label": "C.8 (6:10 - 7:27) 4K | 1080p | ste",
+                  "filename": "008-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-019",
-                  "label": "C.19 (15:14 - 15:46)\n4K  |  1080p  |  ste",
-                  "filename": "019.mov",
+                  "fileId": "tim-feeney-c-009-4k",
+                  "label": "C.9 (7:27 - 8:59) 4K | 1080p | ste",
+                  "filename": "009-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-020",
-                  "label": "C.20 (15:46 - 16:16)\n4K  |  1080p  |  ste",
-                  "filename": "020.mov",
+                  "fileId": "tim-feeney-c-010-4k",
+                  "label": "C.10 (8:59 - 9:57) 4K | 1080p | ste",
+                  "filename": "010-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-021",
-                  "label": "C.21 (16:16 - 16:45)\n4K  |  1080p  |  ste",
-                  "filename": "021.mov",
+                  "fileId": "tim-feeney-c-011-4k",
+                  "label": "C.11 (9:57 - 10:38) 4K | 1080p | ste",
+                  "filename": "011-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-022",
-                  "label": "C.22 (16:45 - 17:27)\n4K  |  1080p  |  ste",
-                  "filename": "022.mov",
+                  "fileId": "tim-feeney-c-012-4k",
+                  "label": "C.12 (10:38 - 11:08) 4K | 1080p | ste",
+                  "filename": "012-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-023",
-                  "label": "C.23 (17:27 - 18:39)\n4K  |  1080p  |  ste",
-                  "filename": "023.mov",
+                  "fileId": "tim-feeney-c-013-4k",
+                  "label": "C.13 (11:08 - 11:43) 4K | 1080p | ste",
+                  "filename": "013-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-024",
-                  "label": "C.24 (18:39 - 19:14)\n4K  |  1080p  |  ste",
-                  "filename": "024.mov",
+                  "fileId": "tim-feeney-c-014-4k",
+                  "label": "C.14 (11:43 - 12:36) 4K | 1080p | ste",
+                  "filename": "014-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-025",
-                  "label": "C.25 (19:14 - 20:24)\n4K  |  1080p  |  ste",
-                  "filename": "025.mov",
+                  "fileId": "tim-feeney-c-015-4k",
+                  "label": "C.15 (12:36 - 13:16) 4K | 1080p | ste",
+                  "filename": "015-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-026",
-                  "label": "C.26 (20:24 - 21:06)\n4K  |  1080p  |  ste",
-                  "filename": "026.mov",
+                  "fileId": "tim-feeney-c-016-4k",
+                  "label": "C.16 (13:16 - 13:52) 4K | 1080p | ste",
+                  "filename": "016-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-027",
-                  "label": "C.27 (21:06 - 22:03)\n4K  |  1080p  |  ste",
-                  "filename": "027.mov",
+                  "fileId": "tim-feeney-c-017-4k",
+                  "label": "C.17 (13:52 - 14:49) 4K | 1080p | ste",
+                  "filename": "017-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-028",
-                  "label": "C.28 (22:03 - 23:20)\n4K  |  1080p  |  ste",
-                  "filename": "028.mov",
+                  "fileId": "tim-feeney-c-018-4k",
+                  "label": "C.18 (14:49 - 15:14) 4K | 1080p | ste",
+                  "filename": "018-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-029",
-                  "label": "C.29 (23:20 - 24:24)\n4K  |  1080p  |  ste",
-                  "filename": "029.mov",
+                  "fileId": "tim-feeney-c-019-4k",
+                  "label": "C.19 (15:14 - 15:46) 4K | 1080p | ste",
+                  "filename": "019-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-030",
-                  "label": "C.30 (24:24 - 25:06)\n4K  |  1080p  |  ste",
-                  "filename": "030.mov",
+                  "fileId": "tim-feeney-c-020-4k",
+                  "label": "C.20 (15:46 - 16:16) 4K | 1080p | ste",
+                  "filename": "020-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-031",
-                  "label": "C.31 (25:06 - 25:35)\n4K  |  1080p  |  ste",
-                  "filename": "031.mov",
+                  "fileId": "tim-feeney-c-021-4k",
+                  "label": "C.21 (16:16 - 16:45) 4K | 1080p | ste",
+                  "filename": "021-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-032",
-                  "label": "C.32 (25:35 - 26:37)\n4K  |  1080p  |  ste",
-                  "filename": "032.mov",
+                  "fileId": "tim-feeney-c-022-4k",
+                  "label": "C.22 (16:45 - 17:27) 4K | 1080p | ste",
+                  "filename": "022-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-033",
-                  "label": "C.33 (26:37 - 27:24)\n4K  |  1080p  |  ste",
-                  "filename": "033.mov",
+                  "fileId": "tim-feeney-c-023-4k",
+                  "label": "C.23 (17:27 - 18:39) 4K | 1080p | ste",
+                  "filename": "023-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-034",
-                  "label": "C.34 (27:24 - 28:31)\n4K  |  1080p  |  ste",
-                  "filename": "034.mov",
+                  "fileId": "tim-feeney-c-024-4k",
+                  "label": "C.24 (18:39 - 19:14) 4K | 1080p | ste",
+                  "filename": "024-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-035",
-                  "label": "C.35 (28:31 - 29:01)\n4K  |  1080p  |  ste",
-                  "filename": "035.mov",
+                  "fileId": "tim-feeney-c-031-4k",
+                  "label": "C.31 (25:06 - 25:35) 4K | 1080p | ste",
+                  "filename": "031-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
                 },
                 {
-                  "fileId": "tim-feeney-c-036",
-                  "label": "C.36 (29:01 - 30:28)\n4K  |  1080p  |  ste",
-                  "filename": "036.mov",
+                  "fileId": "tim-feeney-c-035-4k",
+                  "label": "C.35 (28:31 - 29:01) 4K | 1080p | ste",
+                  "filename": "035-4k.mov",
                   "extension": "mov",
-                  "variantKey": "default-video"
+                  "variantKey": "4k"
+                },
+                {
+                  "fileId": "tim-feeney-c-001-1080p",
+                  "label": "C.1 (0:00 - 1:00) 4K | 1080p | ste",
+                  "filename": "001-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-002-1080p",
+                  "label": "C.2 (1:00 - 1:26) 4K | 1080p | ste",
+                  "filename": "002-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-003-1080p",
+                  "label": "C.3 (1:26 - 2:07) 4K | 1080p | ste",
+                  "filename": "003-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-004-1080p",
+                  "label": "C.4 (2:07 - 2:55) 4K | 1080p | ste",
+                  "filename": "004-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-005-1080p",
+                  "label": "C.5 (2:55 - 3:33) 4K | 1080p | ste",
+                  "filename": "005-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-006-1080p",
+                  "label": "C.6 (3:33 - 4:46) 4K | 1080p | ste",
+                  "filename": "006-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-007-1080p",
+                  "label": "C.7 (4:46 - 6:10) 4K | 1080p | ste",
+                  "filename": "007-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-008-1080p",
+                  "label": "C.8 (6:10 - 7:27) 4K | 1080p | ste",
+                  "filename": "008-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-009-1080p",
+                  "label": "C.9 (7:27 - 8:59) 4K | 1080p | ste",
+                  "filename": "009-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-010-1080p",
+                  "label": "C.10 (8:59 - 9:57) 4K | 1080p | ste",
+                  "filename": "010-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-011-1080p",
+                  "label": "C.11 (9:57 - 10:38) 4K | 1080p | ste",
+                  "filename": "011-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-012-1080p",
+                  "label": "C.12 (10:38 - 11:08) 4K | 1080p | ste",
+                  "filename": "012-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-013-1080p",
+                  "label": "C.13 (11:08 - 11:43) 4K | 1080p | ste",
+                  "filename": "013-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-014-1080p",
+                  "label": "C.14 (11:43 - 12:36) 4K | 1080p | ste",
+                  "filename": "014-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-015-1080p",
+                  "label": "C.15 (12:36 - 13:16) 4K | 1080p | ste",
+                  "filename": "015-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-016-1080p",
+                  "label": "C.16 (13:16 - 13:52) 4K | 1080p | ste",
+                  "filename": "016-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-017-1080p",
+                  "label": "C.17 (13:52 - 14:49) 4K | 1080p | ste",
+                  "filename": "017-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-018-1080p",
+                  "label": "C.18 (14:49 - 15:14) 4K | 1080p | ste",
+                  "filename": "018-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-019-1080p",
+                  "label": "C.19 (15:14 - 15:46) 4K | 1080p | ste",
+                  "filename": "019-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-020-1080p",
+                  "label": "C.20 (15:46 - 16:16) 4K | 1080p | ste",
+                  "filename": "020-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-021-1080p",
+                  "label": "C.21 (16:16 - 16:45) 4K | 1080p | ste",
+                  "filename": "021-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-022-1080p",
+                  "label": "C.22 (16:45 - 17:27) 4K | 1080p | ste",
+                  "filename": "022-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-023-1080p",
+                  "label": "C.23 (17:27 - 18:39) 4K | 1080p | ste",
+                  "filename": "023-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-024-1080p",
+                  "label": "C.24 (18:39 - 19:14) 4K | 1080p | ste",
+                  "filename": "024-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-025-1080p",
+                  "label": "C.25 (19:14 - 20:24) 4K | 1080p | ste",
+                  "filename": "025-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-026-1080p",
+                  "label": "C.26 (20:24 - 21:06) 4K | 1080p | ste",
+                  "filename": "026-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-027-1080p",
+                  "label": "C.27 (21:06 - 22:03) 4K | 1080p | ste",
+                  "filename": "027-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-028-1080p",
+                  "label": "C.28 (22:03 - 23:20) 4K | 1080p | ste",
+                  "filename": "028-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-029-1080p",
+                  "label": "C.29 (23:20 - 24:24) 4K | 1080p | ste",
+                  "filename": "029-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-030-1080p",
+                  "label": "C.30 (24:24 - 25:06) 4K | 1080p | ste",
+                  "filename": "030-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-031-1080p",
+                  "label": "C.31 (25:06 - 25:35) 4K | 1080p | ste",
+                  "filename": "031-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-032-1080p",
+                  "label": "C.32 (25:35 - 26:37) 4K | 1080p | ste",
+                  "filename": "032-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-033-1080p",
+                  "label": "C.33 (26:37 - 27:24) 4K | 1080p | ste",
+                  "filename": "033-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-034-1080p",
+                  "label": "C.34 (27:24 - 28:31) 4K | 1080p | ste",
+                  "filename": "034-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-035-1080p",
+                  "label": "C.35 (28:31 - 29:01) 4K | 1080p | ste",
+                  "filename": "035-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
+                },
+                {
+                  "fileId": "tim-feeney-c-036-1080p",
+                  "label": "C.36 (29:01 - 30:28) 4K | 1080p | ste",
+                  "filename": "036-1080p.mov",
+                  "extension": "mov",
+                  "variantKey": "1080p"
                 }
               ]
             }
           ]
         }
       ]
-    }
+    },
+    "selectedBuckets": [
+      "A",
+      "B",
+      "C"
+    ]
   }
 }
 </script><script id="dex-sidebar-page-config-bridge">window.dexSidebarPageConfig = JSON.parse(document.getElementById('dex-sidebar-page-config').textContent || '{}');</script>
+
 
 
 <script id="dex-manifest" type="application/json">
@@ -2647,11 +2915,13 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
   }, true);
 })();
 </script>
-<h1 class="dex-entry-page-title" data-dex-entry-page-title="">prepared floor tom, tim feeney</h1>
+<h1 class="dex-entry-page-title" data-dex-entry-page-title="" data-dx-heading-randomize="false">prepared floor tom, tim feeney</h1>
 <div class="dex-entry-subtitle" data-dex-entry-subtitle="">
-  <span class="dex-entry-subtitle-item"><span class="dex-entry-subtitle-label">published</span><time class="dex-entry-subtitle-value" datetime="2026-02-28T07:59:33.290Z">feb 28, 2026</time></span>
-  <span class="dex-entry-subtitle-item"><span class="dex-entry-subtitle-label">updated</span><time class="dex-entry-subtitle-value" datetime="2026-02-28T15:55:55.819Z">feb 28, 2026</time></span>
+  <span class="dex-entry-subtitle-item"><span class="dex-entry-subtitle-label">published</span><time class="dex-entry-subtitle-value" datetime="2026-06-29T00:09:18.752Z">jun 29, 2026</time></span>
+  <span class="dex-entry-subtitle-item"><span class="dex-entry-subtitle-label">updated</span><time class="dex-entry-subtitle-value" datetime="2026-06-29T00:09:18.752Z">jun 29, 2026</time></span>
   <span class="dex-entry-subtitle-item"><span class="dex-entry-subtitle-label">location</span><span class="dex-entry-subtitle-value">LA Artcore</span></span>
+  <span class="dex-entry-subtitle-item dex-entry-subtitle-item--meta"><span class="dex-entry-subtitle-value">🏷 Tags: ambient, live, studio, experimental</span></span>
+  <span class="dex-entry-subtitle-item dex-entry-subtitle-item--meta"><span class="dex-entry-subtitle-value">🎚 24-bit 🔊 48000 Hz 🎧 stereo</span></span>
 </div>
 </div>
 <!-- DEX:TITLE_END -->
@@ -2659,6 +2929,7 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
 <div class="dex-entry-layout" aria-busy="true" data-dx-fetch-state="loading" data-dx-entry-fetch-target="layout">
 <div class="dex-entry-main">
 <!-- DEX:VIDEO_START -->
+
 <div class="dex-video-shell" data-dx-entry-fetch-target="media">
 <div class="dex-video" data-video-url="https://www.youtube.com/watch?v=DVqLc0_Ezhc">
   <div class="dex-video-aspect">
@@ -2666,6 +2937,7 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
   </div>
 </div>
 </div>
+
 <!-- DEX:VIDEO_END -->
 <!-- DEX:DESC_START -->
 <div class="dex-entry-desc-scroll" data-dex-scroll-dot="y" data-dx-entry-fetch-target="description">
@@ -2958,382 +3230,7 @@ Visit Tim Feeney’s website at timfeeney.com</p>
         
       </main>
       
-        <footer class="sections" id="footer-sections" data-footer-sections="">
-  
-  
-  
-  
-  
-  
-    
-    
-
-
-  
-  
-
-
-
-
-
-
-
-
-
-
-<section data-test="page-section" data-section-theme="white" class="page-section full-bleed-section layout-engine-section background-width--full-bleed content-width--wide horizontal-alignment--center vertical-alignment--bottom white dex-footer-section" data-controller="SectionWrapperController">
-  <div class="section-border">
-    <div class="section-background">
-    
-      
-    
-    </div>
-  </div>
-  <div class="content-wrapper">
-    <div class="content">
-    
-      <div data-fluid-engine="true"><style>
-
-.fe-6885e8c88608423796a795d0 {
-  --grid-gutter: calc(var(--sqs-mobile-site-gutter, 6vw) - 0.0px);
-  --cell-max-width: calc( ( var(--sqs-site-max-width, 1500px) - (0.0px * (8 - 1)) ) / 8 );
-
-  display: grid;
-  position: relative;
-  grid-area: 1/1/-1/-1;
-  grid-template-rows: repeat(10,minmax(24px, auto));
-  grid-template-columns:
-    minmax(var(--grid-gutter), 1fr)
-    repeat(8, minmax(0, var(--cell-max-width)))
-    minmax(var(--grid-gutter), 1fr);
-  row-gap: 0.0px;
-  column-gap: 0.0px;
-  overflow-x: hidden;
-  overflow-x: clip;
-}
-
-@media (min-width: 768px) {
-  .background-width--inset .fe-6885e8c88608423796a795d0 {
-    --inset-padding: calc(var(--sqs-site-gutter) * 2);
-  }
-
-  .fe-6885e8c88608423796a795d0 {
-    --grid-gutter: calc(var(--sqs-site-gutter, 4vw) - 0.0px);
-    --cell-max-width: calc( ( var(--sqs-site-max-width, 1500px) - (0.0px * (24 - 1)) ) / 24 );
-    --inset-padding: 0vw;
-
-    --row-height-scaling-factor: 0.0215;
-    --container-width: min(var(--sqs-site-max-width, 1500px), calc(100vw - var(--sqs-site-gutter, 4vw) * 2 - var(--inset-padding) ));
-
-    grid-template-rows: repeat(6,minmax(calc(var(--container-width) * var(--row-height-scaling-factor)), auto));
-    grid-template-columns:
-      minmax(var(--grid-gutter), 1fr)
-      repeat(24, minmax(0, var(--cell-max-width)))
-      minmax(var(--grid-gutter), 1fr);
-  }
-}
-
-
-  .fe-block-08599fb9d03cdc350247 {
-    grid-area: 2/2/11/10;
-    z-index: 3;
-
-    @media (max-width: 767px) {
-      
-        
-      
-      
-    }
-  }
-
-  .fe-block-08599fb9d03cdc350247 .sqs-block {
-    justify-content: flex-start;
-  }
-
-  .fe-block-08599fb9d03cdc350247 .sqs-block-alignment-wrapper {
-    align-items: flex-start;
-  }
-
-  @media (min-width: 768px) {
-    .fe-block-08599fb9d03cdc350247 {
-      grid-area: 1/2/6/26;
-      z-index: 3;
-
-      
-        
-      
-
-      
-    }
-
-    .fe-block-08599fb9d03cdc350247 .sqs-block {
-      justify-content: center;
-    }
-
-    .fe-block-08599fb9d03cdc350247 .sqs-block-alignment-wrapper {
-      align-items: center;
-    }
-  }
-
-</style><div class="fluid-engine fe-6885e8c88608423796a795d0"><div class="fe-block fe-block-08599fb9d03cdc350247"><div class="sqs-block website-component-block sqs-block-website-component sqs-block-code code-block" data-block-type="1337" data-sqsp-block="code" id="block-08599fb9d03cdc350247"><div class="sqs-block-content"><div class="sqs-code-container">
-  
-    <!-- File: footer.html (surface-aware + horizontal Candid seal, no card) -->
-
-<!-- Load Font Awesome Free for social icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<style>
-  /*───────────────────────────────────────────────────────────*/
-  /* Dex Surface-Aware Footer (matches board glass)            */
-
-  :root{
-    --space-3:   1rem;
-    --space-4:   1.5rem;
-    --radius-md: 0.5rem;
-    --shadow-md: 0 8px 24px rgba(0,0,0,.12);
-    --font-body: 'Courier New', monospace;
-    --dex-accent:#ff1910;
-    --ease:      .3s ease-out;
-
-    --badge-size:   2.5rem;
-    --badge-radius: 0.75rem;
-
-    /* Glass tokens (same as board block) */
-    --liquid-bg:     rgba(255,255,255,.18);
-    --liquid-border: rgba(255,255,255,.35);
-
-    /* Seal sizing */
-    --seal-height: 4.5rem;
-
-    /* Footer text color (set per-surface below) */
-    --dex-footer-text: #fff;
-  }
-
-  /* Footer shell */
-  .dex-footer{
-    background: var(--liquid-bg);
-    border: 1px solid var(--liquid-border);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-md);
-    padding: var(--space-4) var(--space-3);
-    color: var(--dex-footer-text);
-    font-family: var(--font-body);
-  }
-
-  .footer-grid{
-    display:grid;
-    grid-template-columns: auto 1fr auto auto; /* logo | attribution | seal | socials+nav */
-    align-items:center;                        /* vertical centering */
-    gap:var(--space-4);
-  }
-
-  /* Logo */
-  .footer-logo-column{ justify-self:start; text-align:center; }
-  .footer-logo{ display:grid; }
-  .footer-logo img{ width:8rem; height:auto; display:none; margin:0; }
-
-  /* Attribution */
-  .footer-attribution{
-    justify-self:center; text-align:center;
-    font-size:.85rem; line-height:1.2;
-  }
-
-  /* Seal: its own column, image only (no card chrome) */
-  .footer-seal-column{ justify-self:center; }
-  .candid-seal{
-  margin-right: calc(var(--space-4) + 5.5rem);
-    display:inline-block;
-    padding:0; background:none; border:0; box-shadow:none;
-    line-height:0; text-decoration:none; transition:none;
-  }
-  .candid-seal img{ height:var(--seal-height); width:auto; display:block; }
-
-  /* Links column */
-  .footer-links-column{
-    justify-self:end; align-self:stretch;
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:var(--space-3);
-  }
-
-  /* Socials */
-  .footer-social{ display:flex; align-items:center; gap:var(--space-3); }
-  .footer-social:hover a:not(:hover):not(:focus-visible){ opacity:.72; }
-  .footer-social a{
-    position:relative;
-    width:var(--badge-size); height:var(--badge-size);
-    display:inline-flex; align-items:center; justify-content:center;
-    border-radius:var(--dx-radius-md, 10px);
-    border:1px solid rgba(255,255,255,.42);
-    background:linear-gradient(120deg, rgba(221,230,240,.34) 0%, rgba(191,208,224,.25) 55%, rgba(232,210,203,.22) 100%);
-    box-shadow:0 10px 22px rgba(18,22,30,.20), inset 0 1px 0 rgba(255,255,255,.30);
-    color:#191b20;
-    overflow:hidden;
-    isolation:isolate;
-    backdrop-filter:saturate(180%) blur(12px);
-    -webkit-backdrop-filter:saturate(180%) blur(12px);
-    transition:transform .24s cubic-bezier(.22,.8,.24,1), box-shadow .24s cubic-bezier(.22,.8,.24,1), opacity .24s cubic-bezier(.22,.8,.24,1), color .24s cubic-bezier(.22,.8,.24,1);
-  }
-  .footer-social a::before{
-    content:"";
-    position:absolute;
-    inset:-44% -120%;
-    background:linear-gradient(110deg, rgba(255,255,255,0) 35%, rgba(255,255,255,.56) 50%, rgba(255,255,255,0) 65%);
-    transform:translateX(-130%) skewX(-18deg);
-    opacity:0;
-    pointer-events:none;
-    z-index:0;
-  }
-  .footer-social a::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    border-radius:inherit;
-    pointer-events:none;
-    opacity:0;
-    z-index:2;
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,.72), 0 0 0 2px rgba(255,108,42,.52);
-    transition:opacity .24s cubic-bezier(.22,.8,.24,1);
-  }
-  .footer-social a svg{
-    width:1.52rem;
-    height:1.52rem;
-    fill:currentColor;
-    position:relative;
-    z-index:1;
-    transition:transform .24s cubic-bezier(.22,.8,.24,1), opacity .24s cubic-bezier(.22,.8,.24,1);
-  }
-  .footer-social a:hover,
-  .footer-social a:focus-visible{
-    transform:translateY(-2px);
-    box-shadow:0 14px 28px rgba(18,22,30,.26), inset 0 1px 0 rgba(255,255,255,.42);
-    color:#101218;
-  }
-  .footer-social a:hover::before,
-  .footer-social a:focus-visible::before{
-    opacity:1;
-    animation:dx-social-sheen 700ms cubic-bezier(.22,.8,.24,1) 1 both;
-  }
-  .footer-social a:hover::after,
-  .footer-social a:focus-visible::after{ opacity:1; }
-  .footer-social a:hover svg,
-  .footer-social a:focus-visible svg{ transform:scale(1.08); }
-  .footer-social a:active{ transform:translateY(0) scale(.98); }
-  .footer-social a:focus{ outline:none; }
-
-  @keyframes dx-social-sheen {
-    from { transform:translateX(-130%) skewX(-18deg); }
-    to { transform:translateX(130%) skewX(-18deg); }
-  }
-
-  @media (prefers-reduced-motion: reduce){
-    .footer-social a,
-    .footer-social a svg{
-      transition:color .24s cubic-bezier(.22,.8,.24,1), opacity .24s cubic-bezier(.22,.8,.24,1);
-    }
-    .footer-social a:hover,
-    .footer-social a:focus-visible,
-    .footer-social a:active,
-    .footer-social a:hover svg,
-    .footer-social a:focus-visible svg{
-      transform:none;
-    }
-    .footer-social a:hover::before,
-    .footer-social a:focus-visible::before{
-      opacity:0;
-      animation:none;
-    }
-  }
-
-  /* Nav */
-  .footer-nav{ display:flex; gap:var(--space-3); font-size:.85rem; flex-wrap:wrap; justify-content:center; }
-  .footer-nav a{ color:var(--dex-footer-text); text-decoration:none; transition:color var(--ease); white-space:nowrap; }
-  .footer-nav a:hover{ color:var(--dex-accent); }
-
-  /*──────── Surface control (choose one): data-surface or prefers-color-scheme ───────*/
-  /* 1) Explicit (script sets this): data-surface="dark" | "light" */
-  .dex-footer[data-surface="dark"]  { --dex-footer-text:#fff; }
-  .dex-footer[data-surface="dark"]  .footer-logo .logo--dark { display:block; }
-  .dex-footer[data-surface="light"] { --dex-footer-text:#000; }
-  .dex-footer[data-surface="light"] .footer-logo .logo--light{ display:block; }
-
-  /* 2) Fallback: if no data-surface, follow OS theme */
-  @media (prefers-color-scheme: dark){
-    .dex-footer:not([data-surface]){ --dex-footer-text:#fff; }
-    .dex-footer:not([data-surface]) .footer-logo .logo--dark{ display:block; }
-  }
-  @media (prefers-color-scheme: light){
-    .dex-footer:not([data-surface]){ --dex-footer-text:#000; }
-    .dex-footer:not([data-surface]) .footer-logo .logo--light{ display:block; }
-  }
-
-  /* Responsive */
-  @media (max-width:600px){
-    .footer-grid{
-      grid-template-columns:1fr;
-      justify-items:center; width:100%;
-      max-width: calc(100% - 2 * var(--space-3)); margin:0 auto; gap:var(--space-3);
-    }
-    .footer-logo-column, .footer-attribution, .footer-seal-column, .footer-links-column{
-      justify-self:center; text-align:center;
-    }
-    .footer-links-column{ flex-direction:column; }
-  }
-  
-</style>
-
-<footer class="dex-footer" data-surface="light"><!-- script will set data-surface="dark|light" -->
-  <div class="footer-grid">
-    <!-- Logo (shows the right one based on surface) -->
-    <div class="footer-logo-column">
-      <div class="footer-logo">
-        <!-- DARK surface → white logo -->
-        <img class="logo--dark" src="/assets/img/4471b81e48dd98fdcc7c.png" alt="Dex Footer Logo (white)" loading="lazy" decoding="async">
-        <!-- LIGHT surface → black logo (update URL if needed) -->
-        <img class="logo--light" src="/assets/img/588db8babfe6f8722983.png" alt="Dex Footer Logo (black)" loading="lazy" decoding="async">
-      </div>
-    </div>
-
-    <!-- Two-line copyright attribution -->
-    <div class="footer-attribution">
-      © 2023–2026 DEX CO-OP CORP (EIN 92-3509152)<br>
-      dba Dex Digital Sample Library. All rights reserved.
-    </div>
-
-    <!-- NEW: horizontal Candid (GuideStar) Transparency Seal -->
-    <div class="footer-seal-column">
-      <a class="candid-seal" href="https://app.candid.org/profile/15083758/dex-digital-sample-library-92-3509152" target="_blank" rel="noopener noreferrer" aria-label="View Dex Digital Sample Library's Candid (GuideStar) profile">
-        <img src="https://widgets.guidestar.org/prod/v1/pdp/transparency-seal/15083758/svg" alt="Candid (GuideStar) Transparency Seal">
-      </a>
-    </div>
-
-    <!-- Social badges + nav links -->
-    <div class="footer-links-column">
-      <div class="footer-social">
-        <a href="https://www.youtube.com/dexdsl" aria-label="YouTube" class="youtube">
-          <svg aria-hidden="true" viewBox="0 0 64 64"><use xlink:href="#youtube-unauth-icon"></use></svg>
-        </a>
-        <a href="https://instagram.com/dexdsl" aria-label="Instagram" class="instagram">
-          <svg aria-hidden="true" viewBox="0 0 64 64"><use xlink:href="#instagram-unauth-icon"></use></svg>
-        </a>
-        <a href="https://www.tiktok.com/@dexdsl" aria-label="TikTok" class="tiktok">
-          <svg aria-hidden="true" viewBox="0 0 64 64"><use xlink:href="#tiktok-unauth-icon"></use></svg>
-        </a>
-        <a href="https://twitter.com/dexdsl" aria-label="Twitter" class="twitter">
-          <svg aria-hidden="true" viewBox="0 0 64 64"><use xlink:href="#twitter-unauth-icon"></use></svg>
-        </a>
-      </div>
-      <nav class="footer-nav">
-        <a href="/privacy">Privacy</a>
-        <a href="/contact">Contact</a>
-        <a href="/copyright">Copyright</a>
-      </nav>
-    </div>
-  </div>
-</footer>
-
-<!-- Auto-detect page background and set data-surface="light|dark" -->
+        <!-- Auto-detect page background and set data-surface="light|dark" -->
 
 
   
@@ -3604,428 +3501,4 @@ Visit Tim Feeney’s website at timfeeney.com</p>
   }
 })();
 </script>
-<style id="dx-remove-body-card">
-body.dx-entry-page #siteWrapper,
-body.dx-entry-page .site-wrapper,
-body.dx-entry-page #siteWrapper::before,
-body.dx-entry-page #siteWrapper::after,
-body.dx-entry-page #page,
-body.dx-entry-page #sections,
-body.dx-entry-page .dex-entry-section,
-body.dx-entry-page .dex-entry-section > .section-border,
-body.dx-entry-page .dex-entry-section > .section-border > .section-background,
-body.dx-entry-page .dex-entry-section > .content-wrapper,
-body.dx-entry-page .dex-entry-section > .content-wrapper > .content,
-body.dx-entry-page .dex-footer-section {
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
-}
-</style>
-<script id="dx-remove-body-card-runtime">
-(function () {
-  var selectors = [
-    'body.dx-entry-page #siteWrapper',
-    'body.dx-entry-page .site-wrapper',
-    'body.dx-entry-page #page',
-    'body.dx-entry-page #sections',
-    'body.dx-entry-page .dex-entry-section',
-    'body.dx-entry-page .dex-entry-section > .section-border',
-    'body.dx-entry-page .dex-entry-section > .section-border > .section-background',
-    'body.dx-entry-page .dex-entry-section > .content-wrapper',
-    'body.dx-entry-page .dex-entry-section > .content-wrapper > .content'
-  ];
-  var apply = function () {
-    selectors.forEach(function (selector) {
-      document.querySelectorAll(selector).forEach(function (el) {
-        el.style.setProperty('background', 'transparent', 'important');
-        el.style.setProperty('border', '0', 'important');
-        el.style.setProperty('box-shadow', 'none', 'important');
-        el.style.setProperty('border-radius', '0', 'important');
-      });
-    });
-  };
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', apply, { once: true });
-  } else {
-    apply();
-  }
-  window.addEventListener('load', apply, { once: true });
-})();
-</script>
-<style id="dx-test5-sidebar-padding-final">
-html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-entry-layout .dex-sidebar,
-html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-sidebar {
-  display: flex !important;
-  flex-direction: column !important;
-  align-self: flex-start !important;
-  height: auto !important;
-  max-height: none !important;
-  overflow: visible !important;
-  background: var(--liquid-bg, rgba(255, 255, 255, 0.14)) !important;
-  border: 1px solid var(--liquid-border, rgba(255, 255, 255, 0.32)) !important;
-  border-radius: 10px !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
-  padding-top: clamp(24px, 2.2vw, 36px) !important;
-  padding-right: clamp(18px, 1.6vw, 24px) !important;
-  padding-bottom: clamp(24px, 2.2vw, 36px) !important;
-  padding-left: clamp(24px, 2.2vw, 36px) !important;
-  backdrop-filter: blur(var(--liquid-blur, 28px)) saturate(180%) contrast(1.12) brightness(1.06) !important;
-  -webkit-backdrop-filter: blur(var(--liquid-blur, 28px)) saturate(180%) contrast(1.12) brightness(1.06) !important;
-}
-body.dx-entry-page .dex-entry-layout .dex-sidebar > section,
-body.dx-entry-page .dex-sidebar > section {
-  border-radius: 10px !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
-  padding-top: clamp(18px, 1.45vw, 24px) !important;
-  padding-right: clamp(18px, 1.6vw, 26px) !important;
-  padding-bottom: clamp(18px, 1.45vw, 24px) !important;
-  padding-left: clamp(18px, 1.6vw, 26px) !important;
-  box-sizing: border-box !important;
-}
-body.dx-entry-page .dex-entry-layout .dex-sidebar > section + section,
-body.dx-entry-page .dex-sidebar > section + section {
-  margin-top: clamp(14px, 1.1vw, 18px) !important;
-}
-html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-entry-layout .dex-sidebar > section:last-of-type,
-html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-sidebar > section:last-of-type {
-  margin-bottom: 0 !important;
-}
-body.dx-entry-page .dex-sidebar .dex-license {
-  display: flex !important;
-  flex-direction: column !important;
-}
-body.dx-entry-page .dex-sidebar .dex-file-info .file-info-tabs {
-  display: flex !important;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
-  margin-bottom: var(--space-3) !important;
-  gap: 0 !important;
-  overflow: visible !important;
-}
-body.dx-entry-page .dex-sidebar .dex-file-info .file-info-tabs button {
-  flex: 1 !important;
-  padding: var(--space-2) !important;
-  background: none !important;
-  border: none !important;
-  border-radius: 0 !important;
-  font-family: var(--font-heading) !important;
-  font-size: 1rem !important;
-  font-weight: 600 !important;
-  cursor: pointer !important;
-  text-transform: uppercase !important;
-  letter-spacing: normal !important;
-  color: inherit !important;
-  box-shadow: none !important;
-  min-height: 0 !important;
-}
-body.dx-entry-page .dex-sidebar .dex-file-info .file-info-tabs button[aria-selected="true"] {
-  border: none !important;
-  background: transparent !important;
-  color: rgba(17, 17, 17, 0.96) !important;
-  position: relative !important;
-}
-body.dx-entry-page .dex-sidebar .dex-file-info .file-info-tabs button[aria-selected="true"]::after {
-  content: "" !important;
-  position: absolute !important;
-  left: 0.35rem !important;
-  right: 0.35rem !important;
-  bottom: 0 !important;
-  height: 2px !important;
-  border-radius: 999px !important;
-  background: linear-gradient(130deg, var(--dex-accent, #ff1910), orange) !important;
-}
-body.dx-entry-page .dex-sidebar .dex-file-info .file-info-tabs button:not([aria-selected="true"]):hover {
-  background: rgba(0, 0, 0, 0.05) !important;
-}
-body.dx-entry-page .dex-collections .overview-item--favorite-collection .dx-fav-entry-toggle,
-body.dx-entry-page .dex-collections .overview-item--favorite-buckets .dx-fav-bucket-toggle,
-body.dx-entry-page .dex-collections .overview-item--favorite-collection .dx-fav-entry-toggle:hover,
-body.dx-entry-page .dex-collections .overview-item--favorite-buckets .dx-fav-bucket-toggle:hover,
-body.dx-entry-page .dex-collections .overview-item--favorite-collection .dx-fav-entry-toggle:focus-visible,
-body.dx-entry-page .dex-collections .overview-item--favorite-buckets .dx-fav-bucket-toggle:focus-visible {
-  color: rgba(24, 24, 24, 0.92) !important;
-}
-body.dx-entry-page .dex-sidebar .dex-file-info .file-info-panels > div {
-  display: none !important;
-}
-body.dx-entry-page .dex-sidebar .dex-file-info .file-info-panels > div:not([hidden]) {
-  display: block !important;
-}
-/* test-5 credits content hierarchy + section dividers */
-body.dx-entry-page .dex-sidebar .dex-credits .dex-credits-row,
-body.dx-entry-page .dex-sidebar .dex-credits .dex-credits-role {
-  display: flex !important;
-  align-items: baseline !important;
-  flex-wrap: wrap !important;
-  column-gap: 0.55rem !important;
-  row-gap: 0.15rem !important;
-  margin: 0.28rem 0 !important;
-}
-body.dx-entry-page .dex-sidebar .dex-credits .dex-credits-row .dex-credits-key,
-body.dx-entry-page .dex-sidebar .dex-credits .dex-credits-role .dex-credits-key {
-  font-family: var(--font-heading) !important;
-  font-weight: 700 !important;
-  letter-spacing: 0 !important;
-  text-transform: none !important;
-  color: rgba(16, 16, 16, 0.96) !important;
-}
-body.dx-entry-page .dex-sidebar .dex-credits .dex-credits-row .dex-credits-value,
-body.dx-entry-page .dex-sidebar .dex-credits .dex-credits-role .dex-credits-value {
-  font-family: var(--font-body) !important;
-  font-weight: 500 !important;
-  color: rgba(16, 16, 16, 0.92) !important;
-}
-body.dx-entry-page .dex-sidebar .dex-credits .dex-credits-group {
-  margin-top: 1.05rem !important;
-  padding-top: 1.05rem !important;
-  border-top: 1px solid rgba(16, 16, 16, 0.22) !important;
-}
-body.dx-entry-page .dex-sidebar .dex-credits .dex-credits-group-title {
-  font-family: var(--font-heading) !important;
-  font-weight: 700 !important;
-  letter-spacing: 0 !important;
-  text-transform: none !important;
-  color: rgba(16, 16, 16, 0.98) !important;
-  margin: 0 0 0.48rem 0 !important;
-}
-
-/* test-5: force visible links inside credit popups */
-body.dx-entry-page .person-popup,
-body.dx-entry-page .person-popup.person-popup--dx {
-  color: rgba(20, 20, 20, 0.96) !important;
-}
-body.dx-entry-page .person-popup a,
-body.dx-entry-page .person-popup.person-popup--dx a,
-body.dx-entry-page .person-popup.person-popup--dx .person-popup-link {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 0.35rem !important;
-  color: rgba(16, 16, 16, 0.98) !important;
-  -webkit-text-fill-color: rgba(16, 16, 16, 0.98) !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  text-decoration: underline !important;
-  text-decoration-thickness: 1px !important;
-  text-underline-offset: 0.16em !important;
-  text-decoration-color: rgba(16, 16, 16, 0.55) !important;
-  font-weight: 600 !important;
-  line-height: 1.3 !important;
-  cursor: pointer !important;
-}
-body.dx-entry-page .person-popup a:hover,
-body.dx-entry-page .person-popup a:focus-visible,
-body.dx-entry-page .person-popup.person-popup--dx a:hover,
-body.dx-entry-page .person-popup.person-popup--dx a:focus-visible,
-body.dx-entry-page .person-popup.person-popup--dx .person-popup-link:hover,
-body.dx-entry-page .person-popup.person-popup--dx .person-popup-link:focus-visible {
-  color: rgba(16, 16, 16, 1) !important;
-  -webkit-text-fill-color: rgba(16, 16, 16, 1) !important;
-  text-decoration-color: rgba(16, 16, 16, 0.95) !important;
-}
-
-/* test-5: match header corner radius across sidebar + media */
-body.dx-entry-page {
-  --dx-test5-header-radius: var(--radius-002, 4px);
-}
-html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-entry-layout .dex-sidebar,
-html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page .dex-sidebar {
-  --dx-fetch-shell-radius: var(--dx-test5-header-radius) !important;
-  --dx-entry-card-radius: var(--dx-test5-header-radius) !important;
-  border-radius: var(--dx-test5-header-radius) !important;
-}
-body.dx-entry-page .dex-entry-layout .dex-sidebar > section,
-body.dx-entry-page .dex-sidebar > section {
-  border-radius: var(--dx-test5-header-radius) !important;
-}
-body.dx-entry-page .dex-video-card,
-body.dx-entry-page .dex-video,
-body.dx-entry-page .dex-video-aspect,
-body.dx-entry-page .dex-video-card iframe,
-body.dx-entry-page .dex-video-card video,
-body.dx-entry-page .dex-video-card .intrinsic,
-body.dx-entry-page .dex-video-card .sqs-video-wrapper,
-body.dx-entry-page .dex-video-card .sqs-oembed,
-body.dx-entry-page .dex-video-card .sqs-embed-content,
-body.dx-entry-page .dex-video-aspect iframe {
-  border-radius: var(--dx-test5-header-radius) !important;
-}
-body.dx-entry-page .dex-collections .overview-buckets-grid .dx-bucket-tile,
-body.dx-entry-page .dex-collections .overview-buckets-grid .dx-bucket-tile[data-dx-tooltip],
-body.dx-entry-page .dex-collections .overview-item--favorite-collection .dx-fav-entry-toggle,
-body.dx-entry-page .dex-collections .overview-item--favorite-buckets .dx-fav-bucket-toggle,
-body.dx-entry-page .dex-collections .overview-item .dx-fav-heart-btn {
-  border-radius: var(--dx-test5-header-radius) !important;
-}
-
-/* test-5: restore credits/file-specs/metadata badge pills */
-body.dx-entry-page .dex-sidebar .dex-credits .dex-badges .badge,
-body.dx-entry-page .dex-sidebar #file-specs .dex-badges .badge,
-body.dx-entry-page .dex-sidebar #metadata .dex-badges .badge {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 0.35rem !important;
-  padding: 0.3rem 0.62rem !important;
-  border-radius: var(--dx-test5-header-radius) !important;
-  border: 1px solid var(--dx-header-glass-rim, rgba(255, 255, 255, 0.42)) !important;
-  background: var(--dx-header-glass-bg, linear-gradient(120deg, rgba(221, 230, 240, 0.36) 0%, rgba(191, 208, 224, 0.26) 55%, rgba(232, 210, 203, 0.24) 100%)) !important;
-  box-shadow: var(--dx-header-glass-shadow, 0 16px 36px rgba(18, 22, 30, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.32)) !important;
-  -webkit-backdrop-filter: var(--dx-header-glass-backdrop, saturate(180%) blur(18px)) !important;
-  backdrop-filter: var(--dx-header-glass-backdrop, saturate(180%) blur(18px)) !important;
-  color: rgba(20, 20, 20, 0.92) !important;
-  font-family: var(--font-body, "Courier New", monospace) !important;
-  font-size: 0.8rem !important;
-  font-weight: 400 !important;
-  letter-spacing: 0.02em !important;
-  line-height: 1.05 !important;
-}
-
-/* test-5: restore favorite heart glyphs (collection + bucket buttons) */
-body.dx-entry-page .dex-collections .dx-fav-heart-btn .dx-fav-heart-icon,
-body.dx-entry-page .dex-collections .dx-fav-entry-toggle .dx-fav-heart-icon,
-body.dx-entry-page .dex-collections .dx-fav-bucket-toggle .dx-fav-heart-icon {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-body.dx-entry-page .dex-collections .dx-fav-heart-btn .dx-fav-heart-svg {
-  display: block !important;
-}
-body.dx-entry-page .dex-collections .overview-item--favorite-buckets .dx-fav-bucket-toggle.dx-fav-heart-btn .dx-fav-heart-icon {
-  display: inline-flex !important;
-  width: 1rem !important;
-  height: 1rem !important;
-}
-body.dx-entry-page .dex-collections .overview-item--favorite-buckets .dx-fav-bucket-toggle.dx-fav-heart-btn .dx-fav-heart-svg path,
-body.dx-entry-page .dex-collections .overview-item--favorite-collection .dx-fav-entry-toggle.dx-fav-heart-btn .dx-fav-heart-svg path {
-  stroke: currentColor !important;
-  fill: transparent !important;
-}
-body.dx-entry-page .dex-collections .overview-item--favorite-collection .dx-fav-entry-toggle:empty::before,
-body.dx-entry-page .dex-collections .overview-item--favorite-buckets .dx-fav-bucket-toggle:empty::before {
-  content: "♡" !important;
-  display: inline-block !important;
-  font-family: var(--font-body, "Courier New", monospace) !important;
-  font-size: 1.08rem !important;
-  font-weight: 400 !important;
-  line-height: 1 !important;
-  color: currentColor !important;
-}
-
-/* test-5: favorite-this-collection should be white text/icon */
-body.dx-entry-page .dex-collections .overview-item--favorite-collection .dx-fav-entry-toggle,
-body.dx-entry-page .dex-collections .overview-item--favorite-collection .dx-fav-entry-toggle:hover,
-body.dx-entry-page .dex-collections .overview-item--favorite-collection .dx-fav-entry-toggle:focus-visible {
-  background: linear-gradient(130deg, var(--dex-accent, #ff1910), orange) !important;
-  border: 1px solid rgba(0, 0, 0, 0.15) !important;
-  box-shadow: 0 8px 22px rgba(255, 25, 16, 0.22) !important;
-  color: #fff !important;
-  -webkit-text-fill-color: #fff !important;
-}
-body.dx-entry-page .dex-collections .overview-item--favorite-collection .dx-fav-entry-toggle.dx-fav-heart-btn.is-active {
-  background: linear-gradient(130deg, var(--dex-accent, #ff1910), orange) !important;
-  border: 1px solid rgba(0, 0, 0, 0.15) !important;
-  box-shadow: 0 8px 22px rgba(255, 25, 16, 0.22) !important;
-}
-body.dx-entry-page .dex-collections .overview-item--favorite-collection .dx-fav-entry-toggle .dx-fav-heart-icon {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-body.dx-entry-page .dex-collections .overview-item--favorite-collection .dx-fav-entry-toggle .dx-fav-heart-svg {
-  display: block !important;
-  width: 1.1rem !important;
-  height: 1.1rem !important;
-  stroke: currentColor !important;
-}
-body.dx-entry-page .dex-collections .overview-item--favorite-collection .dx-fav-entry-toggle .dx-fav-heart-svg path {
-  stroke: currentColor !important;
-  stroke-width: 1.8 !important;
-  fill: transparent !important;
-}
-body.dx-entry-page .dex-collections .overview-item--favorite-collection .dx-fav-entry-toggle:not(.dx-fav-heart-btn):empty::before {
-  content: "♡" !important;
-  color: #fff !important;
-  font-size: 1.08rem !important;
-  line-height: 1 !important;
-}
-
-/* test-5: align collection heading + bucket row inset with other sidebar rows */
-body.dx-entry-page .dex-collections > h3[data-dx-entry-heading] {
-  padding: 0 !important;
-}
-body.dx-entry-page .dex-collections .overview-buckets-grid {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-}
-
-/* test-5: single geometry owner — body/footer shell matches header frame at all widths */
-body.dx-entry-page .dex-entry-section,
-body.dx-entry-page .dex-footer-section {
-  width: var(--dx-header-frame-width) !important;
-  max-width: var(--dx-header-frame-width) !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  box-sizing: border-box !important;
-}
-html[data-dx-entry-rail-mode="desktop-fixed"] body.dx-entry-page #sections section.dex-entry-section.page-section.content-width--wide {
-  width: var(--dx-header-frame-width-vw, min(calc(100vw - clamp(16px, 3vw, 40px)), 1380px)) !important;
-  max-width: var(--dx-header-frame-width-vw, min(calc(100vw - clamp(16px, 3vw, 40px)), 1380px)) !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-}
-body.dx-entry-page .dex-entry-section > .content-wrapper,
-body.dx-entry-page .dex-entry-section > .content-wrapper > .content,
-body.dx-entry-page .dex-footer-section > .content-wrapper,
-body.dx-entry-page .dex-footer-section > .content-wrapper > .content {
-  width: 100% !important;
-  max-width: 100% !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-  box-sizing: border-box !important;
-}
-body.dx-entry-page .dex-footer-section .sqs-block-content {
-  background: transparent !important;
-  border: 0 !important;
-}
-@media (max-width: 899px) {
-  html[data-dx-entry-rail-mode="mobile-flow"] body.dx-route-profile-protected.dx-entry-page #footer-sections .dex-footer-section.page-section {
-    width: calc(100% - 16px) !important;
-    max-width: calc(100% - 16px) !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
-}
-
-/* test-5: force footer visual parity with home footer (layout geometry untouched) */
-body.dx-entry-page .dex-footer {
-  --dex-footer-text: #232323 !important;
-  --liquid-bg: rgba(255, 255, 255, 0.18) !important;
-  --liquid-border: rgba(255, 255, 255, 0.42) !important;
-  --shadow-md: 0 16px 36px rgba(18, 22, 30, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
-  background: var(--liquid-bg) !important;
-  border: 1px solid rgba(255, 255, 255, 0.42) !important;
-  border-radius: var(--dx-radius-md, 10px) !important;
-  box-shadow: var(--shadow-md) !important;
-  color: #232323 !important;
-  -webkit-backdrop-filter: var(--dx-header-glass-backdrop, saturate(180%) blur(18px)) !important;
-  backdrop-filter: var(--dx-header-glass-backdrop, saturate(180%) blur(18px)) !important;
-}
-body.dx-entry-page .dex-footer .footer-grid {
-  display: grid !important;
-  grid-template-columns: auto 1fr auto auto !important;
-  align-items: center !important;
-  gap: var(--space-4, 1.5rem) !important;
-}
-body.dx-entry-page .dex-footer .candid-seal {
-  margin-right: 0 !important;
-}
-</style>
 </body></html>

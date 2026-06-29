@@ -6,8 +6,8 @@
     "artistName": "jared murphy"
   },
   "lifecycle": {
-    "publishedAt": "2026-06-08T21:40:07.034Z",
-    "updatedAt": "2026-06-08T21:40:07.034Z"
+    "publishedAt": "2026-06-29T00:10:53.120Z",
+    "updatedAt": "2026-06-29T00:10:53.120Z"
   },
   "video": {
     "mode": "url",
@@ -18,37 +18,38 @@
   "descriptionText": "NO INPUT MIXER SET. jared murphy is part of dex digital sample library's first Season 1 drop. we officially launched this repository with our first season 1 drop on June 1st, 2023, with a portal available to download audio and video files for each recording. what started out as a recording project at the Peabody Conservatory is now an open-access collection of new-music sounds, licensed for use under Creative Commons.",
   "series": "dex",
   "selectedBuckets": [
-    "A"
+    "A",
+    "B"
   ],
   "creditsData": {
     "artist": [
       "jared murphy"
     ],
     "artistAlt": null,
+    "audio": {
+      "master": [],
+      "mix": [],
+      "recording": []
+    },
     "instruments": [
       "NO IMPUT MIXING BOARD"
     ],
+    "location": "Unknown",
+    "season": "S1",
     "video": {
-      "director": [],
       "cinematography": [],
+      "director": [],
       "editing": []
     },
-    "audio": {
-      "recording": [],
-      "mix": [],
-      "master": []
-    },
-    "year": 2023,
-    "season": "S1",
-    "location": "Unknown"
+    "year": 2023
   },
   "fileSpecs": {
     "bitDepth": 24,
-    "sampleRate": 48000,
     "channels": "stereo",
+    "sampleRate": 48000,
     "staticSizes": {
-      "A": "",
-      "B": "",
+      "A": "15.2 GB",
+      "B": "85.2 GB",
       "C": "",
       "D": "",
       "E": "",
@@ -60,92 +61,324 @@
     "tags": []
   },
   "sidebarPageConfig": {
-    "lookupNumber": "E.Noi. Mu AV2023 S1",
+    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and jared murphy.",
     "buckets": [
       "A",
       "B"
     ],
-    "specialEventImage": "/assets/series/dex.png",
-    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and jared murphy.",
     "credits": {
       "artist": [
-        "jared murphy"
+        "Jared Murphy"
       ],
       "artistAlt": null,
+      "audio": {
+        "master": [
+          "Sebastian Suarez-Solis"
+        ],
+        "mix": [
+          "Jared Murphy"
+        ],
+        "recording": [
+          "Jared Murphy"
+        ]
+      },
+      "instrumentLinksEnabled": true,
       "instruments": [
         "NO IMPUT MIXING BOARD"
       ],
-      "video": {
-        "director": [],
-        "cinematography": [],
-        "editing": []
-      },
-      "audio": {
-        "recording": [],
-        "mix": [],
-        "master": []
-      },
-      "year": 2023,
+      "linksByPerson": {},
+      "location": "Osaka, JPN",
       "season": "S1",
-      "location": "Unknown"
-    },
-    "fileSpecs": {
-      "bitDepth": 24,
-      "sampleRate": 48000,
-      "channels": "stereo",
-      "staticSizes": {
-        "A": "",
-        "B": "",
-        "C": "",
-        "D": "",
-        "E": "",
-        "X": ""
-      }
-    },
-    "metadata": {
-      "sampleLength": "AUTO",
-      "tags": []
+      "video": {
+        "cinematography": [
+          "Jared Murphy"
+        ],
+        "director": [
+          "Jared Murphy"
+        ],
+        "editing": [
+          "Jared Murphy",
+          "Sebastian Suarez-Solis"
+        ]
+      },
+      "year": 2022
     },
     "downloads": {
-      "recordingIndexPdfRef": "asset:no-input-mixer-jared-murphy-recording-index-pdf",
-      "recordingIndexBundleRef": "bundle:recording-index:E.Noi. Mu AV2023 S1:all",
-      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/13CSt_I1EYHwKFHmZwhJ1l8cfQvohClg7bwS1VZ132k4/edit?gid=0#gid=0",
+      "bucketFolders": {
+        "A": {
+          "fileCount": 3,
+          "files": [
+            {
+              "id": "1siK9arz8jLmW7-1gJLvp9Uq4rQGpadZ7",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 A.1 [4K].mov",
+              "size": 9863637539
+            },
+            {
+              "id": "1VyVc8BqBQJTUkjSIxkN1ndX_kVc5xaIE",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 A.1 [1080p].mov",
+              "size": 5443518969
+            },
+            {
+              "id": "1uFzU_3KDsyucozT_WKARcbf3ltFmG7JF",
+              "mimeType": "audio/wav",
+              "name": "E.Noi. Mu AV2023 S1 A.1 [ste].wav",
+              "size": 1051885080
+            }
+          ],
+          "folderId": "1_rn_Pvgpe3ApWT5_4wiNsvS_hQf4n5YH",
+          "scannedAt": "2026-06-28T23:14:20.171Z",
+          "totalBytes": 16359041588
+        },
+        "B": {
+          "fileCount": 34,
+          "files": [
+            {
+              "id": "1d83QEVVzm5VOF-zedifnskEWk7Udh-c6",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.1 [4K].mov",
+              "size": 3984247047
+            },
+            {
+              "id": "1ZX_alcTpgz-g8MK8Q7IwZBMHKYfosBgH",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.2 [4K].mov",
+              "size": 3559835701
+            },
+            {
+              "id": "1_2qmWlnmNdz49jK1xIwQifnLiYFC2IaH",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.3 [4K].mov",
+              "size": 2778943945
+            },
+            {
+              "id": "1bIAZCc9cfk7xPYyh9D3GXXyy3laM7eq3",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.4 [4K].mov",
+              "size": 5547785139
+            },
+            {
+              "id": "1ZVrt5d0nSYlj8wSOIDXmEXe9FSERv6iL",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.5 [4K].mov",
+              "size": 2980532809
+            },
+            {
+              "id": "1EESngYSHFYMA03T40EFXJiRvqofUtf0p",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.6 [4K].mov",
+              "size": 2099345051
+            },
+            {
+              "id": "1cPyzE9a8JppjcH8qDyywHYOdB1hNUZ7I",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.7 [4K].mov",
+              "size": 7501415514
+            },
+            {
+              "id": "1Q6_btrfXdUlr3EkB29aOxgyNVcCiQJhM",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.8 [4K].mov",
+              "size": 2510606385
+            },
+            {
+              "id": "1GD0QUE8dJ2ZPKy__E3EkzO9OCaZFpN7X",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.9 [4K].mov",
+              "size": 4265225343
+            },
+            {
+              "id": "1ZoYqm-dW4FqWuQ9AT7FXXhbeOHztvqy9",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.10 [4K].mov",
+              "size": 4161453013
+            },
+            {
+              "id": "1QNCnDPL56zFfsFfIJr62Won7ojoJXHi2",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.11 [4K].mov",
+              "size": 2512459319
+            },
+            {
+              "id": "1ZhiakKXICKw6HgE-YIGJzFTq7Vr7KRJa",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.12 [4K].mov",
+              "size": 5712508456
+            },
+            {
+              "id": "1XAFt99kBMRNSsp8v3FpP3SsGKvPaCR3q",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.13 [4K].mov",
+              "size": 2960988380
+            },
+            {
+              "id": "1sWVW539Q5C3mREBp-W83u4Tb7gt7Ink9",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.14 [4K].mov",
+              "size": 13428591644
+            },
+            {
+              "id": "1u1g8_Vg835VbhNjVHOlwOJgm6IBbbIIu",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.15 [4K].mov",
+              "size": 6445793291
+            },
+            {
+              "id": "1hfdwdbhtQ434JjrOUJYrXHEUp9sS2l8p",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.16 [4K].mov",
+              "size": 7174735454
+            },
+            {
+              "id": "1VgBNfIAJ83FFGHnIorWqdldUbnU0yh_y",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.17 [4K].mov",
+              "size": 3678402824
+            },
+            {
+              "id": "1CqTDwQsizAVJG2dsWA11Ly2VBxAUOF9O",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.1 [1080p].mov",
+              "size": 500459291
+            },
+            {
+              "id": "1dwDk7_mAcKih_4CcXsmG9OXa6YiBdMOK",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.2 [1080p].mov",
+              "size": 445524613
+            },
+            {
+              "id": "17s0g0nnPNDfTTYkP_PyncaGOBD3mR355",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.3 [1080p].mov",
+              "size": 348549740
+            },
+            {
+              "id": "1HNS85SQQf3h5HphKYkc-smWey99A01T3",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.4 [1080p].mov",
+              "size": 704930258
+            },
+            {
+              "id": "1ZlFnlm6BozepqWpUblQbvUPG16zEIcq7",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.5 [1080p].mov",
+              "size": 378758834
+            },
+            {
+              "id": "1eH5MYH4Uc4Ta9MrUz_sR3un80jwV2-Sp",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.6 [1080p].mov",
+              "size": 264812464
+            },
+            {
+              "id": "1GwVCIh1ORshxfZm2cfV378CAD7HF4ViW",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.7 [1080p].mov",
+              "size": 939274102
+            },
+            {
+              "id": "1mGov3IH4Fkzy-e5yWckLB7ReUtGnXtsi",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.8 [1080p].mov",
+              "size": 315358567
+            },
+            {
+              "id": "1Km_Jbke71jYsJg2Uva0RLOJZ1xJXkesL",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.9 [1080p].mov",
+              "size": 541563834
+            },
+            {
+              "id": "1rqHDf8qu3gefT4qAkaGtugPFYS0yKJxY",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.10 [1080p].mov",
+              "size": 523543018
+            },
+            {
+              "id": "16ovFELhZ1ubmxEmoBKjkxb_sYI-SG_3q",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.11 [1080p].mov",
+              "size": 313278465
+            },
+            {
+              "id": "1tFnWINqnwc1EjdhmxfD-oB_5Lz889i4i",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.12 [1080p].mov",
+              "size": 715710048
+            },
+            {
+              "id": "1RaFKB9A70OC9cJPrhYupbcH1op2tg8m0",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.13 [1080p].mov",
+              "size": 372296297
+            },
+            {
+              "id": "1GmSW4t_8FflMjYAVGaxSHJmWLHo-bwQM",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.14 [1080p].mov",
+              "size": 1684149176
+            },
+            {
+              "id": "1QKdu93qmkW-7nzexkheHd5bclUe4eaoz",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.15 [1080p].mov",
+              "size": 812284664
+            },
+            {
+              "id": "1I9r110DJcN_eg47sLSmeiXdjSx0wXvkp",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.16 [1080p].mov",
+              "size": 902120019
+            },
+            {
+              "id": "1oQ0YgpvWInE7bMV6pyly8npXqpQ62Gvo",
+              "mimeType": "video/quicktime",
+              "name": "E.Noi. Mu AV2023 S1 B.17 [1080p].mov",
+              "size": 465076635
+            }
+          ],
+          "folderId": "1S_8uJuYeuKM_ByUvHIiXRM5A9l4METvu",
+          "scannedAt": "2026-06-28T23:14:28.983Z",
+          "totalBytes": 91530559340
+        }
+      },
       "fileTree": {
-        "lookup": "E.Noi. Mu AV2023 S1",
         "buckets": [
           {
             "bucket": "A",
             "types": [
               {
-                "mediaType": "audio",
                 "files": [
                   {
-                    "fileId": "no-input-mixer-jared-murphy-a-001-stereo",
-                    "label": "E.Noi. Mu AV2023 S1 A.1 [ste].wav",
-                    "filename": "001-stereo.wav",
                     "extension": "wav",
+                    "fileId": "no-input-mixer-jared-murphy-a-001-stereo",
+                    "filename": "001-stereo.wav",
+                    "label": "E.Noi. Mu AV2023 S1 A.1 [ste].wav",
                     "variantKey": "default-audio"
                   }
-                ]
+                ],
+                "mediaType": "audio"
               },
               {
-                "mediaType": "video",
                 "files": [
                   {
-                    "fileId": "no-input-mixer-jared-murphy-a-001-1080p",
-                    "label": "E.Noi. Mu AV2023 S1 A.1 [1080p].mov",
-                    "filename": "001-1080p.mov",
                     "extension": "mov",
+                    "fileId": "no-input-mixer-jared-murphy-a-001-1080p",
+                    "filename": "001-1080p.mov",
+                    "label": "E.Noi. Mu AV2023 S1 A.1 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
-                    "fileId": "no-input-mixer-jared-murphy-a-001-4k",
-                    "label": "E.Noi. Mu AV2023 S1 A.1 [4K].mov",
-                    "filename": "001-4k.mov",
                     "extension": "mov",
+                    "fileId": "no-input-mixer-jared-murphy-a-001-4k",
+                    "filename": "001-4k.mov",
+                    "label": "E.Noi. Mu AV2023 S1 A.1 [4K].mov",
                     "variantKey": "default-video"
                   }
-                ]
+                ],
+                "mediaType": "video"
               }
             ]
           },
@@ -153,252 +386,279 @@
             "bucket": "B",
             "types": [
               {
-                "mediaType": "video",
                 "files": [
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-001-1080p",
-                    "label": "E.Noi. Mu AV2023 S1 B.1 [1080p].mov",
                     "filename": "001-1080p.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.1 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-001-4k",
-                    "label": "E.Noi. Mu AV2023 S1 B.1 [4K].mov",
                     "filename": "001-4k.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.1 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-002-1080p",
-                    "label": "E.Noi. Mu AV2023 S1 B.2 [1080p].mov",
                     "filename": "002-1080p.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.2 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-002-4k",
-                    "label": "E.Noi. Mu AV2023 S1 B.2 [4K].mov",
                     "filename": "002-4k.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.2 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-003-1080p",
-                    "label": "E.Noi. Mu AV2023 S1 B.3 [1080p].mov",
                     "filename": "003-1080p.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.3 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-003-4k",
-                    "label": "E.Noi. Mu AV2023 S1 B.3 [4K].mov",
                     "filename": "003-4k.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.3 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-004-1080p",
-                    "label": "E.Noi. Mu AV2023 S1 B.4 [1080p].mov",
                     "filename": "004-1080p.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.4 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-004-4k",
-                    "label": "E.Noi. Mu AV2023 S1 B.4 [4K].mov",
                     "filename": "004-4k.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.4 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-005-1080p",
-                    "label": "E.Noi. Mu AV2023 S1 B.5 [1080p].mov",
                     "filename": "005-1080p.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.5 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-005-4k",
-                    "label": "E.Noi. Mu AV2023 S1 B.5 [4K].mov",
                     "filename": "005-4k.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.5 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-006-1080p",
-                    "label": "E.Noi. Mu AV2023 S1 B.6 [1080p].mov",
                     "filename": "006-1080p.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.6 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-006-4k",
-                    "label": "E.Noi. Mu AV2023 S1 B.6 [4K].mov",
                     "filename": "006-4k.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.6 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-007-1080p",
-                    "label": "E.Noi. Mu AV2023 S1 B.7 [1080p].mov",
                     "filename": "007-1080p.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.7 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-007-4k",
-                    "label": "E.Noi. Mu AV2023 S1 B.7 [4K].mov",
                     "filename": "007-4k.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.7 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-008-1080p",
-                    "label": "E.Noi. Mu AV2023 S1 B.8 [1080p].mov",
                     "filename": "008-1080p.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.8 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-008-4k",
-                    "label": "E.Noi. Mu AV2023 S1 B.8 [4K].mov",
                     "filename": "008-4k.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.8 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-009-1080p",
-                    "label": "E.Noi. Mu AV2023 S1 B.9 [1080p].mov",
                     "filename": "009-1080p.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.9 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-009-4k",
-                    "label": "E.Noi. Mu AV2023 S1 B.9 [4K].mov",
                     "filename": "009-4k.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.9 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-010-1080p",
-                    "label": "E.Noi. Mu AV2023 S1 B.10 [1080p].mov",
                     "filename": "010-1080p.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.10 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-010-4k",
-                    "label": "E.Noi. Mu AV2023 S1 B.10 [4K].mov",
                     "filename": "010-4k.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.10 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-011-1080p",
-                    "label": "E.Noi. Mu AV2023 S1 B.11 [1080p].mov",
                     "filename": "011-1080p.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.11 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-011-4k",
-                    "label": "E.Noi. Mu AV2023 S1 B.11 [4K].mov",
                     "filename": "011-4k.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.11 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-012-1080p",
-                    "label": "E.Noi. Mu AV2023 S1 B.12 [1080p].mov",
                     "filename": "012-1080p.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.12 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-012-4k",
-                    "label": "E.Noi. Mu AV2023 S1 B.12 [4K].mov",
                     "filename": "012-4k.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.12 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-013-1080p",
-                    "label": "E.Noi. Mu AV2023 S1 B.13 [1080p].mov",
                     "filename": "013-1080p.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.13 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-013-4k",
-                    "label": "E.Noi. Mu AV2023 S1 B.13 [4K].mov",
                     "filename": "013-4k.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.13 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-014-1080p",
-                    "label": "E.Noi. Mu AV2023 S1 B.14 [1080p].mov",
                     "filename": "014-1080p.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.14 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-014-4k",
-                    "label": "E.Noi. Mu AV2023 S1 B.14 [4K].mov",
                     "filename": "014-4k.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.14 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-015-1080p",
-                    "label": "E.Noi. Mu AV2023 S1 B.15 [1080p].mov",
                     "filename": "015-1080p.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.15 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-015-4k",
-                    "label": "E.Noi. Mu AV2023 S1 B.15 [4K].mov",
                     "filename": "015-4k.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.15 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-016-1080p",
-                    "label": "E.Noi. Mu AV2023 S1 B.16 [1080p].mov",
                     "filename": "016-1080p.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.16 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-016-4k",
-                    "label": "E.Noi. Mu AV2023 S1 B.16 [4K].mov",
                     "filename": "016-4k.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.16 [4K].mov",
                     "variantKey": "default-video"
                   },
                   {
+                    "extension": "mov",
                     "fileId": "no-input-mixer-jared-murphy-b-017-1080p",
-                    "label": "E.Noi. Mu AV2023 S1 B.17 [1080p].mov",
                     "filename": "017-1080p.mov",
-                    "extension": "mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.17 [1080p].mov",
                     "variantKey": "default-video"
                   },
                   {
-                    "fileId": "no-input-mixer-jared-murphy-b-017-4k",
-                    "label": "E.Noi. Mu AV2023 S1 B.17 [4K].mov",
-                    "filename": "017-4k.mov",
                     "extension": "mov",
+                    "fileId": "no-input-mixer-jared-murphy-b-017-4k",
+                    "filename": "017-4k.mov",
+                    "label": "E.Noi. Mu AV2023 S1 B.17 [4K].mov",
                     "variantKey": "default-video"
                   }
-                ]
+                ],
+                "mediaType": "video"
               }
             ]
           }
-        ]
+        ],
+        "lookup": "E.Noi. Mu AV2023 S1"
+      },
+      "recordingIndexBundleRef": "bundle:recording-index:E.Noi. Mu AV2023 S1:all",
+      "recordingIndexPdfRef": "asset:no-input-mixer-jared-murphy-recording-index-pdf",
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/13CSt_I1EYHwKFHmZwhJ1l8cfQvohClg7bwS1VZ132k4/edit?usp=drive_link",
+      "selectedBuckets": [
+        "A",
+        "B"
+      ]
+    },
+    "fileSpecs": {
+      "bitDepth": 24,
+      "channels": "stereo",
+      "sampleRate": 48000,
+      "staticSizes": {
+        "A": "15.2 GB",
+        "B": "85.2 GB",
+        "C": "",
+        "D": "",
+        "E": "",
+        "X": ""
       }
-    }
+    },
+    "lookupNumber": "E.Noi. Mu AV2023 S1",
+    "metadata": {
+      "sampleLength": "AUTO",
+      "tags": []
+    },
+    "specialEventImage": "/assets/series/dex.png"
   }
 }

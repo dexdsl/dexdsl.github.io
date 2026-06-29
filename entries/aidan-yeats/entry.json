@@ -6,8 +6,8 @@
     "artistName": "Aidan Yeats"
   },
   "lifecycle": {
-    "publishedAt": "2026-03-25T20:32:36.819Z",
-    "updatedAt": "2026-03-25T20:32:36.819Z"
+    "publishedAt": "2026-06-29T00:08:27.416Z",
+    "updatedAt": "2026-06-29T00:08:27.416Z"
   },
   "video": {
     "mode": "url",
@@ -15,7 +15,7 @@
     "dataUrlOriginal": "https://www.youtube.com/watch?v=CSFGiU1gg4g",
     "dataHtml": ""
   },
-  "descriptionText": "GUITAR AND VOICE.",
+  "descriptionText": "Aidan Yeats is a composer, songwriter, and poet based in Los Angeles, California who explores themes of romance, human love, and nature throughout his work. His poetic voice is an interweaving of southern roots and a southern California upbringing, underlain by an ancestral evocation of his Irish background. Containing influences from americana, post-punk, pop, country and alternative music genres, his solo discography consists of two full length albums, Virgin Forever and Ogre Angel. Yeats is now composing music for film and working on a score for a feature set to be released in 2026. He studied under Eyvind Kang at California Institute of the Arts and graduated in 2025 with a Performer-Composer degree.",
   "series": "dex",
   "selectedBuckets": [
     "A",
@@ -27,31 +27,31 @@
       "Aidan Yeats"
     ],
     "artistAlt": null,
+    "audio": {
+      "master": [],
+      "mix": [],
+      "recording": []
+    },
     "instruments": [
       "GUITAR AND VOICE"
     ],
+    "location": "Unknown",
+    "season": "S2",
     "video": {
-      "director": [],
       "cinematography": [],
+      "director": [],
       "editing": []
     },
-    "audio": {
-      "recording": [],
-      "mix": [],
-      "master": []
-    },
-    "year": 2024,
-    "season": "S2",
-    "location": "Unknown"
+    "year": 2024
   },
   "fileSpecs": {
     "bitDepth": 24,
-    "sampleRate": 48000,
     "channels": "stereo",
+    "sampleRate": 48000,
     "staticSizes": {
-      "A": "",
-      "B": "",
-      "C": "",
+      "A": "13.2 GB",
+      "B": "13.2 GB",
+      "C": "13.3 GB",
       "D": "",
       "E": "",
       "X": ""
@@ -62,57 +62,441 @@
     "tags": []
   },
   "sidebarPageConfig": {
-    "lookupNumber": "V.Sng. Ye AV2024 S2",
+    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Aidan Yeats.",
     "buckets": [
       "A",
       "B",
       "C"
     ],
-    "specialEventImage": "/assets/series/dex.png",
-    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Aidan Yeats.",
     "credits": {
       "artist": [
         "Aidan Yeats"
       ],
       "artistAlt": null,
+      "audio": {
+        "master": [
+          "Sebastian Suarez-Solis"
+        ],
+        "mix": [
+          "Sebastian Suarez-Solis"
+        ],
+        "recording": [
+          "Cameron Church"
+        ]
+      },
+      "instrumentLinksEnabled": true,
       "instruments": [
         "GUITAR AND VOICE"
       ],
-      "video": {
-        "director": [],
-        "cinematography": [],
-        "editing": []
+      "linksByPerson": {
+        "Cameron Church": [
+          {
+            "href": "https://cameronchurch.com",
+            "label": "Website"
+          }
+        ],
+        "Sebastian Suarez-Solis": [
+          {
+            "href": "https://dexdsl.github.io/u/cbassuarez",
+            "label": "Website"
+          }
+        ]
       },
-      "audio": {
-        "recording": [],
-        "mix": [],
-        "master": []
-      },
-      "year": 2024,
+      "location": "Los Angeles, CA",
       "season": "S2",
-      "location": "Unknown"
+      "video": {
+        "cinematography": [
+          "Sebastian Suarez-Solis",
+          "Gabrielle Milman"
+        ],
+        "director": [
+          "Gabrielle Milman"
+        ],
+        "editing": [
+          "Sebastian Suarez-Solis"
+        ]
+      },
+      "year": 2024
+    },
+    "downloads": {
+      "bucketFolders": {
+        "A": {
+          "fileCount": 3,
+          "files": [
+            {
+              "id": "1FXuD46Rl_LElU94pLfrA-1oQ4xDrnhwl",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 A.1 [4K].mov",
+              "size": 12088457724
+            },
+            {
+              "id": "1Fc25r5_bj7Mx2PED2Fsjf0xD8F7iHZkx",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 A.1 [1080p].mov",
+              "size": 1819467696
+            },
+            {
+              "id": "1FtHAhLNrznPVURkM6gLpiVljUBTS_V45",
+              "mimeType": "audio/x-wav",
+              "name": "V.Sng. Ye AV2024 S2 A.1 [ste].wav",
+              "size": 228985836
+            }
+          ],
+          "folderId": "1B3VfiF14VEhq0i2RecVYcRGsP-3FESF3",
+          "scannedAt": "2026-06-28T23:39:33.690Z",
+          "totalBytes": 14136911256
+        },
+        "B": {
+          "fileCount": 15,
+          "files": [
+            {
+              "id": "1J-24uQg31yeS88rkXJaY3yDSpiGmiLks",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 B.1 [4K].mov",
+              "size": 1665173246
+            },
+            {
+              "id": "1GUi68rEVDHjLRDBdF0K_i6b5QYbPA2rL",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 B.2 [4K].mov",
+              "size": 1815077203
+            },
+            {
+              "id": "1GXsi-2fTYpwqZ1t2OvAjz8jpfxvgXueN",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 B.3 [4K].mov",
+              "size": 4051452681
+            },
+            {
+              "id": "1GY4nYZ_hzOXyNRQtFvYtKlR8HOERNUv8",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 B.4 [4K].mov",
+              "size": 2276473002
+            },
+            {
+              "id": "1GbUYv1SvUpq0lcrhFkI8JAbt0kjyFhml",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 B.5 [4K].mov",
+              "size": 2307309790
+            },
+            {
+              "id": "1J-AvX6Gf50lXdMmowtPlWIqWPl0s3hwJ",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 B.1 [1080p].mov",
+              "size": 248864982
+            },
+            {
+              "id": "1GgHLsXuw95pLNVDKSeVDlovXwnu3e5Kx",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 B.2 [1080p].mov",
+              "size": 270877792
+            },
+            {
+              "id": "1Ght1CpEC2mwQx-HdKslfw_qHHM5e76tk",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 B.3 [1080p].mov",
+              "size": 605357050
+            },
+            {
+              "id": "1GjO2pbhnCLKEaz-2OpKIzWBYkUdsPl4i",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 B.4 [1080p].mov",
+              "size": 339649618
+            },
+            {
+              "id": "1GnoJiWErA2YDiDbUt6Ys_yLn08JaI6__",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 B.5 [1080p].mov",
+              "size": 345368726
+            },
+            {
+              "id": "1JBmxMh843bMRktyS0jqpo5E91KcOBJk9",
+              "mimeType": "audio/x-wav",
+              "name": "V.Sng. Ye AV2024 S2 B.1 [ste].wav",
+              "size": 31724772
+            },
+            {
+              "id": "1GoIN5raORwFqBhSqb3B8SayLeRPmO90B",
+              "mimeType": "audio/x-wav",
+              "name": "V.Sng. Ye AV2024 S2 B.2 [ste].wav",
+              "size": 34019064
+            },
+            {
+              "id": "1GrtYZae50sRZlet5Yz6_Np7wB1A6zUqf",
+              "mimeType": "audio/x-wav",
+              "name": "V.Sng. Ye AV2024 S2 B.3 [ste].wav",
+              "size": 76109112
+            },
+            {
+              "id": "1Gww7-lpEzddJcLONXDGN-4gL2KtaxLkZ",
+              "mimeType": "audio/x-wav",
+              "name": "V.Sng. Ye AV2024 S2 B.4 [ste].wav",
+              "size": 42667704
+            },
+            {
+              "id": "1H1HZkZ6PFX1p1BlYccVYMt6oZH1fuZCh",
+              "mimeType": "audio/x-wav",
+              "name": "V.Sng. Ye AV2024 S2 B.5 [ste].wav",
+              "size": 44481516
+            }
+          ],
+          "folderId": "1AzV9c6vmRmCkkWne7pV8RJSIdEPHr2uX",
+          "scannedAt": "2026-06-28T23:39:42.219Z",
+          "totalBytes": 14154606258
+        },
+        "C": {
+          "fileCount": 36,
+          "files": [
+            {
+              "id": "1JCGVWBUanRx9R5NaFYGrFUczO-U5xNza",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.1 (I Didn’t Know I Had to Show Myself Love) [4K].mov",
+              "size": 1511569019
+            },
+            {
+              "id": "1H2YUFb4c4mMbwzfTA_7iKp9AV68IVVUH",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.2 [4K].mov",
+              "size": 163437386
+            },
+            {
+              "id": "1H5VV_yfZEvFfwwxevkx9ldZdzdvUnOIY",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.3 [4K].mov",
+              "size": 117567613
+            },
+            {
+              "id": "1H8F5R8g4qC_8DDHi5I6rjclzrRUelowG",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.4 (Juno Song) [4K].mov",
+              "size": 1648563171
+            },
+            {
+              "id": "1HBtrzVE1kitCl7VXD1SyVVRyd6nFpkO9",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.5 [4K].mov",
+              "size": 70132864
+            },
+            {
+              "id": "1HCrrTML5SSS0mgRizCV-0zy4rubzoVxg",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.6 [4K].mov",
+              "size": 928469202
+            },
+            {
+              "id": "1HDRLn17UNSf8gFUPIbwwxcl_btvtRCUn",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.7 [4K].mov",
+              "size": 729651046
+            },
+            {
+              "id": "1HLik4LQ8rV7VmOPfzbPAy6_H6cBt0cl8",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.8 (A Flake of Glitter) [4K].mov",
+              "size": 2199915661
+            },
+            {
+              "id": "1HStqajFxp548vgx0C-G4sdV-R5zhjTJ1",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.9 [4K].mov",
+              "size": 225111128
+            },
+            {
+              "id": "1HZCxE4DZAWCaHABTduM9rHbWLNv9CWAU",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.10 (Lean Into Me) [4K].mov",
+              "size": 1817560280
+            },
+            {
+              "id": "1Hd6gJlrHbdJMROkplMmuS4w1xafuzOGO",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.11 [4K].mov",
+              "size": 470861986
+            },
+            {
+              "id": "1HinKvOd5hxSr1C2T-3kHN1FddccJKSuG",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.12 (Unromanticized) [4K].mov",
+              "size": 2307309790
+            },
+            {
+              "id": "1JGpHH4aa4B-uYGWMCA4ClP431O11-XHt",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.1 (I Didn’t Know I Had to Show Myself Love) [1080p].mov",
+              "size": 225973858
+            },
+            {
+              "id": "1Hm-DFCv3hBx3Q0lSvPdeNEY1LMuNkL5U",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.2 [1080p].mov",
+              "size": 23411703
+            },
+            {
+              "id": "1HnLnKfMnpnusu7GZRwGWRk2hS-LEOqTE",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.3 [1080p].mov",
+              "size": 16776257
+            },
+            {
+              "id": "1HrVsXoRK3Sk93MccRSz61DyppruMcFO9",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.4 (Juno Song) [1080p].mov",
+              "size": 245553355
+            },
+            {
+              "id": "1Hv-CKRb39nbxxGKtXapXjmy7_224yGZ-",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.5 [1080p].mov",
+              "size": 10142742
+            },
+            {
+              "id": "1Hv_4HBRtp88U_HuKLMJlivM7xo5KkmiR",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.6 [1080p].mov",
+              "size": 137982248
+            },
+            {
+              "id": "1I-HYpUw7AqK8-UTkrBLpQu07vtn3yTTt",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.7 [1080p].mov",
+              "size": 108424451
+            },
+            {
+              "id": "1I5jp2MeRtZaYN5SK2DM_r14-oflzXkit",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.8 (A Flake of Glitter) [1080p].mov",
+              "size": 327811934
+            },
+            {
+              "id": "1I69DF7O-tMMSryEfjgaj488cvfv3Mnba",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.9 [1080p].mov",
+              "size": 32966830
+            },
+            {
+              "id": "1IBs-lKzqqldSr0Ouo6MtoQX8qHfPDWuK",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.10 (Lean Into Me) [1080p].mov",
+              "size": 270829464
+            },
+            {
+              "id": "1IMC-LLKUQOptePv4nRdw6ul8X0pKbxJE",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.11 [1080p].mov",
+              "size": 69292075
+            },
+            {
+              "id": "1IMVFikZ4CkQfLGALP548yXkpYajUcjko",
+              "mimeType": "video/quicktime",
+              "name": "V.Sng. Ye AV2024 S2 C.12 (Unromanticized) [1080p].mov",
+              "size": 345368726
+            },
+            {
+              "id": "1JQFtTJYFK2mYD2GSFJgtB9sfY4r9lI4C",
+              "mimeType": "audio/x-wav",
+              "name": "V.Sng. Ye AV2024 S2 C.1 (I Didn’t Know I Had to Show Myself Love) [ste].wav",
+              "size": 28841892
+            },
+            {
+              "id": "1HtjKvSKvsVDfr7GZtcndYejEEUNHamVU",
+              "mimeType": "audio/x-wav",
+              "name": "V.Sng. Ye AV2024 S2 C.2 [ste].wav",
+              "size": 2883960
+            },
+            {
+              "id": "1IU-jD_qJJqFEMNpU_3GArnbZpJB1G73U",
+              "mimeType": "audio/x-wav",
+              "name": "V.Sng. Ye AV2024 S2 C.3 [ste].wav",
+              "size": 2019096
+            },
+            {
+              "id": "1IYT8ok58qcgLeESRYRrrryRkhpRKhaaL",
+              "mimeType": "audio/x-wav",
+              "name": "V.Sng. Ye AV2024 S2 C.4 (Juno Song) [ste].wav",
+              "size": 30847896
+            },
+            {
+              "id": "1IRH_yFnCMYV-Mh3pgjXQuyRSb75De9-p",
+              "mimeType": "audio/x-wav",
+              "name": "V.Sng. Ye AV2024 S2 C.5 [ste].wav",
+              "size": 1154232
+            },
+            {
+              "id": "1I_7oQodU3f7vBarX8o54TTy05HM5uTE8",
+              "mimeType": "audio/x-wav",
+              "name": "V.Sng. Ye AV2024 S2 C.6 [ste].wav",
+              "size": 17298360
+            },
+            {
+              "id": "1Iis76zSAtGze7hwG6TRVAWAcZ60pyMR2",
+              "mimeType": "audio/x-wav",
+              "name": "V.Sng. Ye AV2024 S2 C.7 [ste].wav",
+              "size": 13550616
+            },
+            {
+              "id": "1IsRqLOa5FstMUZ76D5o1Rm_gBmsHNq-o",
+              "mimeType": "audio/x-wav",
+              "name": "V.Sng. Ye AV2024 S2 C.8 (A Flake of Glitter) [ste].wav",
+              "size": 41226264
+            },
+            {
+              "id": "1IPafoBWpMRHFaNVBkDapJjip_FcIe7u0",
+              "mimeType": "audio/x-wav",
+              "name": "V.Sng. Ye AV2024 S2 C.9 [ste].wav",
+              "size": 4037112
+            },
+            {
+              "id": "1IstIEDzHbDHdtMZVTlvv5nfimfZN6Hqd",
+              "mimeType": "audio/x-wav",
+              "name": "V.Sng. Ye AV2024 S2 C.10 (Lean Into Me) [ste].wav",
+              "size": 34019064
+            },
+            {
+              "id": "1Iuvap7gtRIkjclCflT_GByZlSniFjsb5",
+              "mimeType": "audio/x-wav",
+              "name": "V.Sng. Ye AV2024 S2 C.11 [ste].wav",
+              "size": 8649720
+            },
+            {
+              "id": "1Ivqtc5ncHh1yV8A7OVOojXEV_U61z_MI",
+              "mimeType": "audio/x-wav",
+              "name": "V.Sng. Ye AV2024 S2 C.12 (Unromanticized) [ste].wav",
+              "size": 44481516
+            }
+          ],
+          "folderId": "1AyFIcxkG0cQACRdq0OtdhVnTMr4vo6uT",
+          "scannedAt": "2026-06-28T23:39:51.657Z",
+          "totalBytes": 14233692517
+        }
+      },
+      "recordingIndexBundleRef": "bundle:recording-index:V.Sng. Ye AV2024 S2:all",
+      "recordingIndexPdfRef": "asset:aidan-yeats-recording-index-pdf",
+      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/11itz1pMWxB-gDXswAjz3VwpiFfPt0bX0Z5HYj4kjKBk/edit?usp=drive_link",
+      "selectedBuckets": [
+        "A",
+        "B",
+        "C"
+      ]
     },
     "fileSpecs": {
       "bitDepth": 24,
-      "sampleRate": 48000,
       "channels": "stereo",
+      "sampleRate": 48000,
       "staticSizes": {
-        "A": "",
-        "B": "",
-        "C": "",
+        "A": "13.2 GB",
+        "B": "13.2 GB",
+        "C": "13.3 GB",
         "D": "",
         "E": "",
         "X": ""
       }
     },
+    "lookupNumber": "V.Sng. Ye AV2024 S2",
     "metadata": {
       "sampleLength": "AUTO",
       "tags": []
     },
-    "downloads": {
-      "recordingIndexPdfRef": "asset:aidan-yeats-recording-index-pdf",
-      "recordingIndexBundleRef": "bundle:recording-index:V.Sng. Ye AV2024 S2:all",
-      "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/11itz1pMWxB-gDXswAjz3VwpiFfPt0bX0Z5HYj4kjKBk/edit?gid=0#gid=0"
-    }
+    "series": "dexFest 2024",
+    "specialEventImage": "/assets/series/dexfest.png"
   }
 }
