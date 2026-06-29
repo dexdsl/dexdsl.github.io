@@ -2170,6 +2170,88 @@
       }
     },
     {
+      "lookupNumber": "E.Gtr. Ma A2024 S2",
+      "title": "ELECTRIC GUITAR",
+      "status": "active",
+      "season": "S2",
+      "files": [
+        {
+          "bucketNumber": "A.1",
+          "fileId": "electric-guitar-chris-mann-a-001-stereo",
+          "bucket": "A",
+          "r2Key": "electric-guitar-chris-mann/a/001-stereo.wav",
+          "driveFileId": "1ZOARPdADRdGRriuW6FhnwntLdNrrpz0d",
+          "sizeBytes": 0,
+          "mime": "audio/wav",
+          "position": 1,
+          "label": "A.1 (Agora) [ste]",
+          "sourceLabel": "A.1 (Agora) [ste]",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.2",
+          "fileId": "electric-guitar-chris-mann-a-002-stereo",
+          "bucket": "A",
+          "r2Key": "electric-guitar-chris-mann/a/002-stereo.wav",
+          "driveFileId": "1ZNzrWrkEHRCK2UfSJypu_q7fVcgJRC99",
+          "sizeBytes": 0,
+          "mime": "audio/wav",
+          "position": 2,
+          "label": "A.2 (Bells) [ste]",
+          "sourceLabel": "A.2 (Bells) [ste]",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.3",
+          "fileId": "electric-guitar-chris-mann-a-003-stereo",
+          "bucket": "A",
+          "r2Key": "electric-guitar-chris-mann/a/003-stereo.wav",
+          "driveFileId": "1ZRrLLn1z7FybozYE-eGPxhyKUUV0jHQ8",
+          "sizeBytes": 0,
+          "mime": "audio/wav",
+          "position": 3,
+          "label": "A.3 (Electric Guitar Ambience in A) [ste]",
+          "sourceLabel": "A.3 (Electric Guitar Ambience in A) [ste]",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "A.4",
+          "fileId": "electric-guitar-chris-mann-a-004-stereo",
+          "bucket": "A",
+          "r2Key": "electric-guitar-chris-mann/a/004-stereo.wav",
+          "driveFileId": "1ZPTwwrqLCQwgqMhkWr9qm9sWUB6vaVMA",
+          "sizeBytes": 0,
+          "mime": "audio/wav",
+          "position": 4,
+          "label": "A.4 (Habit Playback) [ste]",
+          "sourceLabel": "A.4 (Habit Playback) [ste]",
+          "type": "audio",
+          "availableTypes": [
+            "audio"
+          ],
+          "role": "media"
+        }
+      ],
+      "entitlements": [
+        {
+          "type": "membership_tier",
+          "value": "member"
+        }
+      ]
+    },
+    {
       "lookupNumber": "E.Kni. Jo AV2023 S1",
       "title": "AMPLIFIED KNIVES",
       "status": "active",

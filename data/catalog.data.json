@@ -1,6 +1,6 @@
 {
   "source": "live-dexdsl-com-catalog",
-  "generated_at": "2026-06-29T00:57:47.950Z",
+  "generated_at": "2026-06-29T01:21:46.563Z",
   "anchors": {
     "performer": "#dex-performer",
     "instrument": "#dex-instrument",
@@ -9,8 +9,8 @@
     "symbols": "#list-of-identifiers"
   },
   "stats": {
-    "entries_count": 25,
-    "lookup_count": 25,
+    "entries_count": 26,
+    "lookup_count": 26,
     "seasons": [
       "S2",
       "S1"
@@ -23,6 +23,7 @@
       "BAS‌SO‌ON + ELECTRONICS WITH GENERATIVE VIDEO",
       "CEL‌LO",
       "CYBERNETIC SCAT",
+      "Electric Guitar",
       "ELECTRIC GUITAR",
       "ELECTRIC GUITAR + pedals",
       "FE‌EDBACK TELEVISIONS",
@@ -41,8 +42,7 @@
       "TWO ORGANS",
       "VOICE W/ EVERYDAY OBJECT MANIPULATION"
     ],
-    "protected_char_count": 48,
-    "uav_count": 1
+    "protected_char_count": 48
   },
   "entries": [
     {
@@ -331,6 +331,30 @@
       "lookup_norm": "e.gtr. ch av2024 s2",
       "instrument_norm": "electric guitar",
       "status": "active",
+      "kind": "catalog"
+    },
+    {
+      "id": "electric-guitar-chris-mann",
+      "title_raw": "ELECTRIC GUITAR",
+      "performer_raw": "Chris Mann",
+      "instrument_family": [
+        "Electric Guitar"
+      ],
+      "instrument_labels": [
+        "Electric Guitar"
+      ],
+      "lookup_raw": "E.Gtr. Ma A2024 S2",
+      "season": "S2",
+      "entry_href": "/entry/electric-guitar-chris-mann/",
+      "image_src": "/assets/catalog/electric-guitar-chris-mann.webp",
+      "image_alt_raw": "",
+      "featured": false,
+      "sort_key": "S2::E.Gtr. Ma A2024 S2",
+      "title_norm": "electric guitar",
+      "performer_norm": "mann, chris",
+      "lookup_norm": "e.gtr. ma a2024 s2",
+      "instrument_norm": "dholak and electronics electric guitar",
+      "status": "draft",
       "kind": "catalog"
     },
     {

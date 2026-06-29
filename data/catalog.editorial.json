@@ -1,6 +1,6 @@
 {
   "version": "catalog-editorial-v1",
-  "updatedAt": "2026-06-29T00:21:20.456Z",
+  "updatedAt": "2026-06-29T01:10:33.622Z",
   "manifest": [
     {
       "entry_id": "2-organs-midori-ataka",
@@ -145,6 +145,18 @@
       "image_src": "",
       "image_alt_raw": "",
       "status": "active"
+    },
+    {
+      "entry_id": "electric-guitar-chris-mann",
+      "entry_href": "/entry/electric-guitar-chris-mann/",
+      "title_raw": "ELECTRIC GUITAR",
+      "lookup_number": "E.Gtr. Ma A2024 S2",
+      "season": "S2",
+      "performer": "Chris Mann",
+      "instrument": "Electric Guitar",
+      "image_src": "/assets/catalog/electric-guitar-chris-mann.webp",
+      "image_alt_raw": "",
+      "status": "draft"
     },
     {
       "entry_id": "electric-guitar-pedals-ethan-bailey-gould",

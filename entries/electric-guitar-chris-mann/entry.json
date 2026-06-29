@@ -1,0 +1,129 @@
+{
+  "canonical": {
+    "instrument": "Electric Guitar",
+    "artistName": "Chris Mann"
+  },
+  "descriptionText": "Chris Mann is an electric guitarist who specializes in improvised noise & ambience performance. He got his start in the indie band Ethan Durelle, who recorded 3 LP’s and played hundreds of shows in the south and midwest. After his band broke up, Chris kept writing music and grew to enjoy the process of testing the limits of sound layering, first through his electronic music project, Trauma Like Rain, and then as a composer, sound designer, and audio editor for indie and branded podcasts. After several years working mainly inside digital work stations, Chris craved the analogue feel of real instruments and hardware, of turning knobs and playing chords. For the last few years, he has been honing his skills as an improv noise guitarist, once again testing the limits of sound layering, only this time with a much greater sense of unpredictability. Each performance is an exploration of juxtapositions - chaos and calm, discordance and beauty, constriction and breath - as well as a practice of loving what is and embracing uncertainty.",
+  "fileSpecs": {
+    "bitDepth": 24,
+    "channels": "stereo",
+    "sampleRate": 48000,
+    "staticSizes": {
+      "A": "",
+      "B": "",
+      "C": "",
+      "D": "",
+      "E": "",
+      "X": ""
+    }
+  },
+  "lifecycle": {
+    "publishedAt": "2026-06-29T01:07:16.672Z",
+    "updatedAt": "2026-06-29T01:14:20.469Z"
+  },
+  "metadata": {
+    "sampleLength": "",
+    "tags": []
+  },
+  "selectedBuckets": [
+    "A"
+  ],
+  "series": "dex",
+  "sidebarPageConfig": {
+    "attributionSentence": "Samples licensed under CC-BY 4.0 by Dex Digital Sample Library and Chris Mann.",
+    "buckets": [
+      "A"
+    ],
+    "credits": {
+      "artist": [
+        "Chris Mann"
+      ],
+      "artistAlt": null,
+      "audio": {
+        "master": [],
+        "mix": [],
+        "recording": []
+      },
+      "instrumentLinksEnabled": true,
+      "instruments": [
+        "Electric Guitar"
+      ],
+      "linksByPerson": {},
+      "location": "Baltimore, MD",
+      "season": "S2",
+      "video": {
+        "cinematography": [],
+        "director": [],
+        "editing": []
+      },
+      "year": 2024
+    },
+    "downloads": {
+      "bucketFolders": {
+        "A": {
+          "fileCount": 4,
+          "files": [
+            {
+              "id": "1ZOARPdADRdGRriuW6FhnwntLdNrrpz0d",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ma A2024 S2 A.1 (Agora) [ste].wav",
+              "size": 172031236
+            },
+            {
+              "id": "1ZNzrWrkEHRCK2UfSJypu_q7fVcgJRC99",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ma A2024 S2 A.2 (Bells) [ste].wav",
+              "size": 579369318
+            },
+            {
+              "id": "1ZRrLLn1z7FybozYE-eGPxhyKUUV0jHQ8",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ma A2024 S2 A.3 (Electric Guitar Ambience in A) [ste].wav",
+              "size": 377938870
+            },
+            {
+              "id": "1ZPTwwrqLCQwgqMhkWr9qm9sWUB6vaVMA",
+              "mimeType": "audio/x-wav",
+              "name": "E.Gtr. Ma A2024 S2 A.4 (Habit Playback) [ste].wav",
+              "size": 279705880
+            }
+          ],
+          "folderId": "1YRP9YO_baavreMEnQgyL7ipfPb9iHLM5",
+          "scannedAt": "2026-06-29T01:14:17.573Z",
+          "totalBytes": 1409045304
+        }
+      },
+      "selectedBuckets": [
+        "A"
+      ]
+    },
+    "fileSpecs": {
+      "bitDepth": 24,
+      "channels": "stereo",
+      "sampleRate": 48000,
+      "staticSizes": {
+        "A": "1.3 GB",
+        "B": "",
+        "C": "",
+        "D": "",
+        "E": "",
+        "X": ""
+      }
+    },
+    "lookupNumber": "E.Gtr. Ma A2024 S2",
+    "metadata": {
+      "sampleLength": "",
+      "tags": []
+    },
+    "series": "dex",
+    "specialEventImage": "/assets/series/dex.png"
+  },
+  "slug": "electric-guitar-chris-mann",
+  "title": "ELECTRIC GUITAR",
+  "video": {
+    "dataHtml": "",
+    "dataUrl": "https://youtu.be/n8hrxOz6-Tg",
+    "dataUrlOriginal": "https://youtu.be/n8hrxOz6-Tg",
+    "mode": "url"
+  }
+}

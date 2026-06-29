@@ -1,8 +1,16 @@
 {
-  "generated_at": "2026-06-21T09:28:08.720Z",
+  "generated_at": "2026-06-29T01:22:58.796Z",
   "source": "catalog.editorial.json + catalog.entries.json",
-  "count": 25,
+  "count": 26,
   "entries": [
+    {
+      "lookup": "DR.Win. Mo 2026 T1",
+      "slug": "mojave-wind-farm",
+      "href": "/uav/mojave-wind-farm/",
+      "title": "Mojave Desert – Wind Farms",
+      "performer_display": "",
+      "performers": []
+    },
     {
       "lookup": "E.Gtr. Ba AV2023 S1",
       "slug": "electric-guitar-pedals-ethan-bailey-gould",
@@ -21,6 +29,16 @@
       "performer_display": "Andrew Chanover",
       "performers": [
         "andrew chanover"
+      ]
+    },
+    {
+      "lookup": "E.Gtr. Ma A2024 S2",
+      "slug": "electric-guitar-chris-mann",
+      "href": "/entry/electric-guitar-chris-mann/",
+      "title": "ELECTRIC GUITAR",
+      "performer_display": "Chris Mann",
+      "performers": [
+        "chris mann"
       ]
     },
     {
@@ -58,7 +76,7 @@
       "slug": "prepared-harpsichord-suarez-solis",
       "href": "/entry/prepared-harpsichord-suarez-solis/",
       "title": "PREPARED HARPSICHORD",
-      "performer_display": "suarez-solis, sebastian",
+      "performer_display": "sebastian suarez-solis",
       "performers": [
         "sebastian suarez solis"
       ]
@@ -71,16 +89,6 @@
       "performer_display": "midori ataka",
       "performers": [
         "midori ataka"
-      ]
-    },
-    {
-      "lookup": "LOOKUP-1",
-      "slug": "smoke-title",
-      "href": "/entry/smoke-title/",
-      "title": "Smoke Title",
-      "performer_display": "Artist",
-      "performers": [
-        "artist"
       ]
     },
     {
@@ -100,7 +108,6 @@
       "title": "AS THOUGH I’M SLIP‌PING - MIXED ENSEMBLE",
       "performer_display": "Paul Yorke, Sofi Jacquez",
       "performers": [
-        "paul sofi yorke jaquez",
         "sofi jacquez paul yorke"
       ]
     },
@@ -159,7 +166,7 @@
       "slug": "prepared-bass-viol-suarez-solis",
       "href": "/entry/prepared-bass-viol-suarez-solis/",
       "title": "PREPARED BAS‌S VIOL",
-      "performer_display": "suarez-solis, sebastian",
+      "performer_display": "sebastian suarez-solis",
       "performers": [
         "sebastian suarez solis"
       ]
@@ -169,8 +176,9 @@
       "slug": "cello-emmanuel-losa",
       "href": "/entry/cello-emmanuel-losa/",
       "title": "CEL‌LO",
-      "performer_display": "emmanuel losa",
+      "performer_display": "em‎‏‏‎manuel losa",
       "performers": [
+        "em manuel losa",
         "emmanuel losa"
       ]
     },
@@ -211,7 +219,6 @@
       "title": "BAS‌SO‌ON + ELECTRONICS WITH GENERATIVE VIDEO",
       "performer_display": "Arlo Tomecek, Max Coleman",
       "performers": [
-        "arlo max tomecek coleman",
         "max coleman arlo tomecek"
       ]
     },
@@ -249,7 +256,7 @@
       "lookup": "X.Tlv. Pl AV2023 S1",
       "slug": "amplified-tv-sam-pluta",
       "href": "/entry/amplified-tv-sam-pluta/",
-      "title": "AMPLIFIED TV SETS",
+      "title": "FEEDBACK TELEVISIONS",
       "performer_display": "sam pluta",
       "performers": [
         "sam pluta"

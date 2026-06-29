@@ -13,7 +13,6 @@ const INVISIBLE_MARKS_RE = /[​‎‏‪-‮⁠⁦-⁩﻿]/g;
 // be excluded from the catalog. Deletions made here survive a live re-extraction.
 export const EXCLUDED_ENTRY_IDS = new Set([
   'splinterings-jakob-heinemann',
-  'electric-guitar-chris-mann',
   'sebastian-suarez-solis',
   // Legacy Squarespace catalog row that the live scrape keeps re-introducing.
   // Superseded by the locally-authored entry `snare-drum-matt-leveque`.
