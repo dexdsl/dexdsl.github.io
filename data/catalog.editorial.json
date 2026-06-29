@@ -1,6 +1,6 @@
 {
   "version": "catalog-editorial-v1",
-  "updatedAt": "2026-06-29T02:02:26.386Z",
+  "updatedAt": "2026-06-29T05:24:40.876Z",
   "manifest": [
     {
       "entry_id": "2-organs-midori-ataka",
@@ -12,7 +12,7 @@
       "instrument": "TWO ORGANS",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "aidan-yeats",
@@ -36,7 +36,7 @@
       "instrument": "AMPLIFIED KNIVES",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "amplified-printer",
@@ -60,7 +60,7 @@
       "instrument": "FE‌EDBACK TELEVISIONS",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "anant-shah",
@@ -132,7 +132,7 @@
       "instrument": "CEL‌LO",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "cybernetic-scat-paul-hermansen",
@@ -168,7 +168,7 @@
       "instrument": "ELECTRIC GUITAR + pedals",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "hammered-dulcimer-cameron-church",
@@ -180,7 +180,7 @@
       "instrument": "PREPARED HAM‌MERED DULCIMER + DIGITAL SIGNAL PROCES‌SOR",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "jakob-heinemann",
@@ -216,7 +216,7 @@
       "instrument": "NO IMPUT MIXING BOARD",
       "image_src": "",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "prepared-bass-viol-suarez-solis",
@@ -228,7 +228,7 @@
       "instrument": "PREPARED BAS‌S VIOL",
       "image_src": "/assets/catalog/prepared-bass-viol-suarez-solis.png",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "prepared-harpsichord-suarez-solis",
@@ -240,7 +240,7 @@
       "instrument": "PREPARED HARPSICHORD",
       "image_src": "/assets/catalog/prepared-harpsichord-suarez-solis.webp",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "prepared-oboe-sky-macklay",
