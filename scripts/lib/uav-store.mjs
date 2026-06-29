@@ -879,6 +879,24 @@ export async function preflightUavCollection(slug, { rootDir, privateFilePath } 
       ? `${driveIds.length} stable Drive file identities; missing files retain their assigned numbers`
       : 'A Drive file identity is assigned more than once',
   );
+  const presentFiles = folder.manifest.groups.flatMap((group) =>
+    group.buckets.flatMap((bucket) => bucket.files.filter((file) => !file.missing)));
+  const downloadableFiles = presentFiles.filter((file) => file.role !== 'recording_index_pdf');
+  add(
+    'downloadable_files',
+    downloadableFiles.length > 0,
+    downloadableFiles.length > 0
+      ? `${downloadableFiles.length} present downloadable file(s) across buckets`
+      : 'No downloadable files: every deliverable bucket is empty or all files are marked missing',
+  );
+  const recordingIndexFiles = presentFiles.filter((file) => file.role === 'recording_index_pdf');
+  add(
+    'recording_index',
+    recordingIndexFiles.length > 0,
+    recordingIndexFiles.length > 0
+      ? `Recording-index PDF present in the X bucket (${recordingIndexFiles.length})`
+      : 'No recording-index PDF: add a recording-index PDF to the X bucket',
+  );
   const marc = generateUavMarcXml(folder.collection, folder.manifest, authorities);
   const marcCheck = verifyUavMarcXml(marc);
   add('marcxml', marcCheck.ok, marcCheck.ok ? 'MARCXML projection is structurally valid' : marcCheck.issues.join('; '));

@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-29T00:36:57.729Z",
-  "total": 26,
+  "generated_at": "2026-06-29T01:01:19.577Z",
+  "total": 25,
   "entries": [
     {
       "kind": "catalog",
@@ -229,25 +229,6 @@
       "lookup_norm": "e.gtr. ch av2024 s2",
       "instrument_norm": "electric guitar",
       "search_blob": "electric guitar andrew chanover e.gtr. ch av2024 s2 electric guitar electric guitar"
-    },
-    {
-      "kind": "catalog",
-      "id": "electric-guitar-chris-mann",
-      "entry_href": "/entry/electric-guitar-chris-mann/",
-      "season": "S2",
-      "title_raw": "ELECTRIC GUITAR",
-      "performer_raw": "mann, chris",
-      "lookup_raw": "E.Gtr. Ma A2024 S2",
-      "instrument_family": [
-        "DHOLAK AND ELECTRONICS"
-      ],
-      "site_norm": "",
-      "subject_norm": "",
-      "title_norm": "electric guitar",
-      "performer_norm": "mann, chris",
-      "lookup_norm": "e.gtr. ma a2024 s2",
-      "instrument_norm": "dholak and electronics",
-      "search_blob": "electric guitar mann, chris e.gtr. ma a2024 s2 dholak and electronics dholak and electronics"
     },
     {
       "kind": "catalog",
@@ -483,8 +464,11 @@
       "entry_href": "/uav/mojave-wind-farm/",
       "title_raw": "Mojave Desert – Wind Farms",
       "lookup_raw": "DR.Win. Mo 2026 T1",
+      "title_norm": "mojave desert – wind farms",
+      "lookup_norm": "dr.win. mo 2026 t1",
       "site_norm": "mojave desert",
       "subject_norm": "wind power plants wind power plants mojave desert",
+      "search_blob": "mojave desert – wind farms dr.win. mo 2026 t1 mojave desert california, united states wind power plants wind power plants mojave desert v fs",
       "uav": {
         "collection_lookup": "DR.Win. Mo 2026 T1",
         "site": {
@@ -554,12 +538,7 @@
             "spectrum": "FS"
           }
         ]
-      },
-      "title_norm": "mojave desert – wind farms",
-      "performer_norm": "",
-      "lookup_norm": "dr.win. mo 2026 t1",
-      "instrument_norm": "",
-      "search_blob": "mojave desert – wind farms dr.win. mo 2026 t1 mojave desert california, united states wind power plants wind power plants mojave desert v fs"
+      }
     }
   ]
 }

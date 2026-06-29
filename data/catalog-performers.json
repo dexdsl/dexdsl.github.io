@@ -1,7 +1,7 @@
 {
   "generated_at": "2026-06-21T09:28:08.720Z",
   "source": "catalog.editorial.json + catalog.entries.json",
-  "count": 26,
+  "count": 25,
   "entries": [
     {
       "lookup": "E.Gtr. Ba AV2023 S1",
@@ -21,16 +21,6 @@
       "performer_display": "Andrew Chanover",
       "performers": [
         "andrew chanover"
-      ]
-    },
-    {
-      "lookup": "E.Gtr. Ma A2024 S2",
-      "slug": "electric-guitar-chris-mann",
-      "href": "/entry/electric-guitar-chris-mann/",
-      "title": "ELECTRIC GUITAR",
-      "performer_display": "mann, chris",
-      "performers": [
-        "chris mann"
       ]
     },
     {

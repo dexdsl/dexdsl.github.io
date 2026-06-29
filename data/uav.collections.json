@@ -1,9 +1,9 @@
 {
   "version": "uav-collections-v1",
-  "generatedAt": "2026-06-28T10:47:52.848Z",
+  "generatedAt": "2026-06-29T01:01:19.568Z",
   "authorities": {
     "version": "uav-authorities-v1",
-    "updatedAt": "2026-06-28T10:47:52.787Z",
+    "updatedAt": "2026-06-29T01:01:19.560Z",
     "subjects": [
       {
         "id": "subject-win",
