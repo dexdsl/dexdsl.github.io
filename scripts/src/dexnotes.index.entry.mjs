@@ -45,6 +45,7 @@ import { mountPollEmbeds } from './shared/dx-polls-embed.entry.mjs';
   }
 
   function startBlobMotion() {
+    if (window.__dxDisableRouteGooeyBootstrap) return;
     const activeRuntime = window[BLOB_RUNTIME_KEY];
     if (activeRuntime && activeRuntime.handle !== blobRuntimeHandle && typeof activeRuntime.stop === 'function') {
       try {

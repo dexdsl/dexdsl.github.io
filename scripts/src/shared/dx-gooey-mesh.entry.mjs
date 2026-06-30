@@ -64,7 +64,10 @@ export function ensureGooeyMesh() {
 
 export function startBlobMotion() {
   const mesh = ensureGooeyMesh();
-  if (!mesh || prefersReducedMotion()) return;
+  // header-slot.js owns the persistent mesh across soft navigation. Catalog
+  // previously started this legacy route-local loop as well, re-centering every
+  // blob and randomizing its velocity whenever the route mounted.
+  if (!mesh || window.__dxDisableRouteGooeyBootstrap || prefersReducedMotion()) return;
 
   const blobs = Array.from(mesh.querySelectorAll('.gooey-blob'));
   if (!blobs.length) return;

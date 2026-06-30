@@ -1,6 +1,6 @@
 {
   "version": "protected-assets-v1",
-  "updatedAt": "2026-06-29T19:13:06.710Z",
+  "updatedAt": "2026-06-30T19:15:07.365Z",
   "settings": {
     "storageBucket": "dex-protected-assets",
     "allowedBuckets": [
@@ -9,7 +9,8 @@
       "C",
       "D",
       "E",
-      "X"
+      "X",
+      "V"
     ],
     "syncStrategy": "manifest-publish"
   },
@@ -21,16 +22,118 @@
       "season": "T1",
       "files": [
         {
+          "bucketNumber": "V.1",
+          "fileId": "asset:1yIxjXnzMrTbfCDMfzvV9_2phgAs7t8G0",
+          "bucket": "V",
+          "r2Key": "uav/mojave-wind-farm/v/1yIxjXnzMrTbfCDMfzvV9_2phgAs7t8G0-DR.Win Mo V2026 T1 V.1.mov",
+          "driveFileId": "1yIxjXnzMrTbfCDMfzvV9_2phgAs7t8G0",
+          "sizeBytes": 1560038828,
+          "mime": "video/quicktime",
+          "position": 1,
+          "label": "DR.Win. Mo V2026 T1 [FS] V.1",
+          "sourceLabel": "DR.Win Mo V2026 T1 V.1.mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "V.2",
+          "fileId": "asset:1PoCsjQIksI9Y1nz2y1tq2VfEArIPKjK1",
+          "bucket": "V",
+          "r2Key": "uav/mojave-wind-farm/v/1PoCsjQIksI9Y1nz2y1tq2VfEArIPKjK1-DR.Win Mo V2026 T1 V.2.mov",
+          "driveFileId": "1PoCsjQIksI9Y1nz2y1tq2VfEArIPKjK1",
+          "sizeBytes": 1052799131,
+          "mime": "video/quicktime",
+          "position": 2,
+          "label": "DR.Win. Mo V2026 T1 [FS] V.2",
+          "sourceLabel": "DR.Win Mo V2026 T1 V.2.mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "V.3",
+          "fileId": "asset:1tbh-vMuDK6jeVRfZem2SgD_yHdahf9aP",
+          "bucket": "V",
+          "r2Key": "uav/mojave-wind-farm/v/1tbh-vMuDK6jeVRfZem2SgD_yHdahf9aP-DR.Win Mo V2026 T1 V.3.mov",
+          "driveFileId": "1tbh-vMuDK6jeVRfZem2SgD_yHdahf9aP",
+          "sizeBytes": 818064532,
+          "mime": "video/quicktime",
+          "position": 3,
+          "label": "DR.Win. Mo V2026 T1 [FS] V.3",
+          "sourceLabel": "DR.Win Mo V2026 T1 V.3.mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "V.4",
+          "fileId": "asset:1m3Zu5YvcFcD9svKA0LbKvpi--Rekdq61",
+          "bucket": "V",
+          "r2Key": "uav/mojave-wind-farm/v/1m3Zu5YvcFcD9svKA0LbKvpi--Rekdq61-DR.Win Mo V2026 T1 V.4.mov",
+          "driveFileId": "1m3Zu5YvcFcD9svKA0LbKvpi--Rekdq61",
+          "sizeBytes": 1343326042,
+          "mime": "video/quicktime",
+          "position": 4,
+          "label": "DR.Win. Mo V2026 T1 [FS] V.4",
+          "sourceLabel": "DR.Win Mo V2026 T1 V.4.mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "V.5",
+          "fileId": "asset:16mtWh9dAMoutR9ffOBGYx8eGb3PCkFw5",
+          "bucket": "V",
+          "r2Key": "uav/mojave-wind-farm/v/16mtWh9dAMoutR9ffOBGYx8eGb3PCkFw5-DR.Win Mo V2026 T1 V.5.mov",
+          "driveFileId": "16mtWh9dAMoutR9ffOBGYx8eGb3PCkFw5",
+          "sizeBytes": 1005449773,
+          "mime": "video/quicktime",
+          "position": 5,
+          "label": "DR.Win. Mo V2026 T1 [FS] V.5",
+          "sourceLabel": "DR.Win Mo V2026 T1 V.5.mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
+          "bucketNumber": "V.6",
+          "fileId": "asset:1kOZ22b8NmpqhN-gmz9_GdNXktYrqkWvk",
+          "bucket": "V",
+          "r2Key": "uav/mojave-wind-farm/v/1kOZ22b8NmpqhN-gmz9_GdNXktYrqkWvk-DR.Win Mo V2026 T1 V.6.mov",
+          "driveFileId": "1kOZ22b8NmpqhN-gmz9_GdNXktYrqkWvk",
+          "sizeBytes": 329396180,
+          "mime": "video/quicktime",
+          "position": 6,
+          "label": "DR.Win. Mo V2026 T1 [FS] V.6",
+          "sourceLabel": "DR.Win Mo V2026 T1 V.6.mov",
+          "type": "video",
+          "availableTypes": [
+            "video"
+          ],
+          "role": "media"
+        },
+        {
           "bucketNumber": "X.1",
           "fileId": "asset:1yRKiERCE58W_U71Jq60STUjhisYOYtu_",
           "bucket": "X",
-          "r2Key": "uav/mojave-wind-farm/x/1yRKiERCE58W_U71Jq60STUjhisYOYtu_-DJI_0872.MOV",
+          "r2Key": "uav/mojave-wind-farm/x/1yRKiERCE58W_U71Jq60STUjhisYOYtu_-DR.Win Mo V2026 T1 X.5.MOV",
           "driveFileId": "1yRKiERCE58W_U71Jq60STUjhisYOYtu_",
           "sizeBytes": 3758909579,
           "mime": "video/quicktime",
-          "position": 1,
+          "position": 7,
           "label": "DR.Win. Mo V2026 T1 [FS] X.1",
-          "sourceLabel": "DJI_0872.MOV",
+          "sourceLabel": "DR.Win Mo V2026 T1 X.5.MOV",
           "type": "video",
           "availableTypes": [
             "video"
@@ -41,13 +144,13 @@
           "bucketNumber": "X.2",
           "fileId": "asset:1bZ6Wv8Nv7PqD-OtYH6lDYpGa3epYqQy-",
           "bucket": "X",
-          "r2Key": "uav/mojave-wind-farm/x/1bZ6Wv8Nv7PqD-OtYH6lDYpGa3epYqQy--DJI_0873.MOV",
+          "r2Key": "uav/mojave-wind-farm/x/1bZ6Wv8Nv7PqD-OtYH6lDYpGa3epYqQy--DR.Win Mo V2026 T1 X.2.MOV",
           "driveFileId": "1bZ6Wv8Nv7PqD-OtYH6lDYpGa3epYqQy-",
           "sizeBytes": 2698477493,
           "mime": "video/quicktime",
-          "position": 2,
+          "position": 8,
           "label": "DR.Win. Mo V2026 T1 [FS] X.2",
-          "sourceLabel": "DJI_0873.MOV",
+          "sourceLabel": "DR.Win Mo V2026 T1 X.2.MOV",
           "type": "video",
           "availableTypes": [
             "video"
@@ -58,13 +161,13 @@
           "bucketNumber": "X.3",
           "fileId": "asset:172U2iEcwdP4BjvkbS3kazO33-Q9odXpu",
           "bucket": "X",
-          "r2Key": "uav/mojave-wind-farm/x/172U2iEcwdP4BjvkbS3kazO33-Q9odXpu-DJI_0874.MOV",
+          "r2Key": "uav/mojave-wind-farm/x/172U2iEcwdP4BjvkbS3kazO33-Q9odXpu-DR.Win Mo V2026 T1 X.3.MOV",
           "driveFileId": "172U2iEcwdP4BjvkbS3kazO33-Q9odXpu",
           "sizeBytes": 3523066596,
           "mime": "video/quicktime",
-          "position": 3,
+          "position": 9,
           "label": "DR.Win. Mo V2026 T1 [FS] X.3",
-          "sourceLabel": "DJI_0874.MOV",
+          "sourceLabel": "DR.Win Mo V2026 T1 X.3.MOV",
           "type": "video",
           "availableTypes": [
             "video"
@@ -75,13 +178,13 @@
           "bucketNumber": "X.4",
           "fileId": "asset:1AVk6SE5RvNMGhIgQvjqp0hiqq_j8VPZM",
           "bucket": "X",
-          "r2Key": "uav/mojave-wind-farm/x/1AVk6SE5RvNMGhIgQvjqp0hiqq_j8VPZM-DJI_0876.MOV",
+          "r2Key": "uav/mojave-wind-farm/x/1AVk6SE5RvNMGhIgQvjqp0hiqq_j8VPZM-DR.Win Mo V2026 T1 X.4.MOV",
           "driveFileId": "1AVk6SE5RvNMGhIgQvjqp0hiqq_j8VPZM",
           "sizeBytes": 2703461887,
           "mime": "video/quicktime",
-          "position": 4,
+          "position": 10,
           "label": "DR.Win. Mo V2026 T1 [FS] X.4",
-          "sourceLabel": "DJI_0876.MOV",
+          "sourceLabel": "DR.Win Mo V2026 T1 X.4.MOV",
           "type": "video",
           "availableTypes": [
             "video"
@@ -92,13 +195,13 @@
           "bucketNumber": "X.5",
           "fileId": "asset:1f2ALFmxbOvUnDICs-8Jw5K2Wa_PJN7lH",
           "bucket": "X",
-          "r2Key": "uav/mojave-wind-farm/x/1f2ALFmxbOvUnDICs-8Jw5K2Wa_PJN7lH-DJI_0877.MOV",
+          "r2Key": "uav/mojave-wind-farm/x/1f2ALFmxbOvUnDICs-8Jw5K2Wa_PJN7lH-DR.Win Mo V2026 T1 X.1.MOV",
           "driveFileId": "1f2ALFmxbOvUnDICs-8Jw5K2Wa_PJN7lH",
           "sizeBytes": 3455928488,
           "mime": "video/quicktime",
-          "position": 5,
+          "position": 11,
           "label": "DR.Win. Mo V2026 T1 [FS] X.5",
-          "sourceLabel": "DJI_0877.MOV",
+          "sourceLabel": "DR.Win Mo V2026 T1 X.1.MOV",
           "type": "video",
           "availableTypes": [
             "video"

@@ -95,6 +95,7 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
   }
 
   function startBlobMotion() {
+    if (window.__dxDisableRouteGooeyBootstrap) return;
     const mesh = ensureGooeyMesh();
     if (!mesh || prefersReducedMotion()) return;
 

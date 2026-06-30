@@ -1,9 +1,9 @@
 {
   "version": "uav-collections-v1",
-  "generatedAt": "2026-06-29T05:19:27.717Z",
+  "generatedAt": "2026-06-30T19:15:07.356Z",
   "authorities": {
     "version": "uav-authorities-v1",
-    "updatedAt": "2026-06-29T05:19:27.712Z",
+    "updatedAt": "2026-06-30T19:15:07.350Z",
     "subjects": [
       {
         "id": "subject-win",
@@ -93,7 +93,7 @@
         "Kolari Vision"
       ],
       "creditLinks": {},
-      "imageSrc": "https://i.ytimg.com/vi/twdIXFbrbsU/maxresdefault.jpg",
+      "imageSrc": "https://i.ytimg.com/vi/79zocZrca_I/maxresdefault.jpg",
       "previewUrl": "",
       "description": "Mojave Desert wind farms documented by Dex Digital Sample Library during a full-spectrum UAV capture tour on April 2, 2026. The collection preserves aerial-video deliverables and their associated raw and support materials under CC BY 4.0.",
       "recordingIndex": {
@@ -125,7 +125,7 @@
       ],
       "lifecycle": {
         "createdAt": "2026-06-27T18:44:14.296Z",
-        "updatedAt": "2026-06-29T05:19:27.695Z",
+        "updatedAt": "2026-06-30T19:15:07.332Z",
         "publishedAt": "2026-06-27T18:45:00.192Z"
       }
     }
@@ -138,7 +138,7 @@
       "lookup_raw": "DR.Win. Mo 2026 T1",
       "lookup_norm": "dr.win. mo 2026 t1",
       "entry_href": "/uav/mojave-wind-farm/",
-      "image_src": "https://i.ytimg.com/vi/twdIXFbrbsU/maxresdefault.jpg",
+      "image_src": "https://i.ytimg.com/vi/79zocZrca_I/maxresdefault.jpg",
       "image_alt_raw": "Mojave Desert – Wind Farms",
       "featured": false,
       "status": "active",

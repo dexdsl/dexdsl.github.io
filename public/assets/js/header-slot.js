@@ -22,14 +22,17 @@
   const ROUTE_TRANSITION_TYPE_ATTR = 'data-dx-route-transition-type';
   const GOOEY_MESH_STATE_STORAGE_KEY = '__dxGooeyMeshState';
   const GOOEY_MESH_CANONICAL_STYLE_ID = 'dx-gooey-mesh-canonical-style';
-  const GOOEY_SPEED_MIN = 14.4;
-  const GOOEY_SPEED_MAX = 28.8;
-  const GOOEY_SPEED_DEFAULT = 21.6;
-  // Gentle pull toward viewport centre so blobs never fully disperse to the
-  // corners. Dispersal is what makes the goo alpha-threshold zero everything out
-  // and the mesh "goes blank after a while". Direction-only (speed is re-banded
-  // each frame), so it nudges without slowing the motion.
-  const GOOEY_RECENTER_STRENGTH = 0.16;
+  const GOOEY_SPEED_MIN = 4.2;
+  const GOOEY_SPEED_MAX = 10.2;
+  const GOOEY_SPEED_DEFAULT = 6.8;
+  // The mesh should drift, not orbit the viewport centre. A very soft spring
+  // prevents long-term edge parking, while pair separation keeps the five
+  // shapes from spending most of their time fused into one mass.
+  const GOOEY_RECENTER_STRENGTH = 0.0018;
+  const GOOEY_WANDER_STRENGTH = 0.42;
+  const GOOEY_SEPARATION_STRENGTH = 7.5;
+  const GOOEY_SEPARATION_RATIO = 0.82;
+  const GOOEY_SPEED_RECOVERY = 0.7;
   const MOBILE_MENU_ROOT_ID = 'dx-mobile-menu';
   const MOBILE_MENU_OPEN_CLASS = 'dx-mobile-menu-open';
   const MOBILE_BREAKPOINT_QUERY = '(max-width: 980px)';
@@ -1768,6 +1771,8 @@
         next.vx = normalizedVelocity.vx;
         next.vy = normalizedVelocity.vy;
       }
+      const phase = Number(next.phase);
+      next.phase = Number.isFinite(phase) ? phase : fallbackAngle;
       return next;
     });
   }
@@ -3593,6 +3598,7 @@
       vx: Number(blob._vx),
       vy: Number(blob._vy),
       rad: Number(blob._rad),
+      phase: Number(blob._phase),
     }));
 
     return normalizeGooeyMeshStateSnapshot(snapshot);
@@ -3617,6 +3623,7 @@
       if (Number.isFinite(item.vx)) blob._vx = item.vx;
       if (Number.isFinite(item.vy)) blob._vy = item.vy;
       if (Number.isFinite(item.rad)) blob._rad = item.rad;
+      if (Number.isFinite(item.phase)) blob._phase = item.phase;
       if (typeof item.transform === 'string') blob.style.transform = item.transform;
     }
 
@@ -3649,6 +3656,9 @@
       const speed = GOOEY_SPEED_MIN + Math.random() * (GOOEY_SPEED_MAX - GOOEY_SPEED_MIN);
       blob._vx = Math.cos(angle) * speed;
       blob._vy = Math.sin(angle) * speed;
+    }
+    if (!Number.isFinite(Number(blob._phase))) {
+      blob._phase = (index + 1) * 2.399963229728653 + Math.random() * 0.35;
     }
   }
 
@@ -3684,21 +3694,73 @@
     const centreX = vw / 2;
     const centreY = vh / 2;
 
+    // Give each blob its own slow steering curve. The phases are persisted with
+    // the route state, so navigation never changes the character of the field.
+    const elapsed = now / 1000;
+    for (let index = 0; index < gooeyDriverBlobs.length; index += 1) {
+      const blob = gooeyDriverBlobs[index];
+      if (!(blob instanceof HTMLElement)) continue;
+      ensureGooeyBlobKinematics(blob, index, vw, vh);
+      const phase = Number(blob._phase);
+      blob._vx += Math.cos((elapsed * 0.055) + phase) * GOOEY_WANDER_STRENGTH * dt;
+      blob._vy += Math.sin((elapsed * 0.047) + (phase * 1.17)) * GOOEY_WANDER_STRENGTH * dt;
+      blob._vx += (centreX - blob._x) * GOOEY_RECENTER_STRENGTH * dt;
+      blob._vy += (centreY - blob._y) * GOOEY_RECENTER_STRENGTH * dt;
+    }
+
+    // Short-range repulsion only acts while two cores are deeply overlapping.
+    // Blobs can still touch and merge, but a full-field pile-up gently unfolds
+    // into several independent shapes instead of becoming the default state.
+    for (let leftIndex = 0; leftIndex < gooeyDriverBlobs.length; leftIndex += 1) {
+      const left = gooeyDriverBlobs[leftIndex];
+      if (!(left instanceof HTMLElement)) continue;
+      const leftRadius = Number(left._rad) > 0 ? Number(left._rad) : resolveGooeyBlobRadius(left);
+      for (let rightIndex = leftIndex + 1; rightIndex < gooeyDriverBlobs.length; rightIndex += 1) {
+        const right = gooeyDriverBlobs[rightIndex];
+        if (!(right instanceof HTMLElement)) continue;
+        const rightRadius = Number(right._rad) > 0 ? Number(right._rad) : resolveGooeyBlobRadius(right);
+        const desiredDistance = Math.max(24, (leftRadius + rightRadius) * GOOEY_SEPARATION_RATIO);
+        let dx = Number(right._x) - Number(left._x);
+        let dy = Number(right._y) - Number(left._y);
+        let distance = Math.hypot(dx, dy);
+        if (distance >= desiredDistance) continue;
+
+        if (distance < 0.001) {
+          const splitAngle = ((leftIndex + 1) * 1.61803398875) + ((rightIndex + 1) * 2.399963229728653);
+          dx = Math.cos(splitAngle);
+          dy = Math.sin(splitAngle);
+          distance = 1;
+        }
+        const compression = 1 - Math.min(distance / desiredDistance, 1);
+        const impulse = GOOEY_SEPARATION_STRENGTH * compression * dt;
+        const nx = dx / distance;
+        const ny = dy / distance;
+        left._vx -= nx * impulse;
+        left._vy -= ny * impulse;
+        right._vx += nx * impulse;
+        right._vy += ny * impulse;
+      }
+    }
+
     for (let index = 0; index < gooeyDriverBlobs.length; index += 1) {
       const blob = gooeyDriverBlobs[index];
       if (!(blob instanceof HTMLElement)) continue;
       const radius = Number(blob._rad) > 0 ? Number(blob._rad) : resolveGooeyBlobRadius(blob);
-
-      // Direction-only pull toward centre, then re-band the speed so the nudge
-      // steers without changing pace.
-      blob._vx += (centreX - blob._x) * GOOEY_RECENTER_STRENGTH * dt;
-      blob._vy += (centreY - blob._y) * GOOEY_RECENTER_STRENGTH * dt;
       const speed = Math.hypot(blob._vx, blob._vy);
       if (speed > 0.0001) {
-        const banded = Math.min(GOOEY_SPEED_MAX, Math.max(GOOEY_SPEED_MIN, speed));
-        const scale = banded / speed;
-        blob._vx *= scale;
-        blob._vy *= scale;
+        if (speed > GOOEY_SPEED_MAX) {
+          const scale = GOOEY_SPEED_MAX / speed;
+          blob._vx *= scale;
+          blob._vy *= scale;
+        } else if (speed < GOOEY_SPEED_MIN) {
+          const recoveredSpeed = Math.min(
+            GOOEY_SPEED_MIN,
+            speed + (GOOEY_SPEED_RECOVERY * dt),
+          );
+          const scale = recoveredSpeed / speed;
+          blob._vx *= scale;
+          blob._vy *= scale;
+        }
       }
 
       blob._x += blob._vx * dt;

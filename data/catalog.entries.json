@@ -1,6 +1,6 @@
 {
   "source": "live-dexdsl-com-catalog",
-  "generated_at": "2026-06-29T05:19:27.720Z",
+  "generated_at": "2026-06-30T19:15:07.450Z",
   "anchors": {
     "performer": "#dex-performer",
     "instrument": "#dex-instrument",
@@ -660,7 +660,7 @@
       "lookup_raw": "DR.Win. Mo 2026 T1",
       "lookup_norm": "dr.win. mo 2026 t1",
       "entry_href": "/uav/mojave-wind-farm/",
-      "image_src": "https://i.ytimg.com/vi/twdIXFbrbsU/maxresdefault.jpg",
+      "image_src": "https://i.ytimg.com/vi/79zocZrca_I/maxresdefault.jpg",
       "image_alt_raw": "Mojave Desert – Wind Farms",
       "featured": false,
       "status": "active",

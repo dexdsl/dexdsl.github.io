@@ -138,6 +138,68 @@ test('route intent prefetches UAV HTML before activation', async ({ page }) => {
   await expect(page.locator('.dx-catalog-index-shell')).toBeVisible();
 });
 
+test('routing into Catalog preserves the persistent gooey-mesh field', async ({ page }) => {
+  await useLocalHeaderSlot(page);
+  await page.goto('/about/', { waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => typeof window.dxNavigate === 'function');
+  await page.waitForFunction(() => document.querySelectorAll('#gooey-mesh-wrapper .gooey-blob').length >= 5);
+
+  const before = await page.evaluate(() => {
+    const blobs = Array.from(document.querySelectorAll<HTMLElement>('#gooey-mesh-wrapper .gooey-blob'));
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const yRatios = [0.24, 0.72, 0.38, 0.78, 0.52];
+    const snapshot = blobs.map((blob, index) => {
+      const radius = Number((blob as any)._rad) || (blob.offsetWidth / 2);
+      const availableWidth = Math.max(width - (radius * 2), 1);
+      const availableHeight = Math.max(height - (radius * 2), 1);
+      const x = radius + (availableWidth * ((index + 1) / (blobs.length + 1)));
+      const y = radius + (availableHeight * yRatios[index % yRatios.length]);
+      const angle = (index + 1) * 1.17;
+      const speed = 5.2 + (index * 0.55);
+      const phase = (index + 1) * 2.399963229728653;
+
+      (blob as any)._rad = radius;
+      (blob as any)._x = x;
+      (blob as any)._y = y;
+      (blob as any)._vx = Math.cos(angle) * speed;
+      (blob as any)._vy = Math.sin(angle) * speed;
+      (blob as any)._phase = phase;
+      blob.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+      return { x, y, phase };
+    });
+
+    void window.dxNavigate?.('/catalog/', { pushHistory: true });
+    return snapshot;
+  });
+
+  await expect(page).toHaveURL(/\/catalog\/?$/);
+  await expect(page.locator('.dx-catalog-index-shell')).toBeVisible();
+  await page.waitForTimeout(180);
+
+  const after = await page.evaluate(() => (
+    Array.from(document.querySelectorAll<HTMLElement>('#gooey-mesh-wrapper .gooey-blob')).map((blob) => ({
+      x: Number((blob as any)._x),
+      y: Number((blob as any)._y),
+      vx: Number((blob as any)._vx),
+      vy: Number((blob as any)._vy),
+      phase: Number((blob as any)._phase),
+    }))
+  ));
+
+  expect(after).toHaveLength(before.length);
+  for (let index = 0; index < after.length; index += 1) {
+    expect(Math.hypot(after[index].x - before[index].x, after[index].y - before[index].y)).toBeLessThan(64);
+    expect(Math.hypot(after[index].vx, after[index].vy)).toBeLessThanOrEqual(10.21);
+    expect(Math.hypot(after[index].vx, after[index].vy)).toBeGreaterThanOrEqual(4.1);
+    expect(after[index].phase).toBeCloseTo(before[index].phase, 8);
+  }
+
+  const horizontalSpread = Math.max(...after.map((item) => item.x)) - Math.min(...after.map((item) => item.x));
+  const verticalSpread = Math.max(...after.map((item) => item.y)) - Math.min(...after.map((item) => item.y));
+  expect(Math.max(horizontalSpread, verticalSpread)).toBeGreaterThan(180);
+});
+
 test('routing out of UAV keeps the old body visible until the destination is ready', async ({ page }) => {
   await useLocalHeaderSlot(page);
   await page.goto('/uav/mojave-wind-farm/', { waitUntil: 'domcontentloaded' });

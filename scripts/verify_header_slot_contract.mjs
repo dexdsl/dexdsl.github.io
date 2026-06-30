@@ -7,6 +7,7 @@ const DOCS_DIR = path.join(ROOT, 'docs');
 const BASE_CSS_PATH = path.join(ROOT, 'public', 'css', 'base.css');
 const SLOT_RUNTIME_PATH = path.join(ROOT, 'public', 'assets', 'js', 'header-slot.js');
 const AUTH_RUNTIME_PATH = path.join(ROOT, 'public', 'assets', 'dex-auth.js');
+const CATALOG_MESH_SOURCE_PATH = path.join(ROOT, 'scripts', 'src', 'shared', 'dx-gooey-mesh.entry.mjs');
 const REQUIRED_SCRIPT_TAG_NEEDLE = '/assets/js/header-slot.js';
 
 const REQUIRED_MARKERS = [
@@ -67,6 +68,7 @@ function verifyGlassParityContract(failures) {
   const baseCss = readText(BASE_CSS_PATH);
   const slotRuntime = readText(SLOT_RUNTIME_PATH);
   const authRuntime = readText(AUTH_RUNTIME_PATH);
+  const catalogMeshSource = readText(CATALOG_MESH_SOURCE_PATH);
 
   const requiredSlotMarkers = [
     'bootstrapPersistentChromeIfMissing',
@@ -121,11 +123,21 @@ function verifyGlassParityContract(failures) {
     'routePlan = await prepareRouteDocument(parsed, finalUrl, {',
     'if (routePlan && !didCommitRoute) routePlan.styleTransaction.dispose();',
     'ROUTE_SCRIPT_LOAD_TIMEOUT_MS',
+    'const GOOEY_SPEED_MAX = 10.2;',
+    'const GOOEY_SEPARATION_STRENGTH = 7.5;',
+    'const GOOEY_SEPARATION_RATIO = 0.82;',
+    'Short-range repulsion only acts while two cores are deeply overlapping.',
+    'phase: Number(blob._phase),',
+    'if (Number.isFinite(item.phase)) blob._phase = item.phase;',
   ];
   for (const marker of requiredSlotMarkers) {
     if (!slotRuntime.includes(marker)) {
       failures.push(`header-slot runtime missing required protected-route bootstrap marker: ${marker}`);
     }
+  }
+
+  if (!catalogMeshSource.includes('window.__dxDisableRouteGooeyBootstrap')) {
+    failures.push('Catalog gooey-mesh source must defer to the persistent header-slot driver');
   }
 
   const requiredBaseCssMarkers = [
