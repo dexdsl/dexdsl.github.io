@@ -108,6 +108,10 @@ function verifyDataContract() {
   if (registry) {
     assert(registry.includes('catalogVersion'), 'achievements registry missing catalogVersion');
     assert(registry.includes('clueGrowlix'), 'achievements registry missing clueGrowlix fields');
+    assert(
+      registry.includes('"visibility": "hidden-until-unlocked"'),
+      'achievements registry missing hidden achievement visibility',
+    );
   }
   if (built) {
     assert(built.includes('catalogVersion'), 'achievements data missing catalogVersion');

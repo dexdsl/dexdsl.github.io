@@ -72,6 +72,17 @@ function verifyGlassParityContract(failures) {
     'bootstrapPersistentChromeIfMissing',
     'getHeaderElement(document) || await bootstrapPersistentChromeIfMissing()',
     'hasCompletePersistentChrome(document)',
+    "const MOBILE_SITE_TILES = Object.freeze([",
+    "const MOBILE_ACCOUNT_TILES = Object.freeze([",
+    'class="dx-mobile-menu-modal"',
+    'data-dx-mobile-menu-panel="site"',
+    'data-dx-mobile-menu-panel="account"',
+    'data-dx-mobile-account-open',
+    'data-dx-mobile-account-back="true"',
+    'setMobileMenuBackgroundInert(root, true)',
+    'getMobileMenuFocusable(root)',
+    "root.setAttribute('data-dx-mobile-menu-view', nextView);",
+    "window.addEventListener('dx:messages:unread-count', syncUnread);",
   ];
   for (const marker of requiredSlotMarkers) {
     if (!slotRuntime.includes(marker)) {
@@ -90,15 +101,23 @@ function verifyGlassParityContract(failures) {
     'box-shadow: var(--dx-glass-shell-shadow);',
     '-webkit-backdrop-filter: var(--dx-glass-shell-backdrop);',
     'backdrop-filter: var(--dx-glass-shell-backdrop);',
+    '--dx-mobile-menu-glass: linear-gradient(145deg, rgba(255, 255, 255, 0.96)',
+    '.dx-mobile-menu-modal {',
+    'top: max(8px, var(--dx-safe-top));',
+    'bottom: max(8px, var(--dx-safe-bottom));',
+    '-webkit-backdrop-filter: saturate(145%) blur(28px);',
+    'grid-template-columns: repeat(2, minmax(0, 1fr));',
+    '@media (min-width: 600px)',
+    'grid-template-columns: repeat(3, minmax(0, 1fr));',
+    '.dx-mobile-menu[data-dx-mobile-menu-view="account"] .dx-mobile-menu-track',
+    '@media (prefers-reduced-motion: reduce)',
+    '#auth-ui {',
+    'display: none !important;',
   ];
   for (const marker of requiredBaseCssMarkers) {
     if (!baseCss.includes(marker)) {
       failures.push(`header-glass parity marker missing in base.css: ${marker}`);
     }
-  }
-
-  if (!slotRuntime.includes('class="dx-mobile-menu-sheet dx-glass-shell--header-match"')) {
-    failures.push('mobile menu sheet is missing dx-glass-shell--header-match class in header-slot runtime');
   }
 
   const mobileBackdropRule = baseCss.match(/\.dx-mobile-menu-backdrop\s*\{([\s\S]*?)\n\s*\}/);
@@ -111,17 +130,44 @@ function verifyGlassParityContract(failures) {
     }
   }
 
-  const mobileSheetRule = baseCss.match(/\.dx-mobile-menu-sheet\s*\{([\s\S]*?)\n\s*\}/);
-  if (!mobileSheetRule) {
-    failures.push('could not locate .dx-mobile-menu-sheet rule in base.css');
-  } else {
-    const ruleText = mobileSheetRule[1];
-    const blockedDeclarations = ['background:', 'border:', 'box-shadow:', 'backdrop-filter:', '-webkit-backdrop-filter:'];
-    for (const declaration of blockedDeclarations) {
-      if (ruleText.includes(declaration)) {
-        failures.push(`.dx-mobile-menu-sheet should rely on shared utility, found ${declaration}`);
-      }
+  const forbiddenMobileMarkers = [
+    'dx-mobile-menu-sheet',
+    'dx-mobile-menu-scope-blur',
+    'dx-mobile-menu-profile-toggle',
+    'dx-mobile-menu-profile-panel',
+    'data-dx-mobile-profile-expanded',
+    'data-dx-mobile-utility-stacked',
+  ];
+  for (const marker of forbiddenMobileMarkers) {
+    if (slotRuntime.includes(marker) || baseCss.includes(marker)) {
+      failures.push(`deprecated mobile drawer marker remains: ${marker}`);
     }
+  }
+
+  const accountDestinations = [
+    ['/entry/favorites/', 'Favorites'],
+    ['/polls', 'Polls'],
+    ['/entry/submit/', 'Submit Samples'],
+    ['/entry/messages/', 'Messages'],
+    ['/entry/pressroom/', 'Press Room'],
+    ['/entry/settings/', 'Settings'],
+    ['/entry/achievements/', 'Achievements'],
+  ];
+  const accountRegistryMatch = slotRuntime.match(/const MOBILE_ACCOUNT_TILES = Object\.freeze\(\[([\s\S]*?)\]\);/);
+  const accountRegistry = accountRegistryMatch ? accountRegistryMatch[1] : '';
+  if (!accountRegistry) {
+    failures.push('could not parse MOBILE_ACCOUNT_TILES from header-slot runtime');
+  }
+  for (const [href, label] of accountDestinations) {
+    if (!accountRegistry.includes(`href: '${href}'`) || !accountRegistry.includes(`label: '${label}'`)) {
+      failures.push(`mobile account registry missing ${label} (${href})`);
+    }
+    if (!authRuntime.includes(`getMenuLinkMarkup("${href}", "${label}"`)) {
+      failures.push(`desktop account menu parity missing ${label} (${href})`);
+    }
+  }
+  if (accountRegistry.includes("href: '/catalog/'")) {
+    failures.push('mobile account registry must not duplicate Catalog');
   }
 
   const forbiddenAuthMarkers = [
@@ -154,6 +200,8 @@ function verifyGlassParityContract(failures) {
     'document.body.classList.contains("dx-entry-page")',
     'return null;',
     'window.addEventListener("dx:slotready", start);',
+    'window.__dxMessagesUnreadCount = safeCount;',
+    'dispatchWindowEvent("dx:messages:unread-sync", { count: safeCount });',
   ];
   for (const marker of requiredAuthMarkers) {
     if (!authRuntime.includes(marker)) {

@@ -192,6 +192,10 @@ const SYNC_MAP = [
     targets: ['css/components/dx-achievements.css', 'docs/css/components/dx-achievements.css'],
   },
   {
+    source: 'public/css/components/dx-not-found.css',
+    targets: ['css/components/dx-not-found.css', 'docs/css/components/dx-not-found.css'],
+  },
+  {
     source: 'public/css/components/dx-dexnotes-index.css',
     targets: ['css/components/dx-dexnotes-index.css', 'docs/css/components/dx-dexnotes-index.css'],
   },

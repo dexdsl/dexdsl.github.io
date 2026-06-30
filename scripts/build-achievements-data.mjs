@@ -51,6 +51,7 @@ function validateCatalog(input) {
     const secret = Boolean(row.secret);
     const clueGrowlix = toText(row.clueGrowlix);
     const description = toText(row.description);
+    const visibility = toText(row.visibility) || 'default';
     const sortOrder = Number.isFinite(Number(row.sortOrder)) ? Math.floor(Number(row.sortOrder)) : (index + 1) * 10;
     const points = Number.isFinite(Number(row.points)) ? Math.max(0, Math.floor(Number(row.points))) : 0;
 
@@ -61,6 +62,10 @@ function validateCatalog(input) {
     assert(metricKey, `${id}: metricKey is required`);
     assert(Number.isFinite(threshold) && threshold >= 1, `${id}: threshold must be >= 1`);
     assert(description, `${id}: description is required`);
+    assert(
+      visibility === 'default' || visibility === 'hidden-until-unlocked',
+      `${id}: visibility must be default or hidden-until-unlocked`,
+    );
 
     if (secret) {
       assert(
@@ -82,6 +87,7 @@ function validateCatalog(input) {
       description,
       sortOrder,
       points,
+      visibility,
     };
   });
 

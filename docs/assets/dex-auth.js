@@ -1156,9 +1156,15 @@
 
   function setMessagesUnreadBadge(count) {
     var badge = document.getElementById(MESSAGES_BADGE_ID);
-    if (!badge) return;
     var safeCount = Number(count);
     if (!isFinite(safeCount) || safeCount < 0) safeCount = 0;
+    safeCount = Math.round(safeCount);
+    var previousCount = Number(window.__dxMessagesUnreadCount);
+    window.__dxMessagesUnreadCount = safeCount;
+    if (!isFinite(previousCount) || previousCount !== safeCount) {
+      dispatchWindowEvent("dx:messages:unread-sync", { count: safeCount });
+    }
+    if (!badge) return;
     badge.textContent = safeCount > 99 ? "99+" : String(Math.round(safeCount));
     if (safeCount > 0) {
       badge.hidden = false;

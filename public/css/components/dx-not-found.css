@@ -1,0 +1,291 @@
+:root {
+  --dx-404-ink: #13151a;
+  --dx-404-paper: rgba(252, 250, 245, 0.9);
+  --dx-404-line: rgba(19, 21, 26, 0.18);
+  --dx-404-orange: #f25c2a;
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.dx-not-found-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.dx-not-found {
+  width: min(100%, 1320px);
+  margin-inline: auto;
+  padding: clamp(1rem, 3vw, 3rem);
+}
+
+.dx-not-found-surface {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(18rem, 0.95fr);
+  gap: clamp(1.5rem, 4vw, 4rem);
+  min-width: 0;
+  min-height: clamp(32rem, 66vh, 48rem);
+  padding: clamp(1.3rem, 4vw, 4.5rem);
+  overflow: hidden;
+  color: var(--dx-404-ink);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.82), rgba(245, 243, 238, 0.67)),
+    var(--dx-404-paper);
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  border-radius: clamp(1.1rem, 2vw, 2rem);
+  box-shadow:
+    0 28px 80px rgba(13, 17, 25, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.76);
+  backdrop-filter: blur(28px) saturate(120%);
+}
+
+.dx-not-found-surface::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background:
+    linear-gradient(90deg, transparent 49.8%, rgba(19, 21, 26, 0.045) 50%, transparent 50.2%),
+    linear-gradient(rgba(19, 21, 26, 0.035) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 2.5rem;
+  mask-image: linear-gradient(to bottom, black, transparent 86%);
+}
+
+.dx-not-found-copy {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: 0;
+}
+
+.dx-not-found-kicker {
+  margin: 0 0 0.8rem;
+  font-family: "Courier Prime", "Courier New", monospace;
+  font-size: clamp(0.72rem, 1vw, 0.85rem);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.dx-not-found-title {
+  max-width: 12ch;
+  margin: 0;
+  font-size: clamp(2.7rem, 6vw, 6.25rem);
+  letter-spacing: -0.065em;
+  line-height: 0.92;
+  text-wrap: balance;
+}
+
+.dx-not-found-summary {
+  max-width: 37rem;
+  margin: clamp(1rem, 2vw, 1.6rem) 0 0;
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  line-height: 1.5;
+}
+
+.dx-not-found-attempt {
+  display: grid;
+  gap: 0.35rem;
+  width: min(100%, 42rem);
+  min-width: 0;
+  margin: clamp(1.3rem, 2vw, 2rem) 0 0;
+}
+
+.dx-not-found-attempt > span {
+  font-family: "Courier Prime", "Courier New", monospace;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.dx-not-found-attempt code {
+  display: block;
+  max-width: 100%;
+  padding: 0.75rem 0.9rem;
+  overflow: hidden;
+  color: inherit;
+  font-family: "Courier Prime", "Courier New", monospace;
+  font-size: clamp(0.82rem, 1.2vw, 0.98rem);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: rgba(19, 21, 26, 0.07);
+  border: 1px solid var(--dx-404-line);
+  border-radius: 0.65rem;
+}
+
+.dx-not-found-suggestion {
+  margin: 0.85rem 0 0;
+  font-family: "Courier Prime", "Courier New", monospace;
+  font-size: 0.92rem;
+}
+
+.dx-not-found-suggestion a,
+.dx-not-found-text-link {
+  color: inherit;
+  font-weight: 700;
+  text-underline-offset: 0.22em;
+}
+
+.dx-not-found-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: clamp(1.4rem, 3vw, 2.4rem);
+}
+
+.dx-not-found-text-link {
+  padding: 0.75rem 0.25rem;
+}
+
+.dx-not-found-feedback {
+  min-height: 1.5em;
+  margin: 0.85rem 0 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.dx-not-found-visual {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 22rem;
+  isolation: isolate;
+}
+
+.dx-not-found-code {
+  position: relative;
+  z-index: 2;
+  font-family: Arial Black, "Helvetica Neue", sans-serif;
+  font-size: clamp(8rem, 19vw, 18rem);
+  font-weight: 900;
+  letter-spacing: -0.12em;
+  line-height: 0.72;
+  transform: translateX(-0.04em);
+}
+
+.dx-not-found-code::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  color: transparent;
+  content: "404";
+  -webkit-text-stroke: 1px rgba(19, 21, 26, 0.34);
+  transform: translate(0.08em, 0.09em);
+}
+
+.dx-not-found-index {
+  position: absolute;
+  right: 0;
+  bottom: 1rem;
+  font-family: "Courier Prime", "Courier New", monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  writing-mode: vertical-rl;
+}
+
+.dx-not-found-cut {
+  position: absolute;
+  width: min(24rem, 80%);
+  aspect-ratio: 1;
+  background: linear-gradient(145deg, var(--dx-404-orange), #ffcf48 52%, #4d73f8);
+  border-radius: 48% 52% 43% 57% / 55% 42% 58% 45%;
+  filter: blur(0.4px);
+  opacity: 0.78;
+  transform: rotate(-14deg);
+}
+
+.dx-not-found-achievements[hidden],
+.dx-profile-fallback[hidden] {
+  display: none !important;
+}
+
+.dx-profile-fallback {
+  min-height: 55vh;
+}
+
+html[data-dx-profile-fallback="true"] #dex-not-found {
+  display: none;
+}
+
+html:not([data-dx-profile-fallback="true"]) #dex-profile {
+  display: none;
+}
+
+@media (max-width: 920px) {
+  .dx-not-found-surface {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  .dx-not-found-copy {
+    min-height: 26rem;
+  }
+
+  .dx-not-found-visual {
+    min-height: 18rem;
+  }
+
+  .dx-not-found[data-dx-not-found-mode="808"] .dx-not-found-copy {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .dx-not-found {
+    padding: 0.75rem;
+  }
+
+  .dx-not-found-surface {
+    gap: 1rem;
+    padding: 1.15rem;
+    border-radius: 1rem;
+  }
+
+  .dx-not-found-copy {
+    min-height: 23rem;
+  }
+
+  .dx-not-found-title {
+    font-size: clamp(2.6rem, 15vw, 4.35rem);
+  }
+
+  .dx-not-found-actions {
+    align-items: stretch;
+  }
+
+  .dx-not-found-actions .dx-button-element {
+    justify-content: center;
+  }
+
+  .dx-not-found-text-link {
+    width: 100%;
+  }
+
+  .dx-not-found-code {
+    font-size: clamp(7.2rem, 42vw, 11rem);
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dx-not-found *,
+  .dx-not-found *::before,
+  .dx-not-found *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}

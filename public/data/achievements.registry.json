@@ -1,6 +1,6 @@
 {
-  "catalogVersion": "2026.03.v1",
-  "updatedAt": "2026-03-06T00:00:00.000Z",
+  "catalogVersion": "2026.06.v1",
+  "updatedAt": "2026-06-29T00:00:00.000Z",
   "sequenceGroup": "dex-achievements",
   "achievements": [
     {
@@ -312,32 +312,34 @@
       "points": 220
     },
     {
-          "id": "found-404",
-          "title": "Found a Missing Packet",
-          "category": "profile",
-          "tier": "bronze",
-          "glyph": "explorer",
-          "metricKey": "found404Visits",
-          "threshold": 1,
-          "secret": false,
-          "clueGrowlix": "",
-          "description": "Visited a missing page on Dex.",
-          "sortOrder": 235,
-          "points": 10
-        },
+      "id": "found-404",
+      "title": "Found a Missing Packet",
+      "category": "profile",
+      "tier": "bronze",
+      "glyph": "explorer",
+      "metricKey": "found404Visits",
+      "threshold": 1,
+      "secret": false,
+      "clueGrowlix": "",
+      "description": "Visited a missing page on Dex.",
+      "sortOrder": 235,
+      "points": 10,
+      "visibility": "default"
+    },
     {
       "id": "vault-easter-egg",
-      "title": "404... again.",
+      "title": "404… Again.",
       "category": "secret",
       "tier": "silver",
-      "glyph": "vault",
+      "glyph": "rhythm",
       "metricKey": "secretClaimVault",
       "threshold": 1,
       "secret": true,
-      "clueGrowlix": "The iconic **-&&& beat machine as a page slug.",
-      "description": "Claim the vault easter egg.",
+      "clueGrowlix": "??? sixteen silent steps ???",
+      "description": "Found the rhythm hiding behind /808.",
       "sortOrder": 230,
-      "points": 90
+      "points": 90,
+      "visibility": "hidden-until-unlocked"
     },
     {
       "id": "cross-lane-veteran",

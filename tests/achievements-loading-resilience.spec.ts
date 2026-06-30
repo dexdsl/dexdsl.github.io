@@ -1,7 +1,7 @@
 import { expect, test, type Page } from 'playwright/test';
 
 type AuthMode = 'signed-out' | 'token-ready';
-type SummaryMode = 'success' | 'warning' | 'failure';
+type SummaryMode = 'success' | 'warning' | 'failure' | 'unlocked-808';
 
 function summaryPayload(warnings: string[] = []) {
   return {
@@ -152,16 +152,17 @@ function summaryPayload(warnings: string[] = []) {
       },
       {
         id: 'vault-easter-egg',
-        title: '404... again.',
-        description: 'Visit the /808 page, in reference to the iconic beat machine.',
-        category: 'profile',
+        title: '404… Again.',
+        description: 'Found the rhythm hiding behind /808.',
+        category: 'secret',
         tier: 'silver',
-        glyph: 'vault',
+        glyph: 'rhythm',
         threshold: 1,
         progress: 0,
         points: 90,
         secret: true,
-        clueGrowlix: 'The iconic **-&&& beat machine as a page slug.',
+        clueGrowlix: '??? sixteen silent steps ???',
+        visibility: 'hidden-until-unlocked',
         unlocked: false,
       },
       {
@@ -245,9 +246,21 @@ async function stubAchievementsApi(page: Page, mode: SummaryMode): Promise<void>
       return;
     }
 
-    const payload = mode === 'warning'
+    const payload: any = mode === 'warning'
       ? summaryPayload(['Partial backend outage: vote streak service degraded.'])
       : summaryPayload();
+    if (mode === 'unlocked-808') {
+      const secret = payload.badges.find((badge: any) => badge.id === 'vault-easter-egg');
+      if (secret) {
+        secret.progress = 1;
+        secret.unlocked = true;
+        secret.newlyUnlocked = true;
+      }
+      payload.newlyUnlocked = [{ id: 'vault-easter-egg' }];
+      payload.totals.total += 1;
+      payload.totals.unlocked += 1;
+      payload.totals.points += 90;
+    }
 
     await route.fulfill({
       status: 200,
@@ -405,7 +418,9 @@ test('signed-in summary renders fluid specimen cards, 3D inspector, and secret v
   await expect(inspector).not.toHaveAttribute('open', '');
 
   await page.locator('#dex-achv [data-dx-achievements-page="secret-vault"]').click();
-  const secretCard = page.locator('#dex-achv [data-dx-achievement-id="vault-easter-egg"]');
+  const hidden808Card = page.locator('#dex-achv [data-dx-achievement-id="vault-easter-egg"]');
+  await expect(hidden808Card).toHaveCount(0);
+  const secretCard = page.locator('#dex-achv [data-dx-achievement-id="releases-20-secret"]');
   await expect(secretCard).toBeVisible();
   await expect(secretCard).toHaveAttribute('data-dx-achievement-secret', 'true');
   await expect(secretCard).toContainText('Signal encrypted');
@@ -414,7 +429,20 @@ test('signed-in summary renders fluid specimen cards, 3D inspector, and secret v
   await secretCard.click();
   await expect(inspector).toHaveAttribute('open', '');
   await expect(inspector).toContainText('CLASSIFIED');
-  await expect(inspector).not.toContainText('Vault Visitor');
+  await expect(inspector).not.toContainText('Twenty Releases');
+});
+
+test('unlocked /808 secret appears selected without a Claim button', async ({ page }) => {
+  await stubDexAuthRuntime(page, 'token-ready');
+  await stubAchievementsApi(page, 'unlocked-808');
+  await page.goto('/entry/achievements/?badge=vault-easter-egg', { waitUntil: 'domcontentloaded' });
+  await waitForAchievementsReady(page);
+
+  const secretCard = page.locator('#dex-achv [data-dx-achievement-id="vault-easter-egg"]');
+  await expect(secretCard).toBeVisible();
+  await expect(secretCard).toContainText('404… Again.');
+  await expect(secretCard.locator('[data-dx-achievement-claim]')).toHaveCount(0);
+  await expect(page.locator('#dex-achv button[data-dx-achievements-page="secret-vault"]')).toHaveAttribute('aria-pressed', 'true');
 });
 
 test('901–1200px account breakpoint keeps achievements on the fixed shell contract', async ({ page }, testInfo) => {

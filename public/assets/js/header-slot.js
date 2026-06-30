@@ -21,9 +21,24 @@
   // each frame), so it nudges without slowing the motion.
   const GOOEY_RECENTER_STRENGTH = 0.16;
   const MOBILE_MENU_ROOT_ID = 'dx-mobile-menu';
-  const MOBILE_PROFILE_PANEL_ID = 'dx-mobile-menu-profile-panel';
   const MOBILE_MENU_OPEN_CLASS = 'dx-mobile-menu-open';
   const MOBILE_BREAKPOINT_QUERY = '(max-width: 980px)';
+  const MOBILE_MENU_CLOSE_MS = 340;
+  const MOBILE_SITE_TILES = Object.freeze([
+    { key: 'catalog', href: '/catalog/', label: 'Catalog', detail: 'Browse the open recording library', icon: 'catalog', featured: true },
+    { key: 'call', href: '/call/', label: 'In Dex', detail: 'Calls, submissions, and community', icon: 'call' },
+    { key: 'dexnotes', href: '/dexnotes/', label: 'Dex Notes', detail: 'Releases, stories, and field notes', icon: 'notes' },
+    { key: 'about', href: '/about/', label: 'About', detail: 'How the archive works', icon: 'about' },
+  ]);
+  const MOBILE_ACCOUNT_TILES = Object.freeze([
+    { key: 'favorites', href: '/entry/favorites/', label: 'Favorites', icon: 'favorites' },
+    { key: 'polls', href: '/polls', label: 'Polls', icon: 'polls' },
+    { key: 'submit', href: '/entry/submit/', label: 'Submit Samples', icon: 'submit' },
+    { key: 'messages', href: '/entry/messages/', label: 'Messages', icon: 'messages', badge: true },
+    { key: 'pressroom', href: '/entry/pressroom/', label: 'Press Room', icon: 'press' },
+    { key: 'settings', href: '/entry/settings/', label: 'Settings', icon: 'settings' },
+    { key: 'achievements', href: '/entry/achievements/', label: 'Achievements', icon: 'achievements' },
+  ]);
   const PROFILE_FOOTER_INLINE_QUERY = '(max-width: 900px)';
   const ROUTE_TRANSITION_OUT_START = 'dx:route-transition-out:start';
   const ROUTE_TRANSITION_OUT_END = 'dx:route-transition-out:end';
@@ -106,7 +121,7 @@
   const HEADING_DUPLICATE_LIGATURE_SUPPORTED = new Set('ABCDEFGHJKLMNOPQRSTUWZ'.split(''));
   const HEADING_DUPLICATE_EXCLUDED = new Set('–L:TIAWMKX&VYH?!@#$%-1234567890'.split(''));
   const DONATE_LABEL_CANONICAL = 'DONATE';
-  const DONATE_LABEL_SELECTOR = '.header-actions-action--cta a[href], .header-menu-cta a[href], .dx-mobile-menu-actions a[href][data-dx-mobile-menu-action="true"]';
+  const DONATE_LABEL_SELECTOR = '.header-actions-action--cta a[href], .header-menu-cta a[href]';
   window.__dxDisableRouteGooeyBootstrap = true;
 
   let routeAbortController = null;
@@ -119,10 +134,14 @@
   let mobileMenuInstalled = false;
   let mobileMenuLastFocused = null;
   let mobileMenuCloseTimer = 0;
-  let mobileMenuAuthSnapshot = { authenticated: false, profileLinks: [], resolved: false };
+  let mobileMenuAuthSnapshot = { authenticated: false, user: null, resolved: false };
   let mobileMenuAuthProbePromise = null;
   let mobileMenuAuthProbeToken = 0;
   let mobileMenuBuildSequence = 0;
+  let mobileMenuInertState = [];
+  let mobileMenuBodyOverflow = '';
+  let mobileMenuScrollOverflow = '';
+  let mobileMenuUnreadCount = 0;
   let profileViewportMetricsInstalled = false;
   let profileViewportMetricsRafId = 0;
   let iosSafariViewportSyncInstalled = false;
@@ -2011,14 +2030,12 @@
     return `${window.location.pathname || '/'}${window.location.search || ''}${window.location.hash || ''}`;
   }
 
-  function triggerMobileLogin() {
+  async function triggerMobileLogin() {
     const returnTo = getCurrentReturnTo();
     const dexAuth = window.DEX_AUTH || window.dexAuth || null;
     if (dexAuth && typeof dexAuth.signIn === 'function') {
-      try {
-        dexAuth.signIn(returnTo);
-        return true;
-      } catch {}
+      await Promise.resolve(dexAuth.signIn(returnTo));
+      return true;
     }
 
     const signInButton = document.getElementById('auth-ui-signin');
@@ -2036,16 +2053,11 @@
     return false;
   }
 
-  function triggerMobileLogout() {
+  async function triggerMobileLogout() {
     const dexAuth = window.DEX_AUTH || window.dexAuth || null;
     if (dexAuth && typeof dexAuth.signOut === 'function') {
-      try {
-        const maybePromise = dexAuth.signOut(window.location.origin);
-        if (maybePromise && typeof maybePromise.catch === 'function') {
-          maybePromise.catch(() => {});
-        }
-        return true;
-      } catch {}
+      await Promise.resolve(dexAuth.signOut(window.location.origin));
+      return true;
     }
 
     const logoutButton = document.getElementById('auth-ui-logout');
@@ -2059,65 +2071,46 @@
   }
 
   function inferMobileAuthFromDom() {
+    if (String(window.auth0Sub || '').trim()) return true;
+    if (window.AUTH0_USER && typeof window.AUTH0_USER === 'object') return true;
+
     const profileWrap = document.getElementById('auth-ui-profile');
     if (profileWrap instanceof HTMLElement) {
       const profileVisible = !profileWrap.hidden && !profileWrap.hasAttribute('hidden');
       if (profileVisible) return true;
     }
-
-    const signInButton = document.getElementById('auth-ui-signin');
-    if (signInButton instanceof HTMLElement) {
-      if (signInButton.hidden || signInButton.hasAttribute('hidden')) return true;
-      const styles = window.getComputedStyle(signInButton);
-      if (styles.display === 'none' || styles.visibility === 'hidden') return true;
-    }
-
     return false;
   }
 
-  function extractMobileProfileLinksFromAuthUi() {
-    const dropdown = document.getElementById('auth-ui-dropdown');
-    if (!(dropdown instanceof HTMLElement)) return [];
-
-    const links = [];
-    const seen = new Set();
-    const candidates = Array.from(dropdown.querySelectorAll('a.dex-menu-item[href]'));
-    for (const candidate of candidates) {
-      if (!(candidate instanceof HTMLAnchorElement)) continue;
-      const href = String(candidate.getAttribute('href') || '').trim();
-      if (!href) continue;
-
-      const absoluteHref = toAbsoluteUrl(href);
-      if (!absoluteHref) continue;
-      if (!isHttpUrl(absoluteHref)) continue;
-      if (!isSameOriginUrl(absoluteHref)) continue;
-
-      const routePath = normalizePathname(absoluteHref.pathname);
-      if (routePath === '/catalog') continue;
-
-      const labelNode = candidate.querySelector('.dex-menu-label');
-      const label = String((labelNode && labelNode.textContent) || candidate.textContent || '').trim();
-      if (!label) continue;
-
-      const uniqueKey = `${routePath}::${label.toLowerCase()}`;
-      if (seen.has(uniqueKey)) continue;
-      seen.add(uniqueKey);
-
-      links.push({
-        href: `${absoluteHref.pathname}${absoluteHref.search}${absoluteHref.hash}`,
-        label,
-        routePath,
-      });
-    }
-
-    return links;
+  function withMobileAuthTimeout(promise, fallback, timeoutMs = 1800) {
+    return new Promise((resolve) => {
+      let settled = false;
+      const timer = window.setTimeout(() => {
+        if (settled) return;
+        settled = true;
+        resolve(fallback);
+      }, timeoutMs);
+      Promise.resolve(promise)
+        .then((value) => {
+          if (settled) return;
+          settled = true;
+          window.clearTimeout(timer);
+          resolve(value);
+        })
+        .catch(() => {
+          if (settled) return;
+          settled = true;
+          window.clearTimeout(timer);
+          resolve(fallback);
+        });
+    });
   }
 
   function resolveMobileMenuAuthSnapshot({ force = false } = {}) {
     if (force) {
       mobileMenuAuthProbeToken += 1;
       mobileMenuAuthProbePromise = null;
-      mobileMenuAuthSnapshot = { authenticated: false, profileLinks: [], resolved: false };
+      mobileMenuAuthSnapshot = { authenticated: false, user: null, resolved: false };
     }
 
     if (mobileMenuAuthSnapshot.resolved) {
@@ -2130,22 +2123,18 @@
 
     const probeToken = ++mobileMenuAuthProbeToken;
     mobileMenuAuthProbePromise = (async () => {
-      let authenticated = false;
+      let authenticated = inferMobileAuthFromDom();
+      let user = window.AUTH0_USER && typeof window.AUTH0_USER === 'object' ? window.AUTH0_USER : null;
       const dexAuth = window.DEX_AUTH || window.dexAuth || null;
       if (dexAuth && typeof dexAuth.isAuthenticated === 'function') {
-        try {
-          authenticated = !!(await dexAuth.isAuthenticated());
-        } catch {}
+        authenticated = !!(await withMobileAuthTimeout(dexAuth.isAuthenticated(), authenticated));
       }
-
-      if (!authenticated) {
-        authenticated = inferMobileAuthFromDom();
+      if (authenticated && dexAuth && typeof dexAuth.getUser === 'function') {
+        user = await withMobileAuthTimeout(dexAuth.getUser(), user);
       }
-
-      const profileLinks = extractMobileProfileLinksFromAuthUi();
       return {
         authenticated,
-        profileLinks,
+        user: authenticated ? (user || null) : null,
         resolved: true,
       };
     })()
@@ -2158,7 +2147,7 @@
       .catch(() => {
         const fallbackSnapshot = {
           authenticated: inferMobileAuthFromDom(),
-          profileLinks: extractMobileProfileLinksFromAuthUi(),
+          user: window.AUTH0_USER && typeof window.AUTH0_USER === 'object' ? window.AUTH0_USER : null,
           resolved: true,
         };
         if (probeToken === mobileMenuAuthProbeToken) {
@@ -2175,106 +2164,76 @@
     return mobileMenuAuthProbePromise;
   }
 
-  function setMobileProfileFolderExpanded(root, expanded) {
+  function setMobileMenuBackgroundInert(root, inert) {
     if (!(root instanceof HTMLElement)) return;
-    const toggle = root.querySelector('[data-dx-mobile-profile-toggle="true"]');
-    const panel = root.querySelector('[data-dx-mobile-profile-panel="true"]');
-    if (!(toggle instanceof HTMLElement) || !(panel instanceof HTMLElement)) return;
-
-    const nextExpanded = !!expanded;
-    toggle.setAttribute('aria-expanded', nextExpanded ? 'true' : 'false');
-    toggle.setAttribute('data-dx-mobile-profile-expanded', nextExpanded ? 'true' : 'false');
-    panel.hidden = !nextExpanded;
-    panel.setAttribute('aria-hidden', nextExpanded ? 'false' : 'true');
-  }
-
-  function toggleMobileProfileFolder(root) {
-    if (!(root instanceof HTMLElement)) return;
-    const toggle = root.querySelector('[data-dx-mobile-profile-toggle="true"]');
-    if (!(toggle instanceof HTMLElement)) return;
-    const isExpanded = String(toggle.getAttribute('aria-expanded') || '') === 'true';
-    setMobileProfileFolderExpanded(root, !isExpanded);
-  }
-
-  function syncMobileUtilityLayout(root) {
-    if (!(root instanceof HTMLElement)) return;
-
-    const utility = root.querySelector('.dx-mobile-menu-utility');
-    const socialHost = root.querySelector('.dx-mobile-menu-social');
-    const actionsHost = root.querySelector('.dx-mobile-menu-actions');
-    if (!(utility instanceof HTMLElement) || !(socialHost instanceof HTMLElement) || !(actionsHost instanceof HTMLElement)) return;
-
-    root.setAttribute('data-dx-mobile-utility-stacked', 'false');
-    if (!isMobileViewport()) return;
-
-    const utilityStyles = window.getComputedStyle(utility);
-    const utilityGap = parseFloat(utilityStyles.columnGap || utilityStyles.gap || '0') || 0;
-    const availableWidth = utility.clientWidth;
-    if (availableWidth <= 0) return;
-
-    const socialStyles = window.getComputedStyle(socialHost);
-    const socialGap = parseFloat(socialStyles.columnGap || socialStyles.gap || '0') || 0;
-    const actionStyles = window.getComputedStyle(actionsHost);
-    const actionGap = parseFloat(actionStyles.columnGap || actionStyles.gap || '0') || 0;
-
-    const socialItems = Array.from(socialHost.children).filter((item) => item instanceof HTMLElement);
-    const socialWidth = socialItems.reduce((total, item, index) => {
-      const rect = item.getBoundingClientRect();
-      return total + rect.width + (index > 0 ? socialGap : 0);
-    }, 0);
-
-    const actionItems = Array.from(actionsHost.children).filter((item) => item instanceof HTMLElement);
-    const actionsWidth = actionItems.reduce((total, item, index) => {
-      const rect = item.getBoundingClientRect();
-      return total + rect.width + (index > 0 ? actionGap : 0);
-    }, 0);
-
-    const requiredWidth = socialWidth + actionsWidth + utilityGap;
-    const shouldStack = requiredWidth > (availableWidth - 2);
-    root.setAttribute('data-dx-mobile-utility-stacked', shouldStack ? 'true' : 'false');
-  }
-
-  // Anchors the mobile menu sheet just beneath the *actual* fixed header. The
-  // CSS fallback reserves a static --dx-fixed-header-height (70px), but the real
-  // header can be taller (large logo, safe-area inset, signed-in chrome). When it
-  // is, a statically positioned sheet slides up underneath the header — which sits
-  // on a higher stacking layer — and gets clipped from view. Measuring the live
-  // header bottom keeps the sheet clear of it on every device.
-  function syncMobileMenuSheetOffset(root) {
-    if (!(root instanceof HTMLElement)) return;
-    const sheet = root.querySelector('.dx-mobile-menu-sheet');
-    if (!(sheet instanceof HTMLElement)) return;
-    const headerFrame = document.querySelector('.header-announcement-bar-wrapper');
-    if (!(headerFrame instanceof HTMLElement)) return;
-
-    const headerRect = headerFrame.getBoundingClientRect();
-    if (!Number.isFinite(headerRect.bottom) || headerRect.height <= 0) return;
-
-    const top = Math.round(headerRect.bottom + 10);
-    sheet.style.top = `${top}px`;
-    sheet.style.maxHeight = `calc(100dvh - ${top + 12}px)`;
-  }
-
-  function syncMobileMenuBlurScope(root) {
-    if (!(root instanceof HTMLElement)) return;
-    const scope = root.querySelector('.dx-mobile-menu-scope-blur');
-    const sheet = root.querySelector('.dx-mobile-menu-sheet');
-    if (!(scope instanceof HTMLElement) || !(sheet instanceof HTMLElement)) return;
-
-    syncMobileMenuSheetOffset(root);
-
-
-    const rect = sheet.getBoundingClientRect();
-    if (!Number.isFinite(rect.width) || !Number.isFinite(rect.height) || rect.width <= 0 || rect.height <= 0) {
+    if (inert) {
+      mobileMenuInertState = [];
+      for (const child of Array.from(document.body.children)) {
+        if (!(child instanceof HTMLElement) || child === root) continue;
+        if (child.tagName === 'SCRIPT' || child.tagName === 'STYLE') continue;
+        mobileMenuInertState.push({
+          element: child,
+          inert: Boolean(child.inert),
+          ariaHidden: child.getAttribute('aria-hidden'),
+        });
+        child.inert = true;
+        child.setAttribute('data-dx-mobile-menu-inert', 'true');
+      }
       return;
     }
 
-    const sheetStyles = window.getComputedStyle(sheet);
-    scope.style.left = `${Math.round(rect.left)}px`;
-    scope.style.top = `${Math.round(rect.top)}px`;
-    scope.style.width = `${Math.round(rect.width)}px`;
-    scope.style.height = `${Math.round(rect.height)}px`;
-    scope.style.borderRadius = sheetStyles.borderRadius || '';
+    for (const entry of mobileMenuInertState) {
+      if (!entry || !(entry.element instanceof HTMLElement)) continue;
+      entry.element.inert = entry.inert;
+      entry.element.removeAttribute('data-dx-mobile-menu-inert');
+      if (entry.ariaHidden == null) {
+        entry.element.removeAttribute('aria-hidden');
+      } else {
+        entry.element.setAttribute('aria-hidden', entry.ariaHidden);
+      }
+    }
+    mobileMenuInertState = [];
+  }
+
+  function getMobileMenuFocusable(root) {
+    if (!(root instanceof HTMLElement)) return [];
+    return Array.from(root.querySelectorAll(
+      'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )).filter((element) => (
+      element instanceof HTMLElement
+      && !element.hidden
+      && element.getAttribute('aria-hidden') !== 'true'
+      && !(element.closest('[data-dx-mobile-menu-panel]') instanceof HTMLElement
+        && element.closest('[data-dx-mobile-menu-panel]').getAttribute('aria-hidden') === 'true')
+      && element.getClientRects().length > 0
+    ));
+  }
+
+  function setMobileMenuView(root, view, { focus = true } = {}) {
+    if (!(root instanceof HTMLElement)) return;
+    const nextView = view === 'account' ? 'account' : 'site';
+    root.setAttribute('data-dx-mobile-menu-view', nextView);
+    const siteView = root.querySelector('[data-dx-mobile-menu-panel="site"]');
+    const accountView = root.querySelector('[data-dx-mobile-menu-panel="account"]');
+    if (siteView instanceof HTMLElement) {
+      siteView.inert = nextView !== 'site';
+      siteView.setAttribute('aria-hidden', nextView === 'site' ? 'false' : 'true');
+    }
+    if (accountView instanceof HTMLElement) {
+      accountView.inert = nextView !== 'account';
+      accountView.setAttribute('aria-hidden', nextView === 'account' ? 'false' : 'true');
+    }
+    if (!focus) return;
+    const target = nextView === 'account'
+      ? root.querySelector('[data-dx-mobile-account-back="true"]')
+      : root.querySelector('[data-dx-mobile-account-open="true"], [data-dx-mobile-login-trigger="true"]');
+    if (target instanceof HTMLElement) {
+      try {
+        target.focus({ preventScroll: true });
+      } catch {
+        target.focus();
+      }
+    }
   }
 
   function closeMobileMenu({ restoreFocus = true } = {}) {
@@ -2289,24 +2248,26 @@
     mobileMenuCloseTimer = window.setTimeout(() => {
       if (!document.body.classList.contains(MOBILE_MENU_OPEN_CLASS)) {
         root.setAttribute('aria-hidden', 'true');
+        setMobileMenuView(root, 'site', { focus: false });
       }
       mobileMenuCloseTimer = 0;
-    }, 240);
+    }, MOBILE_MENU_CLOSE_MS);
 
+    document.body.style.overflow = mobileMenuBodyOverflow;
     const scrollRoot = document.getElementById(SLOT_SCROLL_ID);
     if (scrollRoot instanceof HTMLElement) {
-      const previousOverflow = String(scrollRoot.getAttribute('data-dx-mobile-menu-prev-overflow') || '');
-      if (previousOverflow) {
-        scrollRoot.style.overflowY = previousOverflow;
+      if (mobileMenuScrollOverflow) {
+        scrollRoot.style.overflowY = mobileMenuScrollOverflow;
       } else {
         scrollRoot.style.removeProperty('overflow-y');
       }
-      scrollRoot.removeAttribute('data-dx-mobile-menu-prev-overflow');
     }
+    setMobileMenuBackgroundInert(root, false);
 
     const burgerButtons = Array.from(document.querySelectorAll('.header-display-mobile .header-burger-btn'));
     for (const button of burgerButtons) {
       button.setAttribute('aria-expanded', 'false');
+      button.setAttribute('aria-label', 'Open menu');
     }
 
     if (restoreFocus && mobileMenuLastFocused && mobileMenuLastFocused instanceof HTMLElement) {
@@ -2322,10 +2283,11 @@
     if (!root) return;
 
     const normalizedTarget = normalizePathname(pathname);
-    const links = Array.from(root.querySelectorAll('.dx-mobile-menu-nav a[data-dx-mobile-menu-route]'));
+    const links = Array.from(root.querySelectorAll('a[data-dx-mobile-menu-route]'));
     for (const link of links) {
       const routePath = normalizePathname(String(link.getAttribute('data-dx-mobile-menu-route') || ''));
-      const isActive = routePath === normalizedTarget;
+      const isActive = routePath === normalizedTarget
+        || (routePath !== '/' && normalizedTarget.startsWith(`${routePath}/`));
       link.setAttribute('data-dx-mobile-menu-active', isActive ? 'true' : 'false');
       if (isActive) {
         link.setAttribute('aria-current', 'page');
@@ -2334,14 +2296,13 @@
       }
     }
 
-    const profileLinks = Array.from(root.querySelectorAll('.dx-mobile-menu-nav a[data-dx-mobile-profile-route="true"]'));
-    const hasActiveProfileRoute = profileLinks.some((link) => String(link.getAttribute('data-dx-mobile-menu-active') || '') === 'true');
-    const profileToggle = root.querySelector('[data-dx-mobile-profile-toggle="true"]');
-    if (profileToggle instanceof HTMLElement) {
-      profileToggle.setAttribute('data-dx-mobile-menu-active', hasActiveProfileRoute ? 'true' : 'false');
-    }
-    if (hasActiveProfileRoute) {
-      setMobileProfileFolderExpanded(root, true);
+    const accountRouteActive = MOBILE_ACCOUNT_TILES.some((item) => {
+      const routePath = normalizePathname(item.href);
+      return routePath === normalizedTarget || normalizedTarget.startsWith(`${routePath}/`);
+    });
+    const accountTrigger = root.querySelector('[data-dx-mobile-account-open="true"]');
+    if (accountTrigger instanceof HTMLElement) {
+      accountTrigger.setAttribute('data-dx-mobile-menu-active', accountRouteActive ? 'true' : 'false');
     }
   }
 
@@ -2362,108 +2323,273 @@
     return unique;
   }
 
-  async function buildMobileMenuContent(root, { forceAuthRefresh = false } = {}) {
-    if (!(root instanceof HTMLElement)) return;
-    const buildSequence = ++mobileMenuBuildSequence;
-    const authSnapshot = await resolveMobileMenuAuthSnapshot({ force: forceAuthRefresh });
-    if (!(root instanceof HTMLElement)) return;
-    if (buildSequence !== mobileMenuBuildSequence) return;
+  function mobileMenuIcon(name) {
+    const paths = {
+      catalog: '<path d="M4 5.5h6.5A2.5 2.5 0 0 1 13 8v11H6a2 2 0 0 1-2-2V5.5Z"/><path d="M20 5.5h-4.5A2.5 2.5 0 0 0 13 8v11h5a2 2 0 0 0 2-2V5.5Z"/><path d="M7 9h3M16 9h1"/>',
+      call: '<path d="M4 12h3l2.1-5 3.3 10 2.2-7 1.6 2H20"/><path d="M18 4v4M16 6h4"/>',
+      notes: '<path d="M6 3.5h9l3 3V20H6V3.5Z"/><path d="M15 3.5V7h3M9 11h6M9 15h6"/>',
+      about: '<circle cx="12" cy="12" r="8.5"/><path d="M12 10.5V17M12 7.4h.01"/>',
+      account: '<circle cx="12" cy="8" r="3.25"/><path d="M5.5 19c.6-3.2 3-5 6.5-5s5.9 1.8 6.5 5"/>',
+      donate: '<path d="M12 20s-8-4.4-8-10.2C4 6.7 6 5 8.5 5c1.6 0 2.9.8 3.5 2 .6-1.2 1.9-2 3.5-2C18 5 20 6.7 20 9.8 20 15.6 12 20 12 20Z"/>',
+      favorites: '<path d="M12 20s-8-4.4-8-10.2C4 6.7 6 5 8.5 5c1.6 0 2.9.8 3.5 2 .6-1.2 1.9-2 3.5-2C18 5 20 6.7 20 9.8 20 15.6 12 20 12 20Z"/>',
+      polls: '<path d="M5 19V10M12 19V5M19 19v-6"/><path d="M3 19h18"/>',
+      submit: '<path d="M6 4h8l4 4v12H6V4Z"/><path d="M14 4v4h4M12 17V10M9.5 12.5 12 10l2.5 2.5"/>',
+      messages: '<rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="m5 7 7 6 7-6"/>',
+      press: '<path d="M4 5h12v15H6a2 2 0 0 1-2-2V5Z"/><path d="M16 9h4v9a2 2 0 0 1-2 2H8M7.5 9h5M7.5 13h5M7.5 17h3"/>',
+      settings: '<circle cx="12" cy="12" r="3"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/>',
+      achievements: '<path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"/><path d="M8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4M12 13v4M8.5 20h7M10 17h4"/>',
+      logout: '<path d="M10 5H6v14h4M14 8l4 4-4 4M9 12h9"/>',
+    };
+    return `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><g stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${paths[name] || paths.about}</g></svg>`;
+  }
 
+  function createMobileMenuAvatar(user, className = '') {
+    const avatar = document.createElement('span');
+    avatar.className = `dx-mobile-menu-avatar${className ? ` ${className}` : ''}`;
+    const name = String((user && (user.name || user.nickname)) || 'Dex member').trim();
+    const picture = String((user && user.picture) || '').trim();
+    if (/^https?:\/\//i.test(picture)) {
+      const image = document.createElement('img');
+      image.src = picture;
+      image.alt = '';
+      image.referrerPolicy = 'no-referrer';
+      avatar.appendChild(image);
+    } else {
+      const initials = name
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part.charAt(0).toUpperCase())
+        .join('') || 'DX';
+      avatar.textContent = initials;
+    }
+    return avatar;
+  }
+
+  function getMobileUserName(user) {
+    const name = String((user && (user.name || user.nickname)) || '').trim();
+    if (name) return name;
+    const email = String((user && user.email) || '').trim();
+    return email ? email.split('@')[0] : 'Your Dex';
+  }
+
+  function createMobileMenuTile(item, options = {}) {
+    const isButton = options.button === true;
+    const tile = document.createElement(isButton ? 'button' : 'a');
+    if (isButton) {
+      tile.type = 'button';
+    } else {
+      tile.href = item.href;
+      tile.setAttribute('data-dx-mobile-menu-route', normalizePathname(item.href));
+    }
+    tile.className = 'dx-mobile-menu-tile';
+    if (item.featured) tile.classList.add('dx-mobile-menu-tile--featured');
+    if (options.action) tile.classList.add('dx-mobile-menu-tile--action');
+    if (options.danger) tile.classList.add('dx-mobile-menu-tile--danger');
+    if (options.account) tile.classList.add('dx-mobile-menu-tile--account');
+    tile.setAttribute('data-dx-mobile-menu-tile', item.key);
+    tile.style.setProperty('--dx-mobile-menu-index', String(options.index || 0));
+
+    const icon = document.createElement('span');
+    icon.className = 'dx-mobile-menu-tile-icon';
+    if (options.avatar) {
+      icon.appendChild(createMobileMenuAvatar(options.user));
+    } else {
+      icon.innerHTML = mobileMenuIcon(item.icon);
+    }
+
+    const copy = document.createElement('span');
+    copy.className = 'dx-mobile-menu-tile-copy';
+    const label = document.createElement('strong');
+    label.className = 'dx-mobile-menu-tile-label';
+    label.textContent = item.label;
+    copy.appendChild(label);
+    if (item.detail) {
+      const detail = document.createElement('span');
+      detail.className = 'dx-mobile-menu-tile-detail';
+      detail.textContent = item.detail;
+      copy.appendChild(detail);
+    }
+
+    const arrow = document.createElement('span');
+    arrow.className = 'dx-mobile-menu-tile-arrow';
+    arrow.setAttribute('aria-hidden', 'true');
+    arrow.textContent = options.back ? '←' : '↗';
+    tile.append(icon, copy);
+    if (item.badge) {
+      const badge = document.createElement('span');
+      badge.className = 'dx-mobile-menu-unread';
+      badge.setAttribute('data-dx-mobile-unread-badge', 'true');
+      badge.hidden = true;
+      tile.appendChild(badge);
+    }
+    tile.appendChild(arrow);
+    return tile;
+  }
+
+  function renderMobileMenuBrand(root) {
+    const brand = root.querySelector('[data-dx-mobile-menu-brand="true"]');
+    if (!(brand instanceof HTMLElement)) return;
+    clearChildren(brand);
+    const source = document.querySelector(
+      '.header-display-mobile .header-title-logo a[href], .header-display-desktop .header-title-logo a[href]'
+    );
+    if (source instanceof HTMLAnchorElement) {
+      const clone = sanitizeClonedNode(source.cloneNode(true));
+      if (clone instanceof HTMLAnchorElement) {
+        clone.setAttribute('aria-label', 'Dex home');
+        brand.appendChild(clone);
+        return;
+      }
+    }
+    const fallback = document.createElement('a');
+    fallback.href = '/';
+    fallback.setAttribute('aria-label', 'Dex home');
+    fallback.textContent = 'dex';
+    brand.appendChild(fallback);
+  }
+
+  function renderMobileMenuSocial(root) {
     const socialHost = root.querySelector('.dx-mobile-menu-social');
-    const actionsHost = root.querySelector('.dx-mobile-menu-actions');
-    const navHost = root.querySelector('.dx-mobile-menu-nav');
-    if (!(socialHost instanceof HTMLElement) || !(actionsHost instanceof HTMLElement) || !(navHost instanceof HTMLElement)) return;
-
+    if (!(socialHost instanceof HTMLElement)) return;
     clearChildren(socialHost);
-    clearChildren(actionsHost);
-    clearChildren(navHost);
-
     const socialCandidates = getUniqueAnchors(Array.from(document.querySelectorAll(
       '.header-display-desktop .header-actions--left .header-actions-action--social a.icon[href], .header-display-mobile .header-actions--left .header-actions-action--social a.icon[href]'
     )));
-    for (const anchor of socialCandidates) {
+    for (const anchor of socialCandidates.slice(0, 4)) {
       const clone = sanitizeClonedNode(anchor.cloneNode(true));
       if (!(clone instanceof HTMLAnchorElement)) continue;
       clone.classList.add('icon');
       socialHost.appendChild(clone);
     }
+  }
 
-    const authAction = document.createElement('a');
-    authAction.href = '#';
-    authAction.setAttribute('data-dx-mobile-menu-action', 'true');
-    if (authSnapshot.authenticated) {
-      authAction.textContent = 'LOG OUT';
-      authAction.setAttribute('data-dx-mobile-logout-trigger', 'true');
+  function readMobileUnreadCount() {
+    const fromWindow = Number(window.__dxMessagesUnreadCount);
+    if (Number.isFinite(fromWindow) && fromWindow >= 0) return Math.round(fromWindow);
+    const sourceBadge = document.getElementById('auth-ui-messages-badge');
+    const fromBadge = Number(sourceBadge && sourceBadge.textContent);
+    return Number.isFinite(fromBadge) && fromBadge >= 0 ? Math.round(fromBadge) : 0;
+  }
+
+  function updateMobileUnreadBadge(root, count) {
+    const safeCount = Number.isFinite(Number(count)) ? Math.max(0, Math.round(Number(count))) : 0;
+    mobileMenuUnreadCount = safeCount;
+    if (!(root instanceof HTMLElement)) return;
+    for (const badge of Array.from(root.querySelectorAll('[data-dx-mobile-unread-badge="true"]'))) {
+      if (!(badge instanceof HTMLElement)) continue;
+      badge.textContent = safeCount > 99 ? '99+' : String(safeCount);
+      badge.hidden = safeCount <= 0;
+      badge.setAttribute('aria-hidden', safeCount > 0 ? 'false' : 'true');
+    }
+  }
+
+  function renderMobileSitePanel(root, authSnapshot) {
+    const grid = root.querySelector('[data-dx-mobile-site-grid="true"]');
+    if (!(grid instanceof HTMLElement)) return;
+    clearChildren(grid);
+
+    let index = 0;
+    for (const item of MOBILE_SITE_TILES) {
+      grid.appendChild(createMobileMenuTile(item, { index }));
+      index += 1;
+    }
+
+    const resolved = Boolean(authSnapshot && authSnapshot.resolved);
+    const authenticated = Boolean(resolved && authSnapshot.authenticated);
+    const accountItem = {
+      key: 'account',
+      label: authenticated ? 'Account' : (resolved ? 'Sign in / Join' : 'Account'),
+      detail: authenticated
+        ? getMobileUserName(authSnapshot.user)
+        : (resolved ? 'Your free Dex account' : 'Checking sign-in…'),
+      icon: 'account',
+    };
+    const accountTile = createMobileMenuTile(accountItem, {
+      account: true,
+      avatar: authenticated,
+      button: true,
+      index,
+      user: authenticated ? authSnapshot.user : null,
+    });
+    accountTile.setAttribute('data-dx-mobile-account-state', resolved ? (authenticated ? 'signed-in' : 'signed-out') : 'loading');
+    if (!resolved) {
+      accountTile.disabled = true;
+      accountTile.setAttribute('aria-busy', 'true');
+    } else if (authenticated) {
+      accountTile.setAttribute('data-dx-mobile-account-open', 'true');
+      accountTile.setAttribute('aria-controls', 'dx-mobile-menu-account-panel');
     } else {
-      authAction.textContent = 'LOGIN';
-      authAction.setAttribute('data-dx-mobile-login-trigger', 'true');
+      accountTile.setAttribute('data-dx-mobile-login-trigger', 'true');
     }
-    actionsHost.appendChild(authAction);
+    grid.appendChild(accountTile);
+    index += 1;
 
-    const donateSource = document.querySelector('.header-display-desktop .header-actions-action--cta a[href], .header-display-mobile .header-actions-action--cta a[href]');
-    if (donateSource instanceof HTMLAnchorElement) {
-      const donateClone = sanitizeClonedNode(donateSource.cloneNode(true));
-      if (donateClone instanceof HTMLAnchorElement) {
-        donateClone.setAttribute('data-dx-mobile-menu-action', 'true');
-        actionsHost.appendChild(donateClone);
-      }
-    }
+    const donateSource = document.querySelector(
+      '.header-display-desktop .header-actions-action--cta a[href], .header-display-mobile .header-actions-action--cta a[href]'
+    );
+    const donateHref = donateSource instanceof HTMLAnchorElement
+      ? String(donateSource.getAttribute('href') || '/donate/')
+      : '/donate/';
+    const donateTile = createMobileMenuTile({
+      key: 'donate',
+      href: donateHref,
+      label: 'Donate',
+      detail: 'Keep the archive open',
+      icon: 'donate',
+    }, { action: true, index });
+    grid.appendChild(donateTile);
 
     normalizeDonateActionLabels(root);
-
-    const navCandidates = getUniqueAnchors(Array.from(document.querySelectorAll(
-      '.header-display-desktop .header-nav-list .header-nav-item > a[href], .header-display-mobile .header-nav-list .header-nav-item > a[href]'
-    )));
-    for (const anchor of navCandidates) {
-      const href = String(anchor.getAttribute('href') || '').trim();
-      const absoluteHref = toAbsoluteUrl(href);
-      if (!absoluteHref) continue;
-      if (!isHttpUrl(absoluteHref)) continue;
-      if (!isSameOriginUrl(absoluteHref)) continue;
-
-      const clone = sanitizeClonedNode(anchor.cloneNode(true));
-      if (!(clone instanceof HTMLAnchorElement)) continue;
-      clone.setAttribute('data-dx-mobile-menu-route', normalizePathname(absoluteHref.pathname));
-      clone.removeAttribute('target');
-      clone.removeAttribute('rel');
-      navHost.appendChild(clone);
-    }
-
-    if (authSnapshot.authenticated && authSnapshot.profileLinks.length > 0) {
-      const profileToggle = document.createElement('button');
-      profileToggle.type = 'button';
-      profileToggle.className = 'dx-mobile-menu-profile-toggle';
-      profileToggle.textContent = 'PROFILE';
-      profileToggle.setAttribute('data-dx-mobile-profile-toggle', 'true');
-      profileToggle.setAttribute('aria-controls', MOBILE_PROFILE_PANEL_ID);
-      profileToggle.setAttribute('aria-expanded', 'false');
-
-      const profilePanel = document.createElement('div');
-      profilePanel.id = MOBILE_PROFILE_PANEL_ID;
-      profilePanel.className = 'dx-mobile-menu-profile-panel';
-      profilePanel.setAttribute('data-dx-mobile-profile-panel', 'true');
-      profilePanel.setAttribute('aria-hidden', 'true');
-      profilePanel.hidden = true;
-
-      for (const profileLinkDef of authSnapshot.profileLinks) {
-        if (!profileLinkDef || !profileLinkDef.href || !profileLinkDef.routePath) continue;
-        const profileLink = document.createElement('a');
-        profileLink.href = profileLinkDef.href;
-        profileLink.className = 'dx-mobile-menu-profile-link';
-        profileLink.textContent = profileLinkDef.label;
-        profileLink.setAttribute('data-dx-mobile-profile-route', 'true');
-        profileLink.setAttribute('data-dx-mobile-menu-route', profileLinkDef.routePath);
-        profilePanel.appendChild(profileLink);
-      }
-
-      navHost.appendChild(profileToggle);
-      navHost.appendChild(profilePanel);
-      setMobileProfileFolderExpanded(root, false);
-    }
-
     markMobileMenuActiveForPath(window.location.pathname);
-    syncMobileUtilityLayout(root);
-    syncMobileMenuBlurScope(root);
+  }
+
+  function renderMobileAccountPanel(root, authSnapshot) {
+    const identity = root.querySelector('[data-dx-mobile-account-identity="true"]');
+    const grid = root.querySelector('[data-dx-mobile-account-grid="true"]');
+    if (!(identity instanceof HTMLElement) || !(grid instanceof HTMLElement)) return;
+    clearChildren(identity);
+    clearChildren(grid);
+    if (!authSnapshot || !authSnapshot.authenticated) return;
+
+    identity.appendChild(createMobileMenuAvatar(authSnapshot.user, 'dx-mobile-menu-avatar--large'));
+    const identityCopy = document.createElement('span');
+    const name = document.createElement('strong');
+    name.textContent = getMobileUserName(authSnapshot.user);
+    const meta = document.createElement('span');
+    meta.textContent = 'Dex member account';
+    identityCopy.append(name, meta);
+    identity.appendChild(identityCopy);
+
+    MOBILE_ACCOUNT_TILES.forEach((item, index) => {
+      grid.appendChild(createMobileMenuTile(item, { index }));
+    });
+    const logoutTile = createMobileMenuTile({
+      key: 'logout',
+      label: 'Log out',
+      detail: 'End this session',
+      icon: 'logout',
+    }, { button: true, danger: true, index: MOBILE_ACCOUNT_TILES.length });
+    logoutTile.setAttribute('data-dx-mobile-logout-trigger', 'true');
+    grid.appendChild(logoutTile);
+    updateMobileUnreadBadge(root, readMobileUnreadCount());
+    markMobileMenuActiveForPath(window.location.pathname);
+  }
+
+  async function buildMobileMenuContent(root, { forceAuthRefresh = false } = {}) {
+    if (!(root instanceof HTMLElement)) return;
+    const buildSequence = ++mobileMenuBuildSequence;
+    renderMobileMenuBrand(root);
+    renderMobileMenuSocial(root);
+    renderMobileSitePanel(root, mobileMenuAuthSnapshot);
+    if (mobileMenuAuthSnapshot.authenticated) {
+      renderMobileAccountPanel(root, mobileMenuAuthSnapshot);
+    }
+
+    const authSnapshot = await resolveMobileMenuAuthSnapshot({ force: forceAuthRefresh });
+    if (buildSequence !== mobileMenuBuildSequence || !(root instanceof HTMLElement)) return;
+    renderMobileSitePanel(root, authSnapshot);
+    renderMobileAccountPanel(root, authSnapshot);
   }
 
   function openMobileMenu(root, triggerButton = null) {
@@ -2474,30 +2600,38 @@
       clearTimeout(mobileMenuCloseTimer);
       mobileMenuCloseTimer = 0;
     }
+    mobileMenuLastFocused = triggerButton instanceof HTMLElement
+      ? triggerButton
+      : (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+    setMobileMenuView(root, 'site', { focus: false });
+    renderMobileSitePanel(root, { authenticated: false, user: null, resolved: false });
     void buildMobileMenuContent(root, { forceAuthRefresh: true });
-    syncMobileUtilityLayout(root);
-    syncMobileMenuBlurScope(root);
     root.setAttribute('aria-hidden', 'false');
-    requestAnimationFrame(() => {
-      document.body.classList.add(MOBILE_MENU_OPEN_CLASS);
-      void buildMobileMenuContent(root);
-      syncMobileUtilityLayout(root);
-      syncMobileMenuBlurScope(root);
-      requestAnimationFrame(() => syncMobileMenuBlurScope(root));
-    });
-    mobileMenuLastFocused = triggerButton instanceof HTMLElement ? triggerButton : (document.activeElement instanceof HTMLElement ? document.activeElement : null);
-
+    mobileMenuBodyOverflow = document.body.style.overflow || '';
+    document.body.style.overflow = 'hidden';
     const scrollRoot = document.getElementById(SLOT_SCROLL_ID);
     if (scrollRoot instanceof HTMLElement) {
-      if (!scrollRoot.hasAttribute('data-dx-mobile-menu-prev-overflow')) {
-        scrollRoot.setAttribute('data-dx-mobile-menu-prev-overflow', scrollRoot.style.overflowY || '');
-      }
+      mobileMenuScrollOverflow = scrollRoot.style.overflowY || '';
       scrollRoot.style.overflowY = 'hidden';
     }
+
+    requestAnimationFrame(() => {
+      document.body.classList.add(MOBILE_MENU_OPEN_CLASS);
+      setMobileMenuBackgroundInert(root, true);
+      const dialog = root.querySelector('.dx-mobile-menu-modal');
+      if (dialog instanceof HTMLElement) {
+        try {
+          dialog.focus({ preventScroll: true });
+        } catch {
+          dialog.focus();
+        }
+      }
+    });
 
     const burgerButtons = Array.from(document.querySelectorAll('.header-display-mobile .header-burger-btn'));
     for (const button of burgerButtons) {
       button.setAttribute('aria-expanded', 'true');
+      button.setAttribute('aria-label', 'Close menu');
     }
   }
 
@@ -2514,6 +2648,43 @@
       button.setAttribute('aria-haspopup', 'dialog');
       button.setAttribute('aria-expanded', document.body.classList.contains(MOBILE_MENU_OPEN_CLASS) ? 'true' : 'false');
       button.setAttribute('aria-controls', MOBILE_MENU_ROOT_ID);
+      button.setAttribute('aria-label', document.body.classList.contains(MOBILE_MENU_OPEN_CLASS) ? 'Close menu' : 'Open menu');
+    }
+  }
+
+  function setMobileMenuStatus(root, message = '', state = '') {
+    if (!(root instanceof HTMLElement)) return;
+    const status = root.querySelector('[data-dx-mobile-menu-status="true"]');
+    if (!(status instanceof HTMLElement)) return;
+    status.textContent = message;
+    status.hidden = !message;
+    if (state) {
+      status.setAttribute('data-state', state);
+    } else {
+      status.removeAttribute('data-state');
+    }
+  }
+
+  async function runMobileMenuAuthAction(root, control, kind) {
+    if (!(root instanceof HTMLElement) || !(control instanceof HTMLElement)) return;
+    if (control.getAttribute('data-dx-mobile-auth-busy') === 'true') return;
+    control.setAttribute('data-dx-mobile-auth-busy', 'true');
+    control.setAttribute('aria-busy', 'true');
+    if ('disabled' in control) control.disabled = true;
+    setMobileMenuStatus(root, kind === 'logout' ? 'Signing out…' : 'Opening secure sign in…', 'busy');
+    try {
+      const completed = kind === 'logout' ? await triggerMobileLogout() : await triggerMobileLogin();
+      if (!completed) throw new Error('Auth action unavailable');
+      closeMobileMenu({ restoreFocus: false });
+    } catch {
+      setMobileMenuStatus(
+        root,
+        kind === 'logout' ? 'Could not sign out. Try again.' : 'Could not open sign in. Try again.',
+        'error',
+      );
+      control.removeAttribute('data-dx-mobile-auth-busy');
+      control.removeAttribute('aria-busy');
+      if ('disabled' in control) control.disabled = false;
     }
   }
 
@@ -2526,20 +2697,48 @@
       root = document.createElement('div');
       root.id = MOBILE_MENU_ROOT_ID;
       root.className = 'dx-mobile-menu';
-      root.setAttribute('aria-hidden', 'true');
-      root.innerHTML = `
-        <button class="dx-mobile-menu-backdrop" type="button" aria-label="Close menu" data-dx-mobile-menu-close="true"></button>
-        <div class="dx-mobile-menu-scope-blur" aria-hidden="true"></div>
-        <div class="dx-mobile-menu-sheet dx-glass-shell--header-match" role="dialog" aria-modal="true" aria-label="Site menu">
-          <div class="dx-mobile-menu-utility">
-            <div class="dx-mobile-menu-social" aria-label="Social links"></div>
-            <div class="dx-mobile-menu-actions" aria-label="Account and actions"></div>
-          </div>
-          <nav class="dx-mobile-menu-nav" aria-label="Site navigation"></nav>
-        </div>
-      `;
       document.body.appendChild(root);
     }
+    root.setAttribute('aria-hidden', 'true');
+    root.setAttribute('data-dx-mobile-menu-view', 'site');
+    root.innerHTML = `
+      <button class="dx-mobile-menu-backdrop" type="button" tabindex="-1" aria-label="Close menu" data-dx-mobile-menu-close="true"></button>
+      <section class="dx-mobile-menu-modal" role="dialog" aria-modal="true" aria-labelledby="dx-mobile-menu-title" tabindex="-1">
+        <header class="dx-mobile-menu-head">
+          <div class="dx-mobile-menu-brand" data-dx-mobile-menu-brand="true"></div>
+          <div class="dx-mobile-menu-heading">
+            <span>DEX / NAVIGATION</span>
+            <h2 id="dx-mobile-menu-title" data-dx-heading-randomize="false">Menu</h2>
+          </div>
+          <button class="dx-mobile-menu-close" type="button" aria-label="Close menu" data-dx-mobile-menu-close="true">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6.5 6.5 11 11m0-11-11 11"/></svg>
+          </button>
+        </header>
+        <div class="dx-mobile-menu-viewport">
+          <div class="dx-mobile-menu-track">
+            <section class="dx-mobile-menu-panel dx-mobile-menu-panel--site" data-dx-mobile-menu-panel="site" aria-hidden="false">
+              <p class="dx-mobile-menu-section-label">Explore Dex</p>
+              <nav class="dx-mobile-menu-grid" data-dx-mobile-site-grid="true" aria-label="Site navigation"></nav>
+              <footer class="dx-mobile-menu-foot">
+                <span class="dx-mobile-menu-foot-label">Follow the archive</span>
+                <div class="dx-mobile-menu-social" aria-label="Social links"></div>
+              </footer>
+            </section>
+            <section id="dx-mobile-menu-account-panel" class="dx-mobile-menu-panel dx-mobile-menu-panel--account" data-dx-mobile-menu-panel="account" aria-hidden="true" inert>
+              <header class="dx-mobile-menu-account-head">
+                <button type="button" class="dx-mobile-menu-back" data-dx-mobile-account-back="true">
+                  <span aria-hidden="true">←</span> Menu
+                </button>
+                <div><span>ACCOUNT</span><h3 data-dx-heading-randomize="false">Your Dex</h3></div>
+              </header>
+              <div class="dx-mobile-menu-account-identity" data-dx-mobile-account-identity="true"></div>
+              <nav class="dx-mobile-menu-account-grid" data-dx-mobile-account-grid="true" aria-label="Account navigation"></nav>
+              <p class="dx-mobile-menu-status" data-dx-mobile-menu-status="true" role="status" aria-live="polite" hidden></p>
+            </section>
+          </div>
+        </div>
+      </section>
+    `;
 
     void buildMobileMenuContent(root, { forceAuthRefresh: true });
     normalizeMobileBurgerHooks(document);
@@ -2572,12 +2771,33 @@
         return;
       }
 
-      const profileToggle = target && target.closest ? target.closest('[data-dx-mobile-profile-toggle="true"]') : null;
-      if (profileToggle) {
+      const accountOpen = target && target.closest ? target.closest('[data-dx-mobile-account-open="true"]') : null;
+      if (accountOpen) {
         event.preventDefault();
-        toggleMobileProfileFolder(root);
-        syncMobileUtilityLayout(root);
-        syncMobileMenuBlurScope(root);
+        setMobileMenuStatus(root);
+        setMobileMenuView(root, 'account');
+        return;
+      }
+
+      const accountBack = target && target.closest ? target.closest('[data-dx-mobile-account-back="true"]') : null;
+      if (accountBack) {
+        event.preventDefault();
+        setMobileMenuStatus(root);
+        setMobileMenuView(root, 'site');
+        return;
+      }
+
+      const loginTrigger = target && target.closest ? target.closest('[data-dx-mobile-login-trigger="true"]') : null;
+      if (loginTrigger) {
+        event.preventDefault();
+        void runMobileMenuAuthAction(root, loginTrigger, 'login');
+        return;
+      }
+
+      const logoutTrigger = target && target.closest ? target.closest('[data-dx-mobile-logout-trigger="true"]') : null;
+      if (logoutTrigger) {
+        event.preventDefault();
+        void runMobileMenuAuthAction(root, logoutTrigger, 'logout');
         return;
       }
 
@@ -2585,13 +2805,6 @@
       if (!clickedLink) return;
       const href = String(clickedLink.getAttribute('href') || '').trim();
       if (!href) return;
-      if (clickedLink.matches('[data-dx-mobile-login-trigger="true"]')) {
-        event.preventDefault();
-        triggerMobileLogin();
-      } else if (clickedLink.matches('[data-dx-mobile-logout-trigger="true"]')) {
-        event.preventDefault();
-        triggerMobileLogout();
-      }
       closeMobileMenu({ restoreFocus: false });
     });
 
@@ -2600,9 +2813,7 @@
         closeMobileMenu({ restoreFocus: false });
       }
       normalizeMobileBurgerHooks(document);
-      void buildMobileMenuContent(root);
-      syncMobileUtilityLayout(root);
-      syncMobileMenuBlurScope(root);
+      if (isMobileViewport()) void buildMobileMenuContent(root);
     }, { passive: true });
 
     window.addEventListener('orientationchange', () => {
@@ -2610,15 +2821,37 @@
         closeMobileMenu({ restoreFocus: false });
       }
       normalizeMobileBurgerHooks(document);
-      void buildMobileMenuContent(root);
-      syncMobileUtilityLayout(root);
-      syncMobileMenuBlurScope(root);
+      if (isMobileViewport()) void buildMobileMenuContent(root);
     });
 
     window.addEventListener('keydown', (event) => {
-      if (event.key !== 'Escape') return;
       if (!document.body.classList.contains(MOBILE_MENU_OPEN_CLASS)) return;
-      closeMobileMenu();
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        if (root.getAttribute('data-dx-mobile-menu-view') === 'account') {
+          setMobileMenuView(root, 'site');
+        } else {
+          closeMobileMenu();
+        }
+        return;
+      }
+      if (event.key !== 'Tab') return;
+      const focusable = getMobileMenuFocusable(root);
+      if (!focusable.length) {
+        event.preventDefault();
+        const dialog = root.querySelector('.dx-mobile-menu-modal');
+        if (dialog instanceof HTMLElement) dialog.focus();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     }, true);
 
     window.addEventListener('dx:slotready', () => {
@@ -2626,14 +2859,20 @@
       normalizeMobileBurgerHooks(document);
       void buildMobileMenuContent(root, { forceAuthRefresh: true });
       markMobileMenuActiveForPath(window.location.pathname);
-      syncMobileUtilityLayout(root);
-      syncMobileMenuBlurScope(root);
     });
 
     window.addEventListener('dex-auth:ready', () => {
       void buildMobileMenuContent(root, { forceAuthRefresh: true });
-      syncMobileMenuBlurScope(root);
     });
+    window.addEventListener('dex-auth:state', () => {
+      void buildMobileMenuContent(root, { forceAuthRefresh: true });
+    });
+    const syncUnread = (event) => {
+      const detail = event && event.detail;
+      updateMobileUnreadBadge(root, detail && detail.count);
+    };
+    window.addEventListener('dx:messages:unread-count', syncUnread);
+    window.addEventListener('dx:messages:unread-sync', syncUnread);
   }
 
   function alignHomeHeroToHeader() {

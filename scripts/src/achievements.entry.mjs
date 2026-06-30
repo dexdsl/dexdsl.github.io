@@ -42,6 +42,8 @@
     lane: 'bars-3.svg',
     favorite: 'heart.svg',
     profile: 'user-circle.svg',
+    explorer: 'eye.svg',
+    rhythm: 'list-bullet.svg',
     secret: 'lock-closed.svg',
     'secret-license': 'shield-check.svg',
     'secret-release': 'archive-box-arrow-down.svg',
@@ -297,6 +299,7 @@
     const progress = Math.max(0, Number(item.progress ?? item.metricValue ?? 0) || 0);
     const unlocked = Boolean(item.unlocked) || progress >= threshold;
     const newly = state.newlyUnlockedSet.has(id) || Boolean(item.newlyUnlocked);
+    const visibility = toText(item.visibility, 'default').toLowerCase();
     let cardState = 'locked';
     if (unlocked && newly) cardState = 'new';
     else if (unlocked) cardState = 'unlocked';
@@ -316,9 +319,10 @@
       newly,
       cardState,
       secret,
+      visibility,
       unlockedAt: toText(item.unlockedAt || item.unlocked_at || item.earnedAt || item.earned_at, ''),
       clueGrowlix: toText(item.clueGrowlix, '???'),
-      claimable: Boolean(item.claimable) || id === 'vault-easter-egg',
+      claimable: visibility === 'hidden-until-unlocked' ? false : Boolean(item.claimable),
     };
   }
 
@@ -1071,7 +1075,14 @@
 
   function applySummary(state, payload) {
     const summary = payload && typeof payload === 'object' ? payload : {};
-    const badgesRaw = Array.isArray(summary.badges) ? summary.badges : [];
+    const badgesRaw = (Array.isArray(summary.badges) ? summary.badges : []).filter((row) => {
+      if (!row || typeof row !== 'object') return true;
+      const visibility = toText(row.visibility, 'default').toLowerCase();
+      if (visibility !== 'hidden-until-unlocked') return true;
+      const threshold = Math.max(1, Number(row.threshold) || 1);
+      const progress = Math.max(0, Number(row.progress ?? row.metricValue ?? 0) || 0);
+      return Boolean(row.unlocked) || progress >= threshold;
+    });
     const newly = Array.isArray(summary.newlyUnlocked)
       ? summary.newlyUnlocked.map((item) => toText(item && typeof item === 'object' ? item.id : item, '').toLowerCase()).filter(Boolean)
       : [];
@@ -1507,7 +1518,7 @@
     }
 
     applySummary(state, summaryResult.payload);
-    switchPage(state, PAGE_OVERVIEW);
+    if (!readFocusBadgeFromUrl()) switchPage(state, PAGE_OVERVIEW);
 
     const remaining = DX_MIN_SHEEN_MS - (nowMs() - bootStart);
     if (remaining > 0) {

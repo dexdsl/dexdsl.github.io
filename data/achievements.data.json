@@ -1,6 +1,6 @@
 {
-  "catalogVersion": "2026.03.v1",
-  "updatedAt": "2026-03-06T00:00:00.000Z",
+  "catalogVersion": "2026.06.v1",
+  "updatedAt": "2026-06-29T00:00:00.000Z",
   "sequenceGroup": "dex-achievements",
   "achievements": [
     {
@@ -15,7 +15,8 @@
       "clueGrowlix": "",
       "description": "Send your first Dex submission.",
       "sortOrder": 10,
-      "points": 10
+      "points": 10,
+      "visibility": "default"
     },
     {
       "id": "submissions-3",
@@ -29,7 +30,8 @@
       "clueGrowlix": "",
       "description": "Submit three works.",
       "sortOrder": 20,
-      "points": 20
+      "points": 20,
+      "visibility": "default"
     },
     {
       "id": "submissions-10",
@@ -43,7 +45,8 @@
       "clueGrowlix": "",
       "description": "Submit ten works.",
       "sortOrder": 30,
-      "points": 40
+      "points": 40,
+      "visibility": "default"
     },
     {
       "id": "first-release",
@@ -57,7 +60,8 @@
       "clueGrowlix": "",
       "description": "Get your first release accepted into the archive.",
       "sortOrder": 40,
-      "points": 20
+      "points": 20,
+      "visibility": "default"
     },
     {
       "id": "releases-5",
@@ -71,7 +75,8 @@
       "clueGrowlix": "",
       "description": "Reach five releases.",
       "sortOrder": 50,
-      "points": 60
+      "points": 60,
+      "visibility": "default"
     },
     {
       "id": "cc0-first",
@@ -85,7 +90,8 @@
       "clueGrowlix": "",
       "description": "Submit your first CC0 work.",
       "sortOrder": 60,
-      "points": 15
+      "points": 15,
+      "visibility": "default"
     },
     {
       "id": "joint-release-first",
@@ -99,7 +105,8 @@
       "clueGrowlix": "",
       "description": "Publish a Joint CC-BY release.",
       "sortOrder": 70,
-      "points": 20
+      "points": 20,
+      "visibility": "default"
     },
     {
       "id": "first-poll-vote",
@@ -113,7 +120,8 @@
       "clueGrowlix": "",
       "description": "Vote in your first poll.",
       "sortOrder": 80,
-      "points": 10
+      "points": 10,
+      "visibility": "default"
     },
     {
       "id": "poll-votes-5",
@@ -127,7 +135,8 @@
       "clueGrowlix": "",
       "description": "Cast five poll votes.",
       "sortOrder": 90,
-      "points": 25
+      "points": 25,
+      "visibility": "default"
     },
     {
       "id": "poll-votes-10",
@@ -141,7 +150,8 @@
       "clueGrowlix": "",
       "description": "Cast ten poll votes.",
       "sortOrder": 100,
-      "points": 35
+      "points": 35,
+      "visibility": "default"
     },
     {
       "id": "poll-votes-50",
@@ -155,7 +165,8 @@
       "clueGrowlix": "",
       "description": "Cast fifty poll votes.",
       "sortOrder": 110,
-      "points": 120
+      "points": 120,
+      "visibility": "default"
     },
     {
       "id": "poll-streak-3",
@@ -169,7 +180,8 @@
       "clueGrowlix": "",
       "description": "Vote on three consecutive days.",
       "sortOrder": 120,
-      "points": 40
+      "points": 40,
+      "visibility": "default"
     },
     {
       "id": "poll-streak-7",
@@ -183,7 +195,8 @@
       "clueGrowlix": "",
       "description": "Vote on seven consecutive days.",
       "sortOrder": 130,
-      "points": 90
+      "points": 90,
+      "visibility": "default"
     },
     {
       "id": "first-call-submission",
@@ -197,7 +210,8 @@
       "clueGrowlix": "",
       "description": "Submit your first IN DEX call response.",
       "sortOrder": 140,
-      "points": 20
+      "points": 20,
+      "visibility": "default"
     },
     {
       "id": "multi-lane-call-contributor",
@@ -211,7 +225,8 @@
       "clueGrowlix": "",
       "description": "Submit call work across two lanes.",
       "sortOrder": 150,
-      "points": 75
+      "points": 75,
+      "visibility": "default"
     },
     {
       "id": "first-favorite",
@@ -225,7 +240,8 @@
       "clueGrowlix": "",
       "description": "Save your first favorite.",
       "sortOrder": 160,
-      "points": 8
+      "points": 8,
+      "visibility": "default"
     },
     {
       "id": "favorites-10",
@@ -239,7 +255,8 @@
       "clueGrowlix": "",
       "description": "Save ten favorites.",
       "sortOrder": 170,
-      "points": 30
+      "points": 30,
+      "visibility": "default"
     },
     {
       "id": "profile-defaults-configured",
@@ -253,7 +270,8 @@
       "clueGrowlix": "",
       "description": "Configure creator/category/instrument defaults in Settings.",
       "sortOrder": 180,
-      "points": 12
+      "points": 12,
+      "visibility": "default"
     },
     {
       "id": "rejection-resilience",
@@ -267,7 +285,8 @@
       "clueGrowlix": "??? keep shipping after ???",
       "description": "Keep going after a rejection.",
       "sortOrder": 190,
-      "points": 55
+      "points": 55,
+      "visibility": "default"
     },
     {
       "id": "cc0-five",
@@ -281,7 +300,8 @@
       "clueGrowlix": "*** open archive energy ***",
       "description": "Publish five CC0 submissions.",
       "sortOrder": 200,
-      "points": 100
+      "points": 100,
+      "visibility": "default"
     },
     {
       "id": "cc0-ten",
@@ -295,7 +315,8 @@
       "clueGrowlix": "*** public domain overdrive ***",
       "description": "Publish ten CC0 submissions.",
       "sortOrder": 210,
-      "points": 180
+      "points": 180,
+      "visibility": "default"
     },
     {
       "id": "releases-20-secret",
@@ -309,36 +330,39 @@
       "clueGrowlix": "!!! catalog architect !!!",
       "description": "Reach twenty releases.",
       "sortOrder": 220,
-      "points": 220
+      "points": 220,
+      "visibility": "default"
     },
     {
-          "id": "found-404",
-          "title": "Found a Missing Packet",
-          "category": "profile",
-          "tier": "bronze",
-          "glyph": "explorer",
-          "metricKey": "found404Visits",
-          "threshold": 1,
-          "secret": false,
-          "clueGrowlix": "",
-          "description": "Visited a missing page on Dex.",
-          "sortOrder": 235,
-          "points": 10
-        },
-        {
-          "id": "vault-easter-egg",
-          "title": "404... again.",
-          "category": "secret",
-          "tier": "silver",
-          "glyph": "vault",
-          "metricKey": "secretClaimVault",
-          "threshold": 1,
-          "secret": true,
-          "clueGrowlix": "The iconic **-&&& beat machine as a page slug.",
-          "description": "Claim the vault easter egg.",
-          "sortOrder": 230,
-          "points": 90
-        },
+      "id": "vault-easter-egg",
+      "title": "404… Again.",
+      "category": "secret",
+      "tier": "silver",
+      "glyph": "rhythm",
+      "metricKey": "secretClaimVault",
+      "threshold": 1,
+      "secret": true,
+      "clueGrowlix": "??? sixteen silent steps ???",
+      "description": "Found the rhythm hiding behind /808.",
+      "sortOrder": 230,
+      "points": 90,
+      "visibility": "hidden-until-unlocked"
+    },
+    {
+      "id": "found-404",
+      "title": "Found a Missing Packet",
+      "category": "profile",
+      "tier": "bronze",
+      "glyph": "explorer",
+      "metricKey": "found404Visits",
+      "threshold": 1,
+      "secret": false,
+      "clueGrowlix": "",
+      "description": "Visited a missing page on Dex.",
+      "sortOrder": 235,
+      "points": 10,
+      "visibility": "default"
+    },
     {
       "id": "cross-lane-veteran",
       "title": "Cross-lane Veteran",
@@ -351,7 +375,8 @@
       "clueGrowlix": "??? move across lanes ???",
       "description": "Contribute across three call lanes.",
       "sortOrder": 240,
-      "points": 200
+      "points": 200,
+      "visibility": "default"
     }
   ]
 }
