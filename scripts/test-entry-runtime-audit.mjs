@@ -18,6 +18,7 @@ async function main() {
   <script defer src="/assets/vendor/auth0-spa-js.umd.min.js"></script>
   <script defer src="/assets/dex-auth0-config.js"></script>
   <script defer src="/assets/dex-auth.js"></script>
+  <link rel="stylesheet" href="/css/components/dx-entry-runtime.css">
   </head><body>
   <div id="scroll-gradient-bg"></div>
   <div id="gooey-mesh-wrapper"></div>

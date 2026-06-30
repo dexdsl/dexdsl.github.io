@@ -44,6 +44,8 @@ async function stubAuth(page: Page, mode: AuthMode): Promise<void> {
       };
       window.DEX_AUTH = auth;
       window.dexAuth = auth;
+      window.DEX_ACCOUNT_MENU_ICON = (iconName) =>
+        '<svg data-desktop-account-icon="' + iconName + '" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16"></path></svg>';
       window.AUTH0_USER = user;
       window.auth0Sub = user ? user.sub : '';
 
@@ -119,7 +121,7 @@ test.describe('mobile navigation modal', () => {
         right: rect ? Math.round(window.innerWidth - rect.right) : -1,
         bottom: rect ? Math.round(window.innerHeight - rect.bottom) : -1,
       };
-    })).toEqual({ left: 8, top: 8, right: 8, bottom: 8 });
+    })).toEqual({ left: 16, top: 16, right: 16, bottom: 16 });
 
     const metrics = await page.evaluate(() => {
       const modal = document.querySelector('.dx-mobile-menu-modal') as HTMLElement | null;
@@ -141,10 +143,22 @@ test.describe('mobile navigation modal', () => {
     await expect(root.locator('[data-dx-mobile-menu-tile="about"]')).toHaveCount(1);
     await expect(root.locator('[data-dx-mobile-menu-tile="donate"]')).toHaveCount(1);
     await expect(root.locator('.dx-mobile-menu-social a.icon')).toHaveCount(4);
+    const tileGeometry = await page.evaluate(() => Array.from(
+      document.querySelectorAll<HTMLElement>('[data-dx-mobile-site-grid="true"] .dx-mobile-menu-tile'),
+    ).map((tile) => {
+      const copy = tile.querySelector<HTMLElement>('.dx-mobile-menu-tile-copy');
+      return {
+        radius: window.getComputedStyle(tile).borderRadius,
+        textClipsX: copy ? copy.scrollWidth > copy.clientWidth + 1 : true,
+        textClipsY: copy ? copy.scrollHeight > copy.clientHeight + 1 : true,
+      };
+    }));
+    expect(new Set(tileGeometry.map((tile) => tile.radius)).size).toBe(1);
+    expect(tileGeometry.every((tile) => !tile.textClipsX && !tile.textClipsY)).toBeTruthy();
 
     const account = root.locator('[data-dx-mobile-login-trigger="true"]');
     await expect(account).toHaveCount(1);
-    await expect(account).toContainText('Sign in / Join');
+    await expect(account).toContainText('Sign in');
 
     await page.evaluate(() => {
       (window as any).__dxMobileAuthReject.signIn = true;
@@ -192,6 +206,7 @@ test.describe('mobile navigation modal', () => {
       .evaluateAll((links) => links.map((link) => link.getAttribute('href')));
     expect(accountRoutes).toEqual(expectedRoutes);
     await expect(root.locator('[data-dx-mobile-account-grid="true"] [data-dx-mobile-menu-tile="catalog"]')).toHaveCount(0);
+    await expect(root.locator('[data-dx-mobile-account-grid="true"] [data-desktop-account-icon]')).toHaveCount(8);
 
     await page.evaluate(() => {
       window.dispatchEvent(new CustomEvent('dx:messages:unread-count', { detail: { count: 7 } }));

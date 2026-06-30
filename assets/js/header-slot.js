@@ -8,8 +8,18 @@
   const SLOT_SCROLL_ID = 'dx-slot-scroll-root';
   const SLOT_FOREGROUND_ID = 'dx-slot-foreground-root';
   const ROUTE_SCRIPT_ATTR = 'data-dx-route-script';
+  const ROUTE_STYLE_ATTR = 'data-dx-route-style';
+  const ROUTE_STYLE_STAGED_ATTR = 'data-dx-route-style-staged';
+  const ROUTE_INLINE_STYLE_ATTR = 'data-dx-route-inline-style';
+  const ROUTE_STYLE_ANCHOR_ATTR = 'data-dx-route-style-anchor';
   const HISTORY_SLOT_KEY = '__dxSlot';
   const HISTORY_SCROLL_KEY = '__dxSlotScrollTop';
+  const HISTORY_INDEX_KEY = '__dxSlotHistoryIndex';
+  const ROUTE_PROGRESS_ID = 'dx-route-progress';
+  const ROUTE_ANNOUNCER_ID = 'dx-route-announcer';
+  const ROUTE_SHARED_NAME = 'dx-route-shared';
+  const ROUTE_CONTENT_NAME = 'dx-route-content';
+  const ROUTE_TRANSITION_TYPE_ATTR = 'data-dx-route-transition-type';
   const GOOEY_MESH_STATE_STORAGE_KEY = '__dxGooeyMeshState';
   const GOOEY_MESH_CANONICAL_STYLE_ID = 'dx-gooey-mesh-canonical-style';
   const GOOEY_SPEED_MIN = 14.4;
@@ -44,6 +54,11 @@
   const ROUTE_TRANSITION_OUT_END = 'dx:route-transition-out:end';
   const ROUTE_TRANSITION_IN_START = 'dx:route-transition-in:start';
   const ROUTE_TRANSITION_IN_END = 'dx:route-transition-in:end';
+  const ROUTE_PREFETCH_DELAY_MS = 90;
+  const ROUTE_PREFETCH_TIMEOUT_MS = 6000;
+  const ROUTE_PREFETCH_TTL_MS = 45000;
+  const ROUTE_PREFETCH_LIMIT = 8;
+  const ROUTE_PROGRESS_DELAY_MS = 250;
   const PROFILE_PROTECTED_ROUTE_CLASS = 'dx-route-profile-protected';
   const PROFILE_STANDARD_CHROME_ROUTE_CLASS = 'dx-route-standard-chrome';
   const PROFILE_SHOW_MESH_ROUTE_CLASS = 'dx-route-show-mesh';
@@ -91,7 +106,23 @@
 
   const PRESERVED_IDS = new Set(['gooey-mesh-wrapper', 'scroll-gradient-bg', SLOT_SCROLL_ID, SLOT_FOREGROUND_ID]);
   const PRESERVED_TAGS = new Set(['SCRIPT', 'STYLE', 'LINK', 'META']);
-  const SKIPPED_ROUTE_SCRIPTS = new Set(['/assets/js/header-slot.js', '/assets/js/dx-scroll-dot.js']);
+  const SKIPPED_ROUTE_SCRIPTS = new Set([
+    '/assets/dex-auth0-config.js',
+    '/assets/dex-auth.js',
+    '/assets/vendor/auth0-spa-js.umd.min.js',
+    '/assets/js/header-slot.js',
+    '/assets/js/dx-scroll-dot.js',
+  ]);
+  const PERSISTENT_BODY_CLASSES = new Set([
+    BODY_CLASS,
+    ROUTING_CLASS,
+    IOS_SAFARI_CLASS,
+    IOS_SAFARI_STANDALONE_CLASS,
+  ]);
+  const PERSISTENT_HTML_CLASSES = new Set([
+    IOS_SAFARI_CLASS,
+    IOS_SAFARI_STANDALONE_CLASS,
+  ]);
   const HOME_STACK_BLOCK_IDS = [
     'block-448bd8f915f4abba552b',
     'block-ee939fa7ed636a261fd7',
@@ -125,6 +156,12 @@
   window.__dxDisableRouteGooeyBootstrap = true;
 
   let routeAbortController = null;
+  const routeDocumentPrefetches = new Map();
+  let routePrefetchTimer = 0;
+  let routePrefetchCandidateHref = '';
+  let routeProgressTimer = 0;
+  let routeHistoryIndex = Number(history.state && history.state[HISTORY_INDEX_KEY]) || 0;
+  let historyStateGuardInstalled = false;
   let isNavigating = false;
   let homeHeroAlignerInstalled = false;
   let softRouterInstalled = false;
@@ -2324,6 +2361,13 @@
   }
 
   function mobileMenuIcon(name) {
+    const desktopAccountIcon = window.DEX_ACCOUNT_MENU_ICON;
+    if (typeof desktopAccountIcon === 'function') {
+      try {
+        const sharedIcon = String(desktopAccountIcon(name) || '').trim();
+        if (sharedIcon) return sharedIcon;
+      } catch {}
+    }
     const paths = {
       catalog: '<path d="M4 5.5h6.5A2.5 2.5 0 0 1 13 8v11H6a2 2 0 0 1-2-2V5.5Z"/><path d="M20 5.5h-4.5A2.5 2.5 0 0 0 13 8v11h5a2 2 0 0 0 2-2V5.5Z"/><path d="M7 9h3M16 9h1"/>',
       call: '<path d="M4 12h3l2.1-5 3.3 10 2.2-7 1.6 2H20"/><path d="M18 4v4M16 6h4"/>',
@@ -2499,10 +2543,10 @@
     const authenticated = Boolean(resolved && authSnapshot.authenticated);
     const accountItem = {
       key: 'account',
-      label: authenticated ? 'Account' : (resolved ? 'Sign in / Join' : 'Account'),
+      label: authenticated ? 'Account' : (resolved ? 'Sign in' : 'Account'),
       detail: authenticated
         ? getMobileUserName(authSnapshot.user)
-        : (resolved ? 'Your free Dex account' : 'Checking sign-in…'),
+        : (resolved ? 'Join Dex free' : 'Checking sign-in…'),
       icon: 'account',
     };
     const accountTile = createMobileMenuTile(accountItem, {
@@ -3038,32 +3082,31 @@
     }
   }
 
+  function collectPersistentClasses(element, allowedClasses) {
+    if (!(element instanceof HTMLElement) || !(allowedClasses instanceof Set)) return [];
+    return Array.from(element.classList).filter((className) => allowedClasses.has(className));
+  }
+
+  function isPersistentBodyAttribute(name) {
+    return name === 'data-dx-ios-safari' || name === 'data-dx-ios-safari-standalone';
+  }
+
   function syncBodyAttributes(sourceBody) {
     const sourceClassName = String(sourceBody?.className || '').trim();
     const sourceId = String(sourceBody?.id || '').trim();
     const sourceAttrs = Array.from(sourceBody?.attributes || []);
-    const hasLayoutHintAttrs = sourceAttrs.some((attr) => {
-      if (!attr || attr.name === 'class' || attr.name === 'id') return false;
-      return attr.name === 'style' || attr.name === 'tabindex' || attr.name.startsWith('data-');
-    });
-    const shouldPreserveCurrentChrome = !sourceClassName && !sourceId && !hasLayoutHintAttrs;
-
-    if (shouldPreserveCurrentChrome) {
-      document.body.classList.remove('dx-entry-page', 'dx-uav-page', 'dx-entry-desktop-fixed');
-      for (const attr of Array.from(document.body.attributes)) {
-        if (attr.name.startsWith('data-dx-uav-') || attr.name === 'data-dx-entry-rail-mode') {
-          document.body.removeAttribute(attr.name);
-        }
-      }
-      document.documentElement.removeAttribute('data-dx-entry-rail-mode');
-      document.documentElement.style.removeProperty('--dx-uav-shell-top');
-      document.documentElement.style.removeProperty('--dx-uav-shell-bottom');
-      document.body.classList.add(BODY_CLASS);
-      return;
-    }
+    const persistentClasses = collectPersistentClasses(document.body, PERSISTENT_BODY_CLASSES);
+    const persistentAttrs = new Map(
+      Array.from(document.body.attributes)
+        .filter((attr) => isPersistentBodyAttribute(attr.name))
+        .map((attr) => [attr.name, attr.value]),
+    );
 
     const currentAttrs = Array.from(document.body.attributes);
     const nextAttrs = new Map(sourceAttrs.map((attr) => [attr.name, attr.value]));
+    for (const [name, value] of persistentAttrs.entries()) {
+      if (!nextAttrs.has(name)) nextAttrs.set(name, value);
+    }
 
     for (const attr of currentAttrs) {
       if (attr.name === 'class' || attr.name === 'id') continue;
@@ -3083,8 +3126,18 @@
       document.body.removeAttribute('id');
     }
 
-    document.body.className = sourceBody.className || '';
+    const nextClasses = new Set(
+      sourceClassName
+        .split(/\s+/)
+        .map((className) => className.trim())
+        .filter(Boolean),
+    );
+    persistentClasses.forEach((className) => nextClasses.add(className));
+    document.body.className = Array.from(nextClasses).join(' ');
     document.body.classList.add(BODY_CLASS);
+    document.documentElement.removeAttribute('data-dx-entry-rail-mode');
+    document.documentElement.style.removeProperty('--dx-uav-shell-top');
+    document.documentElement.style.removeProperty('--dx-uav-shell-bottom');
   }
 
   function syncHtmlAttributes(sourceDocument) {
@@ -3095,7 +3148,15 @@
       document.documentElement.lang = nextHtml.lang;
     }
 
-    document.documentElement.className = nextHtml.className || '';
+    const nextClasses = new Set(
+      String(nextHtml.className || '')
+        .split(/\s+/)
+        .map((className) => className.trim())
+        .filter(Boolean),
+    );
+    collectPersistentClasses(document.documentElement, PERSISTENT_HTML_CLASSES)
+      .forEach((className) => nextClasses.add(className));
+    document.documentElement.className = Array.from(nextClasses).join(' ');
   }
 
   function syncRouteIdentityAttributes(sourceDocument) {
@@ -3140,79 +3201,206 @@
   }
 
   function shouldIncludeRouteStylesheet(url) {
-    if (!url || !isHttpUrl(url) || !isSameOriginUrl(url)) return false;
-    const pathname = url.pathname;
-    return pathname.startsWith('/css/') || pathname.startsWith('/assets/css/');
+    if (!url || !isHttpUrl(url)) return false;
+    if (!isSameOriginUrl(url)) return true;
+    return url.pathname.startsWith('/css/') || url.pathname.startsWith('/assets/css/');
   }
 
-  // Upper bound on how long a soft navigation will wait for a newly injected
-  // route stylesheet to load before revealing the new content. Prevents an
-  // unstyled flash (FOUC) when route-specific CSS lands after the swap, while
-  // still guaranteeing navigation never stalls on a slow/failed sheet.
-  const ROUTE_STYLE_LOAD_TIMEOUT_MS = 2000;
+  // Route navigation is staged as an asset transaction. New stylesheets download
+  // with a non-matching media query, so the outgoing page remains visually intact.
+  // Commit then normalizes the exact destination order and activates everything in
+  // the same task as the body-class and foreground swap.
+  const ROUTE_STYLE_LOAD_TIMEOUT_MS = 6000;
+  const ROUTE_SCRIPT_PRELOAD_TIMEOUT_MS = 8000;
+  const ROUTE_SCRIPT_LOAD_TIMEOUT_MS = 6000;
 
-  // Injects any stylesheets the destination route declares that are not already
-  // present. Returns a promise that resolves once every newly added sheet has
-  // loaded (or errored, or the timeout elapses) so callers can await it before
-  // swapping in the new content.
-  function syncRouteStyles(sourceDocument, baseUrl) {
-    const existing = new Set(
-      Array.from(document.querySelectorAll('link[rel~="stylesheet"][href]'))
-        .map((node) => toAbsoluteUrl(node.getAttribute('href')))
-        .filter(Boolean)
-        .map((url) => url.href)
-    );
-
+  function collectRouteStyleDefinitions(sourceDocument, baseUrl) {
     const incomingLinks = [
       ...Array.from(sourceDocument.head ? sourceDocument.head.querySelectorAll('link[rel~="stylesheet"][href]') : []),
       ...Array.from(sourceDocument.body ? sourceDocument.body.querySelectorAll('link[rel~="stylesheet"][href]') : []),
     ];
-
-    const pending = [];
+    const definitions = [];
+    const seen = new Set();
 
     for (const link of incomingLinks) {
-      const rawHref = link.getAttribute('href');
-      const url = toAbsoluteUrl(rawHref, baseUrl);
-      if (!url) continue;
-      if (!shouldIncludeRouteStylesheet(url)) continue;
-      if (existing.has(url.href)) continue;
-
-      const nextLink = document.createElement('link');
-      nextLink.rel = 'stylesheet';
-      nextLink.href = url.href;
-      nextLink.setAttribute('data-dx-route-style', 'true');
-
-      const media = link.getAttribute('media');
-      if (media) nextLink.media = media;
-      if (link.hasAttribute('crossorigin')) {
-        const value = link.getAttribute('crossorigin');
-        if (value) nextLink.setAttribute('crossorigin', value);
-        else nextLink.setAttribute('crossorigin', '');
-      }
-
-      pending.push(new Promise((resolve) => {
-        let settled = false;
-        const done = () => {
-          if (settled) return;
-          settled = true;
-          resolve();
-        };
-        nextLink.addEventListener('load', done, { once: true });
-        nextLink.addEventListener('error', done, { once: true });
-        window.setTimeout(done, ROUTE_STYLE_LOAD_TIMEOUT_MS);
-      }));
-
-      document.head.appendChild(nextLink);
-      existing.add(url.href);
+      const url = toAbsoluteUrl(link.getAttribute('href'), baseUrl);
+      if (!url || !shouldIncludeRouteStylesheet(url) || seen.has(url.href)) continue;
+      seen.add(url.href);
+      definitions.push({
+        url,
+        media: String(link.getAttribute('media') || '').trim(),
+        crossOrigin: link.hasAttribute('crossorigin') ? String(link.getAttribute('crossorigin') || '') : null,
+        referrerPolicy: String(link.getAttribute('referrerpolicy') || '').trim(),
+        integrity: String(link.getAttribute('integrity') || '').trim(),
+      });
     }
 
-    return pending.length ? Promise.all(pending) : Promise.resolve();
+    return definitions;
+  }
+
+  function collectManagedInlineStyleDefinitions(sourceDocument) {
+    const styles = [
+      ...Array.from(sourceDocument.head ? sourceDocument.head.querySelectorAll('style[data-managed="1"][id]') : []),
+      ...Array.from(sourceDocument.body ? sourceDocument.body.querySelectorAll('style[data-managed="1"][id]') : []),
+    ];
+    const definitions = [];
+    const seen = new Set();
+
+    for (const style of styles) {
+      const id = String(style.id || '').trim();
+      if (!id || seen.has(id)) continue;
+      seen.add(id);
+      definitions.push({
+        id,
+        text: String(style.textContent || ''),
+        nonce: String(style.getAttribute('nonce') || '').trim(),
+      });
+    }
+
+    return definitions;
+  }
+
+  function waitForStagedStylesheet(link, signal) {
+    return new Promise((resolve, reject) => {
+      let settled = false;
+      let timeoutId = 0;
+      const finish = (error = null) => {
+        if (settled) return;
+        settled = true;
+        if (timeoutId) window.clearTimeout(timeoutId);
+        if (signal && typeof signal.removeEventListener === 'function') {
+          signal.removeEventListener('abort', onAbort);
+        }
+        if (error) reject(error);
+        else resolve();
+      };
+      const onAbort = () => finish(new DOMException('Route style preload aborted.', 'AbortError'));
+
+      link.addEventListener('load', () => finish(), { once: true });
+      link.addEventListener('error', () => finish(new Error(`Failed to preload route stylesheet: ${link.href}`)), { once: true });
+      if (signal && typeof signal.addEventListener === 'function') {
+        if (signal.aborted) {
+          onAbort();
+          return;
+        }
+        signal.addEventListener('abort', onAbort, { once: true });
+      }
+      timeoutId = window.setTimeout(
+        () => finish(new Error(`Timed out preloading route stylesheet: ${link.href}`)),
+        ROUTE_STYLE_LOAD_TIMEOUT_MS,
+      );
+    });
+  }
+
+  function ensureRouteStyleAnchor() {
+    let anchor = document.head.querySelector(`meta[${ROUTE_STYLE_ANCHOR_ATTR}]`);
+    if (anchor instanceof HTMLMetaElement) return anchor;
+    anchor = document.createElement('meta');
+    anchor.setAttribute(ROUTE_STYLE_ANCHOR_ATTR, 'true');
+    const firstStyleAsset = document.head.querySelector('link[rel~="stylesheet"][href], style[data-managed="1"][id]');
+    document.head.insertBefore(anchor, firstStyleAsset || document.head.firstChild);
+    return anchor;
+  }
+
+  async function prepareRouteStyles(sourceDocument, baseUrl, options = {}) {
+    const signal = options.signal || null;
+    const definitions = collectRouteStyleDefinitions(sourceDocument, baseUrl);
+    const inlineDefinitions = collectManagedInlineStyleDefinitions(sourceDocument);
+    const styleAnchor = ensureRouteStyleAnchor();
+    const existingByHref = new Map();
+    for (const node of Array.from(document.querySelectorAll('link[rel~="stylesheet"][href]'))) {
+      const url = toAbsoluteUrl(node.getAttribute('href'));
+      if (!url || existingByHref.has(url.href)) continue;
+      existingByHref.set(url.href, node);
+    }
+
+    const entries = [];
+    const stagedLinks = [];
+    const pending = [];
+    let committed = false;
+
+    for (const definition of definitions) {
+      let node = existingByHref.get(definition.url.href);
+      if (!(node instanceof HTMLLinkElement)) {
+        node = document.createElement('link');
+        node.rel = 'stylesheet';
+        node.href = definition.url.href;
+        node.media = 'not all';
+        node.setAttribute(ROUTE_STYLE_ATTR, 'true');
+        node.setAttribute(ROUTE_STYLE_STAGED_ATTR, 'true');
+        if (definition.crossOrigin !== null) node.setAttribute('crossorigin', definition.crossOrigin);
+        if (definition.referrerPolicy) node.setAttribute('referrerpolicy', definition.referrerPolicy);
+        if (definition.integrity) node.setAttribute('integrity', definition.integrity);
+        pending.push(waitForStagedStylesheet(node, signal));
+        document.head.appendChild(node);
+        stagedLinks.push(node);
+        existingByHref.set(definition.url.href, node);
+      }
+      entries.push({ definition, node });
+    }
+
+    try {
+      if (pending.length) await Promise.all(pending);
+    } catch (error) {
+      stagedLinks.forEach((node) => node.remove());
+      throw error;
+    }
+
+    return {
+      commit() {
+        if (committed) return;
+        committed = true;
+
+        const orderedAssets = document.createDocumentFragment();
+        for (const { definition, node } of entries) {
+          node.setAttribute(ROUTE_STYLE_ATTR, 'true');
+          node.removeAttribute(ROUTE_STYLE_STAGED_ATTR);
+          if (definition.media) node.media = definition.media;
+          else node.removeAttribute('media');
+          if (definition.crossOrigin !== null) node.setAttribute('crossorigin', definition.crossOrigin);
+          else node.removeAttribute('crossorigin');
+          if (definition.referrerPolicy) node.setAttribute('referrerpolicy', definition.referrerPolicy);
+          else node.removeAttribute('referrerpolicy');
+          if (definition.integrity) node.setAttribute('integrity', definition.integrity);
+          else node.removeAttribute('integrity');
+          orderedAssets.appendChild(node);
+        }
+
+        const desiredInlineIds = new Set(inlineDefinitions.map((definition) => definition.id));
+        for (const node of Array.from(document.querySelectorAll(`style[${ROUTE_INLINE_STYLE_ATTR}], style[data-managed="1"][id]`))) {
+          if (!(node instanceof HTMLStyleElement)) continue;
+          if (!desiredInlineIds.has(node.id)) node.remove();
+        }
+        for (const definition of inlineDefinitions) {
+          let node = document.getElementById(definition.id);
+          if (!(node instanceof HTMLStyleElement)) {
+            node = document.createElement('style');
+            node.id = definition.id;
+          }
+          node.setAttribute('data-managed', '1');
+          node.setAttribute(ROUTE_INLINE_STYLE_ATTR, 'true');
+          if (definition.nonce) node.setAttribute('nonce', definition.nonce);
+          else node.removeAttribute('nonce');
+          if (node.textContent !== definition.text) node.textContent = definition.text;
+          orderedAssets.appendChild(node);
+        }
+
+        for (const node of Array.from(document.querySelectorAll('link[rel~="stylesheet"][href]'))) {
+          node.remove();
+        }
+        document.head.insertBefore(orderedAssets, styleAnchor.nextSibling);
+      },
+      dispose() {
+        if (committed) return;
+        stagedLinks.forEach((node) => node.remove());
+      },
+    };
   }
 
   function isRouteScriptCandidate(url) {
     if (!url || !isHttpUrl(url) || !isSameOriginUrl(url)) return false;
     const pathname = url.pathname;
-    if (!pathname.startsWith('/assets/js/')) return false;
+    if (!pathname.startsWith('/assets/')) return false;
     if (!pathname.endsWith('.js')) return false;
     if (SKIPPED_ROUTE_SCRIPTS.has(pathname)) return false;
     return true;
@@ -3264,12 +3452,60 @@
     window[guardName] = undefined;
   }
 
+  function preloadRouteScript(definition, signal) {
+    return new Promise((resolve, reject) => {
+      let settled = false;
+      let timeoutId = 0;
+      const finish = (error = null) => {
+        if (settled) return;
+        settled = true;
+        if (timeoutId) window.clearTimeout(timeoutId);
+        if (error) reject(error);
+        else resolve();
+      };
+
+      timeoutId = window.setTimeout(
+        () => finish(new Error(`Timed out preloading route script: ${definition.url.href}`)),
+        ROUTE_SCRIPT_PRELOAD_TIMEOUT_MS,
+      );
+
+      fetch(definition.url.href, {
+        credentials: 'same-origin',
+        cache: 'force-cache',
+        signal,
+      }).then((response) => {
+        if (!response.ok) {
+          throw new Error(`Failed to preload route script (${response.status}): ${definition.url.href}`);
+        }
+        return response.arrayBuffer();
+      }).then(() => finish()).catch((error) => finish(error));
+    });
+  }
+
+  async function preloadRouteScripts(definitions, options = {}) {
+    if (!definitions.length) return;
+    await Promise.all(definitions.map((definition) => preloadRouteScript(definition, options.signal || undefined)));
+  }
+
   function loadRouteScript(definition) {
     return new Promise((resolve, reject) => {
       const script = document.createElement('script');
       script.src = definition.url.href;
       script.async = false;
       script.setAttribute(ROUTE_SCRIPT_ATTR, 'true');
+      let settled = false;
+      let timeoutId = 0;
+      const finish = (error = null) => {
+        if (settled) return;
+        settled = true;
+        if (timeoutId) window.clearTimeout(timeoutId);
+        if (error) {
+          script.remove();
+          reject(error);
+        } else {
+          resolve();
+        }
+      };
 
       if (definition.type) script.type = definition.type;
       if (definition.noModule) script.noModule = true;
@@ -3277,8 +3513,12 @@
       if (definition.referrerPolicy) script.setAttribute('referrerpolicy', definition.referrerPolicy);
       if (definition.integrity) script.setAttribute('integrity', definition.integrity);
 
-      script.addEventListener('load', () => resolve());
-      script.addEventListener('error', () => reject(new Error(`Failed to load route script: ${definition.url.href}`)));
+      script.addEventListener('load', () => finish(), { once: true });
+      script.addEventListener('error', () => finish(new Error(`Failed to load route script: ${definition.url.href}`)), { once: true });
+      timeoutId = window.setTimeout(
+        () => finish(new Error(`Timed out loading route script: ${definition.url.href}`)),
+        ROUTE_SCRIPT_LOAD_TIMEOUT_MS,
+      );
 
       document.body.appendChild(script);
     });
@@ -3516,8 +3756,87 @@
     window.addEventListener('resize', refreshGooeyDriverBlobs, { passive: true });
   }
 
+  function ensureRouteStatusElements() {
+    let progress = document.getElementById(ROUTE_PROGRESS_ID);
+    if (!(progress instanceof HTMLElement)) {
+      progress = document.createElement('div');
+      progress.id = ROUTE_PROGRESS_ID;
+      progress.className = 'dx-route-progress';
+      progress.setAttribute('aria-hidden', 'true');
+      progress.setAttribute('data-dx-route-progress', 'idle');
+      progress.innerHTML = '<span class="dx-route-progress-track"><span class="dx-route-progress-bar"></span></span>';
+      document.body.appendChild(progress);
+    }
+
+    let announcer = document.getElementById(ROUTE_ANNOUNCER_ID);
+    if (!(announcer instanceof HTMLElement)) {
+      announcer = document.createElement('div');
+      announcer.id = ROUTE_ANNOUNCER_ID;
+      announcer.className = 'dx-route-announcer';
+      announcer.setAttribute('role', 'status');
+      announcer.setAttribute('aria-live', 'polite');
+      announcer.setAttribute('aria-atomic', 'true');
+      document.body.appendChild(announcer);
+    }
+    return { progress, announcer };
+  }
+
+  function setRouteProgressActive(active) {
+    const { progress } = ensureRouteStatusElements();
+    if (routeProgressTimer) {
+      window.clearTimeout(routeProgressTimer);
+      routeProgressTimer = 0;
+    }
+    if (!active) {
+      progress.setAttribute('data-dx-route-progress', 'idle');
+      return;
+    }
+    progress.setAttribute('data-dx-route-progress', 'pending');
+    routeProgressTimer = window.setTimeout(() => {
+      routeProgressTimer = 0;
+      if (!isNavigating) return;
+      progress.setAttribute('data-dx-route-progress', 'visible');
+    }, ROUTE_PROGRESS_DELAY_MS);
+  }
+
+  function announceRouteDestination(sourceDocument) {
+    const { announcer } = ensureRouteStatusElements();
+    const heading = sourceDocument && sourceDocument.querySelector
+      ? sourceDocument.querySelector('h1, [role="heading"][aria-level="1"]')
+      : null;
+    const label = String(
+      (heading && heading.textContent)
+      || (sourceDocument && sourceDocument.title)
+      || document.title
+      || 'Page loaded',
+    ).replace(/\s+/g, ' ').trim();
+    announcer.textContent = '';
+    window.setTimeout(() => {
+      announcer.textContent = label ? `${label} loaded` : 'Page loaded';
+    }, 20);
+  }
+
+  function focusRouteDestination(foregroundRoot) {
+    if (!(foregroundRoot instanceof HTMLElement)) return;
+    const target = foregroundRoot.querySelector(
+      'h1, [role="heading"][aria-level="1"], main, [role="main"]',
+    );
+    if (!(target instanceof HTMLElement)) return;
+    const hadTabIndex = target.hasAttribute('tabindex');
+    if (!hadTabIndex) target.setAttribute('tabindex', '-1');
+    try {
+      target.focus({ preventScroll: true });
+    } catch {
+      target.focus();
+    }
+    if (!hadTabIndex) {
+      target.addEventListener('blur', () => target.removeAttribute('tabindex'), { once: true });
+    }
+  }
+
   function setRoutingState(active) {
     document.body.classList.toggle(ROUTING_CLASS, active);
+    setRouteProgressActive(active);
 
     const scrollRoot = document.getElementById(SLOT_SCROLL_ID);
     if (!scrollRoot) return;
@@ -3612,12 +3931,12 @@
     const easing = readCssToken(scopeEl, isExit ? '--dx-motion-ease-exit' : '--dx-motion-ease-standard', isExit ? 'cubic-bezier(.4,0,.2,1)' : 'cubic-bezier(.22,.8,.24,1)');
     const keyframes = isExit
       ? [
-          { opacity: 1, transform: 'translate3d(0, 0, 0)', filter: 'blur(0px)' },
-          { opacity: 0, transform: `translate3d(0, ${distance}px, 0)`, filter: 'blur(2px)' },
+          { opacity: 1, transform: 'translate3d(0, 0, 0)' },
+          { opacity: 0, transform: `translate3d(0, ${distance}px, 0)` },
         ]
       : [
-          { opacity: parseCssNumber(readCssToken(scopeEl, '--dx-motion-opacity-enter', '.001'), 0.001), transform: `translate3d(0, ${distance}px, 0)`, filter: 'blur(2px)' },
-          { opacity: 1, transform: 'translate3d(0, 0, 0)', filter: 'blur(0px)' },
+          { opacity: parseCssNumber(readCssToken(scopeEl, '--dx-motion-opacity-enter', '.001'), 0.001), transform: `translate3d(0, ${distance}px, 0)` },
+          { opacity: 1, transform: 'translate3d(0, 0, 0)' },
         ];
 
     if (isExit) {
@@ -3653,6 +3972,11 @@
     } catch {
       // Ignore route motion failures and keep navigation resilient.
     } finally {
+      if (animation) {
+        try {
+          animation.cancel();
+        } catch {}
+      }
       clearRouteMotionState(scopeEl);
     }
   }
@@ -3664,6 +3988,9 @@
       ...currentState,
       [HISTORY_SLOT_KEY]: true,
       [HISTORY_SCROLL_KEY]: scrollRoot.scrollTop,
+      [HISTORY_INDEX_KEY]: Number.isFinite(Number(currentState[HISTORY_INDEX_KEY]))
+        ? Number(currentState[HISTORY_INDEX_KEY])
+        : routeHistoryIndex,
     };
 
     try {
@@ -3780,10 +4107,9 @@
     '/entry/bag',
   ]);
 
-  // Content entry pages (/entry/<slug>/) bake critical CSS inline in <head> and
-  // hydrate via /assets/dex-sidebar.js with scroll-reveal motion that all assume
-  // a normal document load. Soft-navigating them leaves the page unstyled/blank
-  // until a manual refresh, so let the browser perform a full navigation instead.
+  // Content entry pages (/entry/<slug>/) still use a document-scoped generated
+  // shell and dex-sidebar hydration lifecycle. Keep them on normal navigation
+  // until that lifecycle is converted to the atomic slot-route contract.
   function isContentEntryRoute(pathname) {
     const normalized = String(pathname || '').toLowerCase().replace(/\/+$/, '') || '/';
     if (!normalized.startsWith('/entry/')) return false;
@@ -3804,33 +4130,377 @@
     return true;
   }
 
+  function routePathSegments(pathname) {
+    return normalizePathname(pathname).split('/').filter(Boolean);
+  }
+
+  function isRouteDetailPath(pathname) {
+    const parts = routePathSegments(pathname);
+    if (parts[0] === 'uav' && parts.length >= 2) return true;
+    if (parts[0] === 'dexnotes' && parts.length >= 2) return true;
+    return false;
+  }
+
+  function classifyRouteTransition(fromUrl, toUrl, options = {}) {
+    const direction = String(options.navigationDirection || '').trim();
+    if (direction === 'back') return 'dx-back';
+    const fromPath = normalizePathname(fromUrl && fromUrl.pathname);
+    const toPath = normalizePathname(toUrl && toUrl.pathname);
+    const fromParts = routePathSegments(fromPath);
+    const toParts = routePathSegments(toPath);
+
+    if (isRouteDetailPath(toPath) && !isRouteDetailPath(fromPath)) return 'dx-detail';
+    if (direction === 'forward') return 'dx-forward';
+    if (isRouteDetailPath(fromPath) && !isRouteDetailPath(toPath)) return 'dx-back';
+    if (toParts.length > fromParts.length) return 'dx-forward';
+    if (toParts.length < fromParts.length) return 'dx-back';
+    if ((fromParts[0] || '') !== (toParts[0] || '')) return 'dx-section';
+    return 'dx-peer';
+  }
+
+  function canUseViewTransition() {
+    return !prefersReducedMotion() && typeof document.startViewTransition === 'function';
+  }
+
+  function markSharedRouteSource(anchor, transitionType) {
+    if (transitionType !== 'dx-detail' || !(anchor instanceof HTMLAnchorElement)) return null;
+    const source = anchor.closest([
+      '.dx-catalog-index-row',
+      '.dx-catalog-index-season-slide',
+      '.dx-catalog-index-spotlight',
+      '.dx-dexnotes-card',
+      '.dx-dexnotes-lead-card',
+    ].join(','));
+    if (!(source instanceof HTMLElement)) return null;
+    source.style.viewTransitionName = ROUTE_SHARED_NAME;
+    source.setAttribute('data-dx-route-shared', 'source');
+    return source;
+  }
+
+  function markSharedRouteDestination(foregroundRoot, targetUrl, transitionType) {
+    if (transitionType !== 'dx-detail' || !(foregroundRoot instanceof HTMLElement)) return null;
+    const pathname = normalizePathname(targetUrl && targetUrl.pathname);
+    let selector = '[data-dx-route-shared-target]';
+    if (pathname.startsWith('/uav/')) {
+      selector = '.dx-uav-entry-header, .dx-uav-entry-card';
+    } else if (pathname.startsWith('/dexnotes/')) {
+      selector = '[data-dexnotes-entry-app], .dx-dexnotes-entry-shell';
+    }
+    const target = foregroundRoot.querySelector(selector);
+    if (!(target instanceof HTMLElement)) return null;
+    target.style.viewTransitionName = ROUTE_SHARED_NAME;
+    target.setAttribute('data-dx-route-shared', 'destination');
+    return target;
+  }
+
+  function clearSharedRouteNode(node) {
+    if (!(node instanceof HTMLElement)) return;
+    node.style.removeProperty('view-transition-name');
+    node.removeAttribute('data-dx-route-shared');
+  }
+
+  function routePrefetchKey(targetUrl) {
+    if (!(targetUrl instanceof URL)) return '';
+    const keyUrl = new URL(targetUrl.href);
+    keyUrl.hash = '';
+    return keyUrl.href;
+  }
+
+  function canPrefetchRoutes() {
+    if (document.visibilityState === 'hidden') return false;
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (!connection) return true;
+    if (connection.saveData) return false;
+    return !/(?:^|-)2g$/i.test(String(connection.effectiveType || ''));
+  }
+
+  async function readRouteResponse(response, targetUrl) {
+    const contentType = String(response.headers.get('content-type') || '');
+    if (!response.ok || !contentType.includes('text/html')) {
+      throw new Error(`Soft route fetch failed (${response.status}).`);
+    }
+    return {
+      html: await response.text(),
+      responseUrl: response.url || targetUrl.href,
+    };
+  }
+
+  function warmRouteDependencyCache(payload) {
+    if (!payload || !payload.html || !canPrefetchRoutes()) return;
+    const parsed = new DOMParser().parseFromString(payload.html, 'text/html');
+    if (!parsed || !parsed.body) return;
+
+    const baseUrl = payload.responseUrl || window.location.href;
+    const definitions = [
+      ...collectRouteStyleDefinitions(parsed, baseUrl),
+      ...collectRouteScripts(parsed, baseUrl),
+    ];
+    const loadedAssets = new Set(Array.from(document.querySelectorAll('link[href], script[src]')).map((node) => {
+      const rawUrl = node.getAttribute('href') || node.getAttribute('src');
+      return toAbsoluteUrl(rawUrl)?.href || '';
+    }).filter(Boolean));
+    const urls = Array.from(new Set(definitions
+      .map((definition) => definition.url)
+      .filter((url) => isSameOriginUrl(url) && !loadedAssets.has(url.href))
+      .map((url) => url.href)));
+
+    for (const href of urls) {
+      void fetch(href, {
+        credentials: 'same-origin',
+        cache: 'force-cache',
+      }).then((response) => {
+        if (!response.ok) throw new Error(`Route dependency prefetch failed (${response.status}).`);
+        return response.arrayBuffer();
+      }).catch(() => {});
+    }
+  }
+
+  function installHistoryStateGuard() {
+    if (historyStateGuardInstalled) return;
+    historyStateGuardInstalled = true;
+    const nativeReplaceState = history.replaceState.bind(history);
+    history.replaceState = (state, title, url) => {
+      const currentState = history.state && typeof history.state === 'object' ? history.state : {};
+      const nextState = state && typeof state === 'object' ? { ...state } : {};
+      for (const key of [HISTORY_SLOT_KEY, HISTORY_SCROLL_KEY, HISTORY_INDEX_KEY]) {
+        if (!(key in nextState) && key in currentState) {
+          nextState[key] = currentState[key];
+        }
+      }
+      return nativeReplaceState(nextState, title, url);
+    };
+  }
+
+  function pruneRoutePrefetches() {
+    const now = Date.now();
+    for (const [key, record] of routeDocumentPrefetches) {
+      if (!record || (now - record.createdAt) > ROUTE_PREFETCH_TTL_MS) {
+        routeDocumentPrefetches.delete(key);
+      }
+    }
+    while (routeDocumentPrefetches.size >= ROUTE_PREFETCH_LIMIT) {
+      const oldestKey = routeDocumentPrefetches.keys().next().value;
+      if (!oldestKey) break;
+      routeDocumentPrefetches.delete(oldestKey);
+    }
+  }
+
+  function prefetchRouteDocument(targetUrl) {
+    if (!(targetUrl instanceof URL) || !canPrefetchRoutes()) return null;
+    if (!shouldHandleSoftNavigation(targetUrl)) return null;
+    if (normalizeRouteKey(targetUrl) === normalizeRouteKey(new URL(window.location.href))) return null;
+    const key = routePrefetchKey(targetUrl);
+    if (!key) return null;
+
+    const current = routeDocumentPrefetches.get(key);
+    if (current && (Date.now() - current.createdAt) <= ROUTE_PREFETCH_TTL_MS) {
+      return current.promise;
+    }
+
+    pruneRoutePrefetches();
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), ROUTE_PREFETCH_TIMEOUT_MS);
+    const promise = fetch(key, {
+      credentials: 'same-origin',
+      cache: 'force-cache',
+      signal: controller.signal,
+    })
+      .then((response) => readRouteResponse(response, targetUrl))
+      .then((payload) => {
+        warmRouteDependencyCache(payload);
+        return payload;
+      })
+      .finally(() => window.clearTimeout(timeoutId));
+    const record = {
+      createdAt: Date.now(),
+      promise,
+    };
+    routeDocumentPrefetches.set(key, record);
+    promise.catch(() => {
+      if (routeDocumentPrefetches.get(key) === record) {
+        routeDocumentPrefetches.delete(key);
+      }
+    });
+    return promise;
+  }
+
+  function waitForRoutePayload(promise, signal) {
+    if (!signal) return promise;
+    return new Promise((resolve, reject) => {
+      let settled = false;
+      const finish = (callback, value) => {
+        if (settled) return;
+        settled = true;
+        signal.removeEventListener('abort', onAbort);
+        callback(value);
+      };
+      const onAbort = () => finish(reject, new DOMException('Route navigation aborted.', 'AbortError'));
+      if (signal.aborted) {
+        onAbort();
+        return;
+      }
+      signal.addEventListener('abort', onAbort, { once: true });
+      promise.then(
+        (value) => finish(resolve, value),
+        (error) => finish(reject, error),
+      );
+    });
+  }
+
+  async function fetchRoutePayload(targetUrl, signal) {
+    const key = routePrefetchKey(targetUrl);
+    const prefetched = key ? routeDocumentPrefetches.get(key) : null;
+    if (prefetched && (Date.now() - prefetched.createdAt) <= ROUTE_PREFETCH_TTL_MS) {
+      try {
+        return await waitForRoutePayload(prefetched.promise, signal);
+      } catch (error) {
+        if (error && error.name === 'AbortError') throw error;
+        routeDocumentPrefetches.delete(key);
+      }
+    }
+
+    const response = await fetch(targetUrl.href, {
+      credentials: 'same-origin',
+      signal,
+    });
+    return readRouteResponse(response, targetUrl);
+  }
+
+  function scheduleRoutePrefetch(anchor, delayMs = ROUTE_PREFETCH_DELAY_MS) {
+    if (!(anchor instanceof HTMLAnchorElement)) return;
+    const targetUrl = isHeaderWordmarkAnchor(anchor)
+      ? new URL('/', window.location.origin)
+      : toAbsoluteUrl(anchor.getAttribute('href'));
+    if (!targetUrl || !shouldHandleSoftNavigation(targetUrl, anchor)) return;
+
+    const href = routePrefetchKey(targetUrl);
+    if (!href || routeDocumentPrefetches.has(href)) return;
+    if (routePrefetchTimer && routePrefetchCandidateHref === href) return;
+    if (routePrefetchTimer) window.clearTimeout(routePrefetchTimer);
+    routePrefetchCandidateHref = href;
+    routePrefetchTimer = window.setTimeout(() => {
+      routePrefetchTimer = 0;
+      routePrefetchCandidateHref = '';
+      void prefetchRouteDocument(targetUrl);
+    }, Math.max(0, delayMs));
+  }
+
+  async function prepareRouteDocument(sourceDocument, targetUrl, options = {}) {
+    const styleTransaction = await prepareRouteStyles(sourceDocument, targetUrl.href, {
+      signal: options.signal || null,
+    });
+    const scripts = collectRouteScripts(sourceDocument, targetUrl.href);
+
+    try {
+      await Promise.all([
+        preloadRouteScripts(scripts, { signal: options.signal || undefined }),
+        ensureBackdropElementsFromTemplateIfMissing(),
+      ]);
+    } catch (error) {
+      styleTransaction.dispose();
+      throw error;
+    }
+
+    const { fragment, inlineScripts } = buildForegroundFragment(sourceDocument);
+    return {
+      styleTransaction,
+      scripts,
+      fragment,
+      inlineScripts,
+      committed: false,
+    };
+  }
+
   async function applyRouteDocument(sourceDocument, targetUrl, options = {}) {
     const headerElement = getHeaderElement(document);
     if (!headerElement) throw new Error('Unable to locate persistent header for soft route.');
 
     const container = headerElement.parentElement || document.body;
     const { scrollRoot, foregroundRoot } = ensureSlotRoots(container, headerElement);
-
-    // Wait for route-specific stylesheets to load before swapping in the new
-    // content, otherwise the new DOM paints with the previous route's CSS for a
-    // beat (the square/full-bleed button FOUC). Capped by ROUTE_STYLE_LOAD_TIMEOUT_MS.
-    await syncRouteStyles(sourceDocument, targetUrl.href);
-    syncDocumentFromRoute(sourceDocument, targetUrl);
-
-    const { fragment: nextFragment, inlineScripts } = buildForegroundFragment(sourceDocument);
-    clearChildren(foregroundRoot);
-    foregroundRoot.appendChild(nextFragment);
-    moveDetachedFooterSectionsIntoForeground(foregroundRoot);
-    await ensureBackdropElementsFromTemplateIfMissing();
-    ensureBackdropLayersOutsideForeground();
-    ensureCanonicalGooeyMeshPresentation();
-
-    const scripts = collectRouteScripts(sourceDocument, targetUrl.href);
+    const routePlan = options.routePlan || await prepareRouteDocument(sourceDocument, targetUrl, {
+      signal: options.signal || null,
+    });
     const meshState = captureGooeyMeshState();
+    const transitionType = String(options.transitionType || 'dx-peer');
+    const useViewTransition = options.useViewTransition === true && canUseViewTransition();
+    const sharedSource = options.sharedSource instanceof HTMLElement ? options.sharedSource : null;
+    const previousContentTransitionName = foregroundRoot.style.viewTransitionName || '';
+    let sharedTarget = null;
+    let viewTransition = null;
 
-    clearRouteScripts();
-    await loadRouteScripts(scripts);
-    loadInlineRouteScripts(inlineScripts);
+    const clearTransitionState = () => {
+      if (previousContentTransitionName) {
+        foregroundRoot.style.viewTransitionName = previousContentTransitionName;
+      } else {
+        foregroundRoot.style.removeProperty('view-transition-name');
+      }
+      clearSharedRouteNode(sharedSource);
+      clearSharedRouteNode(sharedTarget);
+      if (document.documentElement.getAttribute(ROUTE_TRANSITION_TYPE_ATTR) === transitionType) {
+        document.documentElement.removeAttribute(ROUTE_TRANSITION_TYPE_ATTR);
+      }
+    };
+
+    const commitRoute = () => {
+      if (routePlan.committed) return;
+      if (options.signal && options.signal.aborted) {
+        throw new DOMException('Route navigation aborted.', 'AbortError');
+      }
+      // Atomic commit boundary: styles are already downloaded but disabled. The
+      // browser cannot paint between these synchronous mutations, so destination
+      // classes, stylesheet order, and foreground content become visible together.
+      routePlan.styleTransaction.commit();
+      syncDocumentFromRoute(sourceDocument, targetUrl);
+      clearChildren(foregroundRoot);
+      foregroundRoot.appendChild(routePlan.fragment);
+      moveDetachedFooterSectionsIntoForeground(foregroundRoot);
+      sharedTarget = markSharedRouteDestination(foregroundRoot, targetUrl, transitionType);
+      ensureBackdropLayersOutsideForeground();
+      ensureCanonicalGooeyMeshPresentation();
+      clearRouteScripts();
+      routePlan.committed = true;
+      window.__dxLastSlotUrl = targetUrl.href;
+      if (typeof options.onCommitted === 'function') {
+        options.onCommitted({ scrollRoot, foregroundRoot, routePlan, viewTransition });
+      }
+    };
+
+    if (useViewTransition) {
+      document.documentElement.setAttribute(ROUTE_TRANSITION_TYPE_ATTR, transitionType);
+      foregroundRoot.style.viewTransitionName = ROUTE_CONTENT_NAME;
+      try {
+        viewTransition = document.startViewTransition(commitRoute);
+        if (viewTransition && viewTransition.types && typeof viewTransition.types.add === 'function') {
+          viewTransition.types.add(transitionType);
+        }
+        if (viewTransition && viewTransition.updateCallbackDone) {
+          await viewTransition.updateCallbackDone;
+        }
+      } catch {
+        try {
+          if (viewTransition && typeof viewTransition.skipTransition === 'function') {
+            viewTransition.skipTransition();
+          }
+        } catch {}
+        if (options.signal && options.signal.aborted) {
+          clearTransitionState();
+          throw new DOMException('Route navigation aborted.', 'AbortError');
+        }
+        commitRoute();
+        viewTransition = null;
+      }
+    } else {
+      commitRoute();
+    }
+
+    if (viewTransition && viewTransition.finished) {
+      Promise.resolve(viewTransition.finished).then(clearTransitionState, clearTransitionState);
+    } else {
+      clearTransitionState();
+    }
+
+    await loadRouteScripts(routePlan.scripts);
+    loadInlineRouteScripts(routePlan.inlineScripts);
     applyHeadingTypographyAndSupportHooks(document);
 
     if (meshState) {
@@ -3851,6 +4521,10 @@
     }
 
     dispatchSlotReady(scrollRoot, foregroundRoot, targetUrl.href);
+    announceRouteDestination(sourceDocument);
+    if (options.focusDestination === true) {
+      focusRouteDestination(foregroundRoot);
+    }
     scheduleProfileViewportMetricsSync();
     syncProfileRouteGlassFromHeader(document);
     requestAnimationFrame(() => {
@@ -3866,6 +4540,13 @@
     });
     installScrollStateTracker(scrollRoot);
     persistScrollState(scrollRoot);
+    return {
+      scrollRoot,
+      foregroundRoot,
+      routePlan,
+      viewTransition,
+      transitionType,
+    };
   }
 
   function hardNavigate(url) {
@@ -3891,7 +4572,13 @@
     if (sameRoute) {
       if (options.pushHistory && currentUrl.hash !== targetUrl.hash) {
         try {
-          history.pushState({ [HISTORY_SLOT_KEY]: true, [HISTORY_SCROLL_KEY]: scrollRoot ? scrollRoot.scrollTop : 0 }, document.title, targetUrl.href);
+          const nextHistoryIndex = routeHistoryIndex + 1;
+          history.pushState({
+            [HISTORY_SLOT_KEY]: true,
+            [HISTORY_SCROLL_KEY]: scrollRoot ? scrollRoot.scrollTop : 0,
+            [HISTORY_INDEX_KEY]: nextHistoryIndex,
+          }, document.title, targetUrl.href);
+          routeHistoryIndex = nextHistoryIndex;
         } catch {}
       }
 
@@ -3902,6 +4589,9 @@
       }
 
       if (scrollRoot) persistScrollState(scrollRoot);
+      if (!options.pushHistory && Number.isFinite(Number(options.historyIndex))) {
+        routeHistoryIndex = Number(options.historyIndex);
+      }
       return true;
     }
 
@@ -3914,68 +4604,111 @@
     routeAbortController = abortController;
     isNavigating = true;
     setRoutingState(true);
+    const transitionType = classifyRouteTransition(currentUrl, targetUrl, options);
+    const useViewTransition = canUseViewTransition();
     const transitionDetail = {
       from: normalizePathname(currentUrl.pathname),
       to: normalizePathname(targetUrl.pathname),
+      type: transitionType,
+      direction: String(options.navigationDirection || ''),
     };
     let didDispatchOutStart = false;
     let didDispatchOutEnd = false;
     let didDispatchInStart = false;
     let didDispatchInEnd = false;
+    let didCommitRoute = false;
+    let routePlan = null;
+    let sharedSource = null;
 
     try {
-      const outgoingScope = document.getElementById(SLOT_FOREGROUND_ID);
-      dispatchRouteTransitionEvent(ROUTE_TRANSITION_OUT_START, transitionDetail);
-      didDispatchOutStart = true;
-      await Promise.race([
-        runRouteMotion(outgoingScope, 'out', { signal: abortController.signal }),
-        waitForMilliseconds(220),
-      ]);
-      dispatchRouteTransitionEvent(ROUTE_TRANSITION_OUT_END, transitionDetail);
-      didDispatchOutEnd = true;
-
-      const response = await fetch(targetUrl.href, {
-        credentials: 'same-origin',
-        signal: abortController.signal,
-      });
-
-      const contentType = String(response.headers.get('content-type') || '');
-      if (!response.ok || !contentType.includes('text/html')) {
-        throw new Error(`Soft route fetch failed (${response.status}).`);
-      }
-
-      const html = await response.text();
-      const parsed = new DOMParser().parseFromString(html, 'text/html');
+      // Fetch and stage every destination dependency while the current route is
+      // still fully rendered. No route teardown or history mutation happens yet.
+      const payload = await fetchRoutePayload(targetUrl, abortController.signal);
+      const parsed = new DOMParser().parseFromString(payload.html, 'text/html');
       if (!parsed || !parsed.body) {
         throw new Error('Soft route parse failed.');
       }
 
-      const finalUrl = toAbsoluteUrl(response.url || targetUrl.href, targetUrl.href) || targetUrl;
+      const finalUrl = toAbsoluteUrl(payload.responseUrl || targetUrl.href, targetUrl.href) || targetUrl;
       finalUrl.search = targetUrl.search;
       finalUrl.hash = targetUrl.hash;
 
-      if (options.pushHistory) {
-        try {
-          history.pushState(
-            { [HISTORY_SLOT_KEY]: true, [HISTORY_SCROLL_KEY]: 0 },
-            parsed.title || document.title,
-            finalUrl.href,
-          );
-        } catch {}
+      routePlan = await prepareRouteDocument(parsed, finalUrl, {
+        signal: abortController.signal,
+      });
+      if (abortController.signal.aborted) {
+        throw new DOMException('Route navigation aborted.', 'AbortError');
       }
 
-      await applyRouteDocument(parsed, finalUrl, options);
-      dispatchRouteTransitionEvent(ROUTE_TRANSITION_IN_START, transitionDetail);
-      didDispatchInStart = true;
-      await Promise.race([
-        runRouteMotion(document.getElementById(SLOT_FOREGROUND_ID), 'in', { signal: abortController.signal }),
-        waitForMilliseconds(320),
-      ]);
+      const outgoingScope = document.getElementById(SLOT_FOREGROUND_ID);
+      dispatchRouteTransitionEvent(ROUTE_TRANSITION_OUT_START, transitionDetail);
+      didDispatchOutStart = true;
+      if (!useViewTransition) {
+        await Promise.race([
+          runRouteMotion(outgoingScope, 'out', { signal: abortController.signal }),
+          waitForMilliseconds(220),
+        ]);
+      }
+      if (abortController.signal.aborted) {
+        throw new DOMException('Route navigation aborted.', 'AbortError');
+      }
+
+      sharedSource = useViewTransition
+        ? markSharedRouteSource(options.anchor || null, transitionType)
+        : null;
+      const appliedRoute = await applyRouteDocument(parsed, finalUrl, {
+        ...options,
+        signal: abortController.signal,
+        routePlan,
+        transitionType,
+        useViewTransition,
+        sharedSource,
+        onCommitted: () => {
+          didCommitRoute = true;
+          dispatchRouteTransitionEvent(ROUTE_TRANSITION_OUT_END, transitionDetail);
+          didDispatchOutEnd = true;
+          if (useViewTransition) {
+            dispatchRouteTransitionEvent(ROUTE_TRANSITION_IN_START, transitionDetail);
+            didDispatchInStart = true;
+          }
+          if (options.pushHistory) {
+            try {
+              const nextHistoryIndex = routeHistoryIndex + 1;
+              history.pushState(
+                {
+                  [HISTORY_SLOT_KEY]: true,
+                  [HISTORY_SCROLL_KEY]: 0,
+                  [HISTORY_INDEX_KEY]: nextHistoryIndex,
+                },
+                parsed.title || document.title,
+                finalUrl.href,
+              );
+              routeHistoryIndex = nextHistoryIndex;
+            } catch {}
+          } else if (Number.isFinite(Number(options.historyIndex))) {
+            routeHistoryIndex = Number(options.historyIndex);
+          }
+        },
+      });
+      if (useViewTransition) {
+        if (appliedRoute.viewTransition && appliedRoute.viewTransition.finished) {
+          await Promise.resolve(appliedRoute.viewTransition.finished).catch(() => {});
+        }
+      } else {
+        dispatchRouteTransitionEvent(ROUTE_TRANSITION_IN_START, transitionDetail);
+        didDispatchInStart = true;
+        await Promise.race([
+          runRouteMotion(document.getElementById(SLOT_FOREGROUND_ID), 'in', { signal: abortController.signal }),
+          waitForMilliseconds(320),
+        ]);
+      }
       dispatchRouteTransitionEvent(ROUTE_TRANSITION_IN_END, transitionDetail);
       didDispatchInEnd = true;
 
       return true;
     } catch (error) {
+      if (routePlan && !didCommitRoute) routePlan.styleTransaction.dispose();
+      clearSharedRouteNode(sharedSource);
       if (error && error.name === 'AbortError') return false;
       hardNavigate(targetUrl.href);
       return false;
@@ -3983,7 +4716,7 @@
       if (routeAbortController === abortController) {
         routeAbortController = null;
       }
-      if (didDispatchOutStart && !didDispatchOutEnd) {
+      if (didCommitRoute && didDispatchOutStart && !didDispatchOutEnd) {
         dispatchRouteTransitionEvent(ROUTE_TRANSITION_OUT_END, transitionDetail);
       }
       if (didDispatchInStart && !didDispatchInEnd) {
@@ -3997,6 +4730,22 @@
   function installSoftRouter() {
     if (softRouterInstalled) return;
     softRouterInstalled = true;
+
+    document.addEventListener('pointerover', (event) => {
+      if (event.pointerType === 'touch') return;
+      const anchor = event.target && event.target.closest ? event.target.closest('a[href]') : null;
+      scheduleRoutePrefetch(anchor);
+    }, { passive: true, capture: true });
+
+    document.addEventListener('focusin', (event) => {
+      const anchor = event.target && event.target.closest ? event.target.closest('a[href]') : null;
+      scheduleRoutePrefetch(anchor, 0);
+    }, true);
+
+    document.addEventListener('touchstart', (event) => {
+      const anchor = event.target && event.target.closest ? event.target.closest('a[href]') : null;
+      scheduleRoutePrefetch(anchor, 0);
+    }, { passive: true, capture: true });
 
     document.addEventListener('click', (event) => {
       if (event.defaultPrevented) return;
@@ -4018,18 +4767,30 @@
       }
 
       event.preventDefault();
-      void softNavigate(targetUrl, { pushHistory: true, anchor });
+      void softNavigate(targetUrl, {
+        pushHistory: true,
+        anchor,
+        focusDestination: Number(event.detail) === 0,
+      });
     }, true);
 
     window.addEventListener('popstate', (event) => {
       const restoreScrollTop = event && event.state && typeof event.state[HISTORY_SCROLL_KEY] === 'number'
         ? event.state[HISTORY_SCROLL_KEY]
         : null;
+      const targetHistoryIndex = event && event.state && Number.isFinite(Number(event.state[HISTORY_INDEX_KEY]))
+        ? Number(event.state[HISTORY_INDEX_KEY])
+        : null;
+      const navigationDirection = targetHistoryIndex === null
+        ? ''
+        : (targetHistoryIndex < routeHistoryIndex ? 'back' : 'forward');
 
       void softNavigate(window.location.href, {
         pushHistory: false,
         restoreScrollTop,
         allowHardNavigate: true,
+        historyIndex: targetHistoryIndex,
+        navigationDirection,
       });
     });
   }
@@ -4037,6 +4798,7 @@
   async function init() {
     ensureViewportFitCover();
     installIosSafariViewportSync();
+    installHistoryStateGuard();
 
     const shouldForceBootstrap = shouldForcePersistentChromeBootstrap(window.location.pathname)
       && !hasCompletePersistentChrome(document);
@@ -4059,6 +4821,7 @@
     }
 
     document.body.classList.add(BODY_CLASS);
+    ensureRouteStatusElements();
     syncProfileProtectedRouteState(window.location.pathname);
     normalizeHeaderWordmarkLinks();
     applyHeadingTypographyAndSupportHooks(document);
@@ -4070,6 +4833,7 @@
 
     installSoftRouter();
     installScrollStateTracker(scrollRoot);
+    persistScrollState(scrollRoot);
     installSlotLayoutStabilizer(scrollRoot, foregroundRoot);
     installProfileViewportMetricsSync();
     installMobileMenu();

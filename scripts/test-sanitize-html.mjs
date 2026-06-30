@@ -144,10 +144,12 @@ assert.ok(!/sqspcdn/i.test(sanitized), 'Sanitizer should remove sqspcdn runtime 
 assert.ok(!/websiteComponents/i.test(sanitized), 'Sanitizer should remove websiteComponents runtime markers');
 
 const dexCssCount = (sanitized.match(/https:\/\/dexdsl\.github\.io\/assets\/css\/dex\.css/g) || []).length;
+const entryRuntimeCssCount = (sanitized.match(/\/css\/components\/dx-entry-runtime\.css/g) || []).length;
 const dexSidebarCount = (sanitized.match(/https:\/\/dexdsl\.github\.io\/assets\/dex-sidebar\.js/g) || []).length;
 const headerSlotCount = (sanitized.match(/(?:https:\/\/dexdsl\.github\.io)?\/assets\/js\/header-slot\.js/g) || []).length;
 const dexBreadcrumbMotionCount = (sanitized.match(/https:\/\/dexdsl\.github\.io\/assets\/js\/dex-breadcrumb-motion\.js/g) || []).length;
 assert.equal(dexCssCount, 1, 'Dex stylesheet should exist exactly once');
+assert.equal(entryRuntimeCssCount, 1, 'Static entry runtime stylesheet should exist exactly once');
 assert.equal(dexSidebarCount, 1, 'Dex sidebar script should exist exactly once');
 assert.equal(headerSlotCount, 1, 'Header slot runtime should exist exactly once');
 assert.equal(dexBreadcrumbMotionCount, 1, 'Dex breadcrumb motion runtime should exist exactly once');
@@ -159,7 +161,9 @@ assert.ok(sanitized.includes('id="dex-manifest"'), 'Dex manifest script should r
 
 const siteCssIndex = sanitized.search(legacySiteCssRegex);
 const dexCssIndex = sanitized.indexOf('/assets/css/dex.css');
+const entryRuntimeCssIndex = sanitized.indexOf('/css/components/dx-entry-runtime.css');
 assert.ok(dexCssIndex > siteCssIndex, 'Dex stylesheet should load after site.css');
+assert.ok(entryRuntimeCssIndex > dexCssIndex, 'Static entry runtime stylesheet should load after dex.css');
 
 const $ = loadHtml(sanitized, { decodeEntities: false });
 assert.equal($('.fluid-engine .dex-entry-layout').length, 1, 'Dex layout should remain in Fluid Engine host');

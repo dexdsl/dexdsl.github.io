@@ -508,6 +508,7 @@
     };
     return icons[iconName] || "";
   }
+  window.DEX_ACCOUNT_MENU_ICON = getMenuIcon;
 
   function getMenuLinkMarkup(href, label, iconName, options) {
     var extraClass = options && options.extraClass ? (" " + options.extraClass) : "";

@@ -385,7 +385,11 @@ export function renderUavCollectionHtml(collection, manifest, authorities) {
 <html lang="en-US">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#e8ebf1">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>${html(collection.title)} — dexDRONES</title>
   <meta name="description" content="${html(collection.description.slice(0, 240))}">
   <link rel="canonical" href="https://dexdsl.org/uav/${html(collection.slug)}/">
@@ -398,6 +402,7 @@ export function renderUavCollectionHtml(collection, manifest, authorities) {
   <link rel="stylesheet" href="/css/components/dx-nav.css">
   <link rel="stylesheet" href="/css/fonts.css">
   <link rel="stylesheet" href="/assets/css/dex.css">
+  <link rel="stylesheet" href="/css/components/dx-entry-runtime.css">
   <link rel="stylesheet" href="/css/components/dx-uav-entry.css">
   <style id="dex-entry-collection-contract" data-managed="1">${collectionContractCss}</style>
   <script type="application/ld+json">${safeJsonForHtml({

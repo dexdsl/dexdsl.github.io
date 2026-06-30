@@ -34,6 +34,7 @@
   const ENTRY_RUNTIME_STYLE_ID = 'dx-entry-runtime-layout-overrides';
   const ENTRY_BUTTON_STYLE_ID = 'dx-entry-button-primitive-overrides';
   const DOWNLOAD_TREE_STYLE_ID = 'dx-entry-download-tree-style';
+  const ENTRY_RUNTIME_CSS_PATH = '/css/components/dx-entry-runtime.css';
   const DX_MIN_SHEEN_MS = 120;
   const DX_ENTRY_TARGET_TIMEOUT_MS = 15000;
   const FETCH_STATE_LOADING = 'loading';
@@ -533,8 +534,22 @@
     document.head.appendChild(script);
   };
 
+  const hasStaticEntryRuntimeStyles = () => Array.from(
+    document.querySelectorAll('link[rel~="stylesheet"][href]'),
+  ).some((link) => {
+    try {
+      return new URL(link.href, window.location.href).pathname === ENTRY_RUNTIME_CSS_PATH;
+    } catch {
+      return false;
+    }
+  });
+
   const ensureEntryRuntimeLayoutOverrides = () => {
     if (!(document.head instanceof HTMLElement)) return;
+    if (hasStaticEntryRuntimeStyles()) {
+      document.getElementById(ENTRY_RUNTIME_STYLE_ID)?.remove();
+      return;
+    }
     if (document.getElementById(ENTRY_RUNTIME_STYLE_ID)) return;
     const style = document.createElement('style');
     style.id = ENTRY_RUNTIME_STYLE_ID;
@@ -1004,6 +1019,10 @@
 
   const ensureEntryButtonPrimitiveOverrides = () => {
     if (!(document.head instanceof HTMLElement)) return;
+    if (hasStaticEntryRuntimeStyles()) {
+      document.getElementById(ENTRY_BUTTON_STYLE_ID)?.remove();
+      return;
+    }
     if (document.getElementById(ENTRY_BUTTON_STYLE_ID)) return;
     const style = document.createElement('style');
     style.id = ENTRY_BUTTON_STYLE_ID;
@@ -1101,6 +1120,10 @@
 
   const ensureDownloadTreeStyles = () => {
     if (!(document.head instanceof HTMLElement)) return;
+    if (hasStaticEntryRuntimeStyles()) {
+      document.getElementById(DOWNLOAD_TREE_STYLE_ID)?.remove();
+      return;
+    }
     if (document.getElementById(DOWNLOAD_TREE_STYLE_ID)) return;
     const style = document.createElement('style');
     style.id = DOWNLOAD_TREE_STYLE_ID;

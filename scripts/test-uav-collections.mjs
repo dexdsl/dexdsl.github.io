@@ -154,6 +154,9 @@ assert.equal(validateUavCollection(linkedCreditsCollection, folder.manifest, pro
 assert.ok(renderUavCollectionHtml(linkedCreditsCollection, folder.manifest, projected).includes('https://example.com/operator'));
 const parityHtml = renderUavCollectionHtml(folder.collection, folder.manifest, projected);
 for (const marker of [
+  'viewport-fit=cover',
+  'name="theme-color" content="#e8ebf1"',
+  'name="apple-mobile-web-app-status-bar-style" content="black-translucent"',
   'class="dx-uav-entry-card dex-entry-section"',
   'class="dx-uav-entry-header dex-entry-header"',
   'class="dex-entry-page-title"',
@@ -178,6 +181,7 @@ for (const marker of [
   '/assets/js/dex-breadcrumb-motion.js',
   '/assets/dex-sidebar.js',
   '/assets/js/dx-uav-entry.js',
+  '/css/components/dx-entry-runtime.css',
 ]) {
   assert.ok(parityHtml.includes(marker), `UAV entry parity marker missing: ${marker}`);
 }

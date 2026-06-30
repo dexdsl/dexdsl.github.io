@@ -168,6 +168,10 @@ const SYNC_MAP = [
     targets: ['css/components/dx-controls.css', 'docs/css/components/dx-controls.css'],
   },
   {
+    source: 'public/css/components/dx-entry-runtime.css',
+    targets: ['css/components/dx-entry-runtime.css', 'docs/css/components/dx-entry-runtime.css'],
+  },
+  {
     source: 'public/css/components/dx-about.css',
     targets: ['css/components/dx-about.css', 'docs/css/components/dx-about.css'],
   },

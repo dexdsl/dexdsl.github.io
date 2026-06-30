@@ -2,6 +2,7 @@ import { load as loadHtml } from 'cheerio';
 
 export const DEX_ORIGIN = 'https://dexdsl.github.io';
 export const DEX_CSS_HREF = `${DEX_ORIGIN}/assets/css/dex.css`;
+export const ENTRY_RUNTIME_CSS_HREF = '/css/components/dx-entry-runtime.css';
 export const DEX_SIDEBAR_SRC = `${DEX_ORIGIN}/assets/dex-sidebar.js`;
 export const DEX_HEADER_SLOT_SRC = `${DEX_ORIGIN}/assets/js/header-slot.js`;
 export const AUTH_VENDOR_SRC = `${DEX_ORIGIN}/assets/vendor/auth0-spa-js.umd.min.js`;
@@ -1483,6 +1484,16 @@ function canonicalPathKey(value) {
   return normalized.split('?')[0].split('#')[0];
 }
 
+function hrefPathKey(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  try {
+    return new URL(raw, DEX_ORIGIN).pathname;
+  } catch {
+    return '';
+  }
+}
+
 function ensureHead($) {
   let head = $('head').first();
   if (head.length) return head;
@@ -1643,6 +1654,34 @@ function ensureDexCssAfterSiteCss($, head) {
   if (siteCssLinks.length && dexCssLink.length) {
     dexCssLink.remove();
     siteCssLinks.last().after(`\n<link rel="stylesheet" href="${DEX_CSS_HREF}">`);
+  }
+}
+
+function ensureEntryRuntimeCssAfterDexCss($, head) {
+  const body = $('body').first();
+  if (!body.length || !body.hasClass('dex-entry-page')) return;
+
+  const runtimeLinks = $('link[href]').filter(
+    (_, el) => hrefPathKey($(el).attr('href')) === ENTRY_RUNTIME_CSS_HREF,
+  );
+  let runtimeLink = runtimeLinks.first();
+  runtimeLinks.slice(1).remove();
+
+  if (!runtimeLink.length) {
+    runtimeLink = $(`<link rel="stylesheet" href="${ENTRY_RUNTIME_CSS_HREF}">`);
+  } else {
+    runtimeLink.attr('rel', 'stylesheet');
+    runtimeLink.attr('href', ENTRY_RUNTIME_CSS_HREF);
+    runtimeLink.remove();
+  }
+
+  const dexCssLink = $('link[href]').filter(
+    (_, el) => canonicalPathKey($(el).attr('href')) === '/assets/css/dex.css',
+  ).first();
+  if (dexCssLink.length) {
+    dexCssLink.after(runtimeLink);
+  } else {
+    head.append(runtimeLink);
   }
 }
 
@@ -1929,6 +1968,7 @@ export function sanitizeGeneratedHtml(html) {
   ensureDexLayoutPatchStyle($, head);
   ensureDexCssAfterSiteCss($, head);
   ensureModernCssChain($, head);
+  ensureEntryRuntimeCssAfterDexCss($, head);
   ensureDexContractScripts($, head);
   ensureRequiredRuntimeScripts($, head);
   ensureEntryBackgroundPresence($);

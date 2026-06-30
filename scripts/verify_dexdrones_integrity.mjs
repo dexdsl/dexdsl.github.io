@@ -78,6 +78,11 @@ function verifyPageContract(pageHtml, failures) {
   pushIf(failures, countMatches(pageHtml, /href="\/css\/components\/dx-dexdrones\.css"/g) === 1, 'dexdrones page must include /css/components/dx-dexdrones.css exactly once');
   pushIf(failures, countMatches(pageHtml, /src="\/assets\/js\/dx-dexdrones\.js"/g) === 1, 'dexdrones page must include /assets/js/dx-dexdrones.js exactly once');
   pushIf(failures, pageHtml.includes('window.DEX_DRONES_CONFIG'), 'dexdrones page must include window.DEX_DRONES_CONFIG');
+  pushIf(
+    failures,
+    pageHtml.indexOf('href="/css/components/dx-dexdrones.css"') > pageHtml.indexOf('href="/assets/css/dex.css"'),
+    'dexdrones route stylesheet must load after shared dex.css for hard/soft navigation parity',
+  );
 
   const mainHtml = getMainHtml(pageHtml);
   pushIf(failures, Boolean(mainHtml), 'dexdrones page missing <main id="page"> block');

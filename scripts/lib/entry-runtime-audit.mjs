@@ -24,6 +24,7 @@ const REQUIRED_RUNTIME_MARKERS = [
   'id="scroll-gradient-bg"',
   'id="gooey-mesh-wrapper"',
   'class="dex-breadcrumb"',
+  'href="/css/components/dx-entry-runtime.css"',
 ];
 
 const FORBIDDEN_RUNTIME_SCRIPT_HOST_PATTERNS = [
