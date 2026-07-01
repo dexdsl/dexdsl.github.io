@@ -242,6 +242,28 @@ test.describe('mobile navigation modal', () => {
     expect(signOutCalls).toEqual([windowOrigin(page), windowOrigin(page)]);
   });
 
+  test('site and account tiles own their navigation and close only after activation', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await stubAuth(page, 'member');
+    await page.goto('/about/', { waitUntil: 'domcontentloaded' });
+
+    let menu = await openMobileMenu(page);
+    const catalogTile = menu.root.locator('[data-dx-mobile-menu-tile="catalog"]');
+    await expect(catalogTile).toHaveAttribute('href', '/catalog/');
+    await catalogTile.click();
+    await expect(page).toHaveURL(/\/catalog\/?$/);
+    await expect(page.locator('.dx-catalog-index-shell')).toBeVisible();
+    await expect(menu.root).toHaveAttribute('aria-hidden', 'true');
+
+    menu = await openMobileMenu(page);
+    await menu.root.locator('[data-dx-mobile-account-open="true"]').click();
+    const settingsTile = menu.root.locator('[data-dx-mobile-menu-tile="settings"]');
+    await expect(settingsTile).toHaveAttribute('href', '/entry/settings/');
+    await settingsTile.click();
+    await expect(page).toHaveURL(/\/entry\/settings\/?$/);
+    await expect(menu.root).toHaveAttribute('aria-hidden', 'true');
+  });
+
   test('tablet layout uses three columns, traps focus, restores inert state, and reduces motion', async ({ page }) => {
     await page.setViewportSize({ width: 768, height: 1024 });
     await page.emulateMedia({ reducedMotion: 'reduce' });

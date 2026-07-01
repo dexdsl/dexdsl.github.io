@@ -148,15 +148,14 @@ test('routing into Catalog preserves the persistent gooey-mesh field', async ({ 
     const blobs = Array.from(document.querySelectorAll<HTMLElement>('#gooey-mesh-wrapper .gooey-blob'));
     const width = window.innerWidth;
     const height = window.innerHeight;
-    const yRatios = [0.24, 0.72, 0.38, 0.78, 0.52];
     const snapshot = blobs.map((blob, index) => {
       const radius = Number((blob as any)._rad) || (blob.offsetWidth / 2);
       const availableWidth = Math.max(width - (radius * 2), 1);
       const availableHeight = Math.max(height - (radius * 2), 1);
       const x = radius + (availableWidth * ((index + 1) / (blobs.length + 1)));
-      const y = radius + (availableHeight * yRatios[index % yRatios.length]);
+      const y = radius + (availableHeight * (index / Math.max(blobs.length - 1, 1)));
       const angle = (index + 1) * 1.17;
-      const speed = 5.2 + (index * 0.55);
+      const speed = 8.2 + (index * 0.85);
       const phase = (index + 1) * 2.399963229728653;
 
       (blob as any)._rad = radius;
@@ -165,8 +164,18 @@ test('routing into Catalog preserves the persistent gooey-mesh field', async ({ 
       (blob as any)._vx = Math.cos(angle) * speed;
       (blob as any)._vy = Math.sin(angle) * speed;
       (blob as any)._phase = phase;
+      (blob as any)._waxMass = index === 0 ? 1.24 : (index === 1 ? 0.76 : 1);
+      (blob as any)._waxHoldUntil = Date.now() + 60_000;
+      (blob as any)._waxReadyAt = Date.now() + 65_000;
+      (blob as any)._waxPartner = index === 0 ? 1 : (index === 1 ? 0 : -1);
       blob.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
-      return { x, y, phase };
+      return {
+        x,
+        y,
+        phase,
+        waxMass: Number((blob as any)._waxMass),
+        waxPartner: Number((blob as any)._waxPartner),
+      };
     });
 
     void window.dxNavigate?.('/catalog/', { pushHistory: true });
@@ -184,20 +193,230 @@ test('routing into Catalog preserves the persistent gooey-mesh field', async ({ 
       vx: Number((blob as any)._vx),
       vy: Number((blob as any)._vy),
       phase: Number((blob as any)._phase),
+      waxMass: Number((blob as any)._waxMass),
+      waxPartner: Number((blob as any)._waxPartner),
     }))
   ));
 
   expect(after).toHaveLength(before.length);
   for (let index = 0; index < after.length; index += 1) {
     expect(Math.hypot(after[index].x - before[index].x, after[index].y - before[index].y)).toBeLessThan(64);
-    expect(Math.hypot(after[index].vx, after[index].vy)).toBeLessThanOrEqual(10.21);
-    expect(Math.hypot(after[index].vx, after[index].vy)).toBeGreaterThanOrEqual(4.1);
+    expect(Math.hypot(after[index].vx, after[index].vy)).toBeLessThanOrEqual(16.21);
+    expect(Math.hypot(after[index].vx, after[index].vy)).toBeGreaterThan(3.5);
     expect(after[index].phase).toBeCloseTo(before[index].phase, 8);
+    expect(Math.abs(after[index].waxMass - before[index].waxMass)).toBeLessThan(0.03);
+    expect(after[index].waxPartner).toBe(before[index].waxPartner);
   }
+  expect(after[0].waxMass).toBeGreaterThan(1.1);
+  expect(after[1].waxMass).toBeLessThan(0.9);
 
   const horizontalSpread = Math.max(...after.map((item) => item.x)) - Math.min(...after.map((item) => item.x));
   const verticalSpread = Math.max(...after.map((item) => item.y)) - Math.min(...after.map((item) => item.y));
   expect(Math.max(horizontalSpread, verticalSpread)).toBeGreaterThan(180);
+
+  await page.evaluate(() => document.getElementById('gooey-mesh-wrapper')?.remove());
+  await page.waitForFunction(() => document.querySelectorAll('#gooey-mesh-wrapper .gooey-blob').length >= 5);
+  await expect(page.locator('#gooey-mesh-wrapper')).toHaveAttribute('data-dx-slot-preserve', 'true');
+});
+
+test('wax coalescence transfers area, consumes a blob, and releases it again', async ({ page }) => {
+  await useLocalHeaderSlot(page);
+  await page.goto('/about/', { waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => typeof window.dxNavigate === 'function');
+  await page.waitForFunction(() => document.querySelectorAll('#gooey-mesh-wrapper .gooey-blob').length >= 5);
+
+  const initial = await page.evaluate(() => {
+    const blobs = Array.from(document.querySelectorAll<HTMLElement>('#gooey-mesh-wrapper .gooey-blob'));
+    const centreX = window.innerWidth / 2;
+    const centreY = window.innerHeight / 2;
+    const now = Date.now();
+
+    blobs.forEach((blob, index) => {
+      const radius = Number((blob as any)._rad) || (blob.offsetWidth / 2);
+      (blob as any)._rad = radius;
+      (blob as any)._vx = 0;
+      (blob as any)._vy = 0;
+      (blob as any)._waxMass = 1;
+      (blob as any)._waxHoldUntil = 0;
+      (blob as any)._waxPartner = -1;
+      (blob as any)._waxReadyAt = index < 2 ? 0 : now + 60_000;
+      if (index === 0) {
+        (blob as any)._x = centreX - 4;
+        (blob as any)._y = centreY;
+      } else if (index === 1) {
+        (blob as any)._x = centreX + 4;
+        (blob as any)._y = centreY;
+      } else {
+        const angle = ((index - 2) / Math.max(blobs.length - 2, 1)) * Math.PI * 2;
+        (blob as any)._x = centreX + (Math.cos(angle) * window.innerWidth * 0.42);
+        (blob as any)._y = centreY + (Math.sin(angle) * window.innerHeight * 0.42);
+      }
+    });
+
+    const pair = blobs.slice(0, 2);
+    return {
+      totalArea: pair.reduce((sum, blob) => {
+        const radius = Number((blob as any)._rad);
+        return sum + (radius * radius * Number((blob as any)._waxMass));
+      }, 0),
+    };
+  });
+
+  await page.waitForFunction(() => {
+    const pair = Array.from(document.querySelectorAll<HTMLElement>('#gooey-mesh-wrapper .gooey-blob')).slice(0, 2);
+    if (pair.length !== 2) return false;
+    const masses = pair.map((blob) => Number((blob as any)._waxMass));
+    return Math.min(...masses) <= 0.12 && Math.max(...masses) >= 1.35;
+  }, undefined, { timeout: 15_000 });
+
+  const consumed = await page.evaluate(() => {
+    const pair = Array.from(document.querySelectorAll<HTMLElement>('#gooey-mesh-wrapper .gooey-blob')).slice(0, 2);
+    const masses = pair.map((blob) => Number((blob as any)._waxMass));
+    const totalArea = pair.reduce((sum, blob) => {
+      const radius = Number((blob as any)._rad);
+      return sum + (radius * radius * Number((blob as any)._waxMass));
+    }, 0);
+    return {
+      masses,
+      totalArea,
+      states: pair.map((blob) => blob.getAttribute('data-dx-gooey-wax-state')),
+      opacities: pair.map((blob) => Number.parseFloat(getComputedStyle(blob).opacity)),
+      distance: Math.hypot(
+        Number((pair[1] as any)._x) - Number((pair[0] as any)._x),
+        Number((pair[1] as any)._y) - Number((pair[0] as any)._y),
+      ),
+    };
+  });
+
+  expect(consumed.totalArea).toBeCloseTo(initial.totalArea, 5);
+  expect(consumed.states).toContain('consumed');
+  expect(consumed.states).toContain('dominant');
+  expect(Math.min(...consumed.opacities)).toBeLessThan(0.15);
+
+  await page.evaluate(() => {
+    const pair = Array.from(document.querySelectorAll<HTMLElement>('#gooey-mesh-wrapper .gooey-blob')).slice(0, 2);
+    const now = Date.now();
+    pair.forEach((blob) => {
+      (blob as any)._waxHoldUntil = now - 1;
+      (blob as any)._waxReadyAt = now + 4_200;
+    });
+  });
+
+  await page.waitForFunction((consumedMinimum) => {
+    const pair = Array.from(document.querySelectorAll<HTMLElement>('#gooey-mesh-wrapper .gooey-blob')).slice(0, 2);
+    const masses = pair.map((blob) => Number((blob as any)._waxMass));
+    return Math.min(...masses) >= Number(consumedMinimum) + 0.07;
+  }, Math.min(...consumed.masses), { timeout: 5_000 });
+
+  const released = await page.evaluate(() => {
+    const pair = Array.from(document.querySelectorAll<HTMLElement>('#gooey-mesh-wrapper .gooey-blob')).slice(0, 2);
+    return {
+      totalArea: pair.reduce((sum, blob) => {
+        const radius = Number((blob as any)._rad);
+        return sum + (radius * radius * Number((blob as any)._waxMass));
+      }, 0),
+      distance: Math.hypot(
+        Number((pair[1] as any)._x) - Number((pair[0] as any)._x),
+        Number((pair[1] as any)._y) - Number((pair[0] as any)._y),
+      ),
+    };
+  });
+
+  expect(released.totalArea).toBeCloseTo(initial.totalArea, 4);
+  expect(released.distance).toBeGreaterThan(consumed.distance);
+});
+
+test('routing into Home keeps the persistent gooey mesh visible', async ({ page }) => {
+  await useLocalHeaderSlot(page);
+  await page.goto('/about/', { waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => typeof window.dxNavigate === 'function');
+
+  await page.evaluate(() => window.dxNavigate?.('/', { pushHistory: true }));
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.locator('body')).toHaveClass(/homepage/);
+  await expect(page.locator('#dx-home-hero-root')).toBeVisible();
+
+  const meshState = await page.evaluate(() => {
+    const wrapper = document.getElementById('gooey-mesh-wrapper');
+    const stage = wrapper?.querySelector<HTMLElement>('.gooey-stage') || null;
+    const blobs = Array.from(wrapper?.querySelectorAll<HTMLElement>('.gooey-blob') || []);
+    const style = wrapper instanceof HTMLElement ? getComputedStyle(wrapper) : null;
+    const stageStyle = stage ? getComputedStyle(stage) : null;
+    return {
+      bodyClass: document.body.className,
+      wrapper: {
+        connected: Boolean(wrapper?.isConnected),
+        display: style?.display || '',
+        visibility: style?.visibility || '',
+        opacity: style?.opacity || '',
+        zIndex: style?.zIndex || '',
+        width: wrapper instanceof HTMLElement ? wrapper.getBoundingClientRect().width : 0,
+        height: wrapper instanceof HTMLElement ? wrapper.getBoundingClientRect().height : 0,
+      },
+      stageFilter: stageStyle?.filter || '',
+      blobs: blobs.map((blob) => {
+        const blobStyle = getComputedStyle(blob);
+        const rect = blob.getBoundingClientRect();
+        return {
+          opacity: blobStyle.opacity,
+          visibility: blobStyle.visibility,
+          display: blobStyle.display,
+          width: rect.width,
+          height: rect.height,
+          transform: blobStyle.transform,
+        };
+      }),
+      homeInlineMeshStyle: Array.from(document.querySelectorAll('style')).some((node) =>
+        String(node.textContent || '').includes('body.homepage .dx-section')
+        && String(node.textContent || '').includes('#gooey-mesh-wrapper')
+      ),
+      menus: Array.from(document.querySelectorAll<HTMLElement>('.header-menu, #dx-mobile-menu')).map((menu) => {
+        const menuStyle = getComputedStyle(menu);
+        const rect = menu.getBoundingClientRect();
+        return {
+          id: menu.id,
+          className: menu.className,
+          display: menuStyle.display,
+          visibility: menuStyle.visibility,
+          opacity: menuStyle.opacity,
+          zIndex: menuStyle.zIndex,
+          style: menu.getAttribute('style') || '',
+          animations: menu.getAnimations().map((animation) => ({
+            playState: animation.playState,
+            currentTime: animation.currentTime,
+          })),
+          width: rect.width,
+          height: rect.height,
+        };
+      }),
+    };
+  });
+
+  expect(meshState.wrapper).toMatchObject({
+    connected: true,
+    display: 'block',
+    visibility: 'visible',
+  });
+  expect(Number(meshState.wrapper.opacity)).toBeGreaterThan(0);
+  expect(meshState.wrapper.width).toBeGreaterThan(100);
+  expect(meshState.wrapper.height).toBeGreaterThan(100);
+  expect(meshState.stageFilter).not.toBe('none');
+  expect(meshState.blobs).toHaveLength(5);
+  expect(meshState.blobs.every((blob) =>
+    blob.display !== 'none'
+    && blob.visibility === 'visible'
+    && Number(blob.opacity) > 0
+    && blob.width > 20
+    && blob.height > 20
+  )).toBe(true);
+  expect(meshState.homeInlineMeshStyle).toBe(true);
+  const modalLayer = meshState.menus.find((menu) => menu.id === 'dx-mobile-menu');
+  expect(modalLayer).toMatchObject({
+    visibility: 'hidden',
+    opacity: '0',
+    style: '',
+    animations: [],
+  });
 });
 
 test('routing out of UAV keeps the old body visible until the destination is ready', async ({ page }) => {

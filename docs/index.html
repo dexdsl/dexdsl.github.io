@@ -2088,37 +2088,8 @@ footer.dex-footer { position:relative; z-index:1; isolation:isolate; }
 
 <script>
 ;(function(){
-  /* ── 1. gooey blob animation ── */
-  const blobs=[...document.querySelectorAll('#gooey-mesh-wrapper .gooey-blob')];
-  if(blobs.length){
-    const W=()=>innerWidth, H=()=>innerHeight;
-    blobs.forEach(b=>{
-      const speed=60+Math.random()*60,
-            ang=Math.random()*6.283;
-      b._r=b.offsetWidth/2;
-      b._x=W()/2; b._y=H()/2;
-      b._vx=Math.cos(ang)*speed*.25;
-      b._vy=Math.sin(ang)*speed*.25;
-    });
-    let last=performance.now();
-    const tick=now=>{
-      const dt=(now-last)/1000; last=now;
-      blobs.forEach(b=>{
-        b._x+=b._vx*dt; b._y+=b._vy*dt;
-        if((b._x-b._r<=0&&b._vx<0)||(b._x+b._r>=W()&&b._vx>0)) b._vx*=-1;
-        if((b._y-b._r<=0&&b._vy<0)||(b._y+b._r>=H()&&b._vy>0)) b._vy*=-1;
-        b.style.transform=`translate(${b._x}px,${b._y}px) translate(-50%,-50%)`;
-      });
-      requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-    addEventListener('resize',()=>blobs.forEach(b=>{
-      b._x=Math.min(Math.max(b._r,b._x),W()-b._r);
-      b._y=Math.min(Math.max(b._r,b._y),H()-b._r);
-    }));
-  }
-
-  /* ── 2. scroll-gradient (RAF-throttled) ── */
+  /* Gooey motion is owned by the persistent header-slot runtime. */
+  /* Scroll-gradient (RAF-throttled). */
   const grad=document.getElementById('scroll-gradient-bg'),
         start=[252,252,252], end=[35,35,35];
   const lerp=(a,b,t)=>a+(b-a)*t;

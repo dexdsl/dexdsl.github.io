@@ -8,6 +8,8 @@ const BASE_CSS_PATH = path.join(ROOT, 'public', 'css', 'base.css');
 const SLOT_RUNTIME_PATH = path.join(ROOT, 'public', 'assets', 'js', 'header-slot.js');
 const AUTH_RUNTIME_PATH = path.join(ROOT, 'public', 'assets', 'dex-auth.js');
 const CATALOG_MESH_SOURCE_PATH = path.join(ROOT, 'scripts', 'src', 'shared', 'dx-gooey-mesh.entry.mjs');
+const BAG_SOURCE_PATH = path.join(ROOT, 'scripts', 'src', 'bag.app.entry.mjs');
+const HOME_DOCUMENT_PATH = path.join(ROOT, 'docs', 'index.html');
 const REQUIRED_SCRIPT_TAG_NEEDLE = '/assets/js/header-slot.js';
 
 const REQUIRED_MARKERS = [
@@ -69,6 +71,8 @@ function verifyGlassParityContract(failures) {
   const slotRuntime = readText(SLOT_RUNTIME_PATH);
   const authRuntime = readText(AUTH_RUNTIME_PATH);
   const catalogMeshSource = readText(CATALOG_MESH_SOURCE_PATH);
+  const bagSource = readText(BAG_SOURCE_PATH);
+  const homeDocument = readText(HOME_DOCUMENT_PATH);
 
   const requiredSlotMarkers = [
     'bootstrapPersistentChromeIfMissing',
@@ -84,10 +88,20 @@ function verifyGlassParityContract(failures) {
     'data-dx-mobile-account-back="true"',
     'setMobileMenuBackgroundInert(root, true)',
     'getMobileMenuFocusable(root)',
+    'function handleMobileMenuRouteClick(root, clickedLink, event)',
+    "clickedLink.setAttribute('data-dx-mobile-menu-nav-busy', 'true');",
+    'if (anchor.closest(`#${MOBILE_MENU_ROOT_ID}`)) return;',
+    'const hasStableSiteTiles = MOBILE_SITE_TILES.every',
+    'const hasStableAccountTiles = MOBILE_ACCOUNT_TILES.every',
     "root.setAttribute('data-dx-mobile-menu-view', nextView);",
     "window.addEventListener('dx:messages:unread-count', syncUnread);",
     'const ROUTE_STYLE_STAGED_ATTR =',
+    'const ROUTE_CHROME_GUARD_STYLE_ID =',
     'async function prepareRouteStyles(',
+    'const orderedAssets = [];',
+    'const desiredLinkNodes = new Set(entries.map(({ node }) => node));',
+    'function ensureRouteChromeGuardStyleTag()',
+    '#dx-mobile-menu[aria-hidden="true"]',
     'function collectManagedInlineStyleDefinitions(',
     'async function preloadRouteScripts(',
     'const routeDocumentPrefetches = new Map();',
@@ -123,12 +137,22 @@ function verifyGlassParityContract(failures) {
     'routePlan = await prepareRouteDocument(parsed, finalUrl, {',
     'if (routePlan && !didCommitRoute) routePlan.styleTransaction.dispose();',
     'ROUTE_SCRIPT_LOAD_TIMEOUT_MS',
-    'const GOOEY_SPEED_MAX = 10.2;',
-    'const GOOEY_SEPARATION_STRENGTH = 7.5;',
-    'const GOOEY_SEPARATION_RATIO = 0.82;',
-    'Short-range repulsion only acts while two cores are deeply overlapping.',
+    'const GOOEY_MESH_STATE_VERSION = 3;',
+    'const GOOEY_SPEED_MAX = 16.2;',
+    'const GOOEY_TERRITORY_STRENGTH = 0.0048;',
+    'const GOOEY_VISUAL_SCALE = 0.82;',
+    'const GOOEY_WAX_TRANSFER_RATE = 0.28;',
+    'const GOOEY_WAX_RELAX_RATE = 0.22;',
+    'const GOOEY_WAX_MAX_MASS = 2.85;',
+    'function resolveGooeyWaxMass(blob)',
+    'function repairPersistentGooeyMesh()',
+    'exchange area while deeply overlapped',
+    'const transferArea = Math.min(',
+    "blob.setAttribute('data-dx-gooey-wax-state', waxState);",
     'phase: Number(blob._phase),',
+    'waxMass: resolveGooeyWaxMass(blob),',
     'if (Number.isFinite(item.phase)) blob._phase = item.phase;',
+    'if (Number.isFinite(item.waxMass)) blob._waxMass = item.waxMass;',
   ];
   for (const marker of requiredSlotMarkers) {
     if (!slotRuntime.includes(marker)) {
@@ -138,6 +162,12 @@ function verifyGlassParityContract(failures) {
 
   if (!catalogMeshSource.includes('window.__dxDisableRouteGooeyBootstrap')) {
     failures.push('Catalog gooey-mesh source must defer to the persistent header-slot driver');
+  }
+  if (!bagSource.includes('const persistentMeshDriver = window.__dxDisableRouteGooeyBootstrap === true;')) {
+    failures.push('Bag mesh bootstrap must defer to the persistent header-slot driver');
+  }
+  if (homeDocument.includes("const blobs=[...document.querySelectorAll('#gooey-mesh-wrapper .gooey-blob')]")) {
+    failures.push('Home document must not start a second route-local gooey-mesh loop');
   }
 
   const requiredBaseCssMarkers = [

@@ -1999,8 +1999,11 @@
     if (!(document.body instanceof HTMLElement)) return;
     const hasGradient = document.getElementById('scroll-gradient-bg') instanceof HTMLElement;
     const hasMesh = document.getElementById('gooey-mesh-wrapper') instanceof HTMLElement;
-    const hasMeshStyle = document.querySelector(`style[${SHARED_MESH_STYLE_ATTR}]`) instanceof HTMLStyleElement;
-    const hasMeshBootstrap = document.querySelector(`script[${SHARED_MESH_BOOTSTRAP_ATTR}]`) instanceof HTMLScriptElement;
+    const persistentMeshDriver = window.__dxDisableRouteGooeyBootstrap === true;
+    const hasMeshStyle = persistentMeshDriver
+      || document.querySelector(`style[${SHARED_MESH_STYLE_ATTR}]`) instanceof HTMLStyleElement;
+    const hasMeshBootstrap = persistentMeshDriver
+      || document.querySelector(`script[${SHARED_MESH_BOOTSTRAP_ATTR}]`) instanceof HTMLScriptElement;
     if (hasGradient && hasMesh && hasMeshStyle && hasMeshBootstrap) return;
 
     for (const path of SHARED_MESH_TEMPLATE_PATHS) {
@@ -2026,7 +2029,7 @@
           else document.body.appendChild(clone);
         }
 
-        if (!(document.querySelector(`style[${SHARED_MESH_STYLE_ATTR}]`) instanceof HTMLStyleElement)) {
+        if (!persistentMeshDriver && !(document.querySelector(`style[${SHARED_MESH_STYLE_ATTR}]`) instanceof HTMLStyleElement)) {
           const meshStyles = Array.from(parsed.querySelectorAll('style')).filter((styleNode) => {
             if (!(styleNode instanceof HTMLStyleElement)) return false;
             const content = toText(styleNode.textContent);
@@ -2043,7 +2046,7 @@
           }
         }
 
-        if (!document.querySelector(`script[${SHARED_MESH_BOOTSTRAP_ATTR}]`)) {
+        if (!persistentMeshDriver && !document.querySelector(`script[${SHARED_MESH_BOOTSTRAP_ATTR}]`)) {
           const meshBootstrap = Array.from(parsed.querySelectorAll('script')).find((script) => {
             if (!(script instanceof HTMLScriptElement)) return false;
             const content = toText(script.textContent);
@@ -2061,8 +2064,10 @@
 
         const ready = document.getElementById('scroll-gradient-bg') instanceof HTMLElement
           && document.getElementById('gooey-mesh-wrapper') instanceof HTMLElement
-          && (document.querySelector(`style[${SHARED_MESH_STYLE_ATTR}]`) instanceof HTMLStyleElement)
-          && (document.querySelector(`script[${SHARED_MESH_BOOTSTRAP_ATTR}]`) instanceof HTMLScriptElement);
+          && (persistentMeshDriver
+            || document.querySelector(`style[${SHARED_MESH_STYLE_ATTR}]`) instanceof HTMLStyleElement)
+          && (persistentMeshDriver
+            || document.querySelector(`script[${SHARED_MESH_BOOTSTRAP_ATTR}]`) instanceof HTMLScriptElement);
         if (ready) return;
       } catch {}
     }

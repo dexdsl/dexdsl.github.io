@@ -22,17 +22,36 @@
   const ROUTE_TRANSITION_TYPE_ATTR = 'data-dx-route-transition-type';
   const GOOEY_MESH_STATE_STORAGE_KEY = '__dxGooeyMeshState';
   const GOOEY_MESH_CANONICAL_STYLE_ID = 'dx-gooey-mesh-canonical-style';
-  const GOOEY_SPEED_MIN = 4.2;
-  const GOOEY_SPEED_MAX = 10.2;
-  const GOOEY_SPEED_DEFAULT = 6.8;
-  // The mesh should drift, not orbit the viewport centre. A very soft spring
-  // prevents long-term edge parking, while pair separation keeps the five
-  // shapes from spending most of their time fused into one mass.
-  const GOOEY_RECENTER_STRENGTH = 0.0018;
-  const GOOEY_WANDER_STRENGTH = 0.42;
-  const GOOEY_SEPARATION_STRENGTH = 7.5;
-  const GOOEY_SEPARATION_RATIO = 0.82;
-  const GOOEY_SPEED_RECOVERY = 0.7;
+  const ROUTE_CHROME_GUARD_STYLE_ID = 'dx-route-chrome-guard-style';
+  const GOOEY_MESH_STATE_VERSION = 3;
+  const GOOEY_SPEED_MIN = 7.2;
+  const GOOEY_SPEED_MAX = 16.2;
+  const GOOEY_SPEED_DEFAULT = 10.8;
+  // Each blob gets a broad roaming territory while close pairs behave like
+  // area-conserving lava-lamp wax: attraction, coalescence, a short dwell, then
+  // a pinched-off release back toward the original five-color field.
+  const GOOEY_TERRITORY_STRENGTH = 0.0048;
+  const GOOEY_WANDER_STRENGTH = 0.68;
+  const GOOEY_SPEED_RECOVERY = 1.1;
+  const GOOEY_VISUAL_SCALE = 0.82;
+  const GOOEY_WAX_INFLUENCE_RATIO = 1.12;
+  const GOOEY_WAX_MERGE_RATIO = 0.48;
+  const GOOEY_WAX_ATTRACTION_STRENGTH = 3.4;
+  const GOOEY_WAX_RELEASE_STRENGTH = 11;
+  const GOOEY_WAX_TRANSFER_RATE = 0.28;
+  const GOOEY_WAX_RELAX_RATE = 0.22;
+  const GOOEY_WAX_MIN_MASS = 0.1;
+  const GOOEY_WAX_MAX_MASS = 2.85;
+  const GOOEY_WAX_DWELL_MIN_MS = 7000;
+  const GOOEY_WAX_DWELL_RANGE_MS = 6000;
+  const GOOEY_WAX_RELEASE_COOLDOWN_MS = 4200;
+  const GOOEY_BLOB_STYLE_PRESETS = Object.freeze([
+    '--d:36vmax;--g1a:#ff5f6d;--g1b:#ffc371;--g2a:#47c9e5;--g2b:#845ef7',
+    '--d:32vmax;--g1a:#7f00ff;--g1b:#e100ff;--g2a:#00dbde;--g2b:#fc00ff',
+    '--d:33vmax;--g1a:#ffd452;--g1b:#ffb347;--g2a:#ff8456;--g2b:#ff5e62',
+    '--d:37vmax;--g1a:#13f1fc;--g1b:#0470dc;--g2a:#a1ffce;--g2b:#faffd1',
+    '--d:27vmax;--g1a:#f9516d;--g1b:#ff9a44;--g2a:#fa8bff;--g2b:#6f7bf7',
+  ]);
   const MOBILE_MENU_ROOT_ID = 'dx-mobile-menu';
   const MOBILE_MENU_OPEN_CLASS = 'dx-mobile-menu-open';
   const MOBILE_BREAKPOINT_QUERY = '(max-width: 980px)';
@@ -293,15 +312,7 @@
       const stage = document.createElement('div');
       stage.className = 'gooey-stage';
 
-      const blobStyles = [
-        '--d:36vmax;--g1a:#ff5f6d;--g1b:#ffc371;--g2a:#47c9e5;--g2b:#845ef7',
-        '--d:32vmax;--g1a:#7f00ff;--g1b:#e100ff;--g2a:#00dbde;--g2b:#fc00ff',
-        '--d:33vmax;--g1a:#ffd452;--g1b:#ffb347;--g2a:#ff8456;--g2b:#ff5e62',
-        '--d:37vmax;--g1a:#13f1fc;--g1b:#0470dc;--g2a:#a1ffce;--g2b:#faffd1',
-        '--d:27vmax;--g1a:#f9516d;--g1b:#ff9a44;--g2a:#fa8bff;--g2b:#6f7bf7',
-      ];
-
-      for (const styleText of blobStyles) {
+      for (const styleText of GOOEY_BLOB_STYLE_PRESETS) {
         const blob = document.createElement('div');
         blob.className = 'gooey-blob';
         blob.setAttribute('style', styleText);
@@ -1677,6 +1688,27 @@
     ].join('\n');
   }
 
+  function ensureRouteChromeGuardStyleTag() {
+    const host = document.head || document.body;
+    if (!host) return;
+    let styleEl = document.getElementById(ROUTE_CHROME_GUARD_STYLE_ID);
+    if (!(styleEl instanceof HTMLStyleElement)) {
+      styleEl = document.createElement('style');
+      styleEl.id = ROUTE_CHROME_GUARD_STYLE_ID;
+      host.appendChild(styleEl);
+    } else if (styleEl.parentElement !== host) {
+      host.appendChild(styleEl);
+    }
+    styleEl.textContent = [
+      'html body #dx-mobile-menu[aria-hidden="true"] {',
+      '  visibility: hidden !important;',
+      '  opacity: 0 !important;',
+      '  pointer-events: none !important;',
+      '  transition: none !important;',
+      '}',
+    ].join('\n');
+  }
+
   function ensureCanonicalGooeyFilterMarkup() {
     const wrapper = document.getElementById('gooey-mesh-wrapper');
     if (!(wrapper instanceof HTMLElement)) return;
@@ -1727,6 +1759,7 @@
   }
 
   function ensureCanonicalGooeyMeshPresentation() {
+    ensureRouteChromeGuardStyleTag();
     ensureCanonicalGooeyMeshStyleTag();
     ensureCanonicalGooeyFilterMarkup();
   }
@@ -1773,6 +1806,16 @@
       }
       const phase = Number(next.phase);
       next.phase = Number.isFinite(phase) ? phase : fallbackAngle;
+      const waxMass = Number(next.waxMass);
+      next.waxMass = Number.isFinite(waxMass)
+        ? Math.min(GOOEY_WAX_MAX_MASS, Math.max(GOOEY_WAX_MIN_MASS, waxMass))
+        : 1;
+      const waxHoldUntil = Number(next.waxHoldUntil);
+      next.waxHoldUntil = Number.isFinite(waxHoldUntil) ? Math.max(0, waxHoldUntil) : 0;
+      const waxReadyAt = Number(next.waxReadyAt);
+      next.waxReadyAt = Number.isFinite(waxReadyAt) ? Math.max(0, waxReadyAt) : 0;
+      const waxPartner = Number(next.waxPartner);
+      next.waxPartner = Number.isInteger(waxPartner) ? waxPartner : -1;
       return next;
     });
   }
@@ -1814,10 +1857,48 @@
     return Math.min(max, Math.max(min, value));
   }
 
+  function resolveGooeyWaxMass(blob) {
+    const mass = Number(blob && blob._waxMass);
+    if (!Number.isFinite(mass)) return 1;
+    return Math.min(GOOEY_WAX_MAX_MASS, Math.max(GOOEY_WAX_MIN_MASS, mass));
+  }
+
+  function resolveGooeyVisualRadius(blob) {
+    const baseRadius = Number(blob && blob._rad) > 0
+      ? Number(blob._rad)
+      : resolveGooeyBlobRadius(blob);
+    return baseRadius * GOOEY_VISUAL_SCALE * Math.sqrt(resolveGooeyWaxMass(blob));
+  }
+
   function applyGooeyBlobTransform(blob) {
     if (!(blob instanceof HTMLElement)) return;
     if (!Number.isFinite(Number(blob._x)) || !Number.isFinite(Number(blob._y))) return;
-    blob.style.transform = `translate(${Number(blob._x)}px, ${Number(blob._y)}px) translate(-50%, -50%)`;
+    const waxMass = resolveGooeyWaxMass(blob);
+    const waxScale = GOOEY_VISUAL_SCALE * Math.sqrt(waxMass);
+    blob.style.transform = `translate(${Number(blob._x)}px, ${Number(blob._y)}px) translate(-50%, -50%) scale(${waxScale})`;
+    const waxState = waxMass <= 0.24 ? 'consumed' : (waxMass >= 1.35 ? 'dominant' : 'free');
+    blob.setAttribute('data-dx-gooey-wax-state', waxState);
+    blob.style.zIndex = waxState === 'dominant' ? String(Math.round(waxMass * 10)) : '';
+    const waxVisibility = Math.min(1, Math.max(0, (waxMass - GOOEY_WAX_MIN_MASS) / 0.18));
+    const opacityRoute = String(window.location.pathname || '/');
+    const shouldRefreshBaseOpacity = !Number.isFinite(Number(blob._waxBaseOpacity))
+      || String(blob._waxBaseOpacityRoute || '') !== opacityRoute;
+    if (waxVisibility >= 0.995) {
+      if (blob.style.opacity || shouldRefreshBaseOpacity) {
+        blob.style.opacity = '';
+        const computedOpacity = Number.parseFloat(window.getComputedStyle(blob).opacity || '');
+        blob._waxBaseOpacity = Number.isFinite(computedOpacity) ? computedOpacity : 1;
+        blob._waxBaseOpacityRoute = opacityRoute;
+      }
+    } else {
+      if (shouldRefreshBaseOpacity) {
+        blob.style.opacity = '';
+        const computedOpacity = Number.parseFloat(window.getComputedStyle(blob).opacity || '');
+        blob._waxBaseOpacity = Number.isFinite(computedOpacity) ? computedOpacity : 1;
+        blob._waxBaseOpacityRoute = opacityRoute;
+      }
+      blob.style.opacity = String(Number(blob._waxBaseOpacity) * waxVisibility);
+    }
   }
 
   function blobsLookStackedAtSpawn(entries) {
@@ -1827,7 +1908,10 @@
     let maxX = -Infinity;
     let maxY = -Infinity;
 
-    for (const entry of entries) {
+    let normalizedDistanceTotal = 0;
+    let normalizedDistancePairs = 0;
+    for (let index = 0; index < entries.length; index += 1) {
+      const entry = entries[index];
       const x = Number(entry.x);
       const y = Number(entry.y);
       if (!Number.isFinite(x) || !Number.isFinite(y)) return true;
@@ -1835,9 +1919,19 @@
       minY = Math.min(minY, y);
       maxX = Math.max(maxX, x);
       maxY = Math.max(maxY, y);
+      for (let otherIndex = index + 1; otherIndex < entries.length; otherIndex += 1) {
+        const other = entries[otherIndex];
+        const radiusSum = Math.max(1, Number(entry.rad) + Number(other.rad));
+        normalizedDistanceTotal += Math.hypot(x - Number(other.x), y - Number(other.y)) / radiusSum;
+        normalizedDistancePairs += 1;
+      }
     }
 
-    return (maxX - minX) < 8 && (maxY - minY) < 8;
+    const meanNormalizedDistance = normalizedDistancePairs
+      ? normalizedDistanceTotal / normalizedDistancePairs
+      : Infinity;
+    return ((maxX - minX) < 8 && (maxY - minY) < 8)
+      || meanNormalizedDistance < 0.72;
   }
 
   function seedInitialGooeyMeshPositionsIfStacked() {
@@ -1870,10 +1964,10 @@
 
     const sorted = [...entries].sort((a, b) => b.rad - a.rad);
     const placed = [];
-    const anchorX = viewportWidth * (0.28 + Math.random() * 0.44);
-    const anchorY = viewportHeight * (0.24 + Math.random() * 0.52);
-    const clusterRadius = Math.min(viewportWidth, viewportHeight) * 0.38;
-    const separationScales = [0.66, 0.54, 0.42];
+    const anchorX = viewportWidth * 0.5;
+    const anchorY = viewportHeight * 0.5;
+    const clusterRadius = Math.hypot(viewportWidth, viewportHeight) * 0.38;
+    const separationScales = [1.06, 0.94, 0.84];
 
     for (const entry of sorted) {
       const radius = entry.rad;
@@ -1928,6 +2022,9 @@
       const raw = sessionStorage.getItem(GOOEY_MESH_STATE_STORAGE_KEY);
       if (!raw) return null;
       const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed) && Number(parsed && parsed.version) !== GOOEY_MESH_STATE_VERSION) {
+        return null;
+      }
       const state = Array.isArray(parsed) ? parsed : parsed && parsed.state;
       return normalizeGooeyMeshStateSnapshot(state);
     } catch {
@@ -1940,7 +2037,7 @@
     if (!Array.isArray(snapshot) || !snapshot.length) return;
     try {
       sessionStorage.setItem(GOOEY_MESH_STATE_STORAGE_KEY, JSON.stringify({
-        version: 1,
+        version: GOOEY_MESH_STATE_VERSION,
         timestamp: Date.now(),
         state: snapshot,
       }));
@@ -2536,12 +2633,15 @@
   function renderMobileSitePanel(root, authSnapshot) {
     const grid = root.querySelector('[data-dx-mobile-site-grid="true"]');
     if (!(grid instanceof HTMLElement)) return;
-    clearChildren(grid);
 
-    let index = 0;
-    for (const item of MOBILE_SITE_TILES) {
-      grid.appendChild(createMobileMenuTile(item, { index }));
-      index += 1;
+    const hasStableSiteTiles = MOBILE_SITE_TILES.every((item) =>
+      grid.querySelector(`[data-dx-mobile-menu-tile="${item.key}"]`) instanceof HTMLAnchorElement
+    );
+    if (!hasStableSiteTiles) {
+      clearChildren(grid);
+      MOBILE_SITE_TILES.forEach((item, index) => {
+        grid.appendChild(createMobileMenuTile(item, { index }));
+      });
     }
 
     const resolved = Boolean(authSnapshot && authSnapshot.resolved);
@@ -2558,7 +2658,7 @@
       account: true,
       avatar: authenticated,
       button: true,
-      index,
+      index: MOBILE_SITE_TILES.length,
       user: authenticated ? authSnapshot.user : null,
     });
     accountTile.setAttribute('data-dx-mobile-account-state', resolved ? (authenticated ? 'signed-in' : 'signed-out') : 'loading');
@@ -2571,23 +2671,29 @@
     } else {
       accountTile.setAttribute('data-dx-mobile-login-trigger', 'true');
     }
-    grid.appendChild(accountTile);
-    index += 1;
+    const existingAccountTile = grid.querySelector('[data-dx-mobile-menu-tile="account"]');
+    if (existingAccountTile instanceof HTMLElement) {
+      existingAccountTile.replaceWith(accountTile);
+    } else {
+      grid.appendChild(accountTile);
+    }
 
-    const donateSource = document.querySelector(
-      '.header-display-desktop .header-actions-action--cta a[href], .header-display-mobile .header-actions-action--cta a[href]'
-    );
-    const donateHref = donateSource instanceof HTMLAnchorElement
-      ? String(donateSource.getAttribute('href') || '/donate/')
-      : '/donate/';
-    const donateTile = createMobileMenuTile({
-      key: 'donate',
-      href: donateHref,
-      label: 'Donate',
-      detail: 'Keep the archive open',
-      icon: 'donate',
-    }, { action: true, index });
-    grid.appendChild(donateTile);
+    if (!(grid.querySelector('[data-dx-mobile-menu-tile="donate"]') instanceof HTMLAnchorElement)) {
+      const donateSource = document.querySelector(
+        '.header-display-desktop .header-actions-action--cta a[href], .header-display-mobile .header-actions-action--cta a[href]'
+      );
+      const donateHref = donateSource instanceof HTMLAnchorElement
+        ? String(donateSource.getAttribute('href') || '/donate/')
+        : '/donate/';
+      const donateTile = createMobileMenuTile({
+        key: 'donate',
+        href: donateHref,
+        label: 'Donate',
+        detail: 'Keep the archive open',
+        icon: 'donate',
+      }, { action: true, index: MOBILE_SITE_TILES.length + 1 });
+      grid.appendChild(donateTile);
+    }
 
     normalizeDonateActionLabels(root);
     markMobileMenuActiveForPath(window.location.pathname);
@@ -2598,8 +2704,10 @@
     const grid = root.querySelector('[data-dx-mobile-account-grid="true"]');
     if (!(identity instanceof HTMLElement) || !(grid instanceof HTMLElement)) return;
     clearChildren(identity);
-    clearChildren(grid);
-    if (!authSnapshot || !authSnapshot.authenticated) return;
+    if (!authSnapshot || !authSnapshot.authenticated) {
+      clearChildren(grid);
+      return;
+    }
 
     identity.appendChild(createMobileMenuAvatar(authSnapshot.user, 'dx-mobile-menu-avatar--large'));
     const identityCopy = document.createElement('span');
@@ -2610,19 +2718,55 @@
     identityCopy.append(name, meta);
     identity.appendChild(identityCopy);
 
-    MOBILE_ACCOUNT_TILES.forEach((item, index) => {
-      grid.appendChild(createMobileMenuTile(item, { index }));
-    });
-    const logoutTile = createMobileMenuTile({
-      key: 'logout',
-      label: 'Log out',
-      detail: 'End this session',
-      icon: 'logout',
-    }, { button: true, danger: true, index: MOBILE_ACCOUNT_TILES.length });
-    logoutTile.setAttribute('data-dx-mobile-logout-trigger', 'true');
-    grid.appendChild(logoutTile);
+    const hasStableAccountTiles = MOBILE_ACCOUNT_TILES.every((item) =>
+      grid.querySelector(`[data-dx-mobile-menu-tile="${item.key}"]`) instanceof HTMLAnchorElement
+    ) && grid.querySelector('[data-dx-mobile-logout-trigger="true"]') instanceof HTMLButtonElement;
+    if (!hasStableAccountTiles) {
+      clearChildren(grid);
+      MOBILE_ACCOUNT_TILES.forEach((item, index) => {
+        grid.appendChild(createMobileMenuTile(item, { index }));
+      });
+      const logoutTile = createMobileMenuTile({
+        key: 'logout',
+        label: 'Log out',
+        detail: 'End this session',
+        icon: 'logout',
+      }, { button: true, danger: true, index: MOBILE_ACCOUNT_TILES.length });
+      logoutTile.setAttribute('data-dx-mobile-logout-trigger', 'true');
+      grid.appendChild(logoutTile);
+    }
     updateMobileUnreadBadge(root, readMobileUnreadCount());
     markMobileMenuActiveForPath(window.location.pathname);
+  }
+
+  function handleMobileMenuRouteClick(root, clickedLink, event) {
+    if (!(root instanceof HTMLElement) || !(clickedLink instanceof HTMLAnchorElement)) return false;
+    const href = String(clickedLink.getAttribute('href') || '').trim();
+    if (!href) return false;
+
+    const targetUrl = isHeaderWordmarkAnchor(clickedLink)
+      ? new URL('/', window.location.origin)
+      : toAbsoluteUrl(href);
+    if (!targetUrl) return false;
+
+    const hasModifiedIntent = Boolean(
+      event && (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0)
+    );
+    if (hasModifiedIntent || !shouldHandleSoftNavigation(targetUrl, clickedLink)) {
+      closeMobileMenu({ restoreFocus: false });
+      return false;
+    }
+
+    event.preventDefault();
+    clickedLink.setAttribute('data-dx-mobile-menu-nav-busy', 'true');
+    clickedLink.setAttribute('aria-busy', 'true');
+    closeMobileMenu({ restoreFocus: false });
+    void softNavigate(targetUrl, {
+      pushHistory: true,
+      anchor: clickedLink,
+      focusDestination: Number(event.detail) === 0,
+    });
+    return true;
   }
 
   async function buildMobileMenuContent(root, { forceAuthRefresh = false } = {}) {
@@ -2852,9 +2996,7 @@
 
       const clickedLink = target && target.closest ? target.closest('a[href]') : null;
       if (!clickedLink) return;
-      const href = String(clickedLink.getAttribute('href') || '').trim();
-      if (!href) return;
-      closeMobileMenu({ restoreFocus: false });
+      handleMobileMenuRouteClick(root, clickedLink, event);
     });
 
     window.addEventListener('resize', () => {
@@ -3356,7 +3498,7 @@
         if (committed) return;
         committed = true;
 
-        const orderedAssets = document.createDocumentFragment();
+        const orderedAssets = [];
         for (const { definition, node } of entries) {
           node.setAttribute(ROUTE_STYLE_ATTR, 'true');
           node.removeAttribute(ROUTE_STYLE_STAGED_ATTR);
@@ -3368,7 +3510,7 @@
           else node.removeAttribute('referrerpolicy');
           if (definition.integrity) node.setAttribute('integrity', definition.integrity);
           else node.removeAttribute('integrity');
-          orderedAssets.appendChild(node);
+          orderedAssets.push(node);
         }
 
         const desiredInlineIds = new Set(inlineDefinitions.map((definition) => definition.id));
@@ -3387,13 +3529,25 @@
           if (definition.nonce) node.setAttribute('nonce', definition.nonce);
           else node.removeAttribute('nonce');
           if (node.textContent !== definition.text) node.textContent = definition.text;
-          orderedAssets.appendChild(node);
+          orderedAssets.push(node);
         }
 
-        for (const node of Array.from(document.querySelectorAll('link[rel~="stylesheet"][href]'))) {
-          node.remove();
+        // Keep shared stylesheets connected throughout the commit. Moving every
+        // link through a detached DocumentFragment briefly restored unstyled
+        // defaults on persistent chrome, which made the hidden mobile modal
+        // transition over Home and cover the gooey mesh.
+        let cursor = styleAnchor;
+        for (const node of orderedAssets) {
+          if (cursor.nextSibling !== node) {
+            document.head.insertBefore(node, cursor.nextSibling);
+          }
+          cursor = node;
         }
-        document.head.insertBefore(orderedAssets, styleAnchor.nextSibling);
+
+        const desiredLinkNodes = new Set(entries.map(({ node }) => node));
+        for (const node of Array.from(document.querySelectorAll('link[rel~="stylesheet"][href]'))) {
+          if (!desiredLinkNodes.has(node)) node.remove();
+        }
       },
       dispose() {
         if (committed) return;
@@ -3599,6 +3753,10 @@
       vy: Number(blob._vy),
       rad: Number(blob._rad),
       phase: Number(blob._phase),
+      waxMass: resolveGooeyWaxMass(blob),
+      waxHoldUntil: Number(blob._waxHoldUntil) || 0,
+      waxReadyAt: Number(blob._waxReadyAt) || 0,
+      waxPartner: Number.isInteger(Number(blob._waxPartner)) ? Number(blob._waxPartner) : -1,
     }));
 
     return normalizeGooeyMeshStateSnapshot(snapshot);
@@ -3624,7 +3782,22 @@
       if (Number.isFinite(item.vy)) blob._vy = item.vy;
       if (Number.isFinite(item.rad)) blob._rad = item.rad;
       if (Number.isFinite(item.phase)) blob._phase = item.phase;
+      if (Number.isFinite(item.waxMass)) blob._waxMass = item.waxMass;
+      if (Number.isFinite(item.waxHoldUntil)) blob._waxHoldUntil = item.waxHoldUntil;
+      if (Number.isFinite(item.waxReadyAt)) blob._waxReadyAt = item.waxReadyAt;
+      if (Number.isInteger(item.waxPartner)) blob._waxPartner = item.waxPartner;
       if (typeof item.transform === 'string') blob.style.transform = item.transform;
+      applyGooeyBlobTransform(blob);
+    }
+
+    for (let index = 0; index < blobs.length; index += 1) {
+      const partnerIndex = Number(blobs[index]._waxPartner);
+      const validPartner = Number.isInteger(partnerIndex)
+        && partnerIndex >= 0
+        && partnerIndex < blobs.length
+        && partnerIndex !== index
+        && Number(blobs[partnerIndex]._waxPartner) === index;
+      if (!validPartner) blobs[index]._waxPartner = -1;
     }
 
     normalizeLiveGooeyMeshVelocities();
@@ -3660,10 +3833,47 @@
     if (!Number.isFinite(Number(blob._phase))) {
       blob._phase = (index + 1) * 2.399963229728653 + Math.random() * 0.35;
     }
+    if (!Number.isFinite(Number(blob._waxMass))) blob._waxMass = 1;
+    if (!Number.isFinite(Number(blob._waxHoldUntil))) blob._waxHoldUntil = 0;
+    if (!Number.isFinite(Number(blob._waxReadyAt))) {
+      blob._waxReadyAt = Date.now() + 3200 + (index * 680);
+    }
+    if (!Number.isInteger(Number(blob._waxPartner))) blob._waxPartner = -1;
+  }
+
+  function repairPersistentGooeyMesh() {
+    createFallbackBackdropElementsIfMissing();
+    let wrapper = document.getElementById('gooey-mesh-wrapper');
+    if (!(wrapper instanceof HTMLElement)) return null;
+
+    let stage = wrapper.querySelector('.gooey-stage');
+    if (!(stage instanceof HTMLElement)) {
+      stage = document.createElement('div');
+      stage.className = 'gooey-stage';
+      wrapper.insertBefore(stage, wrapper.firstChild);
+    }
+
+    const liveBlobs = Array.from(stage.querySelectorAll('.gooey-blob'));
+    for (let index = liveBlobs.length; index < GOOEY_BLOB_STYLE_PRESETS.length; index += 1) {
+      const blob = document.createElement('div');
+      blob.className = 'gooey-blob';
+      blob.setAttribute('style', GOOEY_BLOB_STYLE_PRESETS[index]);
+      stage.appendChild(blob);
+    }
+
+    ensureBackdropLayersOutsideForeground();
+    ensureCanonicalGooeyMeshPresentation();
+    wrapper = document.getElementById('gooey-mesh-wrapper');
+    const persistedState = readPersistedGooeyMeshState();
+    if (persistedState) restoreGooeyMeshState(persistedState);
+    return wrapper instanceof HTMLElement ? wrapper : null;
   }
 
   function refreshGooeyDriverBlobs() {
-    const wrapper = document.getElementById('gooey-mesh-wrapper');
+    let wrapper = document.getElementById('gooey-mesh-wrapper');
+    if (!(wrapper instanceof HTMLElement) || wrapper.querySelectorAll('.gooey-blob').length < GOOEY_BLOB_STYLE_PRESETS.length) {
+      wrapper = repairPersistentGooeyMesh();
+    }
     if (!wrapper) {
       gooeyDriverWrapper = null;
       gooeyDriverBlobs = [];
@@ -3679,6 +3889,15 @@
     const vw = Math.max(window.innerWidth || 0, 1);
     const vh = Math.max(window.innerHeight || 0, 1);
     gooeyDriverBlobs.forEach((blob, index) => ensureGooeyBlobKinematics(blob, index, vw, vh));
+    gooeyDriverBlobs.forEach((blob, index) => {
+      const partnerIndex = Number(blob._waxPartner);
+      const validPartner = Number.isInteger(partnerIndex)
+        && partnerIndex >= 0
+        && partnerIndex < gooeyDriverBlobs.length
+        && partnerIndex !== index
+        && Number(gooeyDriverBlobs[partnerIndex]._waxPartner) === index;
+      if (!validPartner) blob._waxPartner = -1;
+    });
   }
 
   function stepGooeyMesh(now) {
@@ -3693,6 +3912,7 @@
     const vh = Math.max(window.innerHeight || 0, 1);
     const centreX = vw / 2;
     const centreY = vh / 2;
+    const nowEpoch = Date.now();
 
     // Give each blob its own slow steering curve. The phases are persisted with
     // the route state, so navigation never changes the character of the field.
@@ -3702,28 +3922,43 @@
       if (!(blob instanceof HTMLElement)) continue;
       ensureGooeyBlobKinematics(blob, index, vw, vh);
       const phase = Number(blob._phase);
+      if (nowEpoch >= Number(blob._waxHoldUntil || 0)) {
+        const waxMass = resolveGooeyWaxMass(blob);
+        const relaxedMass = waxMass + ((1 - waxMass) * GOOEY_WAX_RELAX_RATE * dt);
+        blob._waxMass = Math.abs(relaxedMass - 1) < 0.001 ? 1 : relaxedMass;
+      }
+      const radius = resolveGooeyVisualRadius(blob);
+      const territoryAngle = phase + (elapsed * 0.01);
+      const territoryBreath = 0.86 + (Math.sin((elapsed * 0.018) + (phase * 0.43)) * 0.14);
+      const territoryRadiusX = Math.max(18, centreX - radius) * 0.78 * territoryBreath;
+      const territoryRadiusY = Math.max(18, centreY - radius) * 0.76 * territoryBreath;
+      const territoryX = centreX + (Math.cos(territoryAngle) * territoryRadiusX);
+      const territoryY = centreY + (Math.sin(territoryAngle) * territoryRadiusY);
       blob._vx += Math.cos((elapsed * 0.055) + phase) * GOOEY_WANDER_STRENGTH * dt;
       blob._vy += Math.sin((elapsed * 0.047) + (phase * 1.17)) * GOOEY_WANDER_STRENGTH * dt;
-      blob._vx += (centreX - blob._x) * GOOEY_RECENTER_STRENGTH * dt;
-      blob._vy += (centreY - blob._y) * GOOEY_RECENTER_STRENGTH * dt;
+      blob._vx += (territoryX - blob._x) * GOOEY_TERRITORY_STRENGTH * dt;
+      blob._vy += (territoryY - blob._y) * GOOEY_TERRITORY_STRENGTH * dt;
     }
 
-    // Short-range repulsion only acts while two cores are deeply overlapping.
-    // Blobs can still touch and merge, but a full-field pile-up gently unfolds
-    // into several independent shapes instead of becoming the default state.
+    // Close pairs behave like wax rather than rigid particles. They attract,
+    // exchange area while deeply overlapped, dwell as one colored mass, then
+    // repel and relax back toward their original areas.
     for (let leftIndex = 0; leftIndex < gooeyDriverBlobs.length; leftIndex += 1) {
       const left = gooeyDriverBlobs[leftIndex];
       if (!(left instanceof HTMLElement)) continue;
-      const leftRadius = Number(left._rad) > 0 ? Number(left._rad) : resolveGooeyBlobRadius(left);
+      const leftRadius = resolveGooeyVisualRadius(left);
       for (let rightIndex = leftIndex + 1; rightIndex < gooeyDriverBlobs.length; rightIndex += 1) {
         const right = gooeyDriverBlobs[rightIndex];
         if (!(right instanceof HTMLElement)) continue;
-        const rightRadius = Number(right._rad) > 0 ? Number(right._rad) : resolveGooeyBlobRadius(right);
-        const desiredDistance = Math.max(24, (leftRadius + rightRadius) * GOOEY_SEPARATION_RATIO);
+        const rightRadius = resolveGooeyVisualRadius(right);
+        const radiusSum = Math.max(24, leftRadius + rightRadius);
+        const influenceDistance = radiusSum * GOOEY_WAX_INFLUENCE_RATIO;
         let dx = Number(right._x) - Number(left._x);
         let dy = Number(right._y) - Number(left._y);
         let distance = Math.hypot(dx, dy);
-        if (distance >= desiredDistance) continue;
+        const pairActive = Number(left._waxPartner) === rightIndex
+          && Number(right._waxPartner) === leftIndex;
+        if (distance >= influenceDistance && !pairActive) continue;
 
         if (distance < 0.001) {
           const splitAngle = ((leftIndex + 1) * 1.61803398875) + ((rightIndex + 1) * 2.399963229728653);
@@ -3731,21 +3966,115 @@
           dy = Math.sin(splitAngle);
           distance = 1;
         }
-        const compression = 1 - Math.min(distance / desiredDistance, 1);
-        const impulse = GOOEY_SEPARATION_STRENGTH * compression * dt;
         const nx = dx / distance;
         const ny = dy / distance;
-        left._vx -= nx * impulse;
-        left._vy -= ny * impulse;
-        right._vx += nx * impulse;
-        right._vy += ny * impulse;
+        const proximity = 1 - Math.min(distance / influenceDistance, 1);
+        const leftMass = resolveGooeyWaxMass(left);
+        const rightMass = resolveGooeyWaxMass(right);
+        const pairHoldUntil = Math.max(Number(left._waxHoldUntil || 0), Number(right._waxHoldUntil || 0));
+        const pairReadyAt = Math.max(Number(left._waxReadyAt || 0), Number(right._waxReadyAt || 0));
+        const dwelling = pairActive && nowEpoch < pairHoldUntil;
+        const massImbalanced = Math.abs(leftMass - 1) >= 0.08
+          || Math.abs(rightMass - 1) >= 0.08;
+        const releasing = pairActive
+          && !dwelling
+          && (nowEpoch < pairReadyAt || massImbalanced);
+
+        if (releasing) {
+          const releaseImpulse = GOOEY_WAX_RELEASE_STRENGTH * Math.max(0.24, proximity) * dt;
+          left._vx -= (nx * releaseImpulse) / Math.max(0.35, leftMass);
+          left._vy -= (ny * releaseImpulse) / Math.max(0.35, leftMass);
+          right._vx += (nx * releaseImpulse) / Math.max(0.35, rightMass);
+          right._vy += (ny * releaseImpulse) / Math.max(0.35, rightMass);
+        } else if (distance < influenceDistance) {
+          const attractionImpulse = GOOEY_WAX_ATTRACTION_STRENGTH * proximity * dt;
+          left._vx += (nx * attractionImpulse) / Math.max(0.5, leftMass);
+          left._vy += (ny * attractionImpulse) / Math.max(0.5, leftMass);
+          right._vx -= (nx * attractionImpulse) / Math.max(0.5, rightMass);
+          right._vy -= (ny * attractionImpulse) / Math.max(0.5, rightMass);
+        }
+
+        const mergeDistance = radiusSum * GOOEY_WAX_MERGE_RATIO;
+        const canStartPair = Number(left._waxPartner) < 0
+          && Number(right._waxPartner) < 0
+          && nowEpoch >= Number(left._waxReadyAt || 0)
+          && nowEpoch >= Number(right._waxReadyAt || 0);
+        const atTransferLimit = leftMass <= GOOEY_WAX_MIN_MASS + 0.01
+          || rightMass <= GOOEY_WAX_MIN_MASS + 0.01
+          || leftMass >= GOOEY_WAX_MAX_MASS - 0.01
+          || rightMass >= GOOEY_WAX_MAX_MASS - 0.01;
+        if (!releasing && !atTransferLimit && distance < mergeDistance && (pairActive || canStartPair)) {
+          if (canStartPair) {
+            left._waxPartner = rightIndex;
+            right._waxPartner = leftIndex;
+          }
+
+          const mergeDepth = 1 - Math.min(distance / mergeDistance, 1);
+          const leftBaseRadius = Number(left._rad) > 0 ? Number(left._rad) : resolveGooeyBlobRadius(left);
+          const rightBaseRadius = Number(right._rad) > 0 ? Number(right._rad) : resolveGooeyBlobRadius(right);
+          const leftBaseArea = Math.max(1, leftBaseRadius * leftBaseRadius);
+          const rightBaseArea = Math.max(1, rightBaseRadius * rightBaseRadius);
+          const leftPhysicalArea = leftBaseArea * leftMass;
+          const rightPhysicalArea = rightBaseArea * rightMass;
+          let winner = left;
+          let loser = right;
+          let winnerMass = leftMass;
+          let loserMass = rightMass;
+          if (
+            rightPhysicalArea > leftPhysicalArea * 1.04
+            || (Math.abs(rightPhysicalArea - leftPhysicalArea) <= Math.min(leftBaseArea, rightBaseArea) * 0.04
+              && ((Math.floor(elapsed / 11) + leftIndex + rightIndex) % 2) === 1)
+          ) {
+            winner = right;
+            loser = left;
+            winnerMass = rightMass;
+            loserMass = leftMass;
+          }
+
+          const winnerBaseArea = winner === left ? leftBaseArea : rightBaseArea;
+          const loserBaseArea = loser === left ? leftBaseArea : rightBaseArea;
+          const availableArea = Math.max(0, (loserMass - GOOEY_WAX_MIN_MASS) * loserBaseArea);
+          const winnerCapacity = Math.max(0, (GOOEY_WAX_MAX_MASS - winnerMass) * winnerBaseArea);
+          const transferArea = Math.min(
+            availableArea,
+            winnerCapacity,
+            Math.min(winnerBaseArea, loserBaseArea) * GOOEY_WAX_TRANSFER_RATE * mergeDepth * dt,
+          );
+          if (transferArea > 0) {
+            winner._waxMass = winnerMass + (transferArea / winnerBaseArea);
+            loser._waxMass = loserMass - (transferArea / loserBaseArea);
+            const dwellOffset = (
+              ((leftIndex + 1) * 977)
+              + ((rightIndex + 1) * 1597)
+            ) % GOOEY_WAX_DWELL_RANGE_MS;
+            const holdUntil = nowEpoch + GOOEY_WAX_DWELL_MIN_MS + dwellOffset;
+            const readyAt = holdUntil + GOOEY_WAX_RELEASE_COOLDOWN_MS;
+            left._waxHoldUntil = holdUntil;
+            right._waxHoldUntil = holdUntil;
+            left._waxReadyAt = readyAt;
+            right._waxReadyAt = readyAt;
+          }
+        }
+
+        if (
+          pairActive
+          && !dwelling
+          && nowEpoch >= pairReadyAt
+          && Math.abs(resolveGooeyWaxMass(left) - 1) < 0.08
+          && Math.abs(resolveGooeyWaxMass(right) - 1) < 0.08
+        ) {
+          left._waxPartner = -1;
+          right._waxPartner = -1;
+          left._waxReadyAt = nowEpoch + GOOEY_WAX_RELEASE_COOLDOWN_MS;
+          right._waxReadyAt = nowEpoch + GOOEY_WAX_RELEASE_COOLDOWN_MS;
+        }
       }
     }
 
     for (let index = 0; index < gooeyDriverBlobs.length; index += 1) {
       const blob = gooeyDriverBlobs[index];
       if (!(blob instanceof HTMLElement)) continue;
-      const radius = Number(blob._rad) > 0 ? Number(blob._rad) : resolveGooeyBlobRadius(blob);
+      const radius = resolveGooeyVisualRadius(blob);
       const speed = Math.hypot(blob._vx, blob._vy);
       if (speed > 0.0001) {
         if (speed > GOOEY_SPEED_MAX) {
@@ -3771,7 +4100,7 @@
 
       blob._x = clampGooeyCoordinate(blob._x, radius, Math.max(vw - radius, radius));
       blob._y = clampGooeyCoordinate(blob._y, radius, Math.max(vh - radius, radius));
-      blob.style.transform = `translate(${blob._x}px, ${blob._y}px) translate(-50%, -50%)`;
+      applyGooeyBlobTransform(blob);
     }
     gooeyDriverLastFrame = now;
   }
@@ -3792,6 +4121,9 @@
     if (gooeyDriverInstalled) {
       refreshGooeyDriverBlobs();
       return;
+    }
+    if (!document.getElementById('gooey-mesh-wrapper')) {
+      repairPersistentGooeyMesh();
     }
     if (!document.getElementById('gooey-mesh-wrapper')) return;
     gooeyDriverInstalled = true;
@@ -4816,6 +5148,7 @@
 
       const anchor = event.target && event.target.closest ? event.target.closest('a[href]') : null;
       if (!anchor) return;
+      if (anchor.closest(`#${MOBILE_MENU_ROOT_ID}`)) return;
 
       const targetUrl = isHeaderWordmarkAnchor(anchor)
         ? new URL('/', window.location.origin)
