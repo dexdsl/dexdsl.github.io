@@ -67,6 +67,7 @@
   ];
   let overviewLookupFitBound = false;
   let overviewLookupResizeObserver = null;
+  let overviewLookupFontEventsBound = false;
   let activeEntryTooltipMetricsObserver = null;
   let entryPageTitleSeparatorObserver = null;
   let publicProfileMapPromise = null;
@@ -1768,23 +1769,27 @@
     const host = lookupItem instanceof HTMLElement ? lookupItem : lookup.parentElement;
     if (!(host instanceof HTMLElement)) return;
 
-    const hostStyle = window.getComputedStyle(host);
-    const availableWidth = Math.max(
-      56,
-      host.clientWidth
-      - parseCssPx(hostStyle.paddingLeft)
-      - parseCssPx(hostStyle.paddingRight)
-      - 8,
-    );
+    lookup.style.removeProperty('font-size');
+    lookup.style.setProperty('overflow', 'visible', 'important');
+    lookup.style.setProperty('text-overflow', 'clip', 'important');
+    lookup.dataset.dxOverflowFit = 'false';
 
-    const MIN_SIZE = 12;
-    const MAX_SIZE = 34;
     const lookupStyle = window.getComputedStyle(lookup);
+    const availableWidth = Math.max(
+      1,
+      lookup.clientWidth
+      - parseCssPx(lookupStyle.paddingLeft)
+      - parseCssPx(lookupStyle.paddingRight),
+    );
+    const naturalSize = Math.max(1, parseCssPx(lookupStyle.fontSize));
     const probe = document.createElement('span');
     probe.textContent = String(lookup.textContent || '').trim();
     probe.style.position = 'absolute';
     probe.style.visibility = 'hidden';
     probe.style.pointerEvents = 'none';
+    probe.style.display = 'inline-block';
+    probe.style.width = 'max-content';
+    probe.style.maxWidth = 'none';
     probe.style.whiteSpace = 'nowrap';
     probe.style.fontFamily = lookupStyle.fontFamily;
     probe.style.fontWeight = lookupStyle.fontWeight;
@@ -1792,21 +1797,43 @@
     probe.style.letterSpacing = lookupStyle.letterSpacing;
     probe.style.lineHeight = lookupStyle.lineHeight;
     probe.style.textTransform = lookupStyle.textTransform;
-    probe.style.fontSize = `${MAX_SIZE}px`;
+    probe.style.fontSize = `${naturalSize}px`;
     host.appendChild(probe);
     const measuredWidth = Math.max(1, Math.ceil(probe.getBoundingClientRect().width));
-    probe.remove();
 
-    const SAFE_RATIO = 0.94;
-    const fitSize = measuredWidth > availableWidth
-      ? Math.max(MIN_SIZE, Math.floor((MAX_SIZE * (availableWidth / measuredWidth) * SAFE_RATIO) * 100) / 100)
-      : MAX_SIZE;
-    lookup.style.setProperty('font-size', `${fitSize}px`, 'important');
+    if (measuredWidth > availableWidth + 0.5) {
+      const SAFE_RATIO = 0.985;
+      let fitSize = Math.max(
+        1,
+        Math.floor((naturalSize * (availableWidth / measuredWidth) * SAFE_RATIO) * 100) / 100,
+      );
+      probe.style.fontSize = `${fitSize}px`;
+      const fittedWidth = Math.max(1, probe.getBoundingClientRect().width);
+      if (fittedWidth > availableWidth) {
+        fitSize = Math.max(
+          1,
+          Math.floor((fitSize * (availableWidth / fittedWidth) * SAFE_RATIO) * 100) / 100,
+        );
+      }
+      lookup.style.setProperty('font-size', `${fitSize}px`, 'important');
+      lookup.dataset.dxOverflowFit = 'true';
+    }
+
+    probe.remove();
   };
 
   const bindOverviewLookupFit = () => {
     const schedule = () => window.requestAnimationFrame(() => fitOverviewLookupText());
+    const observeCurrentOverview = () => {
+      if (!overviewLookupResizeObserver) return;
+      overviewLookupResizeObserver.disconnect();
+      const overview = document.querySelector('.dex-overview');
+      const lookup = document.querySelector('.dex-overview .overview-lookup');
+      if (overview instanceof HTMLElement) overviewLookupResizeObserver.observe(overview);
+      if (lookup instanceof HTMLElement) overviewLookupResizeObserver.observe(lookup);
+    };
     if (overviewLookupFitBound) {
+      observeCurrentOverview();
       schedule();
       return;
     }
@@ -1814,10 +1841,14 @@
     window.addEventListener('resize', schedule, { passive: true });
     if (typeof window.ResizeObserver === 'function') {
       overviewLookupResizeObserver = new ResizeObserver(schedule);
-      const overview = document.querySelector('.dex-overview');
-      const lookup = document.querySelector('.dex-overview .overview-lookup');
-      if (overview instanceof HTMLElement) overviewLookupResizeObserver.observe(overview);
-      if (lookup instanceof HTMLElement) overviewLookupResizeObserver.observe(lookup);
+      observeCurrentOverview();
+    }
+    if (!overviewLookupFontEventsBound && document.fonts) {
+      overviewLookupFontEventsBound = true;
+      Promise.resolve(document.fonts.ready).then(schedule).catch(() => {});
+      if (typeof document.fonts.addEventListener === 'function') {
+        document.fonts.addEventListener('loadingdone', schedule);
+      }
     }
     schedule();
     window.setTimeout(schedule, 60);

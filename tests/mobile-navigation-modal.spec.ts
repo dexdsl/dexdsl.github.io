@@ -244,6 +244,10 @@ test.describe('mobile navigation modal', () => {
 
   test('site and account tiles own their navigation and close only after activation', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
+    await page.addInitScript(() => {
+      const nextLoadCount = Number(window.sessionStorage.getItem('dx-mobile-menu-document-loads') || '0') + 1;
+      window.sessionStorage.setItem('dx-mobile-menu-document-loads', String(nextLoadCount));
+    });
     await stubAuth(page, 'member');
     await page.goto('/about/', { waitUntil: 'domcontentloaded' });
 
@@ -254,6 +258,9 @@ test.describe('mobile navigation modal', () => {
     await expect(page).toHaveURL(/\/catalog\/?$/);
     await expect(page.locator('.dx-catalog-index-shell')).toBeVisible();
     await expect(menu.root).toHaveAttribute('aria-hidden', 'true');
+    await expect.poll(() => page.evaluate(
+      () => window.sessionStorage.getItem('dx-mobile-menu-document-loads'),
+    )).toBe('1');
 
     menu = await openMobileMenu(page);
     await menu.root.locator('[data-dx-mobile-account-open="true"]').click();
@@ -262,6 +269,9 @@ test.describe('mobile navigation modal', () => {
     await settingsTile.click();
     await expect(page).toHaveURL(/\/entry\/settings\/?$/);
     await expect(menu.root).toHaveAttribute('aria-hidden', 'true');
+    await expect.poll(() => page.evaluate(
+      () => window.sessionStorage.getItem('dx-mobile-menu-document-loads'),
+    )).toBe('1');
   });
 
   test('tablet layout uses three columns, traps focus, restores inert state, and reduces motion', async ({ page }) => {
@@ -317,6 +327,39 @@ test.describe('mobile navigation modal', () => {
     await expect.poll(() => page.evaluate(
       () => document.querySelectorAll('[data-dx-mobile-menu-inert="true"]').length,
     )).toBe(0);
+  });
+});
+
+test.describe('mobile navigation touch routing', () => {
+  test.use({ hasTouch: true, isMobile: true });
+
+  test('a real tap commits the destination without reloading the document', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.addInitScript(() => {
+      const nextLoadCount = Number(window.sessionStorage.getItem('dx-mobile-menu-touch-loads') || '0') + 1;
+      window.sessionStorage.setItem('dx-mobile-menu-touch-loads', String(nextLoadCount));
+    });
+    await stubAuth(page, 'guest');
+    await page.goto('/about/', { waitUntil: 'domcontentloaded' });
+
+    const burger = page.locator('.header-display-mobile .header-burger-btn[aria-controls="dx-mobile-menu"]');
+    await expect(burger).toHaveCount(1);
+    await burger.tap();
+
+    const root = page.locator('#dx-mobile-menu');
+    await expect(root).toHaveAttribute('aria-hidden', 'false');
+    const catalogTile = root.locator('[data-dx-mobile-menu-tile="catalog"]');
+    await expect(catalogTile).toHaveCount(1);
+    await catalogTile.evaluate((tile) => {
+      tile.addEventListener('click', (event) => event.stopPropagation(), { once: true });
+    });
+    await catalogTile.tap();
+
+    await expect(page).toHaveURL(/\/catalog\/?$/);
+    await expect(page.locator('.dx-catalog-index-shell')).toBeVisible();
+    await expect.poll(() => page.evaluate(
+      () => window.sessionStorage.getItem('dx-mobile-menu-touch-loads'),
+    )).toBe('1');
   });
 });
 

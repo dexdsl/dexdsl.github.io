@@ -2992,6 +2992,7 @@
 
       const clickedLink = target && target.closest ? target.closest('a[href]') : null;
       if (!clickedLink) return;
+      if (event.defaultPrevented) return;
       handleMobileMenuRouteClick(root, clickedLink, event);
     });
 
@@ -5144,7 +5145,11 @@
 
       const anchor = event.target && event.target.closest ? event.target.closest('a[href]') : null;
       if (!anchor) return;
-      if (anchor.closest(`#${MOBILE_MENU_ROOT_ID}`)) return;
+      const mobileMenuRoot = anchor.closest(`#${MOBILE_MENU_ROOT_ID}`);
+      if (mobileMenuRoot instanceof HTMLElement) {
+        handleMobileMenuRouteClick(mobileMenuRoot, anchor, event);
+        return;
+      }
 
       const targetUrl = isHeaderWordmarkAnchor(anchor)
         ? new URL('/', window.location.origin)

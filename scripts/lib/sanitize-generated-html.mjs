@@ -1144,8 +1144,8 @@ body.dx-entry-page .dex-overview .overview-lookup {
   box-sizing: border-box !important;
   padding-inline: 0.14em !important;
   white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
   text-align: center !important;
   font-family: var(--font-heading, "Stretch Pro", system-ui, sans-serif) !important;
   font-size: var(--dx-entry-overview-lookup-size, clamp(1.02rem, 1.72vw, 1.58rem)) !important;
