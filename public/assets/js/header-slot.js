@@ -934,16 +934,6 @@
     return String(value == null ? '' : value).replace(/[\u200C\u200D]/g, '');
   }
 
-  function stripCanonicalHeadingSeparators(value) {
-    // Visible heading output must not surface canonical separators (U+200C).
-    return String(value == null ? '' : value).replace(/\u200C/g, '');
-  }
-
-  function normalizeVisibleHeadingNodeValues(nodeValues) {
-    if (!Array.isArray(nodeValues) || !nodeValues.length) return [];
-    return nodeValues.map((value) => stripCanonicalHeadingSeparators(value));
-  }
-
   function insertCanonicalDoubleLetterSeparators(value) {
     const source = stripZwnjCharacters(value);
     if (!source) return source;
@@ -1277,10 +1267,10 @@
       excludedLetters,
     });
     const normalizedNodeValues = normalizeRenderedDuplicateSeparators(randomizedNodeValues);
-    const preserveCanonicalSeparators = shouldPreserveHeadingCanonicalSeparators(heading);
-    const renderedNodeValues = preserveCanonicalSeparators
-      ? normalizedNodeValues
-      : normalizeVisibleHeadingNodeValues(normalizedNodeValues);
+    // Preserve both separator classes in the rendered text:
+    // - U+200C keeps organic double letters from forming a synthetic ligature.
+    // - U+200D joins a deliberately duplicated letter into the display glyph.
+    const renderedNodeValues = normalizedNodeValues;
 
     textNodes.forEach((node, index) => {
       const nextValue = renderedNodeValues[index] || '';
@@ -1323,7 +1313,7 @@
     const separated = insertCanonicalDoubleLetterSeparators(canonical);
     const randomFn = createHeadingRandom(options.seedKey || canonical);
     const [rendered] = normalizeRenderedDuplicateSeparators(applyProbabilisticHeadingDuplicates([separated], randomFn));
-    return stripCanonicalHeadingSeparators(rendered || separated);
+    return rendered || separated;
   }
 
   function isDonateAnchor(anchor) {
@@ -1435,6 +1425,12 @@
 
   window.addEventListener('dx:support-status:rendered', decorateSupportAndErrorHeadings);
   window.addEventListener('dx:error-status:rendered', decorateSupportAndErrorHeadings);
+  window.addEventListener('dx-home-hero:ready', (event) => {
+    const root = event && event.target instanceof HTMLElement
+      ? event.target
+      : document.querySelector('[data-dx-home-hero-root]');
+    applyHeadingTypographyEffectsIfPossible(root || document);
+  });
 
   function applyHeadingTypographyAndSupportHooks(root = document) {
     applyHeadingTypographyEffectsIfPossible(root);

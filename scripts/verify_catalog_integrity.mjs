@@ -24,6 +24,7 @@ const HOW_PAGE_PATH = path.join(ROOT, 'docs', 'catalog', 'how', 'index.html');
 const SYMBOLS_PAGE_PATH = path.join(ROOT, 'docs', 'catalog', 'symbols', 'index.html');
 const LOOKUP_REDIRECT_PATH = path.join(ROOT, 'docs', 'catalog', 'lookup', 'index.html');
 const INDEX_RUNTIME_SOURCE_PATH = path.join(ROOT, 'scripts', 'src', 'catalog.index.entry.mjs');
+const HOME_RUNTIME_SOURCE_PATH = path.join(ROOT, 'scripts', 'src', 'home.hero.entry.mjs');
 
 const REQUIRED_MODEL_KEYS = ['entries', 'spotlight', 'guide', 'symbols', 'anchors', 'stats'];
 
@@ -290,8 +291,12 @@ function main() {
   }
 
   const homeHtml = readText(HOME_PAGE_PATH);
-  if (!homeHtml.includes('/data/home.featured.snapshot.json')) {
-    failures.push('home page featured carousel must load /data/home.featured.snapshot.json');
+  const homeRuntimeSource = readText(HOME_RUNTIME_SOURCE_PATH);
+  if (
+    !homeHtml.includes('/assets/js/dx-home-hero.js')
+    || !homeRuntimeSource.includes("const FEATURED_URL = '/data/home.featured.snapshot.json';")
+  ) {
+    failures.push('home page featured carousel must load /data/home.featured.snapshot.json through the hero runtime');
   }
   if (homeHtml.includes('id=\"featured-manifest\"')) {
     failures.push('home page must not source featured cards from inline featured-manifest');

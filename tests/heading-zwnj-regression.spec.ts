@@ -261,6 +261,199 @@ async function collectHeadingMetadata(page: Page, selector: string) {
     .filter((row) => row.text.trim().length > 0));
 }
 
+function appendSelectorAttribute(selector: string, attributeSelector: string): string {
+  return selector
+    .split(',')
+    .map((part) => `${part.trim()}${attributeSelector}`)
+    .join(', ');
+}
+
+async function assertRouteHeadingSurface(page: Page, selector: string, minimumCount: number): Promise<void> {
+  await expect.poll(async () => page.locator(selector).count()).toBeGreaterThanOrEqual(minimumCount);
+  await expect.poll(async () => page.locator(selector).evaluateAll((nodes) => nodes
+    .filter((node) => !node.hasAttribute('data-dx-heading-canonical'))
+    .map((node) => ({
+      className: node.getAttribute('class') || '',
+      text: (node.textContent || '').trim(),
+    })))).toEqual([]);
+
+  const headings = await collectHeadingMetadata(page, selector);
+  expect(headings.length).toBeGreaterThanOrEqual(minimumCount);
+  for (const heading of headings) {
+    assertHeadingTypographyInvariants(heading);
+  }
+
+  const canonicalOnlySelector = appendSelectorAttribute(
+    selector,
+    '[data-dx-heading-duplicate-exclude-letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ"]',
+  );
+  const canonicalOnly = await page.locator(canonicalOnlySelector).evaluateAll((nodes) => nodes.map((node) => ({
+    canonical: node.getAttribute('data-dx-heading-canonical') || '',
+    rendered: node.getAttribute('data-dx-heading-rendered') || '',
+  })));
+  for (const heading of canonicalOnly) {
+    expect(findInsertedCharacters(heading.canonical, stripZwnj(heading.rendered))).toHaveLength(0);
+    expect(countCanonicalNonJoiner(heading.rendered)).toBe(countCanonicalDoubleLetters(heading.canonical));
+  }
+}
+
+test('every homepage heading string distinguishes organic doubles from display duplicates', async ({ page }) => {
+  await seedHeadingRuntime(page);
+  await stubAuthRuntime(page);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+  await expect(page.locator('[data-dx-home-hero-root]')).toHaveAttribute('data-ready', 'true');
+  await expect.poll(async () => (
+    page.locator('body.homepage h1[data-dx-heading-canonical], body.homepage h2[data-dx-heading-canonical]').count()
+  )).toBeGreaterThanOrEqual(7);
+
+  const homepageHeadings = await collectHeadingMetadata(
+    page,
+    'body.homepage h1:not([data-dx-heading-randomize="false"]), '
+      + 'body.homepage h2:not([data-dx-heading-randomize="false"]), '
+      + 'body.homepage [data-dx-heading-randomize="true"]',
+  );
+  expect(homepageHeadings.length).toBeGreaterThanOrEqual(7);
+
+  let organicDoubleHeadingCount = 0;
+  for (const heading of homepageHeadings) {
+    assertHeadingTypographyInvariants(heading);
+    const organicDoubleCount = countCanonicalDoubleLetters(heading.canonical);
+    if (organicDoubleCount > 0) {
+      organicDoubleHeadingCount += 1;
+      expect(countCanonicalNonJoiner(heading.rendered)).toBe(organicDoubleCount);
+    }
+  }
+  expect(organicDoubleHeadingCount).toBeGreaterThanOrEqual(3);
+
+  const expectedOrganicHeadings = [
+    { selector: '#dex-board-promo-title', pairs: 2 },
+    { selector: '#dex-signup .signup-heading', pairs: 3 },
+    { selector: '#dex-home-newsletter .dx-home-newsletter-title', pairs: 1 },
+  ];
+  for (const expected of expectedOrganicHeadings) {
+    const heading = await readHeadingBySelector(page, expected.selector);
+    assertHeadingTypographyInvariants(heading);
+    expect(countCanonicalDoubleLetters(heading.canonical)).toBe(expected.pairs);
+    expect(countCanonicalNonJoiner(heading.rendered)).toBe(expected.pairs);
+  }
+
+  const rotatingWordSamples = await page.evaluate(() => {
+    const target = document.querySelector('[data-dx-hero-rotating]');
+    const headingFx = (window as unknown as {
+      __dxHeadingFx?: {
+        renderHeadingText?: (value: string, options?: Record<string, unknown>) => string;
+      };
+    }).__dxHeadingFx;
+    if (!(target instanceof HTMLElement) || typeof headingFx?.renderHeadingText !== 'function') return [];
+    let words: string[] = [];
+    try {
+      words = JSON.parse(target.getAttribute('data-words') || '[]') as string[];
+    } catch {
+      words = [];
+    }
+    return words.map((canonical, index) => {
+      const rendered = String(headingFx.renderHeadingText!(canonical, {
+        uppercase: false,
+        seedKey: `home:rotating:${index}`,
+      }) || '');
+      return { canonical, rendered, text: rendered };
+    });
+  });
+  expect(rotatingWordSamples.length).toBeGreaterThan(10);
+  for (const sample of rotatingWordSamples) {
+    assertHeadingTypographyInvariants(sample);
+  }
+
+  const featuredTitles = new Set<string>();
+  for (let index = 0; index < 4; index += 1) {
+    await expect.poll(async () => page.locator('.carousel-title').getAttribute('data-dx-heading-canonical')).toBeTruthy();
+    const heading = await readHeadingBySelector(page, '.carousel-title');
+    assertHeadingTypographyInvariants(heading);
+    featuredTitles.add(heading.canonical);
+    if (index < 3) {
+      const priorCanonical = heading.canonical;
+      await page.locator('.carousel-nav.next').click();
+      await expect.poll(async () => (
+        page.locator('.carousel-title').getAttribute('data-dx-heading-canonical')
+      )).not.toBe(priorCanonical);
+    }
+  }
+  expect(featuredTitles.size).toBe(4);
+
+  const leakedDonateSpellings = await page.locator('body.homepage').evaluate((body) => (
+    (body.textContent || '').match(/\bDOONATE\b/gi) || []
+  ));
+  expect(leakedDonateSpellings).toHaveLength(0);
+});
+
+test('catalog, about, and In Dex preserve separator semantics through dynamic and soft renders', async ({ page }) => {
+  await seedHeadingRuntime(page);
+  await stubAuthRuntime(page);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+
+  const catalogHeadingSelector = [
+    '[data-catalog-index-app] .dx-catalog-index-title',
+    '[data-catalog-index-app] .dx-catalog-index-hero-title',
+    '[data-catalog-index-app] .dx-catalog-index-spotlight-title',
+    '[data-catalog-index-app] .dx-catalog-index-browse-title',
+    '[data-catalog-index-app] .dx-catalog-index-season-performer',
+    '[data-catalog-index-app] .dx-catalog-index-group-title',
+    '[data-catalog-index-app] .dx-catalog-index-row-title',
+  ].join(', ');
+  const aboutHeadingSelector = [
+    '[data-dx-about-app] .dx-about-title',
+    '[data-dx-about-app] .dx-about-card-title',
+    '[data-dx-about-app] .dx-about-team-name',
+    '[data-dx-about-app] .dx-about-newsletter-title',
+    '[data-dx-about-app] .dx-about-legal-title',
+    '[data-dx-about-app] .dx-about-fact-value',
+    '[data-dx-about-app] .dx-about-contact-value',
+    '[data-dx-about-app] .dx-about-press-value',
+  ].join(', ');
+  const callHeadingSelector = [
+    '[data-call-editorial-app] .dx-call-title',
+    '[data-call-editorial-app] .dx-call-section-title',
+    '[data-call-editorial-app] .dx-call-lane-title',
+    '[data-call-editorial-app] .dx-call-subcall-title',
+    '[data-call-editorial-app] .dx-call-timeline-title',
+    '[data-call-editorial-app] .dx-call-cycle',
+    '[data-call-editorial-app] .dx-call-title-line',
+    '[data-call-editorial-app] .dx-call-rail-title',
+    '[data-call-editorial-app] .dx-call-utility-cycle',
+  ].join(', ');
+
+  await page.goto('/catalog/', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('.dx-catalog-index-shell')).toBeVisible();
+  await page.waitForFunction(() => typeof window.dxNavigate === 'function');
+  await assertRouteHeadingSurface(page, catalogHeadingSelector, 12);
+
+  const track = page.locator('.dx-catalog-index-season-track');
+  const gutter = page.locator('.dx-catalog-index-season-gutter');
+  const priorCarouselIndex = await track.getAttribute('data-dx-carousel-active-index');
+  await gutter.focus();
+  await gutter.press('ArrowRight');
+  await expect.poll(async () => track.getAttribute('data-dx-carousel-active-index')).not.toBe(priorCarouselIndex);
+  await assertRouteHeadingSurface(page, catalogHeadingSelector, 12);
+
+  await page.locator('.dx-catalog-index-search').fill('bass');
+  await expect(page.locator('.dx-catalog-index-browse-title')).toContainText('matching');
+  await assertRouteHeadingSurface(page, catalogHeadingSelector, 5);
+
+  await page.evaluate(() => window.dxNavigate?.('/about/', { pushHistory: true }));
+  await expect(page).toHaveURL(/\/about\/?$/);
+  await expect(page.locator('.dx-about-editorial')).toBeVisible();
+  await assertRouteHeadingSurface(page, aboutHeadingSelector, 12);
+
+  await page.evaluate(() => window.dxNavigate?.('/call/', { pushHistory: true }));
+  await expect(page).toHaveURL(/\/call\/?$/);
+  await expect(page.locator('.dx-call-shell')).toBeVisible();
+  await assertRouteHeadingSurface(page, callHeadingSelector, 10);
+  await expect(page.locator('[data-call-editorial-app]')).not.toContainText('RELATTED');
+  await expect(page.locator('[data-call-editorial-app]')).not.toContainText('ACTIVEE');
+});
+
 test('support and error headings preserve canonical ZWNJ rules with seeded probabilistic duplicates', async ({ page }) => {
   await seedHeadingRuntime(page);
   await stubAuthRuntime(page);
@@ -445,12 +638,12 @@ test('support and error headings preserve canonical ZWNJ rules with seeded proba
   expect(['0px', 'normal']).toContain(settingsTitleStyles.letterSpacing);
   expect(String(settingsTitleStyles.fontVariantLigatures || '').toLowerCase()).not.toBe('none');
   const settingsExcludeLetters = await page.locator('#dexs-title').getAttribute('data-dx-heading-duplicate-exclude-letters');
-  expect(settingsExcludeLetters).toBe('G,S,N,I');
+  expect(settingsExcludeLetters).toBe('G,S,N,I,T');
   const settingsInserted = findInsertedCharacters(settingsTitle.canonical, stripZwnj(settingsTitle.rendered));
   expect(settingsInserted.length).toBe(1);
   const insertedUpper = settingsInserted[0]!.toUpperCase();
   expect(LIGATURE_DUPLICATE_SUPPORTED.has(insertedUpper)).toBeTruthy();
-  expect(['G', 'S', 'N', 'I']).not.toContain(insertedUpper);
+  expect(['G', 'S', 'N', 'I', 'T']).not.toContain(insertedUpper);
   expect(insertedUpper).toBe('E');
   expect(new RegExp(`${insertedUpper}\\u200d${insertedUpper}`, 'i').test(settingsTitle.rendered)).toBeTruthy();
   expect(hasTripleRepeatedLetter(settingsTitle.rendered)).toBeFalsy();

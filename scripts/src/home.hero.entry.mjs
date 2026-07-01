@@ -17,6 +17,21 @@ function reducedMotion() {
   }
 }
 
+function decorateDynamicHeadings(root, routeKey) {
+  if (!(root instanceof Element)) return;
+  const headingFx = window.__dxHeadingFx;
+  if (!headingFx) return;
+  if (
+    root.matches('h1, h2, [data-dx-heading-randomize="true"]')
+    && typeof headingFx.decorateHeading === 'function'
+  ) {
+    headingFx.decorateHeading(root, { routeKey });
+  }
+  if (typeof headingFx.decorateHeadings === 'function') {
+    headingFx.decorateHeadings(root);
+  }
+}
+
 function initCampaign(root) {
   const target = root.querySelector('[data-dx-hero-rotating]');
   if (!target) return;
@@ -30,27 +45,32 @@ function initCampaign(root) {
   const chosen = words[Math.floor(Math.random() * words.length)] || words[0];
   if (reducedMotion()) {
     target.textContent = chosen;
-    return;
+    decorateDynamicHeadings(target.closest('h1, h2') || target, 'home:hero:campaign');
+  } else {
+    target.textContent = '';
+    target.classList.add('typing-complete');
+    try { target.focus(); } catch {}
+    let index = 0;
+    const tick = () => {
+      target.textContent = chosen.slice(0, index);
+      try {
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(target);
+        range.collapse(false);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      } catch {}
+      index += 1;
+      if (index <= chosen.length + 1) {
+        window.setTimeout(tick, 100);
+      } else {
+        target.classList.remove('typing-complete');
+        decorateDynamicHeadings(target.closest('h1, h2') || target, 'home:hero:campaign');
+      }
+    };
+    tick();
   }
-  target.textContent = '';
-  target.classList.add('typing-complete');
-  try { target.focus(); } catch {}
-  let index = 0;
-  const tick = () => {
-    target.textContent = chosen.slice(0, index);
-    try {
-      const selection = window.getSelection();
-      const range = document.createRange();
-      range.selectNodeContents(target);
-      range.collapse(false);
-      selection.removeAllRanges();
-      selection.addRange(range);
-    } catch {}
-    index += 1;
-    if (index <= chosen.length + 1) window.setTimeout(tick, 100);
-    else target.classList.remove('typing-complete');
-  };
-  tick();
 
   const authButton = root.querySelector('[data-dx-hero-auth-cta]');
   if (!authButton) return;
@@ -154,6 +174,7 @@ function initFeatured(root, payload) {
   function commit(card, nextIndex) {
     cardHost.replaceChildren(card);
     card.style.opacity = '';
+    decorateDynamicHeadings(card, `home:featured:${nextIndex}`);
     currentCard = card;
     index = nextIndex;
     renderDots();

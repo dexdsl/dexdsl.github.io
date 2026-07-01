@@ -33,11 +33,46 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
     while (node.firstChild) node.removeChild(node.firstChild);
   }
 
+  const CALL_HEADING_CLASSES = new Set([
+    'dx-call-title',
+    'dx-call-section-title',
+    'dx-call-lane-title',
+    'dx-call-subcall-title',
+    'dx-call-timeline-title',
+    'dx-call-cycle',
+    'dx-call-title-line',
+    'dx-call-rail-title',
+  ]);
+  const CALL_CANONICAL_HEADING_CLASSES = new Set([
+    'dx-call-utility-cycle',
+  ]);
+  const ALL_HEADING_DUPLICATE_LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+  function markCallHeading(element) {
+    if (!(element instanceof HTMLElement)) return element;
+    const classNames = Array.from(element.classList);
+    if (classNames.some((className) => CALL_HEADING_CLASSES.has(className))) {
+      element.setAttribute('data-dx-heading-randomize', 'true');
+    } else if (classNames.some((className) => CALL_CANONICAL_HEADING_CLASSES.has(className))) {
+      element.setAttribute('data-dx-heading-randomize', 'true');
+      element.setAttribute('data-dx-heading-duplicate-exclude-letters', ALL_HEADING_DUPLICATE_LETTERS);
+    }
+    return element;
+  }
+
   function create(tag, className, textValue = null) {
     const element = document.createElement(tag);
     if (className) element.className = className;
     if (textValue !== null) element.textContent = textValue;
-    return element;
+    return markCallHeading(element);
+  }
+
+  function decorateCallHeadings(root) {
+    if (!(root instanceof Element)) return;
+    const headingFx = window.__dxHeadingFx;
+    if (headingFx && typeof headingFx.decorateHeadings === 'function') {
+      headingFx.decorateHeadings(root);
+    }
   }
 
   function ensureGooeyMesh() {
@@ -601,7 +636,7 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
 
     const rail = create('aside', 'dx-call-active-rail');
     const railCard = create('div', 'dx-call-active-rail-card');
-    railCard.appendChild(create('p', 'dx-call-rail-title', 'RELATTED LINKS'));
+    railCard.appendChild(create('p', 'dx-call-rail-title', 'RELATED LINKS'));
 
     const submitHref = buildSubmitCallHref({
       lane: activeLane || 'in-dex-a',
@@ -629,7 +664,7 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
     section.id = 'call-mini';
 
     section.appendChild(create('p', 'dx-call-kicker', 'MINI-DEX MODULE'));
-    section.appendChild(create('h2', 'dx-call-section-title', text(mini.status_label_raw || 'ACTIVEE CAL‏‏‎‎L:')));
+    section.appendChild(create('h2', 'dx-call-section-title', text(mini.status_label_raw || 'ACTIVE CALL:')));
     section.appendChild(create('h3', 'dx-call-cycle', text(mini.cycle_raw || '')));
 
     const body = create('div', 'dx-call-mini-body');
@@ -793,6 +828,7 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
     shell.appendChild(buildProgress(resolvedModel, sectionSteps));
     shell.appendChild(column);
     root.appendChild(shell);
+    decorateCallHeadings(root);
 
     wireProgressNav(root, sectionSteps);
     revealStagger(root, '.dx-call-reveal', {
@@ -822,6 +858,7 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
     pane.appendChild(create('h2', 'dx-call-title', 'CALL PAGE FAILED TO LOAD'));
     pane.appendChild(create('p', 'dx-call-copy', text(error?.message || 'Unknown error')));
     root.appendChild(pane);
+    decorateCallHeadings(root);
   }
 
   async function loadJson(url) {

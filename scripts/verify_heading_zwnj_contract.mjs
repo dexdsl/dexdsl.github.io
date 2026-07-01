@@ -102,13 +102,13 @@ function verifyCatalogStaticCopySeparators() {
     'PREPARED FLOOR TOM',
     'BASSOON + ELECTRONICS WITH GENERATIVE VIDEO',
     'CELLO',
-    'MULTIPLE PERCUSSION',
     'PREPARED BASS VIOL',
     'PREPARED HAMMERED DULCIMER + DIGITAL SIGNAL PROCESSOR',
     'SPLINTERINGS for DOUBLE BASS',
     'AS THOUGH I’M SLIPPING - MIXED ENSEMBLE',
-    'FEEDBACK TELEVISIONS',
   ];
+  // Canonical raw/taxonomy fields may retain unseparated FEEDBACK TELEVISIONS
+  // and MULTIPLE PERCUSSION; the display variants are asserted above.
   const catalogRels = [
     'data/catalog.editorial.json',
     'data/catalog.entries.json',
@@ -159,7 +159,6 @@ function verifyHeadingRuntime() {
     'HEADING_DUPLICATE_LIGATURE_SUPPORTED',
     'insertCanonicalDoubleLetterSeparators',
     'normalizeRenderedDuplicateSeparators',
-    'stripCanonicalHeadingSeparators',
     'pickProbabilisticDuplicateCount',
     'window.__DX_HEADING_RANDOM_SEED',
     'window.__dxHeadingFx',
@@ -174,13 +173,14 @@ function verifyHeadingRuntime() {
     "data-dx-heading-canonical",
     "data-dx-heading-rendered",
     'applyHeadingTypographyAndSupportHooks',
+    "window.addEventListener('dx-home-hero:ready'",
   ]);
 
-  if (!/return\s+stripCanonicalHeadingSeparators\(rendered\s*\|\|\s*separated\);/.test(text)) {
-    FAILURES.push(`${relPath} must normalize visible render output via stripCanonicalHeadingSeparators(rendered || separated)`);
+  if (!/return\s+rendered\s*\|\|\s*separated\s*;/.test(text)) {
+    FAILURES.push(`${relPath} must preserve canonical and duplicated separators in visible heading output`);
   }
-  if (/return\s+rendered\s*\|\|\s*separated\s*;/.test(text)) {
-    FAILURES.push(`${relPath} must not return raw rendered/separated heading output`);
+  if (/return\s+stripCanonicalHeadingSeparators\(rendered\s*\|\|\s*separated\);/.test(text)) {
+    FAILURES.push(`${relPath} must not strip canonical U+200C separators from visible heading output`);
   }
 }
 
@@ -208,9 +208,21 @@ function verifyNoInlineHeadingRandomizers() {
       FAILURES.push(`${indexRel} contains inline h1/h2 randomization pattern: ${pattern}`);
     }
   }
-  if (!indexText.includes('data-dx-heading-duplicate-exclude-words="RECORDING"')) {
-    FAILURES.push(`${indexRel} missing hero duplicate exclusion marker for RECORDING`);
+  const heroRendererRel = 'scripts/lib/home-hero-render.mjs';
+  const heroRendererText = readText(heroRendererRel);
+  if (!heroRendererText.includes('data-dx-heading-duplicate-exclude-words="RECORDING"')) {
+    FAILURES.push(`${heroRendererRel} missing hero duplicate exclusion marker for RECORDING`);
   }
+
+  assertNotIncludes(indexRel, indexText, ['DOONATE']);
+
+  const heroRuntimeRel = 'scripts/src/home.hero.entry.mjs';
+  const heroRuntimeText = readText(heroRuntimeRel);
+  assertIncludes(heroRuntimeRel, heroRuntimeText, [
+    'function decorateDynamicHeadings(root, routeKey)',
+    "decorateDynamicHeadings(target.closest('h1, h2') || target, 'home:hero:campaign');",
+    'decorateDynamicHeadings(card, `home:featured:${nextIndex}`);',
+  ]);
 
   const boardRel = 'docs/board/index.html';
   const boardText = readText(boardRel);
@@ -272,6 +284,52 @@ function verifySupportErrorHeadingHooks() {
   ]);
 }
 
+function verifyEditorialRouteHeadingHooks() {
+  const routeContracts = [
+    {
+      relPath: 'scripts/src/catalog.index.entry.mjs',
+      markers: [
+        'const CATALOG_HEADING_CLASSES = new Set([',
+        'function markCatalogHeading(element)',
+        'function decorateCatalogHeadings(root)',
+        'decorateCatalogHeadings(track);',
+        'decorateCatalogHeadings(browse);',
+        'decorateCatalogHeadings(root);',
+      ],
+    },
+    {
+      relPath: 'scripts/src/about.editorial.entry.mjs',
+      markers: [
+        'const ABOUT_HEADING_CLASSES = new Set([',
+        'const ABOUT_CANONICAL_HEADING_CLASSES = new Set([',
+        'function markAboutHeading(element)',
+        'function decorateAboutHeadings(root)',
+        'decorateAboutHeadings(root);',
+      ],
+    },
+    {
+      relPath: 'scripts/src/call.editorial.entry.mjs',
+      markers: [
+        'const CALL_HEADING_CLASSES = new Set([',
+        'const CALL_CANONICAL_HEADING_CLASSES = new Set([',
+        'function markCallHeading(element)',
+        'function decorateCallHeadings(root)',
+        'decorateCallHeadings(root);',
+      ],
+      forbidden: [
+        'RELATTED LINKS',
+        'ACTIVEE CAL',
+      ],
+    },
+  ];
+
+  for (const contract of routeContracts) {
+    const source = readText(contract.relPath);
+    assertIncludes(contract.relPath, source, contract.markers);
+    assertNotIncludes(contract.relPath, source, contract.forbidden || []);
+  }
+}
+
 function main() {
   verifyCatalogStaticCopySeparators();
   verifyHeadingRuntime();
@@ -280,6 +338,7 @@ function main() {
   verifySupportFooterPadding();
   verifySettingsHeadingExclusion();
   verifySupportErrorHeadingHooks();
+  verifyEditorialRouteHeadingHooks();
 
   if (FAILURES.length > 0) {
     console.error(`verify:heading-zwnj failed with ${FAILURES.length} issue(s):`);

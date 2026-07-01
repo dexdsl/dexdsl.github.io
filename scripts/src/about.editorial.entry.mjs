@@ -42,11 +42,45 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
     while (node.firstChild) node.removeChild(node.firstChild);
   }
 
+  const ABOUT_HEADING_CLASSES = new Set([
+    'dx-about-title',
+    'dx-about-card-title',
+    'dx-about-team-name',
+    'dx-about-newsletter-title',
+    'dx-about-legal-title',
+  ]);
+  const ABOUT_CANONICAL_HEADING_CLASSES = new Set([
+    'dx-about-fact-value',
+    'dx-about-contact-value',
+    'dx-about-press-value',
+  ]);
+  const ALL_HEADING_DUPLICATE_LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+  function markAboutHeading(element) {
+    if (!(element instanceof HTMLElement)) return element;
+    const classNames = Array.from(element.classList);
+    if (classNames.some((className) => ABOUT_HEADING_CLASSES.has(className))) {
+      element.setAttribute('data-dx-heading-randomize', 'true');
+    } else if (classNames.some((className) => ABOUT_CANONICAL_HEADING_CLASSES.has(className))) {
+      element.setAttribute('data-dx-heading-randomize', 'true');
+      element.setAttribute('data-dx-heading-duplicate-exclude-letters', ALL_HEADING_DUPLICATE_LETTERS);
+    }
+    return element;
+  }
+
   function create(tag, className, textValue = null) {
     const element = document.createElement(tag);
     if (className) element.className = className;
     if (textValue !== null) element.textContent = textValue;
-    return element;
+    return markAboutHeading(element);
+  }
+
+  function decorateAboutHeadings(root) {
+    if (!(root instanceof Element)) return;
+    const headingFx = window.__dxHeadingFx;
+    if (headingFx && typeof headingFx.decorateHeadings === 'function') {
+      headingFx.decorateHeadings(root);
+    }
   }
 
   function createButtonLink(cta) {
@@ -507,6 +541,7 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
 
     clearNode(root);
     root.appendChild(shell);
+    decorateAboutHeadings(root);
 
     wireProgressNav(root, steps);
     wireHashCompatibility(steps, mergeAliases(config.hashAliases, data.hashAliases));
@@ -538,6 +573,7 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
     surface.appendChild(create('p', 'dx-about-copy', 'Please refresh the page, or use the contact form while we restore this section.'));
     surface.appendChild(createButtonLink({ label: 'Open Contact Form', href: '/contact/#form', variant: 'primary' }));
     root.appendChild(surface);
+    decorateAboutHeadings(root);
   }
 
   async function initAbout() {

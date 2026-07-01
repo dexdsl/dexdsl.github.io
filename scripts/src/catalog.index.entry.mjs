@@ -152,11 +152,37 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     return loaded;
   }
 
+  const CATALOG_HEADING_CLASSES = new Set([
+    'dx-catalog-index-title',
+    'dx-catalog-index-hero-title',
+    'dx-catalog-index-spotlight-title',
+    'dx-catalog-index-browse-title',
+    'dx-catalog-index-season-performer',
+    'dx-catalog-index-group-title',
+    'dx-catalog-index-row-title',
+  ]);
+
+  function markCatalogHeading(element) {
+    if (!(element instanceof HTMLElement)) return element;
+    if (Array.from(element.classList).some((className) => CATALOG_HEADING_CLASSES.has(className))) {
+      element.setAttribute('data-dx-heading-randomize', 'true');
+    }
+    return element;
+  }
+
   function create(tag, className, textValue = null) {
     const element = document.createElement(tag);
     if (className) element.className = className;
     if (textValue !== null) element.textContent = textValue;
-    return element;
+    return markCatalogHeading(element);
+  }
+
+  function decorateCatalogHeadings(root) {
+    if (!(root instanceof Element)) return;
+    const headingFx = window.__dxHeadingFx;
+    if (headingFx && typeof headingFx.decorateHeadings === 'function') {
+      headingFx.decorateHeadings(root);
+    }
   }
 
   function clearNode(node) {
@@ -1480,6 +1506,7 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
         }
       });
       renderPips(slides, activeSlot);
+      decorateCatalogHeadings(track);
 
       if (prefersReducedMotion()) return;
       const offset = direction === 0 ? 0 : direction * 8;
@@ -1718,6 +1745,7 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     if (!entries.length) {
       browse.appendChild(create('p', 'dx-catalog-index-copy', 'Try broadening your query or clearing filters.'));
       host.appendChild(browse);
+      decorateCatalogHeadings(browse);
       return;
     }
 
@@ -1737,6 +1765,7 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
 
     browse.appendChild(list);
     host.appendChild(browse);
+    decorateCatalogHeadings(browse);
 
     revealStagger(browse, '.dx-catalog-index-group', {
       key: 'catalog-index-browse-reveal',
@@ -1758,6 +1787,7 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     pane.appendChild(create('h2', 'dx-catalog-index-title', 'Catalog failed to load'));
     pane.appendChild(create('p', 'dx-catalog-index-copy', text(error?.message || 'Unknown error')));
     root.appendChild(pane);
+    decorateCatalogHeadings(root);
   }
 
   function render() {
@@ -1802,6 +1832,7 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
 
     root.appendChild(shell);
     renderBrowse();
+    decorateCatalogHeadings(root);
     bindDexButtonMotion(root);
     bindPaginationMotion(root);
     startBlobMotion();
