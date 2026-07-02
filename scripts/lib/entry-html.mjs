@@ -580,6 +580,21 @@ export function buildVideoIframe(embedUrl) {
 ></iframe>`;
 }
 
+// Privacy-first click-to-load poster facade rendered in place of a live YouTube
+// iframe. Nothing hits YouTube until the visitor activates it (see
+// dx-video-embed.js). This is the single source of truth for facade markup —
+// apply-video-gate.mjs imports it to gate any legacy pages and to backfill
+// posters. The optional poster is a first-party /assets/catalog/<id>.<ext> URL.
+export function buildVideoFacade(embedUrl, poster = '') {
+  const style = poster ? ` style="background-image:url('${escapeHtml(poster)}')"` : '';
+  return `<button type="button" class="dex-video-facade" data-dx-video-embed="${escapeHtml(
+    embedUrl
+  )}" aria-label="Play video (loads YouTube)"${style}>
+<span class="dex-video-play" aria-hidden="true"></span>
+<span class="dex-video-facade-label">Watch · loads YouTube on play</span>
+</button>`;
+}
+
 function buildBreadcrumbMarkup(currentLabel = 'entry') {
   const current = escapeHtml(currentLabel);
   return `<div class="dex-breadcrumb-overlay" data-dex-breadcrumb-overlay>
@@ -803,7 +818,10 @@ function injectVideoRegion(regionHtml, video) {
   if (parsed.provider === 'unknown') {
     console.warn(`[dex] unrecognized video provider: ${originalUrl}`);
   }
-  const iframeHtml = buildVideoIframe(parsed.embedUrl || originalUrl);
+  // Emit the click-to-load facade (not a live iframe) so a freshly generated
+  // page never contacts YouTube on load. apply-video-gate.mjs later backfills
+  // the first-party poster and ensures the dx-video-embed.js runtime.
+  const facadeHtml = buildVideoFacade(parsed.embedUrl || originalUrl);
 
   const videoTagRx = /<div[^>]*class=["'](?:[^"']*\s)?dex-video(?:\s[^"']*)?["'][^>]*>/i;
   const videoTagMatch = regionHtml.match(videoTagRx);
@@ -816,7 +834,7 @@ function injectVideoRegion(regionHtml, video) {
 
   const videoMarkup = `${updatedVideoTag}
   <div class="dex-video-aspect">
-${iframeHtml}
+${facadeHtml}
   </div>
 </div>`;
 
@@ -1220,6 +1238,7 @@ function normalizeAllowedOutsideAnchorChanges(html) {
     .replace(scriptByIdRegex(PAGE_CONFIG_BRIDGE_SCRIPT_ID), '')
     .replace(/<style[^>]*id=['"]dex-layout-patch['"][^>]*>[\s\S]*?<\/style>\s*/gi, '')
     .replace(/<script[^>]*src=['"]\/assets\/dex-sidebar\.js['"][^>]*><\/script>\s*/g, '')
+    .replace(/<script[^>]*src=['"]\/assets\/js\/header-slot\.js['"][^>]*><\/script>\s*/g, '')
     .replace(/<script[^>]*src=['"](?:\/assets\/dex-auth0-config\.js|\/assets\/dex-auth-config\.js|\/assets\/vendor\/auth0-spa-js\.umd\.min\.js|\/assets\/dex-auth\.js|https?:\/\/[^"']*auth0-spa-js[^"']*)['"][^>]*><\/script>\s*/gi, '')
     .replace(/\s+/g, ' ')
     .replace(/>\s+</g, '><')

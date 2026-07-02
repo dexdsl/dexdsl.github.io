@@ -341,7 +341,9 @@ function haslegacysiteRuntimeDataAttrs(element) {
   return Object.entries(attrs).some(([name, value]) => {
     const attr = String(name || '').toLowerCase();
     const text = String(value || '').toLowerCase();
-    if (attr.startsWith('data-dx-')) return true;
+    // data-dx-video-embed is our own click-to-load facade runtime hook (read by
+    // dx-video-embed.js), not legacysite cruft — keep it.
+    if (attr.startsWith('data-dx-') && attr !== 'data-dx-video-embed') return true;
     if (attr === 'data-name' && text.includes('static-context')) return true;
     if (attr === 'data-block-scripts' || attr === 'data-block-css') return true;
     if (attr === 'data-definition-name' && text.includes('website.components')) return true;
@@ -356,7 +358,7 @@ function striplegacysiteRuntimeDataAttrs($) {
       const attr = String(name || '').toLowerCase();
       const value = String(rawValue || '');
       const shouldStrip =
-        attr.startsWith('data-dx-')
+        (attr.startsWith('data-dx-') && attr !== 'data-dx-video-embed')
         || attr === 'data-block-scripts'
         || attr === 'data-block-css'
         || attr === 'data-definition-name'
@@ -1033,6 +1035,86 @@ body.dx-entry-page [data-dx-entry-fetch-target="description"][data-dx-fetch-stat
   height: 100%;
   border: 0;
   border-radius: inherit;
+}
+/* Click-to-load facade: first-party poster + play button. No third-party
+   request fires until the visitor activates it (see dx-video-embed.js). */
+.dex-video-facade {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  cursor: pointer;
+  background-color: #0e1522;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  color: #fff;
+  font-family: var(--font-mono, "Courier Prime", monospace);
+  isolation: isolate;
+}
+.dex-video-facade::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(8, 12, 20, 0.28) 0%, rgba(8, 12, 20, 0.5) 100%);
+  z-index: 0;
+  transition: background-color 180ms ease;
+}
+.dex-video-play {
+  position: relative;
+  z-index: 1;
+  width: clamp(3.4rem, 7vw, 4.6rem);
+  height: clamp(3.4rem, 7vw, 4.6rem);
+  border-radius: 50%;
+  background: var(--dx-color-accent, #ff1910);
+  box-shadow: 0 10px 30px rgba(8, 12, 20, 0.45);
+  display: grid;
+  place-items: center;
+  transition: transform 180ms cubic-bezier(.22, .8, .24, 1);
+}
+.dex-video-play::after {
+  content: "";
+  width: 0;
+  height: 0;
+  margin-left: 0.28em;
+  border-style: solid;
+  border-width: 0.66em 0 0.66em 1.08em;
+  border-color: transparent transparent transparent #fff;
+}
+.dex-video-facade-label {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(11px, 1.1vw, 13px);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 6px rgba(8, 12, 20, 0.6);
+}
+.dex-video-facade:hover .dex-video-play,
+.dex-video-facade:focus-visible .dex-video-play {
+  transform: scale(1.08);
+}
+.dex-video-facade:hover::before {
+  background: linear-gradient(180deg, rgba(8, 12, 20, 0.2) 0%, rgba(8, 12, 20, 0.42) 100%);
+}
+.dex-video-facade:focus-visible {
+  outline: 3px solid var(--dx-color-accent, #ff1910);
+  outline-offset: -3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dex-video-play,
+  .dex-video-facade::before {
+    transition: none;
+  }
 }
 .dex-breadcrumb-overlay {
   position: static;

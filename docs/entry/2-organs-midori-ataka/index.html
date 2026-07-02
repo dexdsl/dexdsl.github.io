@@ -17,8 +17,6 @@
     
     
     
-<link rel="preconnect" href="https://use.fonthost.net" crossorigin="">
-<link rel="preconnect" href="https://p.fonthost.net" crossorigin="">
 
 
 
@@ -864,6 +862,7 @@ body.dx-entry-page .dex-collections .overview-item--favorite-buckets .dx-fav-buc
 <script defer="" src="https://dexdsl.github.io/assets/dex-auth0-config.js"></script>
 <script defer="" src="https://dexdsl.github.io/assets/dex-auth.js"></script>
 <script defer="" src="https://dexdsl.github.io/assets/js/header-slot.js"></script>
+<script defer src="/assets/js/dx-video-embed.js"></script>
 <style id="dex-entry-gooey-bg-style" data-managed="1">
 
 body.dex-entry-page {
@@ -941,6 +940,7 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
 <script defer src="/assets/js/dx-scroll-dot.js"></script>
 <script defer src="/assets/js/interactive-hover.js"></script>
 <script defer src="/assets/js/dx-pagenav.js"></script>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "443e9f568f5e472e89282895eeff6f9e"}'></script><!-- End Cloudflare Web Analytics -->
 </head>
 
   <body class="dx-entry-page dex-entry-page" tabindex="-1">
@@ -1711,7 +1711,10 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
 <div class="dex-video-shell" data-dx-entry-fetch-target="media">
 <div class="dex-video" data-video-url="https://youtu.be/tyAG0unnwNQ">
   <div class="dex-video-aspect">
-<iframe src="https://www.youtube-nocookie.com/embed/tyAG0unnwNQ" title="Video" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+<button type="button" class="dex-video-facade" data-dx-video-embed="https://www.youtube-nocookie.com/embed/tyAG0unnwNQ" aria-label="Play video (loads YouTube)" style="background-image:url('/assets/catalog/2-organs-midori-ataka.jpg')">
+<span class="dex-video-play" aria-hidden="true"></span>
+<span class="dex-video-facade-label">Watch · loads YouTube on play</span>
+</button>
   </div>
 </div>
 </div>
@@ -2285,6 +2288,7 @@ body.dex-entry-page .dex-footer-section > .section-border > .section-background 
       </div>
       <nav class="footer-nav">
         <a href="/privacy">Privacy</a>
+        <a href="/cookies">Cookies</a>
         <a href="/contact">Contact</a>
         <a href="/copyright">Copyright</a>
       </nav>

@@ -653,3 +653,88 @@
     justify-self: start;
   }
 }
+
+/* ── Public profile badges (profile-badges.js) ──────────────────────────────
+   Read-only showcase of a member's unlocked achievement badges, fetched from
+   the dex-api public achievements endpoint and appended to #dex-profile. */
+#dex-profile .dx-profile-badges {
+  margin-top: clamp(20px, 3vw, 34px);
+}
+
+#dex-profile .dx-profile-badges-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 clamp(10px, 1.4vw, 16px);
+  font-family: var(--font-heading, inherit);
+  font-size: clamp(1rem, 1.6vw, 1.28rem);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+#dex-profile .dx-profile-badges-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5em;
+  height: 1.5em;
+  padding: 0 0.5em;
+  border-radius: 999px;
+  background: var(--dx-accent-solid, #ff4d2e);
+  color: #fff;
+  font-family: "Courier Prime", monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+#dex-profile .dx-profile-badges-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: clamp(8px, 1vw, 12px);
+}
+
+#dex-profile .dx-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(16, 16, 16, 0.1);
+  border-radius: var(--dx-entry-card-radius, 10px);
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 14px rgba(20, 26, 37, 0.06);
+}
+
+#dex-profile .dx-profile-badge-glyph-wrap {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: rgba(16, 16, 16, 0.06);
+}
+
+#dex-profile .dx-profile-badge[data-tier="gold"] .dx-profile-badge-glyph-wrap { background: rgba(255, 168, 26, 0.18); }
+#dex-profile .dx-profile-badge[data-tier="silver"] .dx-profile-badge-glyph-wrap { background: rgba(184, 204, 235, 0.28); }
+#dex-profile .dx-profile-badge[data-tier="bronze"] .dx-profile-badge-glyph-wrap { background: rgba(199, 92, 38, 0.16); }
+#dex-profile .dx-profile-badge[data-tier="legend"] .dx-profile-badge-glyph-wrap { background: rgba(174, 92, 255, 0.2); }
+
+#dex-profile .dx-profile-badge-glyph {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+#dex-profile .dx-profile-badge-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(16, 16, 16, 0.92);
+}

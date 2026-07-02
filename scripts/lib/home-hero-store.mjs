@@ -17,9 +17,15 @@ export const HOME_HERO_PATHS = {
   snapshot: path.join(ROOT, 'data', 'home.hero.snapshot.json'),
   docsSnapshot: path.join(ROOT, 'docs', 'data', 'home.hero.snapshot.json'),
   publicSnapshot: path.join(ROOT, 'public', 'data', 'home.hero.snapshot.json'),
-  css: path.join(ROOT, 'css', 'components', 'dx-home-hero.css'),
-  composerCss: path.join(ROOT, 'css', 'components', 'dx-home-hero-composer.css'),
-  siteCss: path.join(ROOT, 'assets', 'css', 'dex.css'),
+  previewCss: [
+    path.join(ROOT, 'css', 'tokens.css'),
+    path.join(ROOT, 'css', 'base.css'),
+    path.join(ROOT, 'css', 'components', 'dx-controls.css'),
+    path.join(ROOT, 'assets', 'css', 'dex.css'),
+    path.join(ROOT, 'css', 'fonts.css'),
+    path.join(ROOT, 'css', 'components', 'dx-home-hero.css'),
+    path.join(ROOT, 'css', 'components', 'dx-home-hero-composer.css'),
+  ],
   featuredSnapshot: path.join(ROOT, 'data', 'home.featured.snapshot.json'),
 };
 
@@ -29,6 +35,22 @@ async function readJson(filePath, fallback = null) {
   } catch {
     return fallback;
   }
+}
+
+async function buildPreviewFontCss() {
+  const [stretch, courierRegular, courierBold] = await Promise.all([
+    fs.readFile(path.join(ROOT, 'assets', 'fonts', 'StretchPro.otf')),
+    fs.readFile(path.join(ROOT, 'assets', 'fonts', 'courier-prime', 'CourierPrime-Regular.woff2')),
+    fs.readFile(path.join(ROOT, 'assets', 'fonts', 'courier-prime', 'CourierPrime-Bold.woff2')),
+  ]);
+  const stretchUrl = `data:font/otf;base64,${stretch.toString('base64')}`;
+  const regularUrl = `data:font/woff2;base64,${courierRegular.toString('base64')}`;
+  const boldUrl = `data:font/woff2;base64,${courierBold.toString('base64')}`;
+  return `
+@font-face{font-family:"Stretch Pro";src:url("${stretchUrl}") format("opentype");font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:"Courier Prime";src:url("${regularUrl}") format("woff2");font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:"Courier Prime";src:url("${boldUrl}") format("woff2");font-style:normal;font-weight:700;font-display:swap}
+`;
 }
 
 async function atomicWrite(filePath, text) {
@@ -130,14 +152,17 @@ export async function previewHomeHero(rawLibrary, compositionId) {
     ...library,
     activeCompositionId: compositionId,
   }, compositionId);
-  const [heroCss, composerCss, siteCss, featuredData] = await Promise.all([
-    fs.readFile(HOME_HERO_PATHS.css, 'utf8'),
-    fs.readFile(HOME_HERO_PATHS.composerCss, 'utf8'),
-    fs.readFile(HOME_HERO_PATHS.siteCss, 'utf8'),
+  const [cssSources, fontCss, featuredData] = await Promise.all([
+    Promise.all(HOME_HERO_PATHS.previewCss.map((filePath) => fs.readFile(filePath, 'utf8'))),
+    buildPreviewFontCss(),
     readJson(HOME_HERO_PATHS.featuredSnapshot, { featured: [] }),
   ]);
+  const styles = [
+    ...cssSources.map((css) => css.replace(/@font-face\s*\{[^}]*\}/g, '')),
+    fontCss,
+  ];
   return {
-    html: renderHomeHeroPreviewDocument(snapshot, { css: `${siteCss}\n${heroCss}\n${composerCss}`, featuredData }),
+    html: renderHomeHeroPreviewDocument(snapshot, { styles, featuredData }),
     sourceHash: snapshot.sourceHash,
   };
 }

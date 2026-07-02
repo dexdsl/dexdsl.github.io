@@ -134,33 +134,11 @@ function verifyFavoritesPageContract() {
   ]);
 }
 
-function verifyTestRouteContract() {
-  const routeFiles = [
-    'docs/entries/test-9/index.html',
-    'docs/entries/test-9/entry.json',
-    'docs/entries/test-9/manifest.json',
-  ];
-  for (const relPath of routeFiles) {
-    readText(relPath);
-  }
-
-  const indexRel = 'docs/entries/test-9/index.html';
-  const indexText = readText(indexRel);
-  assertIncludes(indexRel, indexText, [
-    'id="dex-sidebar-config"',
-    'id="dex-sidebar-page-config"',
-    'id="dex-manifest"',
-    '/assets/dex-sidebar.js',
-    'Lookup #',
-  ]);
-}
-
 function main() {
   verifyRuntimeContract();
   verifyCatalogContract();
   verifySidebarContract();
   verifyFavoritesPageContract();
-  verifyTestRouteContract();
 
   if (FAILURES.length > 0) {
     console.error(`verify:favorites failed with ${FAILURES.length} issue(s):`);

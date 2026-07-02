@@ -186,8 +186,6 @@ function buildHead({ title, description, canonicalPath, imageSrc }) {
 <script defer src="/assets/js/header-slot.js"></script>
 <script defer src="/assets/js/dx-scroll-dot.js"></script>
 <script defer src="/assets/js/polls.app.js"></script>
-<link rel="preconnect" href="https://use.fonthost.net" crossorigin>
-<link rel="preconnect" href="https://p.fonthost.net" crossorigin>
 <!-- header code injection.css -->
 
 <!-- End of legacysite Headers -->

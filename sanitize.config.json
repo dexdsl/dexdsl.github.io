@@ -12,7 +12,9 @@
     "squarespace-cdn.com",
     "typekit.net",
     "p.typekit.net",
-    "use.typekit.net"
+    "use.typekit.net",
+    "googletagmanager.com",
+    "google-analytics.com"
   ],
   "forbiddenNeedles": [
     "typekit",

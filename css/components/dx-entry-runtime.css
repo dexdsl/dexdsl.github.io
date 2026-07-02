@@ -464,6 +464,108 @@ body.dx-entry-page .dex-sidebar-scroll-affordance-arrow {
   }
 }
 
+/* Click-to-load YouTube facade (privacy phase 2 — dx-video-embed.js).
+   Self-sizing 16:9 poster button that replaces the live iframe until the
+   visitor activates it. Scoped + !important to beat the generic button
+   reset in dx-controls.css (inline-flex / min-height / border-radius). */
+body.dx-entry-page .dex-video-facade {
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+  aspect-ratio: 16 / 9 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: var(--dx-entry-card-radius, 6px) !important;
+  cursor: pointer !important;
+  overflow: hidden !important;
+  background-color: #101010 !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  box-shadow: none !important;
+  color: #fff !important;
+  white-space: normal !important;
+}
+
+body.dx-entry-page .dex-video-facade::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0) 32%, rgba(0, 0, 0, 0.45) 100%) !important;
+  transition: background 0.24s ease !important;
+  pointer-events: none !important;
+}
+
+body.dx-entry-page .dex-video-facade:hover::before,
+body.dx-entry-page .dex-video-facade:focus-visible::before {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.24) 0%, rgba(0, 0, 0, 0.08) 40%, rgba(0, 0, 0, 0.55) 100%) !important;
+}
+
+body.dx-entry-page .dex-video-facade:focus-visible {
+  outline: 3px solid var(--dx-accent-solid, #ff4d2e) !important;
+  outline-offset: -3px !important;
+}
+
+body.dx-entry-page .dex-video-play {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: clamp(48px, 6vw, 72px) !important;
+  height: clamp(48px, 6vw, 72px) !important;
+  transform: translate(-50%, -50%) !important;
+  border-radius: 999px !important;
+  background: rgba(16, 16, 16, 0.62) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35) !important;
+  transition: transform 0.2s ease, background 0.2s ease !important;
+  pointer-events: none !important;
+}
+
+body.dx-entry-page .dex-video-play::after {
+  content: "" !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 52% !important;
+  width: 34% !important;
+  height: 34% !important;
+  transform: translate(-50%, -50%) !important;
+  background: #fff !important;
+  clip-path: polygon(0 0, 100% 50%, 0 100%) !important;
+}
+
+body.dx-entry-page .dex-video-facade:hover .dex-video-play,
+body.dx-entry-page .dex-video-facade:focus-visible .dex-video-play {
+  transform: translate(-50%, -50%) scale(1.08) !important;
+  background: var(--dx-accent-solid, #ff4d2e) !important;
+}
+
+body.dx-entry-page .dex-video-facade-label {
+  position: absolute !important;
+  left: clamp(8px, 1.4vw, 16px) !important;
+  bottom: clamp(8px, 1.4vw, 16px) !important;
+  max-width: calc(100% - 2 * clamp(8px, 1.4vw, 16px)) !important;
+  padding: 5px 10px !important;
+  border-radius: var(--dx-entry-card-radius, 6px) !important;
+  background: rgba(16, 16, 16, 0.72) !important;
+  color: #fff !important;
+  font-family: "Courier Prime", monospace !important;
+  font-size: clamp(0.62rem, 0.82vw, 0.78rem) !important;
+  letter-spacing: 0.02em !important;
+  line-height: 1.2 !important;
+  pointer-events: none !important;
+}
+
+/* Lookup-number fit guard: cap the nowrap flex span to its sidebar cell so
+   the JS auto-fit (fitOverviewLookupText) measures the true available width
+   and shrinks the number correctly instead of overflowing. */
+body.dx-entry-page .dex-overview .overview-lookup {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
 /* Entry button primitives. */
 body.dx-entry-page .dex-sidebar .dex-license-controls .copy-btn,
 body.dx-entry-page .dex-sidebar .dex-license-controls .usage-btn,

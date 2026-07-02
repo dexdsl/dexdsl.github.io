@@ -24,7 +24,7 @@ await fs.writeFile(path.join(temp, 'seed.json'), JSON.stringify({
   descriptionText: 'desc',
   video: { dataUrl: 'https://youtu.be/CSFGiU1gg4g?si=x' },
   creditsData: { artist:['Artist'], artistAlt:null, instruments:['Synth'], video:{director:['Dir'],cinematography:['Cin'],editing:['Edit']}, audio:{recording:['Rec'],mix:['Mix'],master:['Master']}, year:2026, season:'S2', location:'Somewhere' },
-  manifest: { audio: { A: { wav: 'a1' } }, video: { A: { '1080p': 'v1' } } },
+  manifest: { audio: { A: { wav: 'lookup:X.1' } }, video: { A: { '1080p': 'lookup:X.2' } } },
   sidebarPageConfig: { lookupNumber: 'LOOKUP-1', attributionSentence: 'attrib', buckets: ['A','B'], specialEventImage: '/assets/series/dex.png', downloads: { recordingIndexPdfRef: 'lookup:X.99' }, credits: { artist: ['Artist'], instruments: ['Synth'], instrumentLinksEnabled: true, linksByPerson: { Artist: [{ label: 'Site', href: 'https://example.com' }] }, year: 2026, season: 'S2', location: 'Somewhere', video: { director: ['Dir'], cinematography: ['Cin'], editing: ['Edit'] }, audio: { recording: ['Rec'], mix: ['Mix'], master: ['Master'] } } },
 }), 'utf8');
 
@@ -32,13 +32,16 @@ await fs.writeFile(path.join(temp, 'seed.json'), JSON.stringify({
 const ytInjected = injectEntryHtml(tmpl, {
   descriptionText: 'desc',
   manifest: { audio: { A: { wav: '' }, B: { wav: '' }, C: { wav: '' }, D: { wav: '' }, E: { wav: '' }, X: { wav: '' } }, video: { A: { '1080p': '' }, B: { '1080p': '' }, C: { '1080p': '' }, D: { '1080p': '' }, E: { '1080p': '' }, X: { '1080p': '' } } },
-  sidebarConfig: { lookupNumber: 'LOOKUP-1', attributionSentence: 'attrib', buckets: ['A'], specialEventImage: null, credits: { artist: ['Artist'], instruments: ['Synth'], year: 2026, season: 'S2', location: 'Somewhere', video: { director: ['Dir'], cinematography: ['Cin'], editing: ['Edit'] }, audio: { recording: ['Rec'], mix: ['Mix'], master: ['Master'] } }, fileSpecs: { bitDepth: 24, sampleRate: 48000, channels: 'stereo', staticSizes: { A: '', B: '', C: '', D: '', E: '', X: '' } }, metadata: { sampleLength: '', tags: [] } },
+  sidebarConfig: { lookupNumber: 'LOOKUP-1', attributionSentence: 'attrib', buckets: ['A'], specialEventImage: null, credits: { artist: ['Artist'], instruments: ['Synth'], instrumentLinksEnabled: true, linksByPerson: { Artist: [{ label: 'Site', href: 'https://example.com' }] }, year: 2026, season: 'S2', location: 'Somewhere', video: { director: ['Dir'], cinematography: ['Cin'], editing: ['Edit'] }, audio: { recording: ['Rec'], mix: ['Mix'], master: ['Master'] } }, fileSpecs: { bitDepth: 24, sampleRate: 48000, channels: 'stereo', staticSizes: { A: '', B: '', C: '', D: '', E: '', X: '' } }, metadata: { sampleLength: '', tags: [] } },
   lifecycle: { publishedAt: '2024-01-07T00:00:00.000Z', updatedAt: '2026-02-21T00:00:00.000Z' },
   video: { mode: 'url', dataUrl: 'https://youtu.be/CSFGiU1gg4g?si=x', dataHtml: '' },
   title: 'Yt Test',
   authEnabled: true,
 });
-if (!ytInjected.html.includes('src="https://www.youtube-nocookie.com/embed/CSFGiU1gg4g"')) throw new Error('youtube normalization failed');
+// Video renders as the privacy click-to-load facade (not a live iframe); the
+// normalized youtube-nocookie embed URL rides on data-dx-video-embed.
+if (!ytInjected.html.includes('class="dex-video-facade"') || !ytInjected.html.includes('data-dx-video-embed="https://www.youtube-nocookie.com/embed/CSFGiU1gg4g"')) throw new Error('youtube facade/normalization failed');
+if (/<iframe[^>]+youtube/i.test(ytInjected.html)) throw new Error('generator emitted a live youtube iframe (should be gated)');
 if (!ytInjected.html.includes('data-person') || !ytInjected.html.includes('person-pin')) throw new Error('compiled credits pins missing');
 const run = (args) => spawnSync('node', [path.join(root, 'scripts/dex.mjs'), ...args], {
   cwd: temp,
@@ -107,7 +110,7 @@ const generatedSlug = generatedDirs[0].name;
 const outHtml = await fs.readFile(path.join(temp, 'entries', generatedSlug, 'index.html'), 'utf8');
 assertTemplateDrift(tmpl, outHtml);
 for (const needle of [
-  'src="https://www.youtube-nocookie.com/embed/CSFGiU1gg4g"',
+  'data-dx-video-embed="https://www.youtube-nocookie.com/embed/CSFGiU1gg4g"',
   'data-video-url="https://youtu.be/CSFGiU1gg4g?si=x"',
   'desc</p>',
   'class="dex-entry-desc-scroll"',
@@ -127,7 +130,8 @@ for (const needle of [
 
 const regionMatch = outHtml.match(/<!-- DEX:VIDEO_START -->([\s\S]*?)<!-- DEX:VIDEO_END -->/);
 if (!regionMatch) throw new Error('missing DEX:VIDEO region');
-if (!regionMatch[1].includes('<iframe')) throw new Error('DEX:VIDEO region missing iframe');
+if (!regionMatch[1].includes('class="dex-video-facade"')) throw new Error('DEX:VIDEO region missing click-to-load facade');
+if (/<iframe/i.test(regionMatch[1])) throw new Error('DEX:VIDEO region should be gated (no live iframe)');
 if (!regionMatch[1].includes('https://www.youtube-nocookie.com/embed/CSFGiU1gg4g')) {
   throw new Error('DEX:VIDEO region missing normalized YouTube embed URL');
 }

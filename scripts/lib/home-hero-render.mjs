@@ -224,20 +224,43 @@ export function renderHomeHero(snapshot, { featuredData = null, preview = false 
     display:flex;gap:1.75rem;width:100%;height:100%;margin:0;padding:0;box-sizing:border-box;">${slots}</div>`;
 }
 
-export function renderHomeHeroPreviewDocument(snapshot, { css = '', featuredData = null } = {}) {
+export function renderHomeHeroPreviewDocument(snapshot, { css = '', styles = [], featuredData = null } = {}) {
+  const styleSheets = Array.isArray(styles) && styles.length ? styles : [css];
+  const styleMarkup = styleSheets
+    .map((style, index) => `<style data-dx-hero-preview-stylesheet="${index + 1}">\n${String(style || '').replaceAll('</style', '<\\/style')}\n</style>`)
+    .join('\n');
   return `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <style>
-    html,body{margin:0;min-height:100%;font-family:"Courier Prime",monospace;background:
+  ${styleMarkup}
+  <style data-dx-hero-preview-shell>
+    html,body{margin:0;min-height:100%;background:
       radial-gradient(50rem 32rem at 55% 20%,rgba(255,25,16,.25),transparent 55%),
       radial-gradient(46rem 32rem at 30% 45%,rgba(47,206,255,.22),transparent 60%),#f7f7f8;color:#17181d}
-    body{padding:18px;box-sizing:border-box}a,button{pointer-events:none}
-    ${css}
+    body{box-sizing:border-box;padding:0!important}
+    [data-dx-hero-preview-frame],
+    [data-dx-hero-preview-frame]>.dx-block-content,
+    [data-dx-hero-preview-frame]>.dx-block-content>.dx-code-container{
+      position:static!important;inset:auto!important;transform:none!important;
+      min-height:0!important;height:auto!important;box-sizing:border-box!important
+    }
+    [data-dx-hero-preview-frame]>.dx-block-content,
+    [data-dx-hero-preview-frame]>.dx-block-content>.dx-code-container{
+      width:100%!important;max-width:none!important;margin:0!important;padding:0!important
+    }
+    a,button{pointer-events:none}
   </style>
 </head>
-<body class="homepage" data-dx-hero-preview="true">${renderHomeHero(snapshot, { featuredData, preview: true })}</body>
+<body class="homepage" data-dx-hero-preview="true">
+  <div id="block-448bd8f915f4abba552b" class="dx-block dx-block-code" data-dx-hero-preview-frame>
+    <div class="dx-block-content">
+      <div class="dx-code-container">
+        <div id="dx-home-hero-root" data-dx-home-hero-root>${renderHomeHero(snapshot, { featuredData, preview: true })}</div>
+      </div>
+    </div>
+  </div>
+</body>
 </html>`;
 }

@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { buildHomeHeroSnapshot, normalizeHomeHeroLibrary } from './lib/home-hero-schema.mjs';
 import { renderHomeHero } from './lib/home-hero-render.mjs';
-import { writeHomeHeroLibrary } from './lib/home-hero-store.mjs';
+import { previewHomeHero, writeHomeHeroLibrary } from './lib/home-hero-store.mjs';
 
 const NOW = '2026-06-28T00:00:00.000Z';
 
@@ -69,6 +69,16 @@ assert.equal(snapshot.sourceHash.length, 64);
 assert.match(renderHomeHero(snapshot), /data-layout="split"/);
 assert.match(renderHomeHero(snapshot), /data-module-type="campaign"/);
 assert.match(renderHomeHero(snapshot), /data-module-type="featured"/);
+const preview = await previewHomeHero(library(), 'current');
+assert.match(preview.html, /data-dx-hero-preview-frame/);
+assert.match(preview.html, /id="dx-home-hero-root"/);
+assert.match(preview.html, /data:font\/otf;base64,/);
+assert.match(preview.html, /data:font\/woff2;base64,/);
+assert.doesNotMatch(preview.html, /url\(["']?\/assets\/fonts\//);
+assert.ok(
+  (preview.html.match(/data-dx-hero-preview-stylesheet=/g) || []).length >= 5,
+  'preview CSS files must remain separate stylesheets so legacy parse errors cannot swallow hero CSS',
+);
 
 assert.throws(() => normalizeHomeHeroLibrary(library({
   compositions: [{

@@ -42,7 +42,7 @@
         </div>
         ${a}
       </article>
-    `}function Ne(e){let n=ce(e.progress,e.threshold),i=j(e),t=de(e),a=e.secret&&!e.unlocked,o=a?"Unlock criteria remain classified.":e.unlocked?"Achievement complete.":`${Math.min(e.progress,e.threshold)} of ${e.threshold} recorded.`,r=Array.from({length:13},(c,s)=>`<i style="--dx-achievement-depth-z:${-9+s*1.5}px"></i>`).join("");return`
+    `}function Ne(e){let n=ce(e.progress,e.threshold),i=j(e),t=de(e),a=e.secret&&!e.unlocked,o=a?"Unlock criteria remain classified.":e.unlocked?"Achievement complete.":`${Math.min(e.progress,e.threshold)} of ${e.threshold} recorded.`,r=Array.from({length:13},(c,s)=>`<i style="--dx-achievement-depth-z:${-4.5+s*0.75}px"></i>`).join("");return`
       <div
         class="dx-achievement-inspect-object${e.newly?" is-cinematic":""}"
         data-dx-achievement-inspect-object
@@ -229,7 +229,7 @@
         <div class="dx-achievements-toast-stack" data-dx-achievements-toasts></div>
       </div>
       <dialog class="dx-achievement-inspector" data-dx-achievement-inspector aria-modal="true">
-        <button type="button" class="dx-achievement-inspector-close" data-dx-achievement-inspector-close aria-label="Close achievement viewer">Close</button>
+        <button type="button" class="dx-achievement-inspector-close" data-dx-achievement-inspector-close aria-label="Close achievement viewer">×</button>
         <div class="dx-achievement-inspector-stage">
           <div class="dx-achievement-inspect-viewport" data-dx-achievement-inspect-viewport></div>
         </div>

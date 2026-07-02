@@ -52,8 +52,15 @@ async function main() {
     assert.ok(legacyRendered.includes(marker), `rollback hero missing production compatibility marker: ${marker}`);
   }
 
-  // The active composition renders the Season 3 human-credits experience.
-  const rendered = renderHomeHero(buildHomeHeroSnapshot(library));
+  // The Season 3 composition remains renderable regardless of which saved
+  // composition is currently active in the builder.
+  const season3Module = library.modules.find((item) => item.type === 'season3-human-credits' && !item.archived);
+  assert.ok(season3Module, 'a non-archived Season 3 module must be retained');
+  const season3Composition = library.compositions.find((item) => (
+    !item.archived && item.slots.length === 1 && item.slots[0] === season3Module.id
+  ));
+  assert.ok(season3Composition, 'a non-archived Season 3 composition must be retained');
+  const rendered = renderHomeHero(buildHomeHeroSnapshot(library, season3Composition.id));
   for (const marker of [
     'data-module-type="season3-human-credits"',
     'dx-s3__stage',

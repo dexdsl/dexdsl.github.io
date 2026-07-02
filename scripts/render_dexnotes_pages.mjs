@@ -151,8 +151,6 @@ function buildHead({
 <script defer src="/assets/dex-auth.js"></script>
 <script defer src="/assets/js/header-slot.js"></script>
 <script defer src="${escapeAttr(runtimeScript)}"></script>
-<link rel="preconnect" href="https://use.fonthost.net" crossorigin>
-<link rel="preconnect" href="https://p.fonthost.net" crossorigin>
 <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/dexnotes/rss.xml" />
 <!-- header code injection.css -->
 

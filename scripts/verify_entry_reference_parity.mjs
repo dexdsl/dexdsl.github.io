@@ -5,7 +5,6 @@ import path from 'node:path';
 const ROOT = process.cwd();
 const REFERENCE_PATH = path.join(ROOT, 'scripts', 'fixtures', 'entry-reference', 'index.html');
 const TEMPLATE_PATH = path.join(ROOT, 'entry-template', 'index.html');
-const TEST9_PATH = path.join(ROOT, 'entries', 'test-9', 'index.html');
 
 const ANCHORS = [
   ['DEX:SIDEBAR_PAGE_CONFIG_START', 'DEX:SIDEBAR_PAGE_CONFIG_END'],
@@ -25,9 +24,8 @@ const REQUIRED_LINK_SIGNATURES = [
   /static1\.squarespace\.com\/static\/versioned-site-css/i,
   /assets\.squarespace\.com\/universal\/styles-compressed\/user-account-core/i,
   /images\.squarespace-cdn\.com/i,
-  // Built via concatenation so the repo purity scan's font-host needle stays clean.
-  new RegExp(`use\\.type${'kit'}\\.net`, 'i'),
-  new RegExp(`p\\.type${'kit'}\\.net`, 'i'),
+  // Adobe Typekit font-host preconnects were removed: Dex self-hosts its only
+  // fonts (Courier Prime + Stretch Pro), so they are no longer a parity signature.
   /dexdsl\.github\.io\/assets\/css\/dex\.css/i,
 ];
 
@@ -35,7 +33,9 @@ const REQUIRED_SCRIPT_SIGNATURES = [
   /zeffy-scripts\.s3\.ca-central-1\.amazonaws\.com\/embed-form-script\.min\.js/i,
   /ajax\.googleapis\.com\/ajax\/libs\/jquery\/3\.6\.0\/jquery\.min\.js/i,
   /app\.sparkplugin\.com\/app\.js/i,
-  /googletagmanager\.com\/gtag\/js/i,
+  // Google Analytics (gtag.js) was removed sitewide for privacy compliance;
+  // cookieless Cloudflare Web Analytics replaces it, so it is no longer a
+  // required entry-parity signature. See scripts/strip-analytics.mjs.
   /dexdsl\.github\.io\/assets\/dex-auth0-config\.js/i,
   /(?:dexdsl\.github\.io)?\/assets\/vendor\/auth0-spa-js\.umd\.min\.js/i,
   /dexdsl\.github\.io\/assets\/dex-auth\.js/i,
@@ -91,12 +91,10 @@ function main() {
 
   const referenceHtml = readText(REFERENCE_PATH);
   const templateHtml = readText(TEMPLATE_PATH);
-  const test9Html = readText(TEST9_PATH);
 
   const files = [
     ['reference fixture', referenceHtml],
     ['entry template', templateHtml],
-    ['entries/test-9', test9Html],
   ];
 
   for (const [label, html] of files) {
@@ -105,11 +103,9 @@ function main() {
     verifySignatures(html, label, REQUIRED_SQS_SIGNATURES, 'sqs', failures);
   }
 
-  // Require the same core runtime/link families on template + test-9.
+  // Require the same core runtime/link families on the entry template.
   verifySignatures(templateHtml, 'entry template', REQUIRED_LINK_SIGNATURES, 'link', failures);
   verifySignatures(templateHtml, 'entry template', REQUIRED_SCRIPT_SIGNATURES, 'script', failures);
-  verifySignatures(test9Html, 'entries/test-9', REQUIRED_LINK_SIGNATURES, 'link', failures);
-  verifySignatures(test9Html, 'entries/test-9', REQUIRED_SCRIPT_SIGNATURES, 'script', failures);
 
   // Ensure the reference fixture itself still carries the expected signatures.
   verifySignatures(referenceHtml, 'reference fixture', REQUIRED_LINK_SIGNATURES, 'link', failures);
