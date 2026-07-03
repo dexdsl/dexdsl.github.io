@@ -10,7 +10,7 @@
       "season": "S1",
       "performer": "midori ataka",
       "instrument": "TWO ORGANS",
-      "image_src": "",
+      "image_src": "/assets/catalog/2-organs-midori-ataka.webp",
       "image_alt_raw": "",
       "status": "active"
     },
@@ -22,7 +22,7 @@
       "season": "S2",
       "performer": "Aidan Yeats",
       "instrument": "GUITAR AND VOICE",
-      "image_src": "",
+      "image_src": "/assets/catalog/aidan-yeats.webp",
       "image_alt_raw": "",
       "status": "active"
     },
@@ -34,7 +34,7 @@
       "season": "S1",
       "performer": "tyler jordan",
       "instrument": "AMPLIFIED KNIVES",
-      "image_src": "",
+      "image_src": "/assets/catalog/amplified-knives-tyler-jordan.webp",
       "image_alt_raw": "",
       "status": "active"
     },
@@ -46,7 +46,7 @@
       "season": "S2",
       "performer": "Cameron Church",
       "instrument": "AMPLIFIED PRINTER",
-      "image_src": "",
+      "image_src": "/assets/catalog/amplified-printer.webp",
       "image_alt_raw": "",
       "status": "active"
     },
@@ -58,7 +58,7 @@
       "season": "S1",
       "performer": "sam pluta",
       "instrument": "FE‌EDBACK TELEVISIONS",
-      "image_src": "",
+      "image_src": "/assets/catalog/amplified-tv-sam-pluta.webp",
       "image_alt_raw": "",
       "status": "active"
     },
@@ -70,7 +70,7 @@
       "season": "S2",
       "performer": "Anant Shah",
       "instrument": "ant shah",
-      "image_src": "",
+      "image_src": "/assets/catalog/anant-shah.webp",
       "image_alt_raw": "",
       "status": "active"
     },
@@ -82,7 +82,7 @@
       "season": "S2",
       "performer": "Andrew Chanover",
       "instrument": "ELECTRIC GUITAR",
-      "image_src": "",
+      "image_src": "/assets/catalog/andrew-chanover.webp",
       "image_alt_raw": "",
       "status": "active"
     },
@@ -94,7 +94,7 @@
       "season": "S2",
       "performer": "Paul Yorke, Sofi Jacquez",
       "instrument": "AS THOUGH I’M SLIP‌PING",
-      "image_src": "",
+      "image_src": "/assets/catalog/as-though-im-slipping.webp",
       "image_alt_raw": "",
       "status": "active"
     },
@@ -106,7 +106,7 @@
       "season": "S2",
       "performer": "Arlo Tomecek, Max Coleman",
       "instrument": "BAS‌SO‌ON + ELECTRONICS WITH GENERATIVE VIDEO",
-      "image_src": "",
+      "image_src": "/assets/catalog/bassoon-and-electronics.webp",
       "image_alt_raw": "",
       "status": "active"
     },
@@ -118,7 +118,7 @@
       "season": "S2",
       "performer": "Bojun Zhang",
       "instrument": "MODULAR SYNTH",
-      "image_src": "",
+      "image_src": "/assets/catalog/bojun-zhang.webp",
       "image_alt_raw": "",
       "status": "active"
     },
@@ -130,7 +130,7 @@
       "season": "S1",
       "performer": "em‎‏‏‎manuel losa",
       "instrument": "CEL‌LO",
-      "image_src": "",
+      "image_src": "/assets/catalog/cello-emmanuel-losa.webp",
       "image_alt_raw": "",
       "status": "active"
     },
@@ -142,7 +142,7 @@
       "season": "S1",
       "performer": "paul* hermansen",
       "instrument": "CYBERNETIC SCAT",
-      "image_src": "",
+      "image_src": "/assets/catalog/cybernetic-scat-paul-hermansen.webp",
       "image_alt_raw": "",
       "status": "active"
     },
@@ -166,7 +166,7 @@
       "season": "S1",
       "performer": "ethan bailey-gould",
       "instrument": "ELECTRIC GUITAR + pedals",
-      "image_src": "",
+      "image_src": "/assets/catalog/electric-guitar-pedals-ethan-bailey-gould.webp",
       "image_alt_raw": "",
       "status": "active"
     },
@@ -178,7 +178,7 @@
       "season": "S1",
       "performer": "cameron church",
       "instrument": "PREPARED HAM‌MERED DULCIMER + DIGITAL SIGNAL PROCES‌SOR",
-      "image_src": "",
+      "image_src": "/assets/catalog/hammered-dulcimer-cameron-church.webp",
       "image_alt_raw": "",
       "status": "active"
     },
@@ -202,7 +202,7 @@
       "season": "S2",
       "performer": "Ben Giroux",
       "instrument": "MULTIPLE PERCUS‏‏‎SION",
-      "image_src": "",
+      "image_src": "/assets/catalog/multiperc.webp",
       "image_alt_raw": "",
       "status": "active"
     },
@@ -214,7 +214,7 @@
       "season": "S1",
       "performer": "jared murphy",
       "instrument": "NO IMPUT MIXING BOARD",
-      "image_src": "",
+      "image_src": "/assets/catalog/no-input-mixer-jared-murphy.webp",
       "image_alt_raw": "",
       "status": "active"
     },
@@ -250,7 +250,7 @@
       "season": "S2",
       "performer": "Sky Macklay",
       "instrument": "PREPARED OBOE",
-      "image_src": "",
+      "image_src": "/assets/catalog/prepared-oboe-sky-macklay.webp",
       "image_alt_raw": "",
       "status": "active"
     },
@@ -274,7 +274,7 @@
       "season": "S2",
       "performer": "Grant Johnson",
       "instrument": "THIS IS A TANGIBLE SPACE for MULTIMEDIA",
-      "image_src": "",
+      "image_src": "/assets/catalog/this-is-a-tangible-space.webp",
       "image_alt_raw": "",
       "status": "active"
     },
@@ -286,7 +286,7 @@
       "season": "S2",
       "performer": "Tim Feeney",
       "instrument": "Prepared Floor Tom",
-      "image_src": "",
+      "image_src": "/assets/catalog/tim-feeney.webp",
       "image_alt_raw": "",
       "status": "active"
     },
@@ -298,7 +298,7 @@
       "season": "S1",
       "performer": "qiujiang levi lu",
       "instrument": "VOICE W/ EVERYDAY OBJECT MANIPULATION",
-      "image_src": "",
+      "image_src": "/assets/catalog/voice-everyday-object-manipulation-levi-lu.webp",
       "image_alt_raw": "",
       "status": "active"
     }
