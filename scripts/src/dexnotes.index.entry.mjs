@@ -10,11 +10,6 @@ import { mountPollEmbeds } from './shared/dx-polls-embed.entry.mjs';
 
   const APP_SELECTOR = '[data-dexnotes-index-app]';
   const INDEX_URL = '/data/dexnotes.index.json';
-  const BLOB_RUNTIME_KEY = '__dxDexnotesBlobRuntime';
-  const blobRuntimeHandle = {};
-
-  let blobRaf = 0;
-  let blobResizeHandler = null;
   let model = null;
   let fuse = null;
 
@@ -42,93 +37,6 @@ import { mountPollEmbeds } from './shared/dx-polls-embed.entry.mjs';
 
   function clearNode(node) {
     while (node.firstChild) node.removeChild(node.firstChild);
-  }
-
-  function startBlobMotion() {
-    if (window.__dxDisableRouteGooeyBootstrap) return;
-    const activeRuntime = window[BLOB_RUNTIME_KEY];
-    if (activeRuntime && activeRuntime.handle !== blobRuntimeHandle && typeof activeRuntime.stop === 'function') {
-      try {
-        activeRuntime.stop();
-      } catch {
-        // Ignore stale blob runtime failures.
-      }
-    }
-
-    const wrapper = document.getElementById('gooey-mesh-wrapper');
-    if (!wrapper || prefersReducedMotion()) return;
-
-    const blobs = Array.from(wrapper.querySelectorAll('.gooey-blob'));
-    if (blobs.length === 0) return;
-
-    const width = () => window.innerWidth;
-    const height = () => window.innerHeight;
-
-    blobs.forEach((blob) => {
-      blob._rad = blob.offsetWidth / 2;
-      if (!Number.isFinite(blob._x)) blob._x = width() / 2;
-      if (!Number.isFinite(blob._y)) blob._y = height() / 2;
-      if (!Number.isFinite(blob._vx) || !Number.isFinite(blob._vy)) {
-        const speed = 60 + Math.random() * 60;
-        const angle = Math.random() * Math.PI * 2;
-        blob._vx = Math.cos(angle) * speed * 0.24;
-        blob._vy = Math.sin(angle) * speed * 0.24;
-      }
-      blob._x = Math.min(Math.max(blob._rad, blob._x), width() - blob._rad);
-      blob._y = Math.min(Math.max(blob._rad, blob._y), height() - blob._rad);
-    });
-
-    if (blobRaf) cancelAnimationFrame(blobRaf);
-    let last = performance.now();
-    const tick = (now) => {
-      const dt = (now - last) / 1000;
-      last = now;
-
-      blobs.forEach((blob) => {
-        blob._x += blob._vx * dt;
-        blob._y += blob._vy * dt;
-
-        if (blob._x - blob._rad <= 0 && blob._vx < 0) blob._vx *= -1;
-        if (blob._x + blob._rad >= width() && blob._vx > 0) blob._vx *= -1;
-        if (blob._y - blob._rad <= 0 && blob._vy < 0) blob._vy *= -1;
-        if (blob._y + blob._rad >= height() && blob._vy > 0) blob._vy *= -1;
-
-        blob.style.transform = `translate(${blob._x}px, ${blob._y}px) translate(-50%, -50%)`;
-      });
-
-      blobRaf = requestAnimationFrame(tick);
-    };
-
-    blobRaf = requestAnimationFrame(tick);
-
-    if (blobResizeHandler) window.removeEventListener('resize', blobResizeHandler);
-    blobResizeHandler = () => {
-      blobs.forEach((blob) => {
-        blob._x = Math.min(Math.max(blob._rad, blob._x), width() - blob._rad);
-        blob._y = Math.min(Math.max(blob._rad, blob._y), height() - blob._rad);
-      });
-    };
-    window.addEventListener('resize', blobResizeHandler);
-    window[BLOB_RUNTIME_KEY] = { handle: blobRuntimeHandle, stop: stopBlobMotion };
-  }
-
-  function stopBlobMotion() {
-    if (blobRaf) {
-      cancelAnimationFrame(blobRaf);
-      blobRaf = 0;
-    }
-    if (blobResizeHandler) {
-      window.removeEventListener('resize', blobResizeHandler);
-      blobResizeHandler = null;
-    }
-    const activeRuntime = window[BLOB_RUNTIME_KEY];
-    if (activeRuntime && activeRuntime.handle === blobRuntimeHandle) {
-      try {
-        delete window[BLOB_RUNTIME_KEY];
-      } catch {
-        window[BLOB_RUNTIME_KEY] = undefined;
-      }
-    }
   }
 
   function buildFuse() {
@@ -600,8 +508,6 @@ import { mountPollEmbeds } from './shared/dx-polls-embed.entry.mjs';
     readLockedRouteFilter(app);
     readUrlState();
 
-    startBlobMotion();
-
     try {
       model = await loadModel();
       fuse = buildFuse();
@@ -611,9 +517,6 @@ import { mountPollEmbeds } from './shared/dx-polls-embed.entry.mjs';
       renderError(app, error);
     }
 
-    window.addEventListener('beforeunload', () => {
-      stopBlobMotion();
-    });
   }
 
   bootstrap();

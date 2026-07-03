@@ -22,6 +22,8 @@
   const ROUTE_TRANSITION_TYPE_ATTR = 'data-dx-route-transition-type';
   const GOOEY_MESH_STATE_STORAGE_KEY = '__dxGooeyMeshState';
   const GOOEY_MESH_CANONICAL_STYLE_ID = 'dx-gooey-mesh-canonical-style';
+  const GOOEY_GRAIN_RUNTIME_ID = 'dx-gooey-grain-runtime';
+  const GOOEY_GRAIN_RUNTIME_SRC = '/assets/js/dx-grain-overlay.js?v=20260702shader2';
   const ROUTE_CHROME_GUARD_STYLE_ID = 'dx-route-chrome-guard-style';
   const GOOEY_MESH_STATE_VERSION = 3;
   const GOOEY_SPEED_MIN = 7.2;
@@ -133,6 +135,7 @@
     '/assets/dex-auth.js',
     '/assets/vendor/auth0-spa-js.umd.min.js',
     '/assets/js/header-slot.js',
+    '/assets/js/dx-grain-overlay.js',
     '/assets/js/dx-scroll-dot.js',
   ]);
   const PERSISTENT_BODY_CLASSES = new Set([
@@ -1573,6 +1576,15 @@
       fragment.appendChild(document.importNode(node, true));
     }
 
+    const styles = Array.from(fragment.querySelectorAll('style'));
+    for (const style of styles) {
+      if (isLegacyGooeyMeshStyle(style)) {
+        style.remove();
+        continue;
+      }
+      neutralizePersistentBackdropSelectors(style);
+    }
+
     const scripts = Array.from(fragment.querySelectorAll('script'));
     for (const script of scripts) {
       if (script.getAttribute('src')) {
@@ -1641,6 +1653,36 @@
     return (hasMeshReference && (hasMeshLoop || hasMeshSelector)) || hasGradientLoop;
   }
 
+  function isLegacyGooeyMeshStyle(styleOrCss) {
+    const style = (styleOrCss instanceof HTMLStyleElement) ? styleOrCss : null;
+    const css = String(style ? (style.textContent || '') : (styleOrCss || ''));
+    const styleId = String(style && style.id || '').toLowerCase();
+    if (styleId === 'dex-entry-gooey-bg-style') return true;
+    if (!css) return false;
+
+    const targetsPersistentBackdrop = css.includes('#gooey-mesh-wrapper')
+      || css.includes('#scroll-gradient-bg');
+    if (!targetsPersistentBackdrop) return false;
+
+    const isDedicatedLegacyMeshBlock = css.length < 5000;
+    return isDedicatedLegacyMeshBlock && (css.includes('.gooey-blob')
+      || css.includes('.gooey-stage')
+      || css.includes('url("#goo")')
+      || css.includes("url('#goo')")
+      || css.includes('url("#noise")')
+      || css.includes("url('#noise')")
+      || css.includes('data-dex-entry-bg'));
+  }
+
+  function neutralizePersistentBackdropSelectors(style) {
+    if (!(style instanceof HTMLStyleElement)) return;
+    const css = String(style.textContent || '');
+    if (!css.includes('#gooey-mesh-wrapper') && !css.includes('#scroll-gradient-bg')) return;
+    style.textContent = css
+      .replaceAll('#gooey-mesh-wrapper', '#dx-route-local-gooey-disabled')
+      .replaceAll('#scroll-gradient-bg', '#dx-route-local-gradient-disabled');
+  }
+
   function ensureCanonicalGooeyMeshStyleTag() {
     const host = document.head || document.body;
     if (!host) return;
@@ -1663,6 +1705,33 @@
       '  inset: 0 !important;',
       '  filter: url("#goo") !important;',
       '}',
+      'html body #gooey-mesh-wrapper::before {',
+      '  content: none !important;',
+      '}',
+      'html body #gooey-mesh-wrapper #dx-gooey-grain-overlay {',
+      '  position: absolute !important;',
+      '  inset: 0 !important;',
+      '  z-index: 20 !important;',
+      '  overflow: hidden !important;',
+      '  pointer-events: none !important;',
+      '  opacity: 1 !important;',
+      '  mix-blend-mode: normal !important;',
+      '}',
+      'html body #gooey-mesh-wrapper #dx-gooey-grain-overlay[data-dx-grain-state="pending"] {',
+      '  opacity: 0 !important;',
+      '}',
+      'html body #gooey-mesh-wrapper #dx-gooey-grain-overlay[data-dx-grain-state="fallback"] {',
+      '  display: none !important;',
+      '}',
+      'html body #gooey-mesh-wrapper[data-dx-grain="ready"] .gooey-stage {',
+      '  opacity: 0 !important;',
+      '}',
+      'html body #gooey-mesh-wrapper #dx-gooey-grain-overlay[data-paper-shader],',
+      'html body #gooey-mesh-wrapper #dx-gooey-grain-overlay canvas {',
+      '  width: 100% !important;',
+      '  height: 100% !important;',
+      '  display: block !important;',
+      '}',
       'html body #gooey-mesh-wrapper .gooey-blob {',
       '  position: absolute !important;',
       '  top: 0 !important;',
@@ -1681,7 +1750,44 @@
       '  overflow: hidden !important;',
       '  pointer-events: none !important;',
       '}',
+      '@media (forced-colors: active), print {',
+      '  html body #gooey-mesh-wrapper #dx-gooey-grain-overlay {',
+      '    display: none !important;',
+      '  }',
+      '}',
     ].join('\n');
+  }
+
+  function ensureGooeyGrainOverlay() {
+    const wrapper = document.getElementById('gooey-mesh-wrapper');
+    if (!(wrapper instanceof HTMLElement)) return;
+
+    if (typeof window.__dxMountGooeyGrain === 'function') {
+      void Promise.resolve(window.__dxMountGooeyGrain(wrapper)).catch(() => {
+        wrapper.setAttribute('data-dx-grain', 'fallback');
+      });
+      return;
+    }
+
+    if (document.getElementById(GOOEY_GRAIN_RUNTIME_ID)) return;
+    const host = document.head || document.body;
+    if (!host) return;
+
+    const script = document.createElement('script');
+    script.id = GOOEY_GRAIN_RUNTIME_ID;
+    script.src = GOOEY_GRAIN_RUNTIME_SRC;
+    script.async = true;
+    script.setAttribute('data-dx-grain-runtime', 'true');
+    script.addEventListener('load', () => {
+      if (typeof window.__dxMountGooeyGrain !== 'function') return;
+      void Promise.resolve(window.__dxMountGooeyGrain(wrapper)).catch(() => {
+        wrapper.setAttribute('data-dx-grain', 'fallback');
+      });
+    }, { once: true });
+    script.addEventListener('error', () => {
+      wrapper.setAttribute('data-dx-grain', 'fallback');
+    }, { once: true });
+    host.appendChild(script);
   }
 
   function ensureRouteChromeGuardStyleTag() {
@@ -1758,6 +1864,7 @@
     ensureRouteChromeGuardStyleTag();
     ensureCanonicalGooeyMeshStyleTag();
     ensureCanonicalGooeyFilterMarkup();
+    ensureGooeyGrainOverlay();
   }
 
   function normalizeGooeyVelocityPair(vxRaw, vyRaw, fallbackAngle = 0) {
@@ -3392,7 +3499,7 @@
 
     for (const style of styles) {
       const id = String(style.id || '').trim();
-      if (!id || seen.has(id)) continue;
+      if (!id || seen.has(id) || isLegacyGooeyMeshStyle(style)) continue;
       seen.add(id);
       definitions.push({
         id,
@@ -4098,6 +4205,11 @@
       blob._x = clampGooeyCoordinate(blob._x, radius, Math.max(vw - radius, radius));
       blob._y = clampGooeyCoordinate(blob._y, radius, Math.max(vh - radius, radius));
       applyGooeyBlobTransform(blob);
+    }
+    if (typeof window.__dxSyncGooeyGrainMesh === 'function') {
+      try {
+        window.__dxSyncGooeyGrainMesh(gooeyDriverWrapper, gooeyDriverBlobs);
+      } catch {}
     }
     gooeyDriverLastFrame = now;
   }

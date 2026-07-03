@@ -16,27 +16,6 @@ const SHELL_SOURCE_PATH = path.join(ROOT, 'docs', 'dexnotes', 'index.html');
 const FALLBACK_SHELL_SOURCE_PATH = path.join(ROOT, 'docs', 'index.html');
 const SITE_ORIGIN = 'https://dexdsl.github.io';
 
-const GOOEY_MESH_MARKUP = `
-      <div id="gooey-mesh-wrapper">
-        <div class="gooey-stage">
-          <div class="gooey-blob" style="--d:36vmax;--g1a:#ff5f6d;--g1b:#ffc371;--g2a:#47c9e5;--g2b:#845ef7"></div>
-          <div class="gooey-blob" style="--d:32vmax;--g1a:#7F00FF;--g1b:#E100FF;--g2a:#00DBDE;--g2b:#FC00FF"></div>
-          <div class="gooey-blob" style="--d:33vmax;--g1a:#FFD452;--g1b:#FFB347;--g2a:#FF8456;--g2b:#FF5E62"></div>
-          <div class="gooey-blob" style="--d:37vmax;--g1a:#13F1FC;--g1b:#0470DC;--g2a:#A1FFCE;--g2b:#FAFFD1"></div>
-          <div class="gooey-blob" style="--d:27vmax;--g1a:#F9516D;--g1b:#FF9A44;--g2a:#FA8BFF;--g2b:#6F7BF7"></div>
-        </div>
-        <svg id="goo-filter" aria-hidden="true">
-          <defs>
-            <filter id="goo">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="15" result="blur"></feGaussianBlur>
-              <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0                   0 1 0 0 0                   0 0 1 0 0                   0 0 0 18 -8" result="goo"></feColorMatrix>
-              <feBlend in="SourceGraphic" in2="goo" mode="normal"></feBlend>
-            </filter>
-          </defs>
-        </svg>
-      </div>
-`;
-
 function readShellParts() {
   const sourcePath = fs.existsSync(SHELL_SOURCE_PATH) ? SHELL_SOURCE_PATH : FALLBACK_SHELL_SOURCE_PATH;
   if (!fs.existsSync(sourcePath)) {
@@ -209,7 +188,7 @@ function buildEntryMain(slug) {
 
 function buildDocument(shellParts, pageMeta, mainHtml) {
   const head = buildHead(pageMeta);
-  return `${shellParts.htmlPrefix}${head}${shellParts.bodyPrefix}${GOOEY_MESH_MARKUP}\n${mainHtml}${shellParts.bodySuffix}`;
+  return `${shellParts.htmlPrefix}${head}${shellParts.bodyPrefix}\n${mainHtml}${shellParts.bodySuffix}`;
 }
 
 function writePage(relativePath, html) {

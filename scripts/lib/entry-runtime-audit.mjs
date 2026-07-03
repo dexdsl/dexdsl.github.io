@@ -21,8 +21,8 @@ const AUTH_TRIO_PATTERNS = [
 ];
 
 const REQUIRED_RUNTIME_MARKERS = [
-  'id="scroll-gradient-bg"',
-  'id="gooey-mesh-wrapper"',
+  'src="/assets/js/dx-grain-overlay.js?v=20260702shader2"',
+  'src="/assets/js/header-slot.js?v=20260702shader2"',
   'class="dex-breadcrumb"',
   'href="/css/components/dx-entry-runtime.css"',
 ];

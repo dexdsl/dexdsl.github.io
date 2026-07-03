@@ -212,7 +212,8 @@ body {
 <script defer src="/assets/dex-auth0-config.js"></script>
 <script defer src="/assets/dex-auth.js"></script>
 <script defer src="/assets/js/dx-favorites.js"></script>
-<script defer src="/assets/js/header-slot.js"></script>
+<script id="dx-gooey-grain-runtime" defer src="/assets/js/dx-grain-overlay.js?v=20260702shader2"></script>
+<script defer src="/assets/js/header-slot.js?v=20260702shader2"></script>
 <script defer src="/assets/js/dx-scroll-dot.js"></script>
 <script defer src="/assets/js/dx-marketing-newsletter.js"></script>
 <script defer src="/assets/js/interactive-hover.js"></script>
@@ -2080,27 +2081,7 @@ footer.dex-footer { position:relative; z-index:1; isolation:isolate; }
   </svg>
 </div>
 
-<script>
-;(function(){
-  /* Gooey motion is owned by the persistent header-slot runtime. */
-  /* Scroll-gradient (RAF-throttled). */
-  const grad=document.getElementById('scroll-gradient-bg'),
-        start=[252,252,252], end=[35,35,35];
-  const lerp=(a,b,t)=>a+(b-a)*t;
-  let rafId=null;
-  const update=()=>{
-    const max=document.documentElement.scrollHeight-innerHeight||1;
-    const t=Math.min(Math.max(scrollY/max,0),1);
-    const rgb=start.map((s,i)=>Math.round(lerp(s,end[i],t)));
-    grad.style.background=`rgb(${rgb.join(',')})`;
-    rafId=null;
-  };
-  addEventListener('scroll',()=>{
-    if(!rafId) rafId=requestAnimationFrame(update);
-  },{passive:true});
-  update(); /* initial paint */
-})();
-</script>
+
 
   
 </div>

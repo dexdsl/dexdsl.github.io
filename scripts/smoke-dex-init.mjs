@@ -290,12 +290,18 @@ if (!hasSqsAnnouncementContract) {
   throw new Error('portable output should preserve sqs announcement-bar class family for restored template');
 }
 for (const needle of [
+  '/assets/js/dx-grain-overlay.js?v=20260702shader2',
+  '/assets/js/header-slot.js?v=20260702shader2',
+]) {
+  if (!portableHtml.includes(needle)) throw new Error(`portable output missing persistent backdrop owner: ${needle}`);
+}
+for (const needle of [
   'id="scroll-gradient-bg"',
   'id="gooey-mesh-wrapper"',
   'id="dex-entry-gooey-bg-style"',
   'id="dex-entry-gooey-bg-script"',
 ]) {
-  if (!portableHtml.includes(needle)) throw new Error(`portable output missing blob background contract: ${needle}`);
+  if (portableHtml.includes(needle)) throw new Error(`portable output contains route-local backdrop ownership: ${needle}`);
 }
 if (/id=["']noise["']/i.test(portableHtml) || /url\((["'])#noise\1\)/i.test(portableHtml)) {
   throw new Error('portable output should not include legacy grain filter');

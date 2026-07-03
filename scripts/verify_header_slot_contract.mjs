@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { hasRouteLocalMeshOwnership } from './lib/route-local-mesh-html.mjs';
 
 const ROOT = process.cwd();
 const DOCS_DIR = path.join(ROOT, 'docs');
@@ -9,8 +10,15 @@ const SLOT_RUNTIME_PATH = path.join(ROOT, 'public', 'assets', 'js', 'header-slot
 const AUTH_RUNTIME_PATH = path.join(ROOT, 'public', 'assets', 'dex-auth.js');
 const CATALOG_MESH_SOURCE_PATH = path.join(ROOT, 'scripts', 'src', 'shared', 'dx-gooey-mesh.entry.mjs');
 const BAG_SOURCE_PATH = path.join(ROOT, 'scripts', 'src', 'bag.app.entry.mjs');
+const ROUTE_MESH_SOURCE_PATHS = [
+  CATALOG_MESH_SOURCE_PATH,
+  path.join(ROOT, 'scripts', 'src', 'call.editorial.entry.mjs'),
+  path.join(ROOT, 'scripts', 'src', 'dexnotes.index.entry.mjs'),
+  path.join(ROOT, 'scripts', 'src', 'dexnotes.entry.entry.mjs'),
+];
 const HOME_DOCUMENT_PATH = path.join(ROOT, 'docs', 'index.html');
-const REQUIRED_SCRIPT_TAG_NEEDLE = '/assets/js/header-slot.js';
+const HEADER_SLOT_RUNTIME_SRC = '/assets/js/header-slot.js?v=20260702shader2';
+const GRAIN_OVERLAY_RUNTIME_SRC = '/assets/js/dx-grain-overlay.js?v=20260702shader2';
 
 const REQUIRED_MARKERS = [
   '--dx-slot-top',
@@ -21,6 +29,8 @@ const REQUIRED_MARKERS = [
   'body.dx-slot-enabled',
   '#dx-slot-scroll-root',
   '#dx-slot-foreground-root',
+  'body.dx-route-show-mesh #siteWrapper',
+  'body.dex-entry-page #siteWrapper',
 ];
 
 const REQUIRED_DOC_PATHS = [
@@ -104,6 +114,12 @@ function verifyGlassParityContract(failures) {
     'function ensureRouteChromeGuardStyleTag()',
     '#dx-mobile-menu[aria-hidden="true"]',
     'function collectManagedInlineStyleDefinitions(',
+    "'/assets/js/dx-grain-overlay.js',",
+    'function isLegacyGooeyMeshStyle(',
+    'if (isLegacyGooeyMeshStyle(style)) {',
+    'style.remove();',
+    'neutralizePersistentBackdropSelectors(style);',
+    'if (!id || seen.has(id) || isLegacyGooeyMeshStyle(style)) continue;',
     'async function preloadRouteScripts(',
     'const routeDocumentPrefetches = new Map();',
     'function canPrefetchRoutes()',
@@ -145,6 +161,12 @@ function verifyGlassParityContract(failures) {
     'const GOOEY_WAX_TRANSFER_RATE = 0.28;',
     'const GOOEY_WAX_RELAX_RATE = 0.22;',
     'const GOOEY_WAX_MAX_MASS = 2.85;',
+    "const GOOEY_GRAIN_RUNTIME_SRC = '/assets/js/dx-grain-overlay.js?v=20260702shader2';",
+    'function ensureGooeyGrainOverlay()',
+    'window.__dxMountGooeyGrain',
+    'window.__dxSyncGooeyGrainMesh(gooeyDriverWrapper, gooeyDriverBlobs);',
+    '#dx-gooey-grain-overlay',
+    'mix-blend-mode: normal',
     'function resolveGooeyWaxMass(blob)',
     'function repairPersistentGooeyMesh()',
     'exchange area while deeply overlapped',
@@ -161,11 +183,20 @@ function verifyGlassParityContract(failures) {
     }
   }
 
-  if (!catalogMeshSource.includes('window.__dxDisableRouteGooeyBootstrap')) {
-    failures.push('Catalog gooey-mesh source must defer to the persistent header-slot driver');
+  if (!catalogMeshSource.includes('header-slot.js is the single mesh owner')) {
+    failures.push('Catalog mesh adapter must delegate ownership to the persistent header-slot driver');
   }
-  if (!bagSource.includes('const persistentMeshDriver = window.__dxDisableRouteGooeyBootstrap === true;')) {
-    failures.push('Bag mesh bootstrap must defer to the persistent header-slot driver');
+  if (!bagSource.includes("window.dispatchEvent(new CustomEvent('dx:gooey-mesh:request'))")) {
+    failures.push('Bag route must request the persistent mesh without creating a local fallback');
+  }
+  if (bagSource.includes('SHARED_MESH_BOOTSTRAP_ATTR') || bagSource.includes('data-dx-shared-mesh-bootstrap')) {
+    failures.push('Bag route must not install a route-local mesh bootstrap');
+  }
+  for (const sourcePath of ROUTE_MESH_SOURCE_PATHS) {
+    const source = readText(sourcePath);
+    if (source.includes('gooey-mesh-wrapper') && source.includes('requestAnimationFrame')) {
+      failures.push(`${path.relative(ROOT, sourcePath)} must not animate the persistent mesh`);
+    }
   }
   if (homeDocument.includes("const blobs=[...document.querySelectorAll('#gooey-mesh-wrapper .gooey-blob')]")) {
     failures.push('Home document must not start a second route-local gooey-mesh loop');
@@ -307,6 +338,21 @@ function verifyGlassParityContract(failures) {
   }
 }
 
+function verifyRouteLocalMeshOwnership(failures) {
+  const htmlFiles = listHtmlFiles(DOCS_DIR);
+  for (const filePath of htmlFiles) {
+    const relativePath = path.relative(DOCS_DIR, filePath);
+    const html = readText(filePath);
+    if (hasRouteLocalMeshOwnership(html)) {
+      failures.push(`route-local mesh style or runtime found: docs/${relativePath}`);
+    }
+    if (relativePath === 'index.html') continue;
+    if (/\bid=(["'])(?:scroll-gradient-bg|gooey-mesh-wrapper)\1/i.test(html)) {
+      failures.push(`route-local backdrop markup found: docs/${relativePath}`);
+    }
+  }
+}
+
 function verifyHtmlCoverage(failures) {
   if (!fs.existsSync(DOCS_DIR)) {
     failures.push('docs directory is missing');
@@ -315,6 +361,35 @@ function verifyHtmlCoverage(failures) {
 
   const htmlFiles = listHtmlFiles(DOCS_DIR);
   let requiredCount = 0;
+  const verifyRuntimePair = (html, rel) => {
+    const scriptTags = Array.from(html.matchAll(/<script\b[^>]*\bsrc=(["'])([^"']+)\1[^>]*>\s*<\/script>/gi));
+    const pathMatches = (pathname) => scriptTags.filter((match) => {
+      try {
+        return new URL(match[2], 'https://dex.local').pathname === pathname;
+      } catch {
+        return String(match[2] || '').split('?')[0] === pathname;
+      }
+    });
+    const headerScripts = pathMatches('/assets/js/header-slot.js');
+    const grainScripts = pathMatches('/assets/js/dx-grain-overlay.js');
+
+    if (headerScripts.length !== 1) {
+      failures.push(`${rel} must include exactly one header-slot runtime (found ${headerScripts.length})`);
+    } else if (headerScripts[0][2] !== HEADER_SLOT_RUNTIME_SRC) {
+      failures.push(`${rel} has non-canonical header-slot runtime: ${headerScripts[0][2]}`);
+    }
+    if (grainScripts.length !== 1) {
+      failures.push(`${rel} must include exactly one grain overlay runtime (found ${grainScripts.length})`);
+    } else if (grainScripts[0][2] !== GRAIN_OVERLAY_RUNTIME_SRC) {
+      failures.push(`${rel} has non-canonical grain overlay runtime: ${grainScripts[0][2]}`);
+    }
+
+    const grainIndex = html.indexOf(`src="${GRAIN_OVERLAY_RUNTIME_SRC}"`);
+    const headerIndex = html.indexOf(`src="${HEADER_SLOT_RUNTIME_SRC}"`);
+    if (grainIndex < 0 || headerIndex < 0 || grainIndex > headerIndex) {
+      failures.push(`${rel} must load the grain overlay before header-slot`);
+    }
+  };
 
   for (const absolutePath of htmlFiles) {
     const rel = path.relative(ROOT, absolutePath);
@@ -323,9 +398,7 @@ function verifyHtmlCoverage(failures) {
 
     if (required) {
       requiredCount += 1;
-      if (!html.includes(REQUIRED_SCRIPT_TAG_NEEDLE)) {
-        failures.push(`missing header-slot runtime include in ${rel}`);
-      }
+      verifyRuntimePair(html, rel);
     }
 
     const slotOverrideRegex = /#dx-slot-(?:scroll-root|foreground-root)[\s\S]{0,280}?z-index\s*:\s*([0-9]+)/gi;
@@ -341,9 +414,7 @@ function verifyHtmlCoverage(failures) {
   for (const relPath of REQUIRED_DOC_PATHS) {
     const absolutePath = path.join(ROOT, relPath);
     const html = readText(absolutePath);
-    if (!html.includes(REQUIRED_SCRIPT_TAG_NEEDLE)) {
-      failures.push(`required legacy route missing header-slot include: ${relPath}`);
-    }
+    if (!needsHeaderSlotRuntime(html)) verifyRuntimePair(html, relPath);
   }
 
   if (requiredCount === 0) {
@@ -358,6 +429,7 @@ function main() {
   readText(AUTH_RUNTIME_PATH);
   verifyCssContract(failures);
   verifyGlassParityContract(failures);
+  verifyRouteLocalMeshOwnership(failures);
   verifyHtmlCoverage(failures);
 
   if (failures.length > 0) {

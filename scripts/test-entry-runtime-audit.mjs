@@ -18,10 +18,10 @@ async function main() {
   <script defer src="/assets/vendor/auth0-spa-js.umd.min.js"></script>
   <script defer src="/assets/dex-auth0-config.js"></script>
   <script defer src="/assets/dex-auth.js"></script>
+  <script defer src="/assets/js/dx-grain-overlay.js?v=20260702shader2"></script>
+  <script defer src="/assets/js/header-slot.js?v=20260702shader2"></script>
   <link rel="stylesheet" href="/css/components/dx-entry-runtime.css">
   </head><body>
-  <div id="scroll-gradient-bg"></div>
-  <div id="gooey-mesh-wrapper"></div>
   <div class="dex-breadcrumb"></div>
   <script id="dex-sidebar-config" type="application/json">{ "downloads": {} }</script>
   <script id="dex-sidebar-page-config" type="application/json">{ "downloads": { "recordingIndexPdfRef": "asset:rec-pdf-1", "recordingIndexBundleRef": "bundle:recording-index:SUB01-P.Dru Un AV2026:all", "recordingIndexSourceUrl": "https://docs.google.com/spreadsheets/d/example/edit?gid=0#gid=0" } }</script>
@@ -39,9 +39,10 @@ async function main() {
   <script defer src="/assets/vendor/auth0-spa-js.umd.min.js"></script>
   <script defer src="/assets/dex-auth0-config.js"></script>
   <script defer src="/assets/dex-auth.js"></script>
+  <script defer src="/assets/js/dx-grain-overlay.js?v=20260702shader2"></script>
+  <script defer src="/assets/js/header-slot.js?v=20260702shader2"></script>
+  <link rel="stylesheet" href="/css/components/dx-entry-runtime.css">
   </head><body>
-  <div id="scroll-gradient-bg"></div>
-  <div id="gooey-mesh-wrapper"></div>
   <div class="dex-breadcrumb"></div>
   <script id="dex-sidebar-config" type="application/json">{ "downloads": {} }</script>
   <script id="dex-sidebar-page-config" type="application/json">{}</script>

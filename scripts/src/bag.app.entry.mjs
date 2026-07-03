@@ -18,9 +18,6 @@
   const BACK_CRUMB_MEMORY_KEY = 'dex:bag:back-crumb:v1';
   const BREADCRUMB_FALLBACK_HREF = '/catalog/';
   const RECEIPT_VISIBLE_LIMIT = 8;
-  const SHARED_MESH_TEMPLATE_PATHS = ['/__dx/chrome-template', '/', '/index.html', '/docs/', '/docs/index.html'];
-  const SHARED_MESH_BOOTSTRAP_ATTR = 'data-dx-shared-mesh-bootstrap';
-  const SHARED_MESH_STYLE_ATTR = 'data-dx-shared-mesh-style';
   const CATALOG_ENTRIES_ENDPOINTS = ['/assets/data/catalog.entries.json', '/data/catalog.entries.json'];
   const BAG_DESCRIPTION_COPY = 'Review queued selections across entries, adjust scope, and export one merged download bundle.';
   const BAG_SIGNED_IN_PREFIX = 'Signed in as';
@@ -1996,81 +1993,9 @@
   }
 
   async function ensureSharedMeshBackdropElements() {
-    if (!(document.body instanceof HTMLElement)) return;
-    const hasGradient = document.getElementById('scroll-gradient-bg') instanceof HTMLElement;
-    const hasMesh = document.getElementById('gooey-mesh-wrapper') instanceof HTMLElement;
-    const persistentMeshDriver = window.__dxDisableRouteGooeyBootstrap === true;
-    const hasMeshStyle = persistentMeshDriver
-      || document.querySelector(`style[${SHARED_MESH_STYLE_ATTR}]`) instanceof HTMLStyleElement;
-    const hasMeshBootstrap = persistentMeshDriver
-      || document.querySelector(`script[${SHARED_MESH_BOOTSTRAP_ATTR}]`) instanceof HTMLScriptElement;
-    if (hasGradient && hasMesh && hasMeshStyle && hasMeshBootstrap) return;
-
-    for (const path of SHARED_MESH_TEMPLATE_PATHS) {
-      const templatePath = toText(path).trim();
-      if (!templatePath) continue;
-      try {
-        const response = await fetch(templatePath, {
-          credentials: 'same-origin',
-          headers: { accept: 'text/html,*/*;q=0.9' },
-        });
-        const contentType = toText(response.headers.get('content-type')).toLowerCase();
-        if (!response.ok || !contentType.includes('text/html')) continue;
-        const html = await response.text();
-        const parsed = new DOMParser().parseFromString(html, 'text/html');
-        if (!(parsed?.body instanceof HTMLElement)) continue;
-
-        for (const backdropId of ['scroll-gradient-bg', 'gooey-mesh-wrapper']) {
-          if (document.getElementById(backdropId)) continue;
-          const sourceNode = parsed.getElementById(backdropId);
-          if (!(sourceNode instanceof HTMLElement)) continue;
-          const clone = document.importNode(sourceNode, true);
-          if (document.body.firstChild) document.body.insertBefore(clone, document.body.firstChild);
-          else document.body.appendChild(clone);
-        }
-
-        if (!persistentMeshDriver && !(document.querySelector(`style[${SHARED_MESH_STYLE_ATTR}]`) instanceof HTMLStyleElement)) {
-          const meshStyles = Array.from(parsed.querySelectorAll('style')).filter((styleNode) => {
-            if (!(styleNode instanceof HTMLStyleElement)) return false;
-            const content = toText(styleNode.textContent);
-            return content.includes('#scroll-gradient-bg')
-              && content.includes('#gooey-mesh-wrapper')
-              && content.includes('.gooey-blob');
-          });
-          if (meshStyles.length) {
-            const merged = meshStyles.map((styleNode) => toText(styleNode.textContent)).join('\n\n');
-            const runtimeStyle = document.createElement('style');
-            runtimeStyle.setAttribute(SHARED_MESH_STYLE_ATTR, 'bag');
-            runtimeStyle.textContent = merged;
-            document.head.appendChild(runtimeStyle);
-          }
-        }
-
-        if (!persistentMeshDriver && !document.querySelector(`script[${SHARED_MESH_BOOTSTRAP_ATTR}]`)) {
-          const meshBootstrap = Array.from(parsed.querySelectorAll('script')).find((script) => {
-            if (!(script instanceof HTMLScriptElement)) return false;
-            const content = toText(script.textContent);
-            return content.includes('#gooey-mesh-wrapper .gooey-blob')
-              && content.includes("document.getElementById('scroll-gradient-bg')")
-              && content.includes('requestAnimationFrame');
-          });
-          if (meshBootstrap instanceof HTMLScriptElement) {
-            const runtime = document.createElement('script');
-            runtime.setAttribute(SHARED_MESH_BOOTSTRAP_ATTR, 'bag');
-            runtime.textContent = toText(meshBootstrap.textContent);
-            document.body.appendChild(runtime);
-          }
-        }
-
-        const ready = document.getElementById('scroll-gradient-bg') instanceof HTMLElement
-          && document.getElementById('gooey-mesh-wrapper') instanceof HTMLElement
-          && (persistentMeshDriver
-            || document.querySelector(`style[${SHARED_MESH_STYLE_ATTR}]`) instanceof HTMLStyleElement)
-          && (persistentMeshDriver
-            || document.querySelector(`script[${SHARED_MESH_BOOTSTRAP_ATTR}]`) instanceof HTMLScriptElement);
-        if (ready) return;
-      } catch {}
-    }
+    try {
+      window.dispatchEvent(new CustomEvent('dx:gooey-mesh:request'));
+    } catch {}
   }
 
   function mount() {

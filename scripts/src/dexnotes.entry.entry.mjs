@@ -1,4 +1,4 @@
-import { bindDexButtonMotion, bindPaginationMotion, prefersReducedMotion, revealStagger } from './shared/dx-motion.entry.mjs';
+import { bindDexButtonMotion, bindPaginationMotion, revealStagger } from './shared/dx-motion.entry.mjs';
 import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry.mjs';
 import { mountPollEmbeds } from './shared/dx-polls-embed.entry.mjs';
 
@@ -12,11 +12,6 @@ import { mountPollEmbeds } from './shared/dx-polls-embed.entry.mjs';
   const COMMENTS_URL = '/data/dexnotes.comments.json';
   const PROGRESS_ID = 'dx-dexnotes-reading-progress';
   const ROUTE_TRANSITION_OUT_START = 'dx:route-transition-out:start';
-  const BLOB_RUNTIME_KEY = '__dxDexnotesBlobRuntime';
-  const blobRuntimeHandle = {};
-
-  let blobRaf = 0;
-  let blobResizeHandler = null;
   let progressRaf = 0;
   let progressBound = false;
   let progressScrollTarget = null;
@@ -132,148 +127,7 @@ import { mountPollEmbeds } from './shared/dx-polls-embed.entry.mjs';
     if (node && node.parentNode) node.parentNode.removeChild(node);
   }
 
-  function startBlobMotion() {
-    // header-slot.js owns the gooey-mesh loop for the persistent wrapper on every
-    // route. When present it sets this flag, so this route-script must not start a
-    // second, competing loop (that double-drove the blobs / "sped up" the mesh).
-    if (window.__dxDisableRouteGooeyBootstrap) return;
-    const activeRuntime = window[BLOB_RUNTIME_KEY];
-    if (activeRuntime && activeRuntime.handle !== blobRuntimeHandle && typeof activeRuntime.stop === 'function') {
-      try {
-        activeRuntime.stop();
-      } catch {
-        // Ignore stale blob runtime failures.
-      }
-    }
-
-    const wrapper = document.getElementById('gooey-mesh-wrapper');
-    if (!wrapper) return;
-
-    const stage = wrapper.querySelector('.gooey-stage') || wrapper;
-    let blobs = Array.from(wrapper.querySelectorAll('.gooey-blob'));
-    if (blobs.length === 0 && stage instanceof HTMLElement) {
-      const defaults = [
-        { size: '44vw', g1a: 'rgba(255, 42, 27, 0.56)', g1b: 'rgba(255, 164, 16, 0.42)', g2a: 'rgba(24, 36, 56, 0.26)', g2b: 'rgba(24, 36, 56, 0)' },
-        { size: '40vw', g1a: 'rgba(255, 16, 74, 0.42)', g1b: 'rgba(255, 120, 18, 0.36)', g2a: 'rgba(34, 44, 68, 0.24)', g2b: 'rgba(34, 44, 68, 0)' },
-        { size: '38vw', g1a: 'rgba(255, 71, 45, 0.46)', g1b: 'rgba(255, 184, 46, 0.34)', g2a: 'rgba(21, 29, 48, 0.2)', g2b: 'rgba(21, 29, 48, 0)' },
-      ];
-      defaults.forEach((preset) => {
-        const blob = document.createElement('div');
-        blob.className = 'gooey-blob';
-        blob.style.setProperty('--d', preset.size);
-        blob.style.setProperty('--g1a', preset.g1a);
-        blob.style.setProperty('--g1b', preset.g1b);
-        blob.style.setProperty('--g2a', preset.g2a);
-        blob.style.setProperty('--g2b', preset.g2b);
-        stage.appendChild(blob);
-      });
-      blobs = Array.from(wrapper.querySelectorAll('.gooey-blob'));
-    }
-    if (blobs.length === 0) return;
-
-    const width = () => window.innerWidth;
-    const height = () => window.innerHeight;
-    const placeStatic = () => {
-      const columns = Math.ceil(Math.sqrt(blobs.length));
-      const rows = Math.ceil(blobs.length / columns);
-      blobs.forEach((blob, index) => {
-        const col = index % columns;
-        const row = Math.floor(index / columns);
-        const x = ((col + 1) / (columns + 1)) * width();
-        const y = ((row + 1) / (rows + 1)) * height();
-        blob.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
-      });
-    };
-
-    blobs.forEach((blob) => {
-      blob._rad = blob.offsetWidth / 2;
-      if (!Number.isFinite(blob._x)) blob._x = width() / 2;
-      if (!Number.isFinite(blob._y)) blob._y = height() / 2;
-      if (!Number.isFinite(blob._vx) || !Number.isFinite(blob._vy)) {
-        const speed = 60 + Math.random() * 60;
-        const angle = Math.random() * Math.PI * 2;
-        blob._vx = Math.cos(angle) * speed * 0.24;
-        blob._vy = Math.sin(angle) * speed * 0.24;
-      }
-      blob._x = Math.min(Math.max(blob._rad, blob._x), width() - blob._rad);
-      blob._y = Math.min(Math.max(blob._rad, blob._y), height() - blob._rad);
-    });
-
-    if (blobRaf) {
-      cancelAnimationFrame(blobRaf);
-      blobRaf = 0;
-    }
-    if (blobResizeHandler) {
-      window.removeEventListener('resize', blobResizeHandler);
-      blobResizeHandler = null;
-    }
-
-    if (prefersReducedMotion()) {
-      wrapper.classList.add('dx-gooey-static');
-      placeStatic();
-      blobResizeHandler = () => {
-        placeStatic();
-      };
-      window.addEventListener('resize', blobResizeHandler);
-      window[BLOB_RUNTIME_KEY] = { handle: blobRuntimeHandle, stop: stopBlobMotion };
-      return;
-    }
-
-    wrapper.classList.remove('dx-gooey-static');
-    if (blobRaf) cancelAnimationFrame(blobRaf);
-    let last = performance.now();
-    const tick = (now) => {
-      const dt = (now - last) / 1000;
-      last = now;
-
-      blobs.forEach((blob) => {
-        blob._x += blob._vx * dt;
-        blob._y += blob._vy * dt;
-
-        if (blob._x - blob._rad <= 0 && blob._vx < 0) blob._vx *= -1;
-        if (blob._x + blob._rad >= width() && blob._vx > 0) blob._vx *= -1;
-        if (blob._y - blob._rad <= 0 && blob._vy < 0) blob._vy *= -1;
-        if (blob._y + blob._rad >= height() && blob._vy > 0) blob._vy *= -1;
-
-        blob.style.transform = `translate(${blob._x}px, ${blob._y}px) translate(-50%, -50%)`;
-      });
-
-      blobRaf = requestAnimationFrame(tick);
-    };
-
-    blobRaf = requestAnimationFrame(tick);
-
-    blobResizeHandler = () => {
-      blobs.forEach((blob) => {
-        blob._x = Math.min(Math.max(blob._rad, blob._x), width() - blob._rad);
-        blob._y = Math.min(Math.max(blob._rad, blob._y), height() - blob._rad);
-      });
-    };
-    window.addEventListener('resize', blobResizeHandler);
-    window[BLOB_RUNTIME_KEY] = { handle: blobRuntimeHandle, stop: stopBlobMotion };
-  }
-
-  function stopBlobMotion() {
-    if (blobRaf) {
-      cancelAnimationFrame(blobRaf);
-      blobRaf = 0;
-    }
-    if (blobResizeHandler) {
-      window.removeEventListener('resize', blobResizeHandler);
-      blobResizeHandler = null;
-    }
-    const activeRuntime = window[BLOB_RUNTIME_KEY];
-    if (activeRuntime && activeRuntime.handle === blobRuntimeHandle) {
-      try {
-        delete window[BLOB_RUNTIME_KEY];
-      } catch {
-        window[BLOB_RUNTIME_KEY] = undefined;
-      }
-    }
-  }
-
   function handleBeforeUnloadCleanup() {
-    stopBlobMotion();
     unbindProgress();
     removeProgressBar();
   }
@@ -850,8 +704,6 @@ import { mountPollEmbeds } from './shared/dx-polls-embed.entry.mjs';
 
     installLifecycleCleanup();
     const slug = normalizeSlug(app.getAttribute('data-dexnotes-slug') || slugFromPathname());
-    startBlobMotion();
-
     try {
       const [entriesPayload, commentsConfig] = await Promise.all([loadJson(ENTRIES_URL), loadJson(COMMENTS_URL).catch(() => ({}))]);
       const entries = Array.isArray(entriesPayload?.entries) ? entriesPayload.entries : [];

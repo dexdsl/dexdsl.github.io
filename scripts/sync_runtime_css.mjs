@@ -264,6 +264,10 @@ const SYNC_MAP = [
     targets: ['assets/js/header-slot.js', 'docs/assets/js/header-slot.js'],
   },
   {
+    source: 'public/assets/js/dx-grain-overlay.js',
+    targets: ['assets/js/dx-grain-overlay.js', 'docs/assets/js/dx-grain-overlay.js'],
+  },
+  {
     source: 'public/assets/js/dex-breadcrumb-motion.js',
     targets: ['assets/js/dex-breadcrumb-motion.js', 'docs/assets/js/dex-breadcrumb-motion.js'],
   },

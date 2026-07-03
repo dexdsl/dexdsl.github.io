@@ -463,6 +463,31 @@ body.dx-slot-enabled #gooey-mesh-wrapper {
   z-index: var(--dx-layer-gooey) !important;
 }
 
+/* Persistent-backdrop routes expose their page shell to the single mesh owned
+   by header-slot. Route documents must not carry their own copy of these rules. */
+body.dx-route-show-mesh,
+body.dex-entry-page,
+body.dx-route-show-mesh #siteWrapper,
+body.dex-entry-page #siteWrapper,
+body.dx-route-show-mesh #page,
+body.dex-entry-page #page,
+body.dx-route-show-mesh #sections,
+body.dex-entry-page #sections,
+body.dx-route-show-mesh .dex-entry-section,
+body.dex-entry-page .dex-entry-section,
+body.dx-route-show-mesh .dex-footer-section,
+body.dex-entry-page .dex-footer-section,
+body.dx-route-show-mesh .dex-entry-section > .section-border,
+body.dex-entry-page .dex-entry-section > .section-border,
+body.dx-route-show-mesh .dex-footer-section > .section-border,
+body.dex-entry-page .dex-footer-section > .section-border,
+body.dx-route-show-mesh .dex-entry-section > .section-border > .section-background,
+body.dex-entry-page .dex-entry-section > .section-border > .section-background,
+body.dx-route-show-mesh .dex-footer-section > .section-border > .section-background,
+body.dex-entry-page .dex-footer-section > .section-border > .section-background {
+  background: transparent !important;
+}
+
 /* Chrome can expose thin viewport seams on fixed backdrop layers without overscan. */
 html body #scroll-gradient-bg,
 html body #gooey-mesh-wrapper {

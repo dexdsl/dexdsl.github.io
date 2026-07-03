@@ -1,10 +1,17 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import {
+  DX_GRAIN_OVERLAY_RUNTIME_TAG,
+  DX_HEADER_SLOT_RUNTIME_TAG,
+  normalizeShaderRuntimeHtml,
+  stripRouteLocalMeshHtml,
+} from './lib/route-local-mesh-html.mjs';
 
 const ROOT = process.cwd();
 const DOCS_DIR = path.join(ROOT, 'docs');
-const SLOT_SCRIPT_TAG = '<script defer src="/assets/js/header-slot.js"></script>';
+const SLOT_SCRIPT_TAG = DX_HEADER_SLOT_RUNTIME_TAG;
+const GRAIN_SCRIPT_TAG = DX_GRAIN_OVERLAY_RUNTIME_TAG;
 const DOT_SCRIPT_TAG = '<script defer src="/assets/js/dx-scroll-dot.js"></script>';
 const INTERACTIVE_HOVER_SCRIPT_TAG = '<script defer src="/assets/js/interactive-hover.js"></script>';
 const PAGENAV_SCRIPT_TAG = '<script defer src="/assets/js/dx-pagenav.js"></script>';
@@ -210,6 +217,7 @@ function shouldInject(relativePath, html) {
   if (!requiresRuntime) return false;
   return !html.includes(FAVORITES_SCRIPT_TAG)
     || !html.includes(SLOT_SCRIPT_TAG)
+    || !html.includes(GRAIN_SCRIPT_TAG)
     || !html.includes(DOT_SCRIPT_TAG)
     || !html.includes(INTERACTIVE_HOVER_SCRIPT_TAG)
     || !html.includes(PAGENAV_SCRIPT_TAG);
@@ -271,6 +279,7 @@ function injectTag(html, relativePath) {
   const authConfigAnchor = '<script defer src="/assets/dex-auth0-config.js"></script>';
   const authVendorAnchor = '<script defer src="/assets/vendor/auth0-spa-js.umd.min.js"></script>';
 
+  next = injectSingleTagBefore(next, GRAIN_SCRIPT_TAG, [SLOT_SCRIPT_TAG, authAnchor, authConfigAnchor]);
   next = injectSingleTag(next, SLOT_SCRIPT_TAG, [authAnchor, authConfigAnchor]);
   next = injectSingleTag(next, DOT_SCRIPT_TAG, [SLOT_SCRIPT_TAG, authAnchor, authConfigAnchor]);
   next = injectSingleTag(next, INTERACTIVE_HOVER_SCRIPT_TAG, [DOT_SCRIPT_TAG, SLOT_SCRIPT_TAG, authAnchor, authConfigAnchor]);
@@ -308,7 +317,11 @@ function main() {
   for (const absolutePath of htmlFiles) {
     const relativePath = path.relative(DOCS_DIR, absolutePath);
     const html = fs.readFileSync(absolutePath, 'utf8');
-    let next = stripLeadingViewportAndMobileMeta(html);
+    let next = normalizeShaderRuntimeHtml(html);
+    next = stripRouteLocalMeshHtml(next, {
+      preserveBackdropMarkup: relativePath === 'index.html',
+    });
+    next = stripLeadingViewportAndMobileMeta(next);
     next = stripViewportAndMobileMetaEverywhere(next);
     next = ensureViewportFitCoverMeta(next);
     next = ensureMobileMetaTags(next);

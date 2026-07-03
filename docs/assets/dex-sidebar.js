@@ -1789,7 +1789,7 @@
 
   const mediaTargetLooksReady = (target) => {
     if (!(target instanceof HTMLElement)) return false;
-    const mediaNode = target.querySelector('iframe, img, video, canvas');
+    const mediaNode = target.querySelector('iframe, img, video, canvas, .dex-video-facade');
     if (!(mediaNode instanceof Element)) return false;
     const targetRect = target.getBoundingClientRect();
     const mediaRect = mediaNode.getBoundingClientRect();
