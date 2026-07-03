@@ -51,7 +51,7 @@ function verifySubmissionRuntime() {
   ]);
 
   for (const relPath of [
-    'public/assets/js/messages.submission.js',
+    'docs/assets/js/messages.submission.js',
     'assets/js/messages.submission.js',
     'docs/assets/js/messages.submission.js',
   ]) {
@@ -85,13 +85,13 @@ function verifySubmissionRoute() {
 }
 
 function verifyProtectedRoutes() {
-  const authRuntime = readText('public/assets/dex-auth.js');
-  assertIncludes('public/assets/dex-auth.js', authRuntime, [
+  const authRuntime = readText('docs/assets/dex-auth.js');
+  assertIncludes('docs/assets/dex-auth.js', authRuntime, [
     '"/entry/messages/submission": true',
   ]);
 
-  const headerRuntime = readText('public/assets/js/header-slot.js');
-  assertIncludes('public/assets/js/header-slot.js', headerRuntime, [
+  const headerRuntime = readText('docs/assets/js/header-slot.js');
+  assertIncludes('docs/assets/js/header-slot.js', headerRuntime, [
     "'/entry/messages',",
     'const PROFILE_STANDARD_CHROME_ROUTES = new Set([',
     "'/entry/messages/submission',",

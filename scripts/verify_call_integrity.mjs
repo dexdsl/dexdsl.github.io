@@ -4,11 +4,11 @@ import path from 'node:path';
 
 const ROOT = process.cwd();
 
-const DATA_PATH = path.join(ROOT, 'public', 'data', 'call.data.json');
+const DATA_PATH = path.join(ROOT, 'docs', 'data', 'call.data.json');
 const REGISTRY_PATH = path.join(ROOT, 'data', 'calls.registry.json');
-const JS_PATH = path.join(ROOT, 'public', 'assets', 'js', 'call.editorial.js');
-const CSS_PATH = path.join(ROOT, 'public', 'css', 'components', 'dx-call-editorial.css');
-const NEWSLETTER_CSS_PATH = path.join(ROOT, 'public', 'css', 'components', 'dx-marketing-newsletter.css');
+const JS_PATH = path.join(ROOT, 'docs', 'assets', 'js', 'call.editorial.js');
+const CSS_PATH = path.join(ROOT, 'docs', 'css', 'components', 'dx-call-editorial.css');
+const NEWSLETTER_CSS_PATH = path.join(ROOT, 'docs', 'css', 'components', 'dx-marketing-newsletter.css');
 const RUNTIME_SOURCE_PATH = path.join(ROOT, 'scripts', 'src', 'call.editorial.entry.mjs');
 const PAGE_PATH = path.join(ROOT, 'docs', 'call', 'index.html');
 

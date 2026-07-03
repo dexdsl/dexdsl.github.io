@@ -3,10 +3,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const ROOT = process.cwd();
-const BASE_CSS_PATH = path.join(ROOT, 'public', 'css', 'base.css');
-const DEX_CSS_PATH = path.join(ROOT, 'public', 'assets', 'css', 'dex.css');
+const BASE_CSS_PATH = path.join(ROOT, 'docs', 'css', 'base.css');
+const DEX_CSS_PATH = path.join(ROOT, 'docs', 'assets', 'css', 'dex.css');
 const DOCS_DIR = path.join(ROOT, 'docs');
-const MANIFEST_PATH = path.join(ROOT, 'public', 'data', 'hdr.media-manifest.json');
+const MANIFEST_PATH = path.join(ROOT, 'docs', 'data', 'hdr.media-manifest.json');
 
 const REQUIRED_TOKENS = [
   '--dx-accent-solid-sdr',
@@ -193,7 +193,7 @@ function assertPictureFallbacksAndAssetRefs(failures) {
     if (!ref.startsWith('/assets/')) continue;
     const rel = ref.slice(1);
     const candidates = [
-      path.join(ROOT, 'public', rel),
+      path.join(ROOT, 'docs', rel),
       path.join(ROOT, rel),
       path.join(ROOT, 'docs', rel),
     ];
@@ -209,8 +209,8 @@ function main() {
   const dexCss = readText(DEX_CSS_PATH);
 
   assertTokenParity(baseCss, dexCss, failures);
-  assertNoBannedAccents('public/css/base.css', baseCss, failures);
-  assertNoBannedAccents('public/assets/css/dex.css', dexCss, failures);
+  assertNoBannedAccents('docs/css/base.css', baseCss, failures);
+  assertNoBannedAccents('docs/assets/css/dex.css', dexCss, failures);
   assertPictureFallbacksAndAssetRefs(failures);
 
   if (failures.length > 0) {

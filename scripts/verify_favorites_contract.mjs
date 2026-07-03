@@ -39,7 +39,7 @@ function verifyRuntimeContract() {
   ]);
 
   for (const relPath of [
-    'public/assets/js/dx-favorites.js',
+    'docs/assets/js/dx-favorites.js',
     'assets/js/dx-favorites.js',
     'docs/assets/js/dx-favorites.js',
   ]) {
@@ -77,7 +77,7 @@ function verifyCatalogContract() {
     '/assets/js/header-slot.js',
   ]);
 
-  const catalogCssRel = 'public/css/components/dx-catalog-index.css';
+  const catalogCssRel = 'docs/css/components/dx-catalog-index.css';
   const catalogCssText = readText(catalogCssRel);
   assertIncludes(catalogCssRel, catalogCssText, [
     '.dx-catalog-index-row-open',
@@ -87,7 +87,7 @@ function verifyCatalogContract() {
   ]);
 
   for (const relPath of [
-    'public/assets/js/catalog.index.js',
+    'docs/assets/js/catalog.index.js',
     'assets/js/catalog.index.js',
     'docs/assets/js/catalog.index.js',
   ]) {
@@ -102,7 +102,7 @@ function verifyCatalogContract() {
 function verifySidebarContract() {
   for (const relPath of [
     'assets/dex-sidebar.js',
-    'public/assets/dex-sidebar.js',
+    'docs/assets/dex-sidebar.js',
     'docs/assets/dex-sidebar.js',
   ]) {
     const text = readText(relPath);

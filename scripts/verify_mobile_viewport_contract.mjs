@@ -4,8 +4,8 @@ import path from 'node:path';
 
 const ROOT = process.cwd();
 const DOCS_DIR = path.join(ROOT, 'docs');
-const BASE_CSS_PATH = path.join(ROOT, 'public/css/base.css');
-const HEADER_SLOT_PATH = path.join(ROOT, 'public/assets/js/header-slot.js');
+const BASE_CSS_PATH = path.join(ROOT, 'docs/css/base.css');
+const HEADER_SLOT_PATH = path.join(ROOT, 'docs/assets/js/header-slot.js');
 
 function listHtmlFiles(dirPath, out = []) {
   const entries = fs.readdirSync(dirPath, { withFileTypes: true });
@@ -60,28 +60,28 @@ function verifySafeAreaCss() {
   const failures = [];
 
   if (!/html\s*,\s*body\s*\{[\s\S]*min-height:\s*100%;/m.test(css)) {
-    failures.push('public/css/base.css: html, body must include min-height: 100%');
+    failures.push('docs/css/base.css: html, body must include min-height: 100%');
   }
   if (!/html\s*\{[\s\S]*min-height:\s*100dvh;/m.test(css)) {
-    failures.push('public/css/base.css: html must include min-height: 100dvh');
+    failures.push('docs/css/base.css: html must include min-height: 100dvh');
   }
   if (!/body\s*\{[\s\S]*min-height:\s*100dvh;/m.test(css)) {
-    failures.push('public/css/base.css: body must include min-height: 100dvh');
+    failures.push('docs/css/base.css: body must include min-height: 100dvh');
   }
   if (!/@supports\s+not\s+\(height:\s*100dvh\)\s*\{[\s\S]*min-height:\s*100vh;/m.test(css)) {
-    failures.push('public/css/base.css: missing 100vh fallback for non-dvh browsers');
+    failures.push('docs/css/base.css: missing 100vh fallback for non-dvh browsers');
   }
   if (!/html\.dx-ios-safari/m.test(css)) {
-    failures.push('public/css/base.css: missing iOS Safari-specific class rules');
+    failures.push('docs/css/base.css: missing iOS Safari-specific class rules');
   }
   if (!/--dx-ios-viewport-height/m.test(css)) {
-    failures.push('public/css/base.css: missing iOS Safari viewport variable usage');
+    failures.push('docs/css/base.css: missing iOS Safari viewport variable usage');
   }
   if (!/safe-area-max-inset-top/m.test(css) || !/safe-area-max-inset-bottom/m.test(css)) {
-    failures.push('public/css/base.css: missing max safe-area inset fallbacks for iOS Safari tab mode');
+    failures.push('docs/css/base.css: missing max safe-area inset fallbacks for iOS Safari tab mode');
   }
   if (!/html\.dx-ios-safari:not\(\.dx-ios-safari-standalone\)[\s\S]*100lvh/m.test(css)) {
-    failures.push('public/css/base.css: missing iOS Safari tab-mode 100lvh coverage rules');
+    failures.push('docs/css/base.css: missing iOS Safari tab-mode 100lvh coverage rules');
   }
 
   return failures;
@@ -92,16 +92,16 @@ function verifyIosSafariRuntimeHook() {
   const failures = [];
 
   if (!js.includes("const IOS_SAFARI_CLASS = 'dx-ios-safari';")) {
-    failures.push('public/assets/js/header-slot.js: missing IOS_SAFARI_CLASS marker');
+    failures.push('docs/assets/js/header-slot.js: missing IOS_SAFARI_CLASS marker');
   }
   if (!js.includes('function isIosSafariBrowser()')) {
-    failures.push('public/assets/js/header-slot.js: missing isIosSafariBrowser() detection hook');
+    failures.push('docs/assets/js/header-slot.js: missing isIosSafariBrowser() detection hook');
   }
   if (!js.includes('function installIosSafariViewportSync()')) {
-    failures.push('public/assets/js/header-slot.js: missing installIosSafariViewportSync() hook');
+    failures.push('docs/assets/js/header-slot.js: missing installIosSafariViewportSync() hook');
   }
   if (!js.includes('installIosSafariViewportSync();')) {
-    failures.push('public/assets/js/header-slot.js: init() must call installIosSafariViewportSync()');
+    failures.push('docs/assets/js/header-slot.js: init() must call installIosSafariViewportSync()');
   }
 
   return failures;

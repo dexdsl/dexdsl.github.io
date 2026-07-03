@@ -7,10 +7,10 @@ const ROOT = process.cwd();
 const FILES = {
   html: path.join(ROOT, 'docs', 'entry', 'achievements', 'index.html'),
   runtimeSource: path.join(ROOT, 'scripts', 'src', 'achievements.entry.mjs'),
-  runtimeBuilt: path.join(ROOT, 'public', 'assets', 'js', 'achievements.js'),
-  css: path.join(ROOT, 'public', 'css', 'components', 'dx-achievements.css'),
+  runtimeBuilt: path.join(ROOT, 'docs', 'assets', 'js', 'achievements.js'),
+  css: path.join(ROOT, 'docs', 'css', 'components', 'dx-achievements.css'),
   dataRegistry: path.join(ROOT, 'data', 'achievements.registry.json'),
-  dataBuilt: path.join(ROOT, 'public', 'data', 'achievements.data.json'),
+  dataBuilt: path.join(ROOT, 'docs', 'data', 'achievements.data.json'),
 };
 
 const failures = [];
@@ -61,8 +61,8 @@ function verifyHtmlContract() {
 
 function verifyRuntimeContract() {
   const source = readText(FILES.runtimeSource, 'scripts/src/achievements.entry.mjs');
-  const built = readText(FILES.runtimeBuilt, 'public/assets/js/achievements.js');
-  const css = readText(FILES.css, 'public/css/components/dx-achievements.css');
+  const built = readText(FILES.runtimeBuilt, 'docs/assets/js/achievements.js');
+  const css = readText(FILES.css, 'docs/css/components/dx-achievements.css');
 
   if (source) {
     const required = [
@@ -104,7 +104,7 @@ function verifyRuntimeContract() {
 
 function verifyDataContract() {
   const registry = readText(FILES.dataRegistry, 'data/achievements.registry.json');
-  const built = readText(FILES.dataBuilt, 'public/data/achievements.data.json');
+  const built = readText(FILES.dataBuilt, 'docs/data/achievements.data.json');
   if (registry) {
     assert(registry.includes('catalogVersion'), 'achievements registry missing catalogVersion');
     assert(registry.includes('clueGrowlix'), 'achievements registry missing clueGrowlix fields');

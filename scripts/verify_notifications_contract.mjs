@@ -113,7 +113,7 @@ function verifyMessagesRuntimeContract() {
   ]);
 
   for (const relPath of [
-    'public/assets/js/messages.inbox.js',
+    'docs/assets/js/messages.inbox.js',
     'assets/js/messages.inbox.js',
     'docs/assets/js/messages.inbox.js',
   ]) {
@@ -149,7 +149,7 @@ function verifyRouteContract() {
 function verifyAuthBadgeContract() {
   for (const relPath of [
     'assets/dex-auth.js',
-    'public/assets/dex-auth.js',
+    'docs/assets/dex-auth.js',
     'docs/assets/dex-auth.js',
   ]) {
     const text = readText(relPath);

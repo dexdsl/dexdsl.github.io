@@ -5,8 +5,8 @@ import path from 'node:path';
 const ROOT = process.cwd();
 
 const RUNTIME_SOURCE_PATH = path.join(ROOT, 'scripts', 'src', 'donate.entry.mjs');
-const BUNDLE_PATH = path.join(ROOT, 'public', 'assets', 'js', 'donate.js');
-const CSS_PATH = path.join(ROOT, 'public', 'css', 'components', 'dx-donate.css');
+const BUNDLE_PATH = path.join(ROOT, 'docs', 'assets', 'js', 'donate.js');
+const CSS_PATH = path.join(ROOT, 'docs', 'css', 'components', 'dx-donate.css');
 const PAGE_PATH = path.join(ROOT, 'docs', 'donate', 'index.html');
 
 function readText(filePath) {

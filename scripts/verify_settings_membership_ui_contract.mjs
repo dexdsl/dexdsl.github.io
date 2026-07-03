@@ -6,10 +6,10 @@ const ROOT = process.cwd();
 
 const SETTINGS_HTML = path.join(ROOT, 'docs', 'entry', 'settings', 'index.html');
 const RUNTIME_SRC = path.join(ROOT, 'scripts', 'src', 'settings.membership.entry.mjs');
-const RUNTIME_PUBLIC = path.join(ROOT, 'public', 'assets', 'js', 'settings.membership.js');
+const RUNTIME_PUBLIC = path.join(ROOT, 'docs', 'assets', 'js', 'settings.membership.js');
 
 const CSS_PATHS = [
-  path.join(ROOT, 'public', 'css', 'components', 'dx-settings-membership.css'),
+  path.join(ROOT, 'docs', 'css', 'components', 'dx-settings-membership.css'),
   path.join(ROOT, 'css', 'components', 'dx-settings-membership.css'),
   path.join(ROOT, 'docs', 'css', 'components', 'dx-settings-membership.css'),
 ];

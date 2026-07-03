@@ -12,7 +12,7 @@ import {
 
 const ROOT = process.cwd();
 const SITE_ORIGIN = 'https://dexdsl.github.io';
-const OUT_PUBLIC_PATH = path.join(ROOT, 'public', 'dexnotes', 'rss.xml');
+const OUT_PUBLIC_PATH = path.join(ROOT, 'dexnotes', 'rss.xml');
 const OUT_DOCS_PATH = path.join(ROOT, 'docs', 'dexnotes', 'rss.xml');
 
 function itemXml(entry) {

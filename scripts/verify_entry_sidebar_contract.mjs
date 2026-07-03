@@ -326,13 +326,13 @@ async function main() {
     read('assets/dex-sidebar.js'),
     read('scripts/lib/entry-html.mjs'),
     read('assets/css/dex.css'),
-    read('public/css/components/dx-entry-runtime.css'),
+    read('docs/css/components/dx-entry-runtime.css'),
   ]);
 
   await Promise.all([
-    ensureFileExists('public/assets/series/dex.png'),
-    ensureFileExists('public/assets/series/index.png'),
-    ensureFileExists('public/assets/series/dexfest.png'),
+    ensureFileExists('docs/assets/series/dex.png'),
+    ensureFileExists('docs/assets/series/index.png'),
+    ensureFileExists('docs/assets/series/dexfest.png'),
   ]);
 
   ensureOrderedSections(templateHtml);

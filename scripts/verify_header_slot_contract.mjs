@@ -5,9 +5,9 @@ import { hasRouteLocalMeshOwnership } from './lib/route-local-mesh-html.mjs';
 
 const ROOT = process.cwd();
 const DOCS_DIR = path.join(ROOT, 'docs');
-const BASE_CSS_PATH = path.join(ROOT, 'public', 'css', 'base.css');
-const SLOT_RUNTIME_PATH = path.join(ROOT, 'public', 'assets', 'js', 'header-slot.js');
-const AUTH_RUNTIME_PATH = path.join(ROOT, 'public', 'assets', 'dex-auth.js');
+const BASE_CSS_PATH = path.join(ROOT, 'docs', 'css', 'base.css');
+const SLOT_RUNTIME_PATH = path.join(ROOT, 'docs', 'assets', 'js', 'header-slot.js');
+const AUTH_RUNTIME_PATH = path.join(ROOT, 'docs', 'assets', 'dex-auth.js');
 const CATALOG_MESH_SOURCE_PATH = path.join(ROOT, 'scripts', 'src', 'shared', 'dx-gooey-mesh.entry.mjs');
 const BAG_SOURCE_PATH = path.join(ROOT, 'scripts', 'src', 'bag.app.entry.mjs');
 const ROUTE_MESH_SOURCE_PATHS = [

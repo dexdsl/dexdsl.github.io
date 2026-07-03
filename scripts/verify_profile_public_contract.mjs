@@ -8,17 +8,17 @@ const FILES = {
   html: path.join(ROOT, 'docs', 'u', 'index.html'),
   notFound: path.join(ROOT, 'docs', '404.html'),
   runtimeSource: path.join(ROOT, 'scripts', 'src', 'profile.public.entry.mjs'),
-  runtimeBuilt: path.join(ROOT, 'public', 'assets', 'js', 'profile.public.js'),
+  runtimeBuilt: path.join(ROOT, 'docs', 'assets', 'js', 'profile.public.js'),
   runtimeMirrorA: path.join(ROOT, 'assets', 'js', 'profile.public.js'),
   runtimeMirrorB: path.join(ROOT, 'docs', 'assets', 'js', 'profile.public.js'),
   cssSource: path.join(ROOT, 'css', 'components', 'dx-profile-public.css'),
-  cssPublic: path.join(ROOT, 'public', 'css', 'components', 'dx-profile-public.css'),
+  cssPublic: path.join(ROOT, 'docs', 'css', 'components', 'dx-profile-public.css'),
   cssDocs: path.join(ROOT, 'docs', 'css', 'components', 'dx-profile-public.css'),
   publicProfilesData: path.join(ROOT, 'data', 'public-profiles.json'),
-  publicProfilesPublic: path.join(ROOT, 'public', 'data', 'public-profiles.json'),
+  publicProfilesPublic: path.join(ROOT, 'docs', 'data', 'public-profiles.json'),
   publicProfilesDocs: path.join(ROOT, 'docs', 'data', 'public-profiles.json'),
   packageJson: path.join(ROOT, 'package.json'),
-  sidebarRuntime: path.join(ROOT, 'public', 'assets', 'dex-sidebar.js'),
+  sidebarRuntime: path.join(ROOT, 'docs', 'assets', 'dex-sidebar.js'),
   protectedAuthContract: path.join(ROOT, 'scripts', 'verify_protected_auth_contract.mjs'),
 };
 
@@ -42,7 +42,7 @@ function verifyJsonMirror() {
   const raw = readText(FILES.publicProfilesData);
   const publicRaw = readText(FILES.publicProfilesPublic);
   const docsRaw = readText(FILES.publicProfilesDocs);
-  if (raw && publicRaw && raw !== publicRaw) failures.push('public/data/public-profiles.json differs from data/public-profiles.json');
+  if (raw && publicRaw && raw !== publicRaw) failures.push('docs/data/public-profiles.json differs from data/public-profiles.json');
   if (raw && docsRaw && raw !== docsRaw) failures.push('docs/data/public-profiles.json differs from data/public-profiles.json');
   if (!raw) return;
   let parsed;

@@ -20,7 +20,7 @@ async function main() {
   const library = normalizeHomeHeroLibrary(await readJson('data', 'home.hero-library.json'));
   const source = await readJson('data', 'home.hero.snapshot.json');
   const docs = await readJson('docs', 'data', 'home.hero.snapshot.json');
-  const publicCopy = await readJson('public', 'data', 'home.hero.snapshot.json');
+  const publicCopy = await readJson('docs', 'data', 'home.hero.snapshot.json');
   assert.deepEqual(source, docs, 'docs hero snapshot must mirror data');
   assert.deepEqual(source, publicCopy, 'public hero snapshot must mirror data');
   assert.equal(source.sourceHash, computeHomeHeroSourceHash(library), 'hero snapshot is stale; run npm run home:hero:build');
@@ -97,7 +97,7 @@ async function main() {
   const jsCopies = await Promise.all([
     readText('assets', 'js', 'dx-home-hero.js'),
     readText('docs', 'assets', 'js', 'dx-home-hero.js'),
-    readText('public', 'assets', 'js', 'dx-home-hero.js'),
+    readText('docs', 'assets', 'js', 'dx-home-hero.js'),
   ]);
   assert.ok(jsCopies[0].length > 1000, 'hero runtime bundle is unexpectedly empty');
   assert.ok(jsCopies.every((value) => value === jsCopies[0]), 'hero runtime mirrors differ');
@@ -105,13 +105,13 @@ async function main() {
   const cssCopies = await Promise.all([
     readText('css', 'components', 'dx-home-hero.css'),
     readText('docs', 'css', 'components', 'dx-home-hero.css'),
-    readText('public', 'css', 'components', 'dx-home-hero.css'),
+    readText('docs', 'css', 'components', 'dx-home-hero.css'),
   ]);
   assert.ok(cssCopies.every((value) => value === cssCopies[0]), 'hero CSS mirrors differ');
   const composerCopies = await Promise.all([
     readText('css', 'components', 'dx-home-hero-composer.css'),
     readText('docs', 'css', 'components', 'dx-home-hero-composer.css'),
-    readText('public', 'css', 'components', 'dx-home-hero-composer.css'),
+    readText('docs', 'css', 'components', 'dx-home-hero-composer.css'),
   ]);
   assert.ok(composerCopies.every((value) => value === composerCopies[0]), 'hero composer CSS mirrors differ');
   console.log(`verify:home-hero passed (${library.modules.length} modules, ${library.compositions.length} compositions).`);

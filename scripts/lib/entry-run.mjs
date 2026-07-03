@@ -259,7 +259,7 @@ async function syncProtectedAssetsAfterWrite(data, opts = {}) {
   const canonicalProtectedPath = path.resolve(process.cwd(), 'data', 'protected.assets.json');
   if (path.resolve(result.filePath) === canonicalProtectedPath) {
     const json = await fs.readFile(result.filePath, 'utf8');
-    for (const servedRoot of ['docs', 'public']) {
+    for (const servedRoot of ['docs']) {
       const mirrorPath = path.resolve(process.cwd(), servedRoot, 'data', 'protected.assets.json');
       await fs.mkdir(path.dirname(mirrorPath), { recursive: true });
       await fs.writeFile(mirrorPath, json, 'utf8');

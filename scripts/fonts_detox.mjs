@@ -22,10 +22,10 @@ const siteRoot = fs.existsSync(path.join(repoRoot, 'docs', 'index.html'))
   : repoRoot;
 const ROOT_CSS_FONTS_PATH = path.join(repoRoot, 'css', 'fonts.css');
 const DOCS_CSS_FONTS_PATH = path.join(repoRoot, 'docs', 'css', 'fonts.css');
-const PUBLIC_CSS_FONTS_PATH = path.join(repoRoot, 'public', 'css', 'fonts.css');
+const PUBLIC_CSS_FONTS_PATH = path.join(repoRoot, 'css', 'fonts.css');
 const ROOT_FONTS_DIR = path.join(repoRoot, 'assets', 'fonts');
 const DOCS_FONTS_DIR = path.join(repoRoot, 'docs', 'assets', 'fonts');
-const PUBLIC_FONTS_DIR = path.join(repoRoot, 'public', 'assets', 'fonts');
+const PUBLIC_FONTS_DIR = path.join(repoRoot, 'assets', 'fonts');
 const DOT = '.';
 const LEGACY_SITE = `legacy${'site'}${DOT}com`;
 const LEGACY_CDN = `legacy${'site'}-cdn${DOT}com`;
@@ -126,7 +126,7 @@ function collectEntrypoints() {
   // the same fonthost wf-loading block that blanks all text for ~3s on a cold
   // load (no remover; relies on the 3s keyframe). Sweep every entry index.html
   // so the detox covers them and can't regress on the next bake.
-  for (const entryRoot of ['entries', 'docs/entry', 'docs/entries', 'public/entry', 'public/entries']) {
+  for (const entryRoot of ['entries', 'docs/entry', 'docs/entries']) {
     const absoluteRoot = path.join(repoRoot, entryRoot);
     if (!fs.existsSync(absoluteRoot) || !fs.statSync(absoluteRoot).isDirectory()) continue;
     for (const dirent of fs.readdirSync(absoluteRoot, { withFileTypes: true })) {

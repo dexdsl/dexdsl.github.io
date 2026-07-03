@@ -86,7 +86,7 @@ function verifyRuntime() {
   ]);
 
   for (const relPath of [
-    'public/assets/js/support-status.js',
+    'docs/assets/js/support-status.js',
     'assets/js/support-status.js',
     'docs/assets/js/support-status.js',
   ]) {

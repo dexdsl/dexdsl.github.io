@@ -16,7 +16,7 @@ export const HOME_HERO_PATHS = {
   library: path.join(ROOT, 'data', 'home.hero-library.json'),
   snapshot: path.join(ROOT, 'data', 'home.hero.snapshot.json'),
   docsSnapshot: path.join(ROOT, 'docs', 'data', 'home.hero.snapshot.json'),
-  publicSnapshot: path.join(ROOT, 'public', 'data', 'home.hero.snapshot.json'),
+  publicSnapshot: path.join(ROOT, 'data', 'home.hero.snapshot.json'),
   previewCss: [
     path.join(ROOT, 'css', 'tokens.css'),
     path.join(ROOT, 'css', 'base.css'),

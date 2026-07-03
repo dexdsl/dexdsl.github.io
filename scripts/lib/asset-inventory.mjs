@@ -1,7 +1,7 @@
 // Static asset inventory + reference scanning for the ops app's Assets tab.
 //
 // The repo serves static files from three mirrored roots — repo root (''),
-// `public/`, and `docs/` — under the URL prefixes /assets, /css, /static. This
+// `docs/` — under the URL prefixes /assets, /css, /static. This
 // module enumerates those files (with mirror presence + reference counts) and
 // resolves which repo files reference a given web path, so the desktop app can
 // safely browse, swap, and delete assets.
@@ -13,7 +13,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 // Served roots, relative to the site root. '' is the repo root (canonical).
-export const SERVED_ROOTS = ['', 'public', 'docs'];
+export const SERVED_ROOTS = ['', 'docs'];
 // URL prefixes that map 1:1 to a served root's filesystem path.
 export const STATIC_PREFIXES = ['/css/', '/assets/', '/static/'];
 // Directories (under each served root) that hold tracked static files.

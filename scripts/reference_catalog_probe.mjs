@@ -5,7 +5,7 @@ import { buildCatalogModelFromHtml, buildCatalogDiff } from './lib/catalog-model
 
 const ROOT = process.cwd();
 const REFERENCE_URL = 'https://dexdsl.org/catalog';
-const LOCAL_DATA_PATH = path.join(ROOT, 'public', 'data', 'catalog.data.json');
+const LOCAL_DATA_PATH = path.join(ROOT, 'data', 'catalog.data.json');
 const OUTPUT_DIR = path.join(ROOT, 'artifacts', 'reference');
 const REFERENCE_OUT = path.join(OUTPUT_DIR, 'catalog.reference.json');
 const DIFF_OUT = path.join(OUTPUT_DIR, 'catalog.diff.json');

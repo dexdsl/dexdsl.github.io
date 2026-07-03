@@ -4,7 +4,7 @@ import path from 'node:path';
 
 const ROOT = process.cwd();
 const SOURCE = path.join(ROOT, 'node_modules', '@auth0', 'auth0-spa-js', 'dist', 'auth0-spa-js.production.js');
-const DEST_PUBLIC = path.join(ROOT, 'public', 'assets', 'vendor', 'auth0-spa-js.umd.min.js');
+const DEST_PUBLIC = path.join(ROOT, 'assets', 'vendor', 'auth0-spa-js.umd.min.js');
 const MIRRORS = [
   path.join(ROOT, 'assets', 'vendor', 'auth0-spa-js.umd.min.js'),
   path.join(ROOT, 'docs', 'assets', 'vendor', 'auth0-spa-js.umd.min.js'),

@@ -5,9 +5,9 @@ import path from 'node:path';
 const ROOT = process.cwd();
 
 const FILES = {
-  baseCss: path.join(ROOT, 'public', 'css', 'base.css'),
-  dexCss: path.join(ROOT, 'public', 'assets', 'css', 'dex.css'),
-  slotRuntime: path.join(ROOT, 'public', 'assets', 'js', 'header-slot.js'),
+  baseCss: path.join(ROOT, 'docs', 'css', 'base.css'),
+  dexCss: path.join(ROOT, 'docs', 'assets', 'css', 'dex.css'),
+  slotRuntime: path.join(ROOT, 'docs', 'assets', 'js', 'header-slot.js'),
   helper: path.join(ROOT, 'scripts', 'src', 'shared', 'dx-motion.entry.mjs'),
 };
 

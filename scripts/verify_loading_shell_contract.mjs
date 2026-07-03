@@ -5,20 +5,20 @@ import path from 'node:path';
 const ROOT = process.cwd();
 
 const FILES = {
-  baseCss: path.join(ROOT, 'public', 'css', 'base.css'),
-  dexCss: path.join(ROOT, 'public', 'assets', 'css', 'dex.css'),
+  baseCss: path.join(ROOT, 'docs', 'css', 'base.css'),
+  dexCss: path.join(ROOT, 'docs', 'assets', 'css', 'dex.css'),
   achievementsRuntime: path.join(ROOT, 'scripts', 'src', 'achievements.entry.mjs'),
-  achievementsRuntimeBuilt: path.join(ROOT, 'public', 'assets', 'js', 'achievements.js'),
-  pollsRuntime: path.join(ROOT, 'public', 'assets', 'js', 'polls.app.js'),
+  achievementsRuntimeBuilt: path.join(ROOT, 'docs', 'assets', 'js', 'achievements.js'),
+  pollsRuntime: path.join(ROOT, 'docs', 'assets', 'js', 'polls.app.js'),
   pollsRuntimeSource: path.join(ROOT, 'scripts', 'src', 'polls.app.entry.mjs'),
-  submitRuntime: path.join(ROOT, 'public', 'assets', 'js', 'submit.samples.js'),
+  submitRuntime: path.join(ROOT, 'docs', 'assets', 'js', 'submit.samples.js'),
   submitRuntimeSource: path.join(ROOT, 'scripts', 'src', 'submit.samples.entry.mjs'),
-  messagesRuntime: path.join(ROOT, 'public', 'assets', 'js', 'messages.inbox.js'),
+  messagesRuntime: path.join(ROOT, 'docs', 'assets', 'js', 'messages.inbox.js'),
   messagesRuntimeSource: path.join(ROOT, 'scripts', 'src', 'messages.inbox.entry.mjs'),
-  pressroomRuntime: path.join(ROOT, 'public', 'assets', 'js', 'pressroom.js'),
+  pressroomRuntime: path.join(ROOT, 'docs', 'assets', 'js', 'pressroom.js'),
   pressroomRuntimeSource: path.join(ROOT, 'scripts', 'src', 'pressroom.entry.mjs'),
-  sidebarRuntime: path.join(ROOT, 'public', 'assets', 'dex-sidebar.js'),
-  authRuntime: path.join(ROOT, 'public', 'assets', 'dex-auth.js'),
+  sidebarRuntime: path.join(ROOT, 'docs', 'assets', 'dex-sidebar.js'),
+  authRuntime: path.join(ROOT, 'docs', 'assets', 'dex-auth.js'),
 };
 
 const COVERED_ROUTES = [
@@ -206,7 +206,7 @@ function verifyAccountMenuLoaderCoverage(failures) {
   for (const contract of ACCOUNT_MENU_ROUTE_CONTRACTS) {
     const menuNeedle = `getMenuLinkMarkup("${contract.href}", "${contract.label}"`;
     if (!authRuntime.includes(menuNeedle)) {
-      failures.push(`public/assets/dex-auth.js account menu missing ${contract.label} route ${contract.href}`);
+      failures.push(`docs/assets/dex-auth.js account menu missing ${contract.label} route ${contract.href}`);
     }
 
     const routeContract = COVERED_ROUTES.find((route) => route.file === contract.file && route.rootId === contract.rootId);
@@ -222,7 +222,7 @@ function verifyRouteLoaderCss(failures) {
   const css = readText(FILES.baseCss);
   for (const marker of REQUIRED_ROUTE_LOADER_MARKERS) {
     if (!css.includes(marker)) {
-      failures.push(`public/css/base.css missing route-loader marker ${marker}`);
+      failures.push(`docs/css/base.css missing route-loader marker ${marker}`);
     }
   }
 }
@@ -251,7 +251,7 @@ function verifyAchievementsRuntimeTimeoutContract(failures) {
   const source = fs.existsSync(FILES.achievementsRuntime) ? readText(FILES.achievementsRuntime) : "";
   const built = fs.existsSync(FILES.achievementsRuntimeBuilt) ? readText(FILES.achievementsRuntimeBuilt) : "";
   if (!source && !built) {
-    failures.push("achievements runtime missing in scripts/src and public/assets/js");
+    failures.push("achievements runtime missing in scripts/src and docs/assets/js");
     return;
   }
   for (const marker of ACHIEVEMENTS_RUNTIME_TIMEOUT_MARKERS) {
@@ -263,7 +263,7 @@ function verifyAchievementsRuntimeTimeoutContract(failures) {
 
 function verifyEntrySidebarFetchContract(failures) {
   if (!fs.existsSync(FILES.sidebarRuntime)) {
-    failures.push('public/assets/dex-sidebar.js missing for entry sidebar fetch contract');
+    failures.push('docs/assets/dex-sidebar.js missing for entry sidebar fetch contract');
     return;
   }
   const runtime = readText(FILES.sidebarRuntime);
@@ -276,7 +276,7 @@ function verifyEntrySidebarFetchContract(failures) {
   ];
   for (const marker of requiredMarkers) {
     if (!runtime.includes(marker)) {
-      failures.push(`public/assets/dex-sidebar.js missing entry fetch marker ${marker}`);
+      failures.push(`docs/assets/dex-sidebar.js missing entry fetch marker ${marker}`);
     }
   }
 }
@@ -289,8 +289,8 @@ function main() {
   verifyRouteLoaderCss(failures);
   verifyAchievementsRuntimeTimeoutContract(failures);
   verifyEntrySidebarFetchContract(failures);
-  verifyCssContract(FILES.baseCss, 'public/css/base.css', failures);
-  verifyCssContract(FILES.dexCss, 'public/assets/css/dex.css', failures);
+  verifyCssContract(FILES.baseCss, 'docs/css/base.css', failures);
+  verifyCssContract(FILES.dexCss, 'docs/assets/css/dex.css', failures);
 
   if (failures.length > 0) {
     console.error(`verify:loading-shell failed with ${failures.length} issue(s):`);

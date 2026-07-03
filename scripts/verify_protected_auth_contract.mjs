@@ -3,8 +3,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const ROOT = process.cwd();
-const AUTH_PATH = path.join(ROOT, 'public', 'assets', 'dex-auth.js');
-const HEADER_SLOT_PATH = path.join(ROOT, 'public', 'assets', 'js', 'header-slot.js');
+const AUTH_PATH = path.join(ROOT, 'docs', 'assets', 'dex-auth.js');
+const HEADER_SLOT_PATH = path.join(ROOT, 'docs', 'assets', 'js', 'header-slot.js');
 
 const PROFILE_PROTECTED_ROUTES = [
   '/favorites',
@@ -89,13 +89,13 @@ function main() {
   const headerMeshRoutes = extractRoutesFromSet(headerSlotText, 'const PROFILE_SHOW_MESH_ROUTES = new Set(');
 
   if (authRoutes.size === 0) {
-    failures.push('Could not parse PROTECTED_PATHS from public/assets/dex-auth.js');
+    failures.push('Could not parse PROTECTED_PATHS from docs/assets/dex-auth.js');
   }
   if (headerRoutes.size === 0) {
-    failures.push('Could not parse PROFILE_PROTECTED_ROUTES from public/assets/js/header-slot.js');
+    failures.push('Could not parse PROFILE_PROTECTED_ROUTES from docs/assets/js/header-slot.js');
   }
   if (headerMeshRoutes.size === 0) {
-    failures.push('Could not parse PROFILE_SHOW_MESH_ROUTES from public/assets/js/header-slot.js');
+    failures.push('Could not parse PROFILE_SHOW_MESH_ROUTES from docs/assets/js/header-slot.js');
   }
 
   for (const route of PROFILE_PROTECTED_ROUTES) {

@@ -46,7 +46,7 @@ async function verifyCallRuntime() {
     'clientRequestId',
   ]);
 
-  const cssRel = 'public/css/components/dx-marketing-newsletter.css';
+  const cssRel = 'docs/css/components/dx-marketing-newsletter.css';
   const cssSource = await readText(cssRel);
   assertIncludes(cssRel, cssSource, [
     '.dx-marketing-newsletter-form',

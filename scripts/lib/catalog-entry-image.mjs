@@ -11,7 +11,7 @@ import {
   defaultCatalogEditorialData,
 } from './catalog-editorial-store.mjs';
 
-const SERVED_ROOTS = ['', 'public', 'docs'];
+const SERVED_ROOTS = ['', 'docs'];
 const ASSET_REL = path.join('assets', 'catalog');
 const ALLOWED_EXT = new Set(['png', 'jpg', 'jpeg', 'webp', 'gif', 'avif']);
 

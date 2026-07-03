@@ -9,10 +9,9 @@ const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(SCRIPT_DIR, '..');
 
 const entry = path.join(ROOT, 'scripts', 'src', 'call.editorial.entry.mjs');
-const publicOut = path.join(ROOT, 'public', 'assets', 'js', 'call.editorial.js');
+const docsOut = path.join(ROOT, 'docs', 'assets', 'js', 'call.editorial.js');
 const mirrors = [
   path.join(ROOT, 'assets', 'js', 'call.editorial.js'),
-  path.join(ROOT, 'docs', 'assets', 'js', 'call.editorial.js'),
 ];
 
 async function ensureDir(filePath) {
@@ -37,7 +36,7 @@ function runNodeScript(relativePath) {
 
 async function main() {
   runNodeScript('scripts/build-call-data-from-registry.mjs');
-  await ensureDir(publicOut);
+  await ensureDir(docsOut);
 
   await build({
     entryPoints: [entry],
@@ -45,19 +44,19 @@ async function main() {
     format: 'iife',
     platform: 'browser',
     target: ['es2019'],
-    outfile: publicOut,
+    outfile: docsOut,
     minify: true,
     sourcemap: false,
     legalComments: 'none',
   });
 
   for (const mirror of mirrors) {
-    await copyFile(publicOut, mirror);
+    await copyFile(docsOut, mirror);
   }
 
   runNodeScript('scripts/inject_header_slot_scripts.mjs');
 
-  console.log(`call:build wrote ${path.relative(ROOT, publicOut)}`);
+  console.log(`call:build wrote ${path.relative(ROOT, docsOut)}`);
   for (const mirror of mirrors) {
     console.log(`call:build wrote ${path.relative(ROOT, mirror)}`);
   }

@@ -11,34 +11,30 @@ const ROOT = path.resolve(SCRIPT_DIR, '..');
 const BUILD_TARGETS = [
   {
     entry: path.join(ROOT, 'scripts', 'src', 'catalog.index.entry.mjs'),
-    publicOut: path.join(ROOT, 'public', 'assets', 'js', 'catalog.index.js'),
+    docsOut: path.join(ROOT, 'docs', 'assets', 'js', 'catalog.index.js'),
     mirrors: [
       path.join(ROOT, 'assets', 'js', 'catalog.index.js'),
-      path.join(ROOT, 'docs', 'assets', 'js', 'catalog.index.js'),
     ],
   },
   {
     entry: path.join(ROOT, 'scripts', 'src', 'catalog.how.entry.mjs'),
-    publicOut: path.join(ROOT, 'public', 'assets', 'js', 'catalog.how.js'),
+    docsOut: path.join(ROOT, 'docs', 'assets', 'js', 'catalog.how.js'),
     mirrors: [
       path.join(ROOT, 'assets', 'js', 'catalog.how.js'),
-      path.join(ROOT, 'docs', 'assets', 'js', 'catalog.how.js'),
     ],
   },
   {
     entry: path.join(ROOT, 'scripts', 'src', 'catalog.symbols.entry.mjs'),
-    publicOut: path.join(ROOT, 'public', 'assets', 'js', 'catalog.symbols.js'),
+    docsOut: path.join(ROOT, 'docs', 'assets', 'js', 'catalog.symbols.js'),
     mirrors: [
       path.join(ROOT, 'assets', 'js', 'catalog.symbols.js'),
-      path.join(ROOT, 'docs', 'assets', 'js', 'catalog.symbols.js'),
     ],
   },
   {
     entry: path.join(ROOT, 'scripts', 'src', 'catalog.guide.entry.mjs'),
-    publicOut: path.join(ROOT, 'public', 'assets', 'js', 'catalog.guide.js'),
+    docsOut: path.join(ROOT, 'docs', 'assets', 'js', 'catalog.guide.js'),
     mirrors: [
       path.join(ROOT, 'assets', 'js', 'catalog.guide.js'),
-      path.join(ROOT, 'docs', 'assets', 'js', 'catalog.guide.js'),
     ],
   },
 ];
@@ -64,7 +60,7 @@ function runNodeScript(relativePath) {
 }
 
 async function buildOne(target) {
-  await ensureDir(target.publicOut);
+  await ensureDir(target.docsOut);
 
   await build({
     entryPoints: [target.entry],
@@ -72,17 +68,17 @@ async function buildOne(target) {
     format: 'iife',
     platform: 'browser',
     target: ['es2019'],
-    outfile: target.publicOut,
+    outfile: target.docsOut,
     minify: true,
     sourcemap: false,
     legalComments: 'none',
   });
 
   for (const mirror of target.mirrors) {
-    await copyFile(target.publicOut, mirror);
+    await copyFile(target.docsOut, mirror);
   }
 
-  console.log(`catalog:build wrote ${path.relative(ROOT, target.publicOut)}`);
+  console.log(`catalog:build wrote ${path.relative(ROOT, target.docsOut)}`);
   for (const mirror of target.mirrors) {
     console.log(`catalog:build wrote ${path.relative(ROOT, mirror)}`);
   }

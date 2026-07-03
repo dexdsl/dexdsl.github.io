@@ -6,10 +6,10 @@ import { normalizeHomeFeaturedFile } from './lib/home-featured-schema.mjs';
 const ROOT = process.cwd();
 
 const SOURCE_PATH = path.join(ROOT, 'data', 'home.featured.json');
-const PUBLIC_PATH = path.join(ROOT, 'public', 'data', 'home.featured.json');
+const PUBLIC_PATH = path.join(ROOT, 'docs', 'data', 'home.featured.json');
 const DOCS_PATH = path.join(ROOT, 'docs', 'data', 'home.featured.json');
 const SNAPSHOT_SOURCE = path.join(ROOT, 'data', 'home.featured.snapshot.json');
-const SNAPSHOT_PUBLIC = path.join(ROOT, 'public', 'data', 'home.featured.snapshot.json');
+const SNAPSHOT_PUBLIC = path.join(ROOT, 'docs', 'data', 'home.featured.snapshot.json');
 const SNAPSHOT_DOCS = path.join(ROOT, 'docs', 'data', 'home.featured.snapshot.json');
 
 const HOME_PAGE_PATH = path.join(ROOT, 'docs', 'index.html');
@@ -35,7 +35,7 @@ function main() {
   const docsMirror = normalizeHomeFeaturedFile(readJson(DOCS_PATH));
 
   if (JSON.stringify(source.featured) !== JSON.stringify(publicMirror.featured)) {
-    failures.push('public/data/home.featured.json does not match data/home.featured.json');
+    failures.push('docs/data/home.featured.json does not match data/home.featured.json');
   }
   if (JSON.stringify(source.featured) !== JSON.stringify(docsMirror.featured)) {
     failures.push('docs/data/home.featured.json does not match data/home.featured.json');

@@ -6,7 +6,7 @@ import { spawnSync } from 'node:child_process';
 const ROOT = process.cwd();
 const INPUT_PATH = path.join(ROOT, 'artifacts', 'reference', 'style-inventory.dedup.json');
 const OUTPUT_TOKENS_JSON_PATH = path.join(ROOT, 'artifacts', 'reference', 'tokens.candidates.json');
-const OUTPUT_CSS_PATH = path.join(ROOT, 'public', 'css', 'tokens.css');
+const OUTPUT_CSS_PATH = path.join(ROOT, 'css', 'tokens.css');
 const OUTPUT_DOCS_CSS_PATH = path.join(ROOT, 'docs', 'css', 'tokens.css');
 const OUTPUT_LEGACY_CSS_PATH = path.join(ROOT, 'css', 'tokens.css');
 const TOKENIZER_PATH = path.join(ROOT, 'scripts', 'tokenize_inventory.mjs');

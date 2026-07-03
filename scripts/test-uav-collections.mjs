@@ -185,7 +185,7 @@ for (const marker of [
 ]) {
   assert.ok(parityHtml.includes(marker), `UAV entry parity marker missing: ${marker}`);
 }
-const controlsCss = await fs.readFile(path.join(root, 'public', 'css', 'components', 'dx-controls.css'), 'utf8');
+const controlsCss = await fs.readFile(path.join(root, 'css', 'components', 'dx-controls.css'), 'utf8');
 for (const marker of [
   'overview-item--favorite-collection button.dx-fav-entry-toggle.dx-fav-heart-btn',
   'border: 0 !important',
@@ -206,7 +206,7 @@ for (const marker of [
 ]) {
   assert.ok(uavCss.includes(marker), `UAV entry parity CSS marker missing: ${marker}`);
 }
-const uavRuntime = await fs.readFile(path.join(root, 'public', 'assets', 'js', 'dx-uav-entry.js'), 'utf8');
+const uavRuntime = await fs.readFile(path.join(root, 'assets', 'js', 'dx-uav-entry.js'), 'utf8');
 assert.ok(uavRuntime.includes('shared.ensureInteractiveHoverRuntime?.'), 'UAV entry must load the shared hover runtime');
 assert.ok(uavRuntime.includes('shared.ensureEntryRuntimeLayoutOverrides?.'), 'UAV entry must load shared entry shell styles');
 assert.ok(uavRuntime.includes('shared.bindEntryTooltips?.'), 'UAV entry must bind shared bucket tooltips');

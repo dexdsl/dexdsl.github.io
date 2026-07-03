@@ -21,7 +21,7 @@ import { deriveAuthority } from './lib/performer-authority.mjs';
 import { parseLookup, normalizeLookup } from './lib/lookup-authority.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const CANONICAL = path.join(ROOT, 'public', 'data', 'catalog.entries.json');
+const CANONICAL = path.join(ROOT, 'data', 'catalog.entries.json');
 
 // Structured lookup facets to bake alongside the raw lookup (omitting the
 // noisy validity/issue fields, which belong in the audit, not the data).

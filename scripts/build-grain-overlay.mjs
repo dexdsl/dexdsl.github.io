@@ -7,21 +7,20 @@ import { build } from 'esbuild';
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(SCRIPT_DIR, '..');
 const ENTRY = path.join(ROOT, 'scripts', 'src', 'shared', 'dx-grain-overlay.entry.mjs');
-const PUBLIC_OUT = path.join(ROOT, 'public', 'assets', 'js', 'dx-grain-overlay.js');
+const DOCS_OUT = path.join(ROOT, 'docs', 'assets', 'js', 'dx-grain-overlay.js');
 const MIRRORS = [
   path.join(ROOT, 'assets', 'js', 'dx-grain-overlay.js'),
-  path.join(ROOT, 'docs', 'assets', 'js', 'dx-grain-overlay.js'),
 ];
 
 async function main() {
-  await fs.mkdir(path.dirname(PUBLIC_OUT), { recursive: true });
+  await fs.mkdir(path.dirname(DOCS_OUT), { recursive: true });
   await build({
     entryPoints: [ENTRY],
     bundle: true,
     format: 'iife',
     platform: 'browser',
     target: ['es2019'],
-    outfile: PUBLIC_OUT,
+    outfile: DOCS_OUT,
     minify: true,
     sourcemap: false,
     legalComments: 'none',
@@ -29,10 +28,10 @@ async function main() {
 
   for (const mirror of MIRRORS) {
     await fs.mkdir(path.dirname(mirror), { recursive: true });
-    await fs.copyFile(PUBLIC_OUT, mirror);
+    await fs.copyFile(DOCS_OUT, mirror);
   }
 
-  console.log(`grain:build wrote ${path.relative(ROOT, PUBLIC_OUT)}`);
+  console.log(`grain:build wrote ${path.relative(ROOT, DOCS_OUT)}`);
   for (const mirror of MIRRORS) {
     console.log(`grain:build wrote ${path.relative(ROOT, mirror)}`);
   }

@@ -38,7 +38,7 @@ if (source.includes('<GrainGradient') || source.includes('new GrainGradient')) {
   failures.push('grain source must not render the GrainGradient shape/color component');
 }
 
-const slot = read('public/assets/js/header-slot.js');
+const slot = read('docs/assets/js/header-slot.js');
 for (const marker of [
   "const GOOEY_GRAIN_RUNTIME_SRC = '/assets/js/dx-grain-overlay.js?v=20260702shader2';",
   'function ensureGooeyGrainOverlay()',
@@ -52,7 +52,7 @@ for (const marker of [
 }
 
 const bundles = [
-  'public/assets/js/dx-grain-overlay.js',
+  'docs/assets/js/dx-grain-overlay.js',
   'assets/js/dx-grain-overlay.js',
   'docs/assets/js/dx-grain-overlay.js',
 ].map((relativePath) => ({ relativePath, content: read(relativePath) }));

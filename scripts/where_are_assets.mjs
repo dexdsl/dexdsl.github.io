@@ -5,7 +5,7 @@ import path from 'node:path';
 const ROOT = process.cwd();
 const TARGETS_PATH = path.join(ROOT, 'artifacts', 'repo-targets.json');
 const DIST_DIR = path.join(ROOT, 'dist');
-const PUBLIC_DIR = path.join(ROOT, 'public');
+const DOCS_DIR = path.join(ROOT, 'docs');
 const PREFIXES = ['/css/', '/assets/', '/static/'];
 
 function loadJson(filePath) {
@@ -132,13 +132,13 @@ function main() {
   console.log('diag:assets');
   console.log(`- html files scanned: ${htmlFiles.length}`);
   console.log(`- unique /css|/assets|/static refs: ${urls.length}`);
-  console.log(`- checked roots: root=${ROOT}, public=${PUBLIC_DIR}, dist=${hasDist ? DIST_DIR : 'absent'}`);
+  console.log(`- checked roots: root=${ROOT}, public=${DOCS_DIR}, dist=${hasDist ? DIST_DIR : 'absent'}`);
   console.log('');
 
   for (const urlValue of urls) {
     const normalized = stripQueryAndHash(urlValue).replace(/^\/+/, '');
     const inRoot = existsFile(path.join(ROOT, normalized));
-    const inPublic = existsFile(path.join(PUBLIC_DIR, normalized));
+    const inPublic = existsFile(path.join(DOCS_DIR, normalized));
     const inDist = hasDist ? existsFile(path.join(DIST_DIR, normalized)) : false;
     const recommend = recommendationFor(urlValue, inRoot, inPublic, inDist);
     const sampleFile = Array.from(urlToFiles.get(urlValue)).sort((a, b) => a.localeCompare(b))[0] || '';

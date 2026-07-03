@@ -13,18 +13,16 @@ const PRE_STEPS = ['scripts/build_dexnotes_data.mjs', 'scripts/render_dexnotes_p
 const BUILD_TARGETS = [
   {
     entry: path.join(ROOT, 'scripts', 'src', 'dexnotes.index.entry.mjs'),
-    publicOut: path.join(ROOT, 'public', 'assets', 'js', 'dexnotes.index.js'),
+    docsOut: path.join(ROOT, 'docs', 'assets', 'js', 'dexnotes.index.js'),
     mirrors: [
       path.join(ROOT, 'assets', 'js', 'dexnotes.index.js'),
-      path.join(ROOT, 'docs', 'assets', 'js', 'dexnotes.index.js'),
     ],
   },
   {
     entry: path.join(ROOT, 'scripts', 'src', 'dexnotes.entry.entry.mjs'),
-    publicOut: path.join(ROOT, 'public', 'assets', 'js', 'dexnotes.entry.js'),
+    docsOut: path.join(ROOT, 'docs', 'assets', 'js', 'dexnotes.entry.js'),
     mirrors: [
       path.join(ROOT, 'assets', 'js', 'dexnotes.entry.js'),
-      path.join(ROOT, 'docs', 'assets', 'js', 'dexnotes.entry.js'),
     ],
   },
 ];
@@ -52,7 +50,7 @@ async function copyFile(source, target) {
 }
 
 async function buildOne(target) {
-  await ensureDir(target.publicOut);
+  await ensureDir(target.docsOut);
 
   await build({
     entryPoints: [target.entry],
@@ -60,17 +58,17 @@ async function buildOne(target) {
     format: 'iife',
     platform: 'browser',
     target: ['es2019'],
-    outfile: target.publicOut,
+    outfile: target.docsOut,
     minify: true,
     sourcemap: false,
     legalComments: 'none',
   });
 
   for (const mirror of target.mirrors) {
-    await copyFile(target.publicOut, mirror);
+    await copyFile(target.docsOut, mirror);
   }
 
-  console.log(`dexnotes:build wrote ${path.relative(ROOT, target.publicOut)}`);
+  console.log(`dexnotes:build wrote ${path.relative(ROOT, target.docsOut)}`);
   for (const mirror of target.mirrors) {
     console.log(`dexnotes:build wrote ${path.relative(ROOT, mirror)}`);
   }

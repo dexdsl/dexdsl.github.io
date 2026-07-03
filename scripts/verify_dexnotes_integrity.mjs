@@ -18,13 +18,13 @@ const ROOT = process.cwd();
 const INDEX_PAGE_PATH = path.join(ROOT, 'docs', 'dexnotes', 'index.html');
 const ENTRY_RUNTIME_SOURCE_PATH = path.join(ROOT, 'scripts', 'src', 'dexnotes.entry.entry.mjs');
 const INDEX_RUNTIME_SOURCE_PATH = path.join(ROOT, 'scripts', 'src', 'dexnotes.index.entry.mjs');
-const ENTRY_RUNTIME_PUBLIC_PATH = path.join(ROOT, 'public', 'assets', 'js', 'dexnotes.entry.js');
-const INDEX_RUNTIME_PUBLIC_PATH = path.join(ROOT, 'public', 'assets', 'js', 'dexnotes.index.js');
-const INDEX_CSS_PATH = path.join(ROOT, 'public', 'css', 'components', 'dx-dexnotes-index.css');
-const ENTRY_CSS_PATH = path.join(ROOT, 'public', 'css', 'components', 'dx-dexnotes-entry.css');
+const ENTRY_RUNTIME_PUBLIC_PATH = path.join(ROOT, 'docs', 'assets', 'js', 'dexnotes.entry.js');
+const INDEX_RUNTIME_PUBLIC_PATH = path.join(ROOT, 'docs', 'assets', 'js', 'dexnotes.index.js');
+const INDEX_CSS_PATH = path.join(ROOT, 'docs', 'css', 'components', 'dx-dexnotes-index.css');
+const ENTRY_CSS_PATH = path.join(ROOT, 'docs', 'css', 'components', 'dx-dexnotes-entry.css');
 const DEX_CLI_PATH = path.join(ROOT, 'scripts', 'dex.mjs');
 const NOTES_CLI_PATH = path.join(ROOT, 'scripts', 'lib', 'dex-notes-cli.mjs');
-const RSS_PUBLIC_PATH = path.join(ROOT, 'public', 'dexnotes', 'rss.xml');
+const RSS_PUBLIC_PATH = path.join(ROOT, 'docs', 'dexnotes', 'rss.xml');
 const RSS_DOCS_PATH = path.join(ROOT, 'docs', 'dexnotes', 'rss.xml');
 const RSS_COMPAT_PATH = path.join(ROOT, 'docs', 'dexnotes?format=rss');
 

@@ -3,9 +3,9 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
-const RUNTIME_PATH = path.join(ROOT, 'public', 'assets', 'dex-sidebar.js');
+const RUNTIME_PATH = path.join(ROOT, 'assets', 'dex-sidebar.js');
 const OUTPUT_PATHS = [
-  path.join(ROOT, 'public', 'css', 'components', 'dx-entry-runtime.css'),
+  path.join(ROOT, 'css', 'components', 'dx-entry-runtime.css'),
   path.join(ROOT, 'css', 'components', 'dx-entry-runtime.css'),
   path.join(ROOT, 'docs', 'css', 'components', 'dx-entry-runtime.css'),
 ];

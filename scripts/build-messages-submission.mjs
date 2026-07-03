@@ -9,10 +9,9 @@ const ROOT = path.resolve(SCRIPT_DIR, '..');
 
 const BUILD_TARGET = {
   entry: path.join(ROOT, 'scripts', 'src', 'messages.submission.entry.mjs'),
-  publicOut: path.join(ROOT, 'public', 'assets', 'js', 'messages.submission.js'),
+  docsOut: path.join(ROOT, 'docs', 'assets', 'js', 'messages.submission.js'),
   mirrors: [
     path.join(ROOT, 'assets', 'js', 'messages.submission.js'),
-    path.join(ROOT, 'docs', 'assets', 'js', 'messages.submission.js'),
   ],
 };
 
@@ -26,24 +25,24 @@ async function copyFile(source, target) {
 }
 
 async function main() {
-  await ensureDir(BUILD_TARGET.publicOut);
+  await ensureDir(BUILD_TARGET.docsOut);
   await build({
     entryPoints: [BUILD_TARGET.entry],
     bundle: true,
     format: 'iife',
     platform: 'browser',
     target: ['es2019'],
-    outfile: BUILD_TARGET.publicOut,
+    outfile: BUILD_TARGET.docsOut,
     minify: true,
     sourcemap: false,
     legalComments: 'none',
   });
 
   for (const mirror of BUILD_TARGET.mirrors) {
-    await copyFile(BUILD_TARGET.publicOut, mirror);
+    await copyFile(BUILD_TARGET.docsOut, mirror);
   }
 
-  console.log(`messages:submission:build wrote ${path.relative(ROOT, BUILD_TARGET.publicOut)}`);
+  console.log(`messages:submission:build wrote ${path.relative(ROOT, BUILD_TARGET.docsOut)}`);
   for (const mirror of BUILD_TARGET.mirrors) {
     console.log(`messages:submission:build wrote ${path.relative(ROOT, mirror)}`);
   }

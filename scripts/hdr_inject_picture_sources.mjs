@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 const ROOT = process.cwd();
-const MANIFEST_PATH = path.join(ROOT, 'public', 'data', 'hdr.media-manifest.json');
+const MANIFEST_PATH = path.join(ROOT, 'data', 'hdr.media-manifest.json');
 
 function escapeRegExp(value) {
   return String(value || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

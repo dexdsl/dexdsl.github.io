@@ -15,7 +15,7 @@ const POLLS_GAS_MARKERS = [
 const POLLS_SCAN_FILES = [
   'docs/polls/index.html',
   'polls/index.html',
-  'public/assets/js/polls.app.js',
+  'docs/assets/js/polls.app.js',
   'docs/assets/js/polls.app.js',
   'assets/js/polls.app.js',
 ];
@@ -74,8 +74,8 @@ function verifyGeneratedDetailPages(pollIds) {
 }
 
 function verifyPublicPollRouteNotProtected() {
-  const authText = readText('public/assets/dex-auth.js');
-  const headerText = readText('public/assets/js/header-slot.js');
+  const authText = readText('docs/assets/dex-auth.js');
+  const headerText = readText('docs/assets/js/header-slot.js');
   const protectedVerifyText = readText('scripts/verify_protected_auth_contract.mjs');
 
   // Polls uses the profile fixed-shell chrome (header-slot route classes) so it gets the

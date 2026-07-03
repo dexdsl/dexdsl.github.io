@@ -21,10 +21,10 @@ const FORBIDDEN_BUNDLE_PATTERNS = [
   { token: 'dynamic import call', regex: /\bimport\s*\(/i },
 ];
 const MIRROR_PARITY_GROUPS = [
-  ['public/assets/css/dex.css', 'assets/css/dex.css', 'docs/assets/css/dex.css'],
-  ['public/assets/dex-sidebar.js', 'assets/dex-sidebar.js', 'docs/assets/dex-sidebar.js'],
-  ['public/assets/js/header-slot.js', 'assets/js/header-slot.js', 'docs/assets/js/header-slot.js'],
-  ['public/assets/js/dex-breadcrumb-motion.js', 'assets/js/dex-breadcrumb-motion.js', 'docs/assets/js/dex-breadcrumb-motion.js'],
+  ['docs/assets/css/dex.css', 'assets/css/dex.css', 'docs/assets/css/dex.css'],
+  ['docs/assets/dex-sidebar.js', 'assets/dex-sidebar.js', 'docs/assets/dex-sidebar.js'],
+  ['docs/assets/js/header-slot.js', 'assets/js/header-slot.js', 'docs/assets/js/header-slot.js'],
+  ['docs/assets/js/dex-breadcrumb-motion.js', 'assets/js/dex-breadcrumb-motion.js', 'docs/assets/js/dex-breadcrumb-motion.js'],
 ];
 
 function extractRuntimePaths(html) {

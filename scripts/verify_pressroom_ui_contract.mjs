@@ -72,7 +72,7 @@ function verifyPressroomRuntime() {
   ]);
 
   for (const relPath of [
-    'public/assets/js/pressroom.js',
+    'docs/assets/js/pressroom.js',
     'assets/js/pressroom.js',
     'docs/assets/js/pressroom.js',
   ]) {
@@ -87,7 +87,7 @@ function verifyPressroomRuntime() {
   for (const relPath of [
     sourceRel,
     'docs/entry/pressroom/index.html',
-    'public/assets/js/pressroom.js',
+    'docs/assets/js/pressroom.js',
     'assets/js/pressroom.js',
     'docs/assets/js/pressroom.js',
   ]) {
@@ -99,7 +99,7 @@ function verifyPressroomRuntime() {
 }
 
 function verifyCssContracts() {
-  const cssRel = 'public/css/components/dx-pressroom.css';
+  const cssRel = 'docs/css/components/dx-pressroom.css';
   const cssText = readText(cssRel);
 
   assertIncludes(cssRel, cssText, [

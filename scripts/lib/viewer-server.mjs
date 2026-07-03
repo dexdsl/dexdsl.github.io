@@ -42,10 +42,10 @@ const BASE_HEADERS = {
 };
 
 const KNOWN_OUTPUT_DIRS = ['entries'];
-const LOCAL_ASSET_ROOTS = [path.join('public', 'assets'), 'assets', path.join('docs', 'assets')];
-const LOCAL_CSS_ROOTS = [path.join('public', 'css'), 'css', path.join('docs', 'css')];
-const LOCAL_STATIC_ROOTS = [path.join('public', 'static'), 'static', path.join('docs', 'static')];
-const LOCAL_DATA_ROOTS = [path.join('public', 'data'), 'data', path.join('docs', 'data')];
+const LOCAL_ASSET_ROOTS = [path.join('assets'), 'assets', path.join('docs', 'assets')];
+const LOCAL_CSS_ROOTS = [path.join('css'), 'css', path.join('docs', 'css')];
+const LOCAL_STATIC_ROOTS = [path.join('static'), 'static', path.join('docs', 'static')];
+const LOCAL_DATA_ROOTS = [path.join('data'), 'data', path.join('docs', 'data')];
 const BREADCRUMB_RUNTIME_PATH = '/assets/js/dex-breadcrumb-motion.js';
 const BREADCRUMB_RUNTIME_URLS = [
   'https://dexdsl.github.io/assets/js/dex-breadcrumb-motion.js',

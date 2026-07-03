@@ -20,8 +20,8 @@ function expectMarker(text, marker, label) {
 
 const html = read('docs/404.html');
 const source = read('scripts/src/not-found.entry.mjs');
-const built = read('public/assets/js/not-found.js');
-const css = read('public/css/components/dx-not-found.css');
+const built = read('docs/assets/js/not-found.js');
+const css = read('docs/css/components/dx-not-found.css');
 
 for (const marker of [
   'id="dex-not-found"',

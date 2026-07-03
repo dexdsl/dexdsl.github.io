@@ -5,7 +5,7 @@ import { normalizeProtectedAssetsFile } from './lib/protected-assets-schema.mjs'
 
 const ROOT = process.cwd();
 const SOURCE_PATH = path.join(ROOT, 'data', 'protected.assets.json');
-const PUBLIC_PATH = path.join(ROOT, 'public', 'data', 'protected.assets.json');
+const PUBLIC_PATH = path.join(ROOT, 'docs', 'data', 'protected.assets.json');
 const DOCS_PATH = path.join(ROOT, 'docs', 'data', 'protected.assets.json');
 const DEX_PATH = path.join(ROOT, 'scripts', 'dex.mjs');
 const DASHBOARD_PATH = path.join(ROOT, 'scripts', 'ui', 'dashboard.mjs');
@@ -34,7 +34,7 @@ function main() {
   const docsMirror = normalizeProtectedAssetsFile(readJson(DOCS_PATH));
 
   if (JSON.stringify(source) !== JSON.stringify(publicMirror)) {
-    failures.push('public/data/protected.assets.json does not match data/protected.assets.json');
+    failures.push('docs/data/protected.assets.json does not match data/protected.assets.json');
   }
   if (JSON.stringify(source) !== JSON.stringify(docsMirror)) {
     failures.push('docs/data/protected.assets.json does not match data/protected.assets.json');

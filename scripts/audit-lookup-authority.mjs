@@ -18,7 +18,7 @@ import { parseLookup, normalizeLookup, LOOKUP_FAMILIES, LOOKUP_MEDIA } from './l
 import { parseUavLookup, normalizeUavLookup } from './lib/uav-lookup-authority.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const CANONICAL = path.join(ROOT, 'public', 'data', 'catalog.entries.json');
+const CANONICAL = path.join(ROOT, 'data', 'catalog.entries.json');
 
 function main() {
   const data = JSON.parse(fs.readFileSync(CANONICAL, 'utf8'));

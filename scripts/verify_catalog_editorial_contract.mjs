@@ -6,10 +6,10 @@ import { normalizeCatalogEditorialFile } from './lib/catalog-editorial-schema.mj
 const ROOT = process.cwd();
 
 const SOURCE_PATH = path.join(ROOT, 'data', 'catalog.editorial.json');
-const PUBLIC_PATH = path.join(ROOT, 'public', 'data', 'catalog.editorial.json');
+const PUBLIC_PATH = path.join(ROOT, 'docs', 'data', 'catalog.editorial.json');
 const DOCS_PATH = path.join(ROOT, 'docs', 'data', 'catalog.editorial.json');
 const SNAPSHOT_SOURCE = path.join(ROOT, 'data', 'catalog.curation.snapshot.json');
-const SNAPSHOT_PUBLIC = path.join(ROOT, 'public', 'data', 'catalog.curation.snapshot.json');
+const SNAPSHOT_PUBLIC = path.join(ROOT, 'docs', 'data', 'catalog.curation.snapshot.json');
 const SNAPSHOT_DOCS = path.join(ROOT, 'docs', 'data', 'catalog.curation.snapshot.json');
 
 const EXTRACT_SCRIPT_PATH = path.join(ROOT, 'scripts', 'extract_catalog_data.mjs');
@@ -35,13 +35,13 @@ function main() {
   const docsMirror = normalizeCatalogEditorialFile(readJson(DOCS_PATH));
 
   if (JSON.stringify(source.manifest) !== JSON.stringify(publicMirror.manifest)) {
-    failures.push('public/data/catalog.editorial.json manifest does not match data/catalog.editorial.json');
+    failures.push('docs/data/catalog.editorial.json manifest does not match data/catalog.editorial.json');
   }
   if (JSON.stringify(source.manifest) !== JSON.stringify(docsMirror.manifest)) {
     failures.push('docs/data/catalog.editorial.json manifest does not match data/catalog.editorial.json');
   }
   if (JSON.stringify(source.spotlight) !== JSON.stringify(publicMirror.spotlight)) {
-    failures.push('public/data/catalog.editorial.json spotlight does not match source');
+    failures.push('docs/data/catalog.editorial.json spotlight does not match source');
   }
   if (JSON.stringify(source.spotlight) !== JSON.stringify(docsMirror.spotlight)) {
     failures.push('docs/data/catalog.editorial.json spotlight does not match source');

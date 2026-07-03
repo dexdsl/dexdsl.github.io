@@ -22,7 +22,7 @@ const DEFAULT_API_BY_ENV = {
 };
 
 const CATALOG_ENTRIES_PATH = path.join(ROOT, 'data', 'catalog.entries.json');
-const HOME_SNAPSHOT_PUBLIC_PATH = path.join(ROOT, 'public', 'data', 'home.featured.snapshot.json');
+const HOME_SNAPSHOT_PUBLIC_PATH = path.join(ROOT, 'data', 'home.featured.snapshot.json');
 const HOME_SNAPSHOT_DATA_PATH = path.join(ROOT, 'data', 'home.featured.snapshot.json');
 const HOME_SNAPSHOT_DOCS_PATH = path.join(ROOT, 'docs', 'data', 'home.featured.snapshot.json');
 

@@ -5,10 +5,10 @@ import path from 'node:path';
 const ROOT = process.cwd();
 const SETTINGS_HTML = path.join(ROOT, 'docs', 'entry', 'settings', 'index.html');
 const RUNTIME_SRC = path.join(ROOT, 'scripts', 'src', 'settings.profile.entry.mjs');
-const RUNTIME_BUNDLE = path.join(ROOT, 'public', 'assets', 'js', 'settings.profile.js');
-const TAXONOMY_PATH = path.join(ROOT, 'public', 'data', 'profile-taxonomy.json');
+const RUNTIME_BUNDLE = path.join(ROOT, 'docs', 'assets', 'js', 'settings.profile.js');
+const TAXONOMY_PATH = path.join(ROOT, 'docs', 'data', 'profile-taxonomy.json');
 const CSS_PATHS = [
-  path.join(ROOT, 'public', 'css', 'components', 'dx-settings-profile.css'),
+  path.join(ROOT, 'docs', 'css', 'components', 'dx-settings-profile.css'),
   path.join(ROOT, 'css', 'components', 'dx-settings-profile.css'),
   path.join(ROOT, 'docs', 'css', 'components', 'dx-settings-profile.css'),
 ];
@@ -110,18 +110,18 @@ function verifyTaxonomy(failures) {
   try {
     taxonomy = JSON.parse(taxonomyRaw);
   } catch {
-    failures.push('public/data/profile-taxonomy.json is not valid JSON');
+    failures.push('docs/data/profile-taxonomy.json is not valid JSON');
     return;
   }
   if (!taxonomy || typeof taxonomy !== 'object') {
-    failures.push('public/data/profile-taxonomy.json must contain an object');
+    failures.push('docs/data/profile-taxonomy.json must contain an object');
     return;
   }
   if (!Array.isArray(taxonomy.roles) || taxonomy.roles.length < 5) {
-    failures.push('public/data/profile-taxonomy.json must include roles[] with at least 5 entries');
+    failures.push('docs/data/profile-taxonomy.json must include roles[] with at least 5 entries');
   }
   if (!Array.isArray(taxonomy.instruments) || taxonomy.instruments.length < 8) {
-    failures.push('public/data/profile-taxonomy.json must include instruments[] with at least 8 entries');
+    failures.push('docs/data/profile-taxonomy.json must include instruments[] with at least 8 entries');
   }
 }
 

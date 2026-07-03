@@ -10,8 +10,8 @@ const ROOT = process.cwd();
 const SETTINGS_PATH = path.join(ROOT, 'docs', 'entry', 'settings', 'index.html');
 const MEMBERSHIP_RUNTIME_PATH = path.join(ROOT, 'scripts', 'src', 'settings.membership.entry.mjs');
 const AUTH_CONFIG_PATHS = [
-  path.join(ROOT, 'public', 'assets', 'dex-auth0-config.js'),
-  path.join(ROOT, 'public', 'assets', 'dex-auth-config.js')
+  path.join(ROOT, 'docs', 'assets', 'dex-auth0-config.js'),
+  path.join(ROOT, 'docs', 'assets', 'dex-auth-config.js')
 ];
 const STRIPE_PRODUCT_MAP_PATH = path.join(ROOT, 'data', 'stripe-membership-products.json');
 

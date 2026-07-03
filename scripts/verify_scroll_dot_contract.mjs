@@ -4,8 +4,8 @@ import path from 'node:path';
 
 const ROOT = process.cwd();
 const DOCS_DIR = path.join(ROOT, 'docs');
-const BASE_CSS_PATH = path.join(ROOT, 'public', 'css', 'base.css');
-const DOT_RUNTIME_PATH = path.join(ROOT, 'public', 'assets', 'js', 'dx-scroll-dot.js');
+const BASE_CSS_PATH = path.join(ROOT, 'docs', 'css', 'base.css');
+const DOT_RUNTIME_PATH = path.join(ROOT, 'docs', 'assets', 'js', 'dx-scroll-dot.js');
 const DOT_SCRIPT_NEEDLE = '/assets/js/dx-scroll-dot.js';
 
 const REQUIRED_MARKERS = [

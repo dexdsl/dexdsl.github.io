@@ -13,7 +13,7 @@ const TARGETED_FILES = [
   'docs/entry/pressroom/index.html',
   'docs/messages.html',
 ];
-const CONTROL_CSS_PATH = 'public/css/components/dx-controls.css';
+const CONTROL_CSS_PATH = 'docs/css/components/dx-controls.css';
 
 const PRIMARY_ALIASES = new Set(['cta-btn', 'cta', 'dex-btn']);
 const SECONDARY_ALIASES = new Set(['ghost', 'ghost-btn']);

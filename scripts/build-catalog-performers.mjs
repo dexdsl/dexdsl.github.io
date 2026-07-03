@@ -126,8 +126,8 @@ function main() {
   fs.writeFileSync(outFront, JSON.stringify(payload, null, 2));
   console.log(`catalog-performers: wrote ${path.relative(ROOT, outFront)} (${index.length} entries)`);
 
-  // Mirror into docs/ + public/ data dirs to match repo conventions.
-  for (const mirror of ['docs/data/catalog-performers.json', 'public/data/catalog-performers.json']) {
+  // Mirror into the docs/ deploy surface (canonical source is data/catalog-performers.json above).
+  for (const mirror of ['docs/data/catalog-performers.json']) {
     const dest = path.join(ROOT, mirror);
     try {
       fs.mkdirSync(path.dirname(dest), { recursive: true });

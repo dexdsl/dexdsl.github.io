@@ -43,9 +43,9 @@ const MIME = {
   '.woff2': 'font/woff2',
 };
 const STATIC_RUNTIME_ROOTS = [
-  { prefix: '/assets/', roots: ['public/assets', 'assets', 'docs/assets'] },
-  { prefix: '/css/', roots: ['public/css', 'css', 'docs/css'] },
-  { prefix: '/static/', roots: ['public/static', 'static', 'docs/static'] },
+  { prefix: '/assets/', roots: ['assets', 'docs/assets'] },
+  { prefix: '/css/', roots: ['css', 'docs/css'] },
+  { prefix: '/static/', roots: ['static', 'docs/static'] },
 ];
 
 function safeJoin(base, requestPath) {

@@ -4,7 +4,7 @@ import path from 'node:path';
 
 const ROOT = process.cwd();
 
-const MANIFEST_PUBLIC_PATH = path.join(ROOT, 'public', 'data', 'hdr.media-manifest.json');
+const MANIFEST_PUBLIC_PATH = path.join(ROOT, 'data', 'hdr.media-manifest.json');
 const MANIFEST_RUNTIME_TARGETS = [
   path.join(ROOT, 'data', 'hdr.media-manifest.json'),
   path.join(ROOT, 'docs', 'data', 'hdr.media-manifest.json'),
@@ -46,7 +46,7 @@ const VIDEO_VARIANTS = [
 
 function toPublicAssetPath(assetUrl) {
   if (typeof assetUrl !== 'string' || !assetUrl.startsWith('/assets/')) return '';
-  return path.join(ROOT, 'public', assetUrl.slice(1));
+  return path.join(ROOT, assetUrl.slice(1));
 }
 
 async function exists(filePath) {

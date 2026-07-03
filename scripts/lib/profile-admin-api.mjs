@@ -196,7 +196,7 @@ export async function writePublicProfilesMap(payload, {
   const targets = [path.resolve(rootDir, out)];
   if (mirror) {
     targets.push(path.resolve(rootDir, 'docs/data/public-profiles.json'));
-    targets.push(path.resolve(rootDir, 'public/data/public-profiles.json'));
+    targets.push(path.resolve(rootDir, 'data/public-profiles.json'));
   }
   const content = `${JSON.stringify(body, null, 2)}\n`;
   for (const target of targets) {

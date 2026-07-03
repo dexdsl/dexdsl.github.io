@@ -16,7 +16,7 @@ import {
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(SCRIPT_DIR, '..', '..');
 const DEFAULT_CALLS_REGISTRY_PATH = path.join(ROOT, 'data', 'calls.registry.json');
-const PUBLIC_CALLS_REGISTRY_PATH = path.join(ROOT, 'public', 'data', 'calls.registry.json');
+const PUBLIC_CALLS_REGISTRY_PATH = path.join(ROOT, 'data', 'calls.registry.json');
 const DOCS_CALLS_REGISTRY_PATH = path.join(ROOT, 'docs', 'data', 'calls.registry.json');
 
 function toText(value) {

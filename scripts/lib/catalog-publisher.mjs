@@ -23,7 +23,7 @@ const DEFAULT_API_BY_ENV = {
 };
 
 const CATALOG_DATA_PATH = path.join(ROOT, 'data', 'catalog.data.json');
-const CATALOG_SNAPSHOT_PUBLIC_PATH = path.join(ROOT, 'public', 'data', 'catalog.curation.snapshot.json');
+const CATALOG_SNAPSHOT_PUBLIC_PATH = path.join(ROOT, 'data', 'catalog.curation.snapshot.json');
 const CATALOG_SNAPSHOT_DATA_PATH = path.join(ROOT, 'data', 'catalog.curation.snapshot.json');
 const CATALOG_SNAPSHOT_DOCS_PATH = path.join(ROOT, 'docs', 'data', 'catalog.curation.snapshot.json');
 

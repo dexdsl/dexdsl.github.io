@@ -4,9 +4,9 @@ import crypto from 'node:crypto';
 
 export const ROOT = process.cwd();
 export const DEXNOTES_CONTENT_DIR = path.join(ROOT, 'content', 'dexnotes', 'posts');
-export const DEXNOTES_INDEX_DATA_PATH = path.join(ROOT, 'public', 'data', 'dexnotes.index.json');
-export const DEXNOTES_ENTRIES_DATA_PATH = path.join(ROOT, 'public', 'data', 'dexnotes.entries.json');
-export const DEXNOTES_COMMENTS_DATA_PATH = path.join(ROOT, 'public', 'data', 'dexnotes.comments.json');
+export const DEXNOTES_INDEX_DATA_PATH = path.join(ROOT, 'data', 'dexnotes.index.json');
+export const DEXNOTES_ENTRIES_DATA_PATH = path.join(ROOT, 'data', 'dexnotes.entries.json');
+export const DEXNOTES_COMMENTS_DATA_PATH = path.join(ROOT, 'data', 'dexnotes.comments.json');
 
 export const REQUIRED_FRONTMATTER_KEYS = [
   'id',

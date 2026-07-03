@@ -4,18 +4,18 @@ import path from 'node:path';
 
 const ROOT = process.cwd();
 
-const DATA_PATH = path.join(ROOT, 'public', 'data', 'catalog.data.json');
-const ENTRIES_PATH = path.join(ROOT, 'public', 'data', 'catalog.entries.json');
-const GUIDE_PATH = path.join(ROOT, 'public', 'data', 'catalog.guide.json');
-const SYMBOLS_PATH = path.join(ROOT, 'public', 'data', 'catalog.symbols.json');
-const SEARCH_PATH = path.join(ROOT, 'public', 'data', 'catalog.search.json');
-const SEASONS_PATH = path.join(ROOT, 'public', 'data', 'catalog.seasons.json');
-const EDITORIAL_PATH = path.join(ROOT, 'public', 'data', 'catalog.editorial.json');
-const CURATION_SNAPSHOT_PATH = path.join(ROOT, 'public', 'data', 'catalog.curation.snapshot.json');
-const HOME_SNAPSHOT_PATH = path.join(ROOT, 'public', 'data', 'home.featured.snapshot.json');
+const DATA_PATH = path.join(ROOT, 'docs', 'data', 'catalog.data.json');
+const ENTRIES_PATH = path.join(ROOT, 'docs', 'data', 'catalog.entries.json');
+const GUIDE_PATH = path.join(ROOT, 'docs', 'data', 'catalog.guide.json');
+const SYMBOLS_PATH = path.join(ROOT, 'docs', 'data', 'catalog.symbols.json');
+const SEARCH_PATH = path.join(ROOT, 'docs', 'data', 'catalog.search.json');
+const SEASONS_PATH = path.join(ROOT, 'docs', 'data', 'catalog.seasons.json');
+const EDITORIAL_PATH = path.join(ROOT, 'docs', 'data', 'catalog.editorial.json');
+const CURATION_SNAPSHOT_PATH = path.join(ROOT, 'docs', 'data', 'catalog.curation.snapshot.json');
+const HOME_SNAPSHOT_PATH = path.join(ROOT, 'docs', 'data', 'home.featured.snapshot.json');
 const DATA_ENTRIES_PATH = path.join(ROOT, 'data', 'catalog.entries.json');
 const ASSET_ENTRIES_PATH = path.join(ROOT, 'assets', 'data', 'catalog.entries.json');
-const PUBLIC_ASSET_ENTRIES_PATH = path.join(ROOT, 'public', 'assets', 'data', 'catalog.entries.json');
+const PUBLIC_ASSET_ENTRIES_PATH = path.join(ROOT, 'docs', 'assets', 'data', 'catalog.entries.json');
 const DOCS_ASSET_ENTRIES_PATH = path.join(ROOT, 'docs', 'assets', 'data', 'catalog.entries.json');
 
 const INDEX_PAGE_PATH = path.join(ROOT, 'docs', 'catalog', 'index.html');
@@ -172,10 +172,10 @@ function main() {
       failures.push(`catalog.data row has invalid kind: ${rowLabel(row)}`);
     }
   }
-  compareEntryMirror(failures, model, entriesModel, 'public/data/catalog.entries.json');
+  compareEntryMirror(failures, model, entriesModel, 'docs/data/catalog.entries.json');
   compareEntryMirror(failures, entriesModel, dataEntriesModel, 'data/catalog.entries.json');
   compareEntryMirror(failures, entriesModel, assetEntriesModel, 'assets/data/catalog.entries.json');
-  compareEntryMirror(failures, entriesModel, publicAssetEntriesModel, 'public/assets/data/catalog.entries.json');
+  compareEntryMirror(failures, entriesModel, publicAssetEntriesModel, 'docs/assets/data/catalog.entries.json');
   compareEntryMirror(failures, entriesModel, docsAssetEntriesModel, 'docs/assets/data/catalog.entries.json');
 
   const modelEntryHrefs = new Set();

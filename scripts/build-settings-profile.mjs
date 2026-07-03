@@ -9,14 +9,12 @@ const ROOT = path.resolve(SCRIPT_DIR, '..');
 
 const BUILD_TARGET = {
   entry: path.join(ROOT, 'scripts', 'src', 'settings.profile.entry.mjs'),
-  publicOut: path.join(ROOT, 'public', 'assets', 'js', 'settings.profile.js'),
+  docsOut: path.join(ROOT, 'docs', 'assets', 'js', 'settings.profile.js'),
   mirrors: [
     path.join(ROOT, 'assets', 'js', 'settings.profile.js'),
-    path.join(ROOT, 'docs', 'assets', 'js', 'settings.profile.js'),
   ],
   cssSource: path.join(ROOT, 'css', 'components', 'dx-settings-profile.css'),
   cssMirrors: [
-    path.join(ROOT, 'public', 'css', 'components', 'dx-settings-profile.css'),
     path.join(ROOT, 'docs', 'css', 'components', 'dx-settings-profile.css'),
   ],
 };
@@ -31,27 +29,27 @@ async function copyFile(source, target) {
 }
 
 async function main() {
-  await ensureDir(BUILD_TARGET.publicOut);
+  await ensureDir(BUILD_TARGET.docsOut);
   await build({
     entryPoints: [BUILD_TARGET.entry],
     bundle: true,
     format: 'iife',
     platform: 'browser',
     target: ['es2019'],
-    outfile: BUILD_TARGET.publicOut,
+    outfile: BUILD_TARGET.docsOut,
     minify: true,
     sourcemap: false,
     legalComments: 'none',
   });
 
   for (const mirror of BUILD_TARGET.mirrors) {
-    await copyFile(BUILD_TARGET.publicOut, mirror);
+    await copyFile(BUILD_TARGET.docsOut, mirror);
   }
   for (const mirror of BUILD_TARGET.cssMirrors) {
     await copyFile(BUILD_TARGET.cssSource, mirror);
   }
 
-  console.log(`settings:profile:build wrote ${path.relative(ROOT, BUILD_TARGET.publicOut)}`);
+  console.log(`settings:profile:build wrote ${path.relative(ROOT, BUILD_TARGET.docsOut)}`);
   for (const mirror of BUILD_TARGET.mirrors) {
     console.log(`settings:profile:build wrote ${path.relative(ROOT, mirror)}`);
   }

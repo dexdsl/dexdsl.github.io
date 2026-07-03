@@ -9,8 +9,8 @@ const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(SCRIPT_DIR, '..');
 
 const REGISTRY_PATH = path.join(ROOT, 'data', 'calls.registry.json');
-const COPY_PATH = path.join(ROOT, 'public', 'data', 'call.editorial.copy.json');
-const OUTPUT_PATH = path.join(ROOT, 'public', 'data', 'call.data.json');
+const COPY_PATH = path.join(ROOT, 'data', 'call.editorial.copy.json');
+const OUTPUT_PATH = path.join(ROOT, 'data', 'call.data.json');
 
 function toText(value) {
   return String(value || '').replace(/\s+/g, ' ').trim();

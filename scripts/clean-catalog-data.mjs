@@ -17,13 +17,13 @@ const JSON_TARGETS = [
   'data/catalog.editorial.json',
   'data/catalog.guide.json',
   'data/catalog.symbols.json',
-  'public/data/catalog.data.json',
-  'public/data/catalog.entries.json',
-  'public/data/catalog.search.json',
-  'public/data/catalog.curation.snapshot.json',
-  'public/data/catalog.editorial.json',
-  'public/data/catalog.guide.json',
-  'public/data/catalog.symbols.json',
+  'docs/data/catalog.data.json',
+  'docs/data/catalog.entries.json',
+  'docs/data/catalog.search.json',
+  'docs/data/catalog.curation.snapshot.json',
+  'docs/data/catalog.editorial.json',
+  'docs/data/catalog.guide.json',
+  'docs/data/catalog.symbols.json',
   'docs/data/catalog.data.json',
   'docs/data/catalog.entries.json',
   'docs/data/catalog.search.json',
@@ -32,14 +32,14 @@ const JSON_TARGETS = [
   'docs/data/catalog.guide.json',
   'docs/data/catalog.symbols.json',
   'assets/data/catalog.entries.json',
-  'public/assets/data/catalog.entries.json',
+  'docs/assets/data/catalog.entries.json',
   'docs/assets/data/catalog.entries.json',
 ];
 
 // Dev-stub route directories to remove (the excluded entries' placeholder pages).
 const ROUTE_DIRS = [...EXCLUDED_ENTRY_IDS].flatMap((id) => [
   `docs/entry/${id}`,
-  `public/entry/${id}`,
+  `docs/entry/${id}`,
   `entry/${id}`,
 ]);
 

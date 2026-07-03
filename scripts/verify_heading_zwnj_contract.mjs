@@ -116,12 +116,12 @@ function verifyCatalogStaticCopySeparators() {
     'data/catalog.search.json',
     'data/catalog.symbols.json',
     'data/catalog.curation.snapshot.json',
-    'public/data/catalog.editorial.json',
-    'public/data/catalog.entries.json',
-    'public/data/catalog.data.json',
-    'public/data/catalog.search.json',
-    'public/data/catalog.symbols.json',
-    'public/data/catalog.curation.snapshot.json',
+    'docs/data/catalog.editorial.json',
+    'docs/data/catalog.entries.json',
+    'docs/data/catalog.data.json',
+    'docs/data/catalog.search.json',
+    'docs/data/catalog.symbols.json',
+    'docs/data/catalog.curation.snapshot.json',
     'docs/data/catalog.editorial.json',
     'docs/data/catalog.entries.json',
     'docs/data/catalog.data.json',
@@ -149,7 +149,7 @@ function verifyCatalogStaticCopySeparators() {
 }
 
 function verifyHeadingRuntime() {
-  const relPath = 'public/assets/js/header-slot.js';
+  const relPath = 'docs/assets/js/header-slot.js';
   const text = readText(relPath);
   assertIncludes(relPath, text, [
     'HEADING_TYPOGRAPHY_SELECTOR',
@@ -185,7 +185,7 @@ function verifyHeadingRuntime() {
 }
 
 function verifySidebarHeadingSeparatorPolicy() {
-  const relPath = 'public/assets/dex-sidebar.js';
+  const relPath = 'docs/assets/dex-sidebar.js';
   const text = readText(relPath);
   if (/replace\(\s*\/\[\s*\\u200C\\u200D\s*\]\/g,\s*''\s*\)/.test(text)) {
     FAILURES.push(`${relPath} must not strip U+200D from visible randomizeTitle output`);

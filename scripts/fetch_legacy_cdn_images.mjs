@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const ROOT = process.cwd();
-const PUBLIC_ROOT = path.join(ROOT, 'public');
+const PUBLIC_ROOT = path.join(ROOT, 'assets');
 const CONFIG_PATH = path.join(ROOT, 'sanitize.config.json');
 const TARGETS_PATH = path.join(ROOT, 'artifacts', 'repo-targets.json');
 const MANIFEST_PATH = path.join(PUBLIC_ROOT, 'assets', 'assets-manifest.json');
@@ -14,7 +14,7 @@ const PLACEHOLDER_PNG_BASE64 =
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4////fwAJ+wP9KobjigAAAABJRU5ErkJggg==';
 const PLACEHOLDER_PNG_BUFFER = Buffer.from(PLACEHOLDER_PNG_BASE64, 'base64');
 const LOCAL_MIRROR_ROOTS = [
-  path.join(ROOT, 'public', 'assets'),
+  path.join(ROOT, 'assets'),
   path.join(ROOT, 'assets'),
   path.join(ROOT, 'docs', 'content'),
   path.join(ROOT, 'docs', 'static'),

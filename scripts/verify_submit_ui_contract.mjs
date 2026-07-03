@@ -94,7 +94,7 @@ function verifySubmitRuntime() {
   ]);
 
   for (const relPath of [
-    'public/assets/js/submit.samples.js',
+    'docs/assets/js/submit.samples.js',
     'assets/js/submit.samples.js',
     'docs/assets/js/submit.samples.js',
   ]) {
@@ -124,7 +124,7 @@ function verifySubmitRuntime() {
   for (const relPath of [
     sourceRel,
     'docs/entry/submit/index.html',
-    'public/assets/js/submit.samples.js',
+    'docs/assets/js/submit.samples.js',
     'assets/js/submit.samples.js',
     'docs/assets/js/submit.samples.js',
   ]) {
@@ -136,7 +136,7 @@ function verifySubmitRuntime() {
 }
 
 function verifyAuthPrefetchRuntime() {
-  const runtimeRel = 'public/assets/dex-auth.js';
+  const runtimeRel = 'docs/assets/dex-auth.js';
   const runtime = readText(runtimeRel);
   assertIncludes(runtimeRel, runtime, [
     'window.__DX_PREFETCH',
@@ -148,7 +148,7 @@ function verifyAuthPrefetchRuntime() {
 }
 
 function verifyCssContracts() {
-  const cssRel = 'public/css/components/dx-submit-samples.css';
+  const cssRel = 'docs/css/components/dx-submit-samples.css';
   const cssText = readText(cssRel);
   assertIncludes(cssRel, cssText, [
     '.dx-submit-shell',
@@ -163,7 +163,7 @@ function verifyCssContracts() {
     assertIncludes(relPath, text, ['.dx-submit-shell', '.dx-submit-stage']);
   }
 
-  const trackerCssRel = 'public/css/components/dx-submission-tracker.css';
+  const trackerCssRel = 'docs/css/components/dx-submission-tracker.css';
   const trackerCss = readText(trackerCssRel);
   assertIncludes(trackerCssRel, trackerCss, [
     '.dx-sub-stage-rail',

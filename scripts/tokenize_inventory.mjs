@@ -7,7 +7,7 @@ const DEFAULT_DEDUP_PATH = path.join(ROOT, 'artifacts', 'style-inventory.dedup.j
 const DEFAULT_TOKENS_JSON_PATH = path.join(ROOT, 'tokens.candidates.json');
 const DEFAULT_TOKENS_ROOT_CSS_PATH = path.join(ROOT, 'tokens.css');
 const DEFAULT_TOKENS_CSS_PATH = path.join(ROOT, 'css', 'tokens.css');
-const DEFAULT_TOKENS_PUBLIC_CSS_PATH = path.join(ROOT, 'public', 'css', 'tokens.css');
+const DEFAULT_TOKENS_PUBLIC_CSS_PATH = path.join(ROOT, 'css', 'tokens.css');
 const DEFAULT_TOKENS_DOCS_CSS_PATH = path.join(ROOT, 'docs', 'css', 'tokens.css');
 
 const COLOR_FIELDS = [

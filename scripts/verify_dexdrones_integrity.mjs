@@ -5,10 +5,10 @@ import path from 'node:path';
 const ROOT = process.cwd();
 
 const PAGE_PATH = path.join(ROOT, 'docs', 'dexdrones', 'index.html');
-const DATA_PATH = path.join(ROOT, 'public', 'data', 'dexdrones.data.json');
-const CSS_PATH = path.join(ROOT, 'public', 'css', 'components', 'dx-dexdrones.css');
+const DATA_PATH = path.join(ROOT, 'docs', 'data', 'dexdrones.data.json');
+const CSS_PATH = path.join(ROOT, 'docs', 'css', 'components', 'dx-dexdrones.css');
 const RUNTIME_SOURCE_PATH = path.join(ROOT, 'scripts', 'src', 'dexdrones.entry.mjs');
-const RUNTIME_BUNDLE_PATH = path.join(ROOT, 'public', 'assets', 'js', 'dx-dexdrones.js');
+const RUNTIME_BUNDLE_PATH = path.join(ROOT, 'docs', 'assets', 'js', 'dx-dexdrones.js');
 
 const REQUIRED_STEP_IDS = [
   'dexdrones-hero',

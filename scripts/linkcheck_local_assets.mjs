@@ -4,7 +4,7 @@ import path from 'node:path';
 
 const ROOT = process.cwd();
 const TARGETS_PATH = path.join(ROOT, 'artifacts', 'repo-targets.json');
-const PUBLIC_ROOT = path.join(ROOT, 'public');
+const PUBLIC_ROOT = path.join(ROOT, 'docs');
 const PREFIXES = ['/css/', '/assets/'];
 
 function loadTargets() {
@@ -82,7 +82,7 @@ function main() {
   }
 
   if (missing.length > 0) {
-    console.error(`verify:assets failed. Missing ${missing.length} local asset references under public/:`);
+    console.error(`verify:assets failed. Missing ${missing.length} local asset references under docs/:`);
     for (const item of missing) {
       console.error(`- ${item.file} :: ${item.url}`);
     }

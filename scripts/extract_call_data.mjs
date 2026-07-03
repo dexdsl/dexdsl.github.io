@@ -6,7 +6,7 @@ import { load } from 'cheerio';
 
 const ROOT = process.cwd();
 const SOURCE_PATH = path.join(ROOT, 'docs', 'call', 'index.html');
-const OUT_PATH = path.join(ROOT, 'public', 'data', 'call.data.json');
+const OUT_PATH = path.join(ROOT, 'data', 'call.data.json');
 
 function collapse(value) {
   return String(value ?? '')

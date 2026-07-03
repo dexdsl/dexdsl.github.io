@@ -14,17 +14,14 @@ const PATHS = {
   composerCss: path.join(ROOT, 'css', 'components', 'dx-home-hero-composer.css'),
   component: path.join(ROOT, 'components', 'home', 'hero.js'),
   homepage: path.join(ROOT, 'docs', 'index.html'),
-  publicJs: path.join(ROOT, 'public', 'assets', 'js', 'dx-home-hero.js'),
+  docsJs: path.join(ROOT, 'docs', 'assets', 'js', 'dx-home-hero.js'),
   jsMirrors: [
     path.join(ROOT, 'assets', 'js', 'dx-home-hero.js'),
-    path.join(ROOT, 'docs', 'assets', 'js', 'dx-home-hero.js'),
   ],
   cssMirrors: [
-    path.join(ROOT, 'public', 'css', 'components', 'dx-home-hero.css'),
     path.join(ROOT, 'docs', 'css', 'components', 'dx-home-hero.css'),
   ],
   composerCssMirrors: [
-    path.join(ROOT, 'public', 'css', 'components', 'dx-home-hero-composer.css'),
     path.join(ROOT, 'docs', 'css', 'components', 'dx-home-hero-composer.css'),
   ],
 };
@@ -82,19 +79,19 @@ async function main() {
   const assetsOnly = process.argv.includes('--assets-only');
   if (!assetsOnly) await writeHomeHeroSnapshots(library, library.activeCompositionId);
 
-  await ensureParent(PATHS.publicJs);
+  await ensureParent(PATHS.docsJs);
   await build({
     entryPoints: [PATHS.entry],
     bundle: true,
     format: 'iife',
     platform: 'browser',
     target: ['es2019'],
-    outfile: PATHS.publicJs,
+    outfile: PATHS.docsJs,
     minify: true,
     sourcemap: false,
     legalComments: 'none',
   });
-  for (const mirror of PATHS.jsMirrors) await copy(PATHS.publicJs, mirror);
+  for (const mirror of PATHS.jsMirrors) await copy(PATHS.docsJs, mirror);
   for (const mirror of PATHS.cssMirrors) await copy(PATHS.css, mirror);
   for (const mirror of PATHS.composerCssMirrors) await copy(PATHS.composerCss, mirror);
   await migrateHomepage();
@@ -102,7 +99,7 @@ async function main() {
   console.log(assetsOnly
     ? `home:hero:build refreshed runtime assets without preparing ${library.activeCompositionId}`
     : `home:hero:build prepared ${library.activeCompositionId}`);
-  console.log(`home:hero:build wrote ${path.relative(ROOT, PATHS.publicJs)} and ${PATHS.jsMirrors.length} mirrors`);
+  console.log(`home:hero:build wrote ${path.relative(ROOT, PATHS.docsJs)} and ${PATHS.jsMirrors.length} mirrors`);
 }
 
 main().catch((error) => {

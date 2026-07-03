@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const ROOT = process.cwd();
-const vendorPath = path.join(ROOT, 'public', 'assets', 'vendor', 'auth0-spa-js.umd.min.js');
+const vendorPath = path.join(ROOT, 'assets', 'vendor', 'auth0-spa-js.umd.min.js');
 
 try {
   const stats = fs.statSync(vendorPath);

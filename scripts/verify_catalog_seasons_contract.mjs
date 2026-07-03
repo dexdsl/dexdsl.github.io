@@ -5,10 +5,10 @@ import { normalizeCatalogSeasonsFile } from './lib/catalog-seasons-schema.mjs';
 
 const ROOT = process.cwd();
 const SOURCE_PATH = path.join(ROOT, 'data', 'catalog.seasons.json');
-const PUBLIC_PATH = path.join(ROOT, 'public', 'data', 'catalog.seasons.json');
+const PUBLIC_PATH = path.join(ROOT, 'docs', 'data', 'catalog.seasons.json');
 const DOCS_PATH = path.join(ROOT, 'docs', 'data', 'catalog.seasons.json');
 const INDEX_RUNTIME_PATH = path.join(ROOT, 'scripts', 'src', 'catalog.index.entry.mjs');
-const INDEX_CSS_PATH = path.join(ROOT, 'public', 'css', 'components', 'dx-catalog-index.css');
+const INDEX_CSS_PATH = path.join(ROOT, 'docs', 'css', 'components', 'dx-catalog-index.css');
 
 function readJson(filePath) {
   if (!fs.existsSync(filePath)) {
@@ -32,7 +32,7 @@ function main() {
   const docsMirror = normalizeCatalogSeasonsFile(readJson(DOCS_PATH));
 
   if (JSON.stringify(source.seasons) !== JSON.stringify(publicMirror.seasons)) {
-    failures.push('public/data/catalog.seasons.json does not match data/catalog.seasons.json seasons payload');
+    failures.push('docs/data/catalog.seasons.json does not match data/catalog.seasons.json seasons payload');
   }
   if (JSON.stringify(source.seasons) !== JSON.stringify(docsMirror.seasons)) {
     failures.push('docs/data/catalog.seasons.json does not match data/catalog.seasons.json seasons payload');

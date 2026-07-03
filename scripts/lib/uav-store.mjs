@@ -182,7 +182,7 @@ async function syncUavProtectedAssets(root, uavLookups) {
     },
     lookups: nextLookups,
   });
-  for (const servedRoot of ['data', 'docs/data', 'public/data']) {
+  for (const servedRoot of ['data', 'docs/data', 'data']) {
     await writeJson(path.join(root, servedRoot, 'protected.assets.json'), normalized);
   }
   return normalized;
@@ -757,7 +757,7 @@ export async function buildUavOutputs({ rootDir, privateFilePath } = {}) {
       const marcSchemaCheck = await validateUavMarcXmlSchema(marcXml, marcSchemaPath(root));
       if (!marcSchemaCheck.ok) throw new Error(marcSchemaCheck.issues.join('; '));
 
-      for (const servedRoot of ['', 'docs', 'public']) {
+      for (const servedRoot of ['', 'docs']) {
         const base = servedRoot ? path.join(root, servedRoot, 'uav', slug) : path.join(root, 'uav', slug);
         await Promise.all([
           atomicWrite(path.join(base, 'index.html'), indexHtml),
@@ -783,7 +783,7 @@ export async function buildUavOutputs({ rootDir, privateFilePath } = {}) {
     collections,
     entries: catalogEntries,
   };
-  for (const servedRoot of ['data', 'docs/data', 'public/data']) {
+  for (const servedRoot of ['data', 'docs/data', 'data']) {
     await writeJson(path.join(root, servedRoot, 'uav.collections.json'), aggregate);
   }
   await syncUavProtectedAssets(root, protectedLookups);
@@ -824,7 +824,7 @@ export async function syncUavCatalogOutputs({ rootDir, aggregate } = {}) {
   const sets = [
     ['data/catalog.data.json', 'data/catalog.entries.json', 'data/catalog.search.json'],
     ['docs/data/catalog.data.json', 'docs/data/catalog.entries.json', 'docs/data/catalog.search.json'],
-    ['public/data/catalog.data.json', 'public/data/catalog.entries.json', 'public/data/catalog.search.json'],
+    ['data/catalog.data.json', 'data/catalog.entries.json', 'data/catalog.search.json'],
   ];
   for (const [dataRel, entriesRel, searchRel] of sets) {
     const dataPath = path.join(root, dataRel);
@@ -853,8 +853,8 @@ export async function syncUavCatalogOutputs({ rootDir, aggregate } = {}) {
     await Promise.all([writeJson(dataPath, merged), writeJson(entriesPath, entriesPayload), writeJson(searchPath, searchPayload)]);
   }
   // The catalog entries index also has assets/data mirrors.
-  const canonicalEntries = await fs.readFile(path.join(root, 'public/data/catalog.entries.json'), 'utf8');
-  for (const rel of ['assets/data/catalog.entries.json', 'docs/assets/data/catalog.entries.json', 'public/assets/data/catalog.entries.json']) {
+  const canonicalEntries = await fs.readFile(path.join(root, 'data/catalog.entries.json'), 'utf8');
+  for (const rel of ['assets/data/catalog.entries.json', 'docs/assets/data/catalog.entries.json', 'assets/data/catalog.entries.json']) {
     await atomicWrite(path.join(root, rel), canonicalEntries);
   }
   const uavGuidePart = {
@@ -867,7 +867,7 @@ export async function syncUavCatalogOutputs({ rootDir, aggregate } = {}) {
     'DR.Win. Mo V2026 T1 [FS] V.1',
     'DR.Win. Mo V2026 T1 [FS] X.1',
   ];
-  for (const rel of ['data/catalog.guide.json', 'docs/data/catalog.guide.json', 'public/data/catalog.guide.json']) {
+  for (const rel of ['data/catalog.guide.json', 'docs/data/catalog.guide.json', 'data/catalog.guide.json']) {
     const guidePath = path.join(root, rel);
     const guide = await readJson(guidePath, { parts: [], examples: [] });
     guide.parts = (guide.parts || []).filter((part) => part.heading_raw !== uavGuidePart.heading_raw);
@@ -891,7 +891,7 @@ export async function syncUavCatalogOutputs({ rootDir, aggregate } = {}) {
     { key_raw: 'IR', description_raw: 'Infrared acquisition' },
     { key_raw: 'TH', description_raw: 'Thermal acquisition' },
   ];
-  for (const rel of ['data/catalog.symbols.json', 'docs/data/catalog.symbols.json', 'public/data/catalog.symbols.json']) {
+  for (const rel of ['data/catalog.symbols.json', 'docs/data/catalog.symbols.json', 'data/catalog.symbols.json']) {
     const symbolsPath = path.join(root, rel);
     const symbols = await readJson(symbolsPath, { collection: [], quality: [] });
     const withoutRows = (rows, additions) => (rows || []).filter((row) =>
@@ -1007,9 +1007,9 @@ export async function preflightUavCollection(slug, { rootDir, privateFilePath } 
     marc,
     JSON.stringify(aggregate),
     await fs.readFile(path.join(root, 'docs', 'data', 'uav.collections.json'), 'utf8').catch(() => ''),
-    await fs.readFile(path.join(root, 'public', 'data', 'uav.collections.json'), 'utf8').catch(() => ''),
+    await fs.readFile(path.join(root, 'data', 'uav.collections.json'), 'utf8').catch(() => ''),
     await fs.readFile(path.join(root, 'docs', 'data', 'catalog.entries.json'), 'utf8').catch(() => ''),
-    await fs.readFile(path.join(root, 'public', 'data', 'catalog.entries.json'), 'utf8').catch(() => ''),
+    await fs.readFile(path.join(root, 'data', 'catalog.entries.json'), 'utf8').catch(() => ''),
   ].join('\n');
   const privacySafe = !exact || site?.coordinateVisibility === 'exact'
     || (!privacySurfaces.includes(String(exact.lat)) && !privacySurfaces.includes(String(exact.lon)));

@@ -29,7 +29,7 @@ function main() {
   assertIncludes('scripts/render_dexnotes_pages.mjs', '/css/components/dx-polls-embed.css');
 
   const requiredCss = [
-    'public/css/components/dx-polls-embed.css',
+    'docs/css/components/dx-polls-embed.css',
     'css/components/dx-polls-embed.css',
     'docs/css/components/dx-polls-embed.css',
   ];

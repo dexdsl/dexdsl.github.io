@@ -5,10 +5,10 @@ import path from 'node:path';
 const ROOT = process.cwd();
 
 const ABOUT_HTML_PATH = path.join(ROOT, 'docs', 'about', 'index.html');
-const ABOUT_DATA_PATH = path.join(ROOT, 'public', 'data', 'about.data.json');
-const ABOUT_CSS_PATH = path.join(ROOT, 'public', 'css', 'components', 'dx-about.css');
+const ABOUT_DATA_PATH = path.join(ROOT, 'docs', 'data', 'about.data.json');
+const ABOUT_CSS_PATH = path.join(ROOT, 'docs', 'css', 'components', 'dx-about.css');
 const ABOUT_RUNTIME_SOURCE_PATH = path.join(ROOT, 'scripts', 'src', 'about.editorial.entry.mjs');
-const ABOUT_RUNTIME_BUNDLE_PATH = path.join(ROOT, 'public', 'assets', 'js', 'dx-about.js');
+const ABOUT_RUNTIME_BUNDLE_PATH = path.join(ROOT, 'docs', 'assets', 'js', 'dx-about.js');
 
 const REQUIRED_STEP_IDS = [
   'about-hero',

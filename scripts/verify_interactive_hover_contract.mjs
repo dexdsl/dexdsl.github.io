@@ -55,7 +55,7 @@ function verifyInstallerRuntime() {
     'window.__dxInteractiveHover',
   ]);
 
-  const builtPath = 'public/assets/js/interactive-hover.js';
+  const builtPath = 'docs/assets/js/interactive-hover.js';
   const built = readText(builtPath);
   assertIncludes(builtPath, built, [
     'dx:slotready',
