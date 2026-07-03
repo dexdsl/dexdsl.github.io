@@ -1,4 +1,23 @@
-
 # Local service-account keys (never commit)
 .secrets/
-artifacts/style-inventory.raw.json
+
+# Dependencies (never vendor into git)
+node_modules/
+
+# Generated QA artifacts & captures
+artifacts/
+test-results/
+.playwright-mcp/
+
+# Scratch / temporary
+tmp/
+*.tmp.mjs
+_pn*.mjs
+.!*!*
+tokens.candidates.json
+
+# OS cruft
+.DS_Store
+
+# Local tools (cargo-installed kuva binary; use DEX_KUVA_BIN)
+.dex-tools/
