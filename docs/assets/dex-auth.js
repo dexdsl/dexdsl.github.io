@@ -1958,3 +1958,16 @@
     startWhenHeaderIsReady();
   }
 })();
+
+// Load the Google Ads offline-conversion bridge (cookieless, isolated scope).
+// Kept in its own file so this auth runtime stays focused on auth; it only
+// reads the public DEX_AUTH API + localStorage. See assets/dex-ads.js.
+(function () {
+  try {
+    if (window.__DEX_ADS_ACTIVE__) return;
+    var s = document.createElement("script");
+    s.defer = true;
+    s.src = "/assets/dex-ads.js";
+    (document.head || document.documentElement).appendChild(s);
+  } catch (e) {}
+})();
