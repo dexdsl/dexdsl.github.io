@@ -12,6 +12,8 @@ const docsOut = path.join(ROOT, 'docs', 'assets', 'js', 'donate.js');
 const mirrors = [
   path.join(ROOT, 'assets', 'js', 'donate.js'),
 ];
+const cssSource = path.join(ROOT, 'css', 'components', 'dx-donate.css');
+const cssOut = path.join(ROOT, 'docs', 'css', 'components', 'dx-donate.css');
 
 async function ensureDir(filePath) {
   await fs.mkdir(path.dirname(filePath), { recursive: true });
@@ -40,11 +42,13 @@ async function main() {
   for (const mirror of mirrors) {
     await copyFile(docsOut, mirror);
   }
+  await copyFile(cssSource, cssOut);
 
   console.log(`donate:build wrote ${path.relative(ROOT, docsOut)}`);
   for (const mirror of mirrors) {
     console.log(`donate:build wrote ${path.relative(ROOT, mirror)}`);
   }
+  console.log(`donate:build wrote ${path.relative(ROOT, cssOut)}`);
 }
 
 main().catch((error) => {

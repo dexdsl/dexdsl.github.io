@@ -95,8 +95,17 @@ jobs:
       - name: Verify membership billing contract
         run: npm run verify:membership-billing
 
+      - name: Verify settings membership UI contract
+        run: npm run verify:settings-membership-ui
+
+      - name: Verify donation page contract
+        run: npm run verify:donate
+
       - name: Membership price consistency test
         run: npm run test:membership-price
+
+      - name: Donation showcase selection test
+        run: npm run test:donate-showcase
 
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium
@@ -124,6 +133,9 @@ jobs:
 
       - name: Membership billing client test
         run: npm run test:membership-billing
+
+      - name: Donation page runtime test
+        run: npm run test:donate
 
       - name: Favorites lookup parity test
         run: npm run test:favorites-lookup

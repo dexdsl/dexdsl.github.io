@@ -1822,6 +1822,9 @@
     if (existing instanceof MembershipV3Controller && existing.mounted) {
       return existing;
     }
+    if (root.__dxMembershipV3MountPromise instanceof Promise) {
+      return root.__dxMembershipV3MountPromise;
+    }
 
     const settingsRoot = document.getElementById('dex-settings');
     const controller = new MembershipV3Controller(root, {
@@ -1831,10 +1834,48 @@
     });
 
     root.__dxMembershipV3Controller = controller;
-    await controller.mount();
-    return controller;
+    root.__dxMembershipV3MountPromise = controller.mount()
+      .then(() => controller)
+      .finally(() => {
+        root.__dxMembershipV3MountPromise = null;
+      });
+    return root.__dxMembershipV3MountPromise;
+  }
+
+  function ensureExternalMembershipRoot() {
+    const existing = document.getElementById('dxMembershipV3Root');
+    if (existing instanceof HTMLElement) return existing;
+
+    const root = document.createElement('div');
+    root.id = 'dxMembershipV3Root';
+    root.hidden = true;
+    root.setAttribute('data-dx-membership-root', '');
+    root.setAttribute('data-dx-membership-external-host', 'true');
+    root.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(root);
+    return root;
+  }
+
+  function openMembershipV3(options = {}) {
+    const root = ensureExternalMembershipRoot();
+    const ready = mountMembershipV3(options);
+    const controller = root.__dxMembershipV3Controller;
+
+    if (controller instanceof MembershipV3Controller) {
+      controller.captureComposerBaseline();
+      controller.setError('');
+      controller.setTierComposerOpen(true, {
+        animate: options.animate !== false,
+        focus: options.focus !== false,
+      });
+      controller.renderSummary();
+    }
+
+    return Promise.resolve(ready);
   }
 
   window.__DX_SETTINGS_MEMBERSHIP_V3_ENABLED = true;
   window.__dxSettingsMembershipMount = mountMembershipV3;
+  window.__dxSettingsMembershipOpen = openMembershipV3;
+  window.dispatchEvent(new CustomEvent('dx:settings-membership-ready'));
 })();

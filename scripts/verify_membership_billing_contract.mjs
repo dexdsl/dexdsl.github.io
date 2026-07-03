@@ -35,6 +35,7 @@ const REQUIRED_HANDLER_MARKERS = [
 const REQUIRED_V3_RUNTIME_MARKERS = [
   'window.__DX_SETTINGS_MEMBERSHIP_V3_ENABLED = true',
   'window.__dxSettingsMembershipMount = mountMembershipV3',
+  'window.__dxSettingsMembershipOpen = openMembershipV3',
   'data-dx-membership-cta-mode',
   'data-dx-membership-view',
   'cancel-composer',

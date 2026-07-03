@@ -1,3 +1,5 @@
+import { selectDonationShowcaseEntries } from '../lib/donate-showcase.mjs';
+
 (() => {
   if (typeof window === 'undefined') return;
   if (window.__dxDonateRuntimeLoaded) return;
@@ -6,6 +8,7 @@
   const DEFAULT_API_BASE = 'https://dex-api.spring-fog-8edd.workers.dev';
   const DEFAULT_SOURCE = 'donate-page';
   const DEFAULT_CURRENCY = 'USD';
+  const DEFAULT_CATALOG_URL = '/data/catalog.entries.json';
   const DEFAULT_PRESET_AMOUNTS = [1000, 2500, 5000, 10000];
   const DEFAULT_MIN_AMOUNT_CENTS = 500;
   const DEFAULT_MAX_AMOUNT_CENTS = 500000;
@@ -282,6 +285,7 @@
       source: toText(userConfig.source, DEFAULT_SOURCE, 120).toLowerCase(),
       apiBase: getApiBase(userConfig),
       currency: toText(userConfig.currency, DEFAULT_CURRENCY, 12).toUpperCase(),
+      catalogUrl: toText(userConfig.catalogUrl, DEFAULT_CATALOG_URL, 500),
       presetAmountsCents: presets.length ? presets : DEFAULT_PRESET_AMOUNTS.slice(),
       minAmountCents: Math.min(minAmountCents, maxAmountCents),
       maxAmountCents: Math.max(maxAmountCents, minAmountCents),
@@ -474,6 +478,31 @@
     return node;
   }
 
+  const ZWNJ = '\u200C';
+  const ALL_HEADING_DUPLICATE_LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+  function joinCanonicalDuplicateLetters(value) {
+    return String(value ?? '')
+      .replace(/[\u200C\u200D]/g, '')
+      .replace(/(\p{L})\1/giu, `$1${ZWNJ}$1`);
+  }
+
+  function lockDisplayHeading(element) {
+    if (!(element instanceof HTMLElement)) return element;
+    element.textContent = joinCanonicalDuplicateLetters(element.textContent);
+    element.setAttribute('data-dx-heading-duplicate-exclude-letters', ALL_HEADING_DUPLICATE_LETTERS);
+    return element;
+  }
+
+  function createLockedHeading(tag, className, text) {
+    return lockDisplayHeading(createNode(tag, className, text));
+  }
+
+  function lockDisplayHeadings(root) {
+    if (!(root instanceof Element)) return;
+    root.querySelectorAll('h1, h2, h3').forEach(lockDisplayHeading);
+  }
+
   function normalizeFailureCode(response, payload) {
     const explicit = toText(payload?.code, '', 64).toUpperCase();
     if (
@@ -540,7 +569,279 @@
       const isSelected = isCustom ? selected === 'custom' : Number(value) === selected;
       button.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
       button.classList.toggle('is-selected', isSelected);
+      button.classList.toggle('dx-button-element--primary', isSelected);
+      button.classList.toggle('dx-button-element--secondary', !isSelected);
     });
+  }
+
+  function reducedMotion() {
+    try {
+      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    } catch {
+      return false;
+    }
+  }
+
+  function freshRandom() {
+    if (typeof window.__DX_TEST_DONATE_RANDOM === 'function') {
+      const injected = Number(window.__DX_TEST_DONATE_RANDOM());
+      if (Number.isFinite(injected)) return Math.min(0.999999999, Math.max(0, injected));
+    }
+    try {
+      if (window.crypto && typeof window.crypto.getRandomValues === 'function') {
+        const values = new Uint32Array(1);
+        window.crypto.getRandomValues(values);
+        return values[0] / 4294967296;
+      }
+    } catch {
+      // Fall through to Math.random.
+    }
+    return Math.random();
+  }
+
+  async function loadCatalogEntries(url) {
+    const ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+    const timer = window.setTimeout(() => {
+      if (ctrl) ctrl.abort();
+    }, 6500);
+    try {
+      const response = await fetch(url, {
+        credentials: 'same-origin',
+        cache: 'no-store',
+        signal: ctrl ? ctrl.signal : undefined,
+      });
+      if (!response.ok) throw new Error(`catalog_failed_${response.status}`);
+      return await response.json();
+    } finally {
+      window.clearTimeout(timer);
+    }
+  }
+
+  function createEntryPoster(entry) {
+    const fallback = createNode('span', 'dx-donate-entry-poster');
+    fallback.setAttribute('data-dx-donate-image-fallback', 'true');
+    const code = createNode('span', 'dx-donate-entry-poster__code', entry.lookup);
+    const mark = createNode('span', 'dx-donate-entry-poster__mark', 'd');
+    fallback.append(code, mark);
+    return fallback;
+  }
+
+  function createEntryCard(entry, position, count) {
+    const card = createNode('article', 'dx-donate-entry-card');
+    card.setAttribute('data-dx-donate-showcase-entry', entry.id);
+    card.setAttribute('aria-label', `${entry.title} by ${entry.performer}`);
+
+    const media = createNode('a', 'dx-donate-entry-media');
+    media.href = entry.href;
+    media.setAttribute('aria-label', `Open ${entry.title} by ${entry.performer}`);
+    const image = createNode('img', 'dx-donate-entry-image');
+    image.src = entry.imageSrc;
+    image.alt = entry.imageAlt;
+    image.loading = 'eager';
+    image.decoding = 'async';
+    image.addEventListener('error', () => {
+      if (!media.querySelector('[data-dx-donate-image-fallback]')) {
+        media.replaceChildren(createEntryPoster(entry));
+        card.setAttribute('data-image-state', 'fallback');
+      }
+    }, { once: true });
+    media.appendChild(image);
+
+    const body = createNode('div', 'dx-donate-entry-body');
+    const eyebrow = createNode('p', 'dx-donate-entry-eyebrow', `OPEN ARCHIVE · ${String(position + 1).padStart(2, '0')}/${String(count).padStart(2, '0')}`);
+    const title = createLockedHeading('h3', 'dx-donate-entry-title', entry.title);
+    const performer = createNode('p', 'dx-donate-entry-performer', entry.performer);
+    const metadata = createNode('div', 'dx-donate-entry-metadata');
+    [entry.lookup, entry.instrument, entry.season].filter(Boolean).forEach((value) => {
+      metadata.appendChild(createNode('span', 'dx-donate-entry-badge', value));
+    });
+    const link = createNode(
+      'a',
+      'dx-button-element dx-button-element--primary dx-button-size--sm dx-donate-entry-link',
+      'OPEN ENTRY ↗',
+    );
+    link.href = entry.href;
+    const catalogLink = createNode(
+      'a',
+      'dx-button-element dx-button-element--secondary dx-button-size--sm dx-donate-catalog-link',
+      'BROWSE CATALOG',
+    );
+    catalogLink.href = '/catalog/';
+    const actions = createNode('div', 'dx-donate-entry-actions');
+    actions.append(link, catalogLink);
+    body.append(eyebrow, title, performer, metadata, actions);
+    card.append(media, body);
+    return card;
+  }
+
+  function renderShowcaseFallback(showcase) {
+    showcase.setAttribute('data-dx-showcase-state', 'fallback');
+    const stage = showcase.querySelector('[data-dx-donate-showcase-stage]');
+    const controls = showcase.querySelector('[data-dx-donate-showcase-controls]');
+    if (!(stage instanceof HTMLElement)) return;
+    const fallback = createNode('div', 'dx-donate-showcase-fallback');
+    const code = createNode('p', 'dx-donate-showcase-fallback__code', 'DEX CATALOG · OPEN ACCESS');
+    const title = createLockedHeading('h3', '', 'The archive is ready to explore.');
+    const copy = createNode('p', '', 'Browse artist-built recordings, lookup codes, and CC-BY collections in the full catalog.');
+    const link = createNode(
+      'a',
+      'dx-button-element dx-button-element--primary dx-button-size--md dx-donate-entry-link',
+      'BROWSE CATALOG ↗',
+    );
+    link.href = '/catalog/';
+    fallback.append(code, title, copy, link);
+    stage.replaceChildren(fallback);
+    if (controls instanceof HTMLElement) controls.hidden = true;
+  }
+
+  async function hydrateShowcase(showcase, config) {
+    if (!(showcase instanceof HTMLElement)) return;
+    const stage = showcase.querySelector('[data-dx-donate-showcase-stage]');
+    const controls = showcase.querySelector('[data-dx-donate-showcase-controls]');
+    const previous = showcase.querySelector('[data-dx-donate-showcase-previous]');
+    const next = showcase.querySelector('[data-dx-donate-showcase-next]');
+    const dots = showcase.querySelector('[data-dx-donate-showcase-dots]');
+    if (!(stage instanceof HTMLElement)) return;
+    if (!(controls instanceof HTMLElement)) return;
+    if (!(previous instanceof HTMLButtonElement)) return;
+    if (!(next instanceof HTMLButtonElement)) return;
+    if (!(dots instanceof HTMLElement)) return;
+
+    let entries = [];
+    try {
+      const payload = await loadCatalogEntries(config.catalogUrl);
+      entries = selectDonationShowcaseEntries(payload, { count: 3, random: freshRandom });
+    } catch {
+      entries = [];
+    }
+    if (!entries.length) {
+      renderShowcaseFallback(showcase);
+      return;
+    }
+
+    showcase.setAttribute('data-dx-showcase-state', 'ready');
+    stage.setAttribute('aria-busy', 'false');
+    let pageNav = null;
+    const quiet = reducedMotion();
+    let index = 0;
+    let currentCard = null;
+    let busy = false;
+    let timer = 0;
+    let pointerPaused = false;
+    let focusPaused = false;
+
+    function paused() {
+      return pointerPaused || focusPaused || document.hidden;
+    }
+
+    function clearTimer() {
+      if (timer) window.clearTimeout(timer);
+      timer = 0;
+    }
+
+    function schedule() {
+      clearTimer();
+      if (quiet || entries.length < 2 || paused()) return;
+      timer = window.setTimeout(() => {
+        goTo((index + 1) % entries.length);
+      }, 8000);
+    }
+
+    function updateDots() {
+      if (pageNav && typeof pageNav.setActive === 'function') pageNav.setActive(index);
+      previous.disabled = busy || entries.length < 2;
+      next.disabled = busy || entries.length < 2;
+    }
+
+    function commit(card, nextIndex) {
+      stage.replaceChildren(card);
+      currentCard = card;
+      index = nextIndex;
+      updateDots();
+    }
+
+    function goTo(nextIndex) {
+      if (busy) return;
+      const normalized = (nextIndex + entries.length) % entries.length;
+      if (currentCard && normalized === index) {
+        schedule();
+        return;
+      }
+      const card = createEntryCard(entries[normalized], normalized, entries.length);
+      clearTimer();
+      if (!currentCard || quiet || typeof currentCard.animate !== 'function') {
+        commit(card, normalized);
+        schedule();
+        return;
+      }
+      busy = true;
+      updateDots();
+      const exit = currentCard.animate(
+        [
+          { opacity: 1, transform: 'translateX(0)' },
+          { opacity: 0, transform: 'translateX(-18px)' },
+        ],
+        { duration: 170, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' },
+      );
+      Promise.resolve(exit.finished).catch(() => {}).then(() => {
+        commit(card, normalized);
+        const enter = card.animate(
+          [
+            { opacity: 0, transform: 'translateX(22px)' },
+            { opacity: 1, transform: 'translateX(0)' },
+          ],
+          { duration: 260, easing: 'cubic-bezier(.22,.8,.24,1)', fill: 'both' },
+        );
+        return Promise.resolve(enter.finished).catch(() => {});
+      }).finally(() => {
+        if (currentCard) currentCard.style.removeProperty('opacity');
+        busy = false;
+        updateDots();
+        schedule();
+      });
+    }
+
+    previous.addEventListener('click', () => goTo(index - 1));
+    next.addEventListener('click', () => goTo(index + 1));
+    if (window.dxPageNav && typeof window.dxPageNav.create === 'function') {
+      pageNav = window.dxPageNav.create({
+        mount: dots,
+        count: entries.length,
+        active: 0,
+        ariaLabel: 'Entry examples',
+        onSelect: (dotIndex) => goTo(dotIndex),
+      });
+      Array.from(dots.querySelectorAll('.dx-pagenav__dot')).forEach((dot, dotIndex) => {
+        dot.setAttribute('data-dx-donate-showcase-dot', entries[dotIndex].id);
+        dot.setAttribute('aria-label', `Show ${entries[dotIndex].title}`);
+      });
+      if (typeof window.dxPageNav.enhanceArrow === 'function') {
+        window.dxPageNav.enhanceArrow(previous);
+        window.dxPageNav.enhanceArrow(next);
+      }
+    }
+    showcase.addEventListener('pointerenter', () => {
+      pointerPaused = true;
+      clearTimer();
+    });
+    showcase.addEventListener('pointerleave', () => {
+      pointerPaused = false;
+      schedule();
+    });
+    showcase.addEventListener('focusin', () => {
+      focusPaused = true;
+      clearTimer();
+    });
+    showcase.addEventListener('focusout', () => {
+      window.setTimeout(() => {
+        focusPaused = showcase.contains(document.activeElement);
+        schedule();
+      }, 0);
+    });
+    document.addEventListener('visibilitychange', schedule);
+
+    commit(createEntryCard(entries[0], 0, entries.length), 0);
+    schedule();
   }
 
   function mount(target) {
@@ -555,32 +856,40 @@
     const shell = createNode('section', 'dx-donate-shell');
     shell.setAttribute('data-dx-donate-shell', 'true');
 
-    const hero = createNode('header', 'dx-donate-hero dx-donate-glass');
+    const hero = createNode('section', 'dx-donate-hero');
+    const heroCopyWrap = createNode('header', 'dx-donate-hero-copy dx-glass-shell--header-match');
     const heroKicker = createNode('p', 'dx-donate-kicker', 'Support Dex');
-    const heroTitle = createNode('h1', 'dx-donate-title', 'Fund the open-access archive');
+    const heroTitle = createLockedHeading('h1', 'dx-donate-title', 'Keep the archive open.');
     const heroCopy = createNode(
       'p',
       'dx-donate-copy',
-      'Make a one-time contribution now, or support monthly through membership settings.',
+      'Dex releases artist-built recordings as free CC-BY material. Your gift supports sessions, preservation, distribution, and new entries moving toward release.',
     );
-    hero.append(heroKicker, heroTitle, heroCopy);
+    const heroSignal = createNode('div', 'dx-donate-hero-signal');
+    heroSignal.innerHTML = `
+      <span>OPEN ACCESS</span>
+      <span>ARTIST BUILT</span>
+      <span>CC-BY</span>
+    `;
+    heroCopyWrap.append(heroKicker, heroTitle, heroCopy, heroSignal);
 
     const status = getQueryDonationStatus();
     if (status === 'thanks' || status === 'success') {
       const notice = createNode('p', 'dx-donate-banner dx-donate-banner--success', 'Thanks for your support. Your donation checkout completed.');
-      hero.appendChild(notice);
+      heroCopyWrap.appendChild(notice);
     } else if (status === 'cancelled' || status === 'canceled') {
       const notice = createNode('p', 'dx-donate-banner', 'Donation checkout was canceled. You can try again anytime.');
-      hero.appendChild(notice);
+      heroCopyWrap.appendChild(notice);
     }
 
-    const grid = createNode('div', 'dx-donate-grid');
-
-    const oneTimeCard = createNode('article', 'dx-donate-card dx-donate-glass dx-donate-card--one-time');
+    const oneTimeCard = createNode('article', 'dx-donate-card dx-donate-card--one-time dx-glass-shell--header-match');
     oneTimeCard.setAttribute('data-dx-donate-one-time', 'true');
     oneTimeCard.innerHTML = `
-      <h2>One-time donation</h2>
-      <p>Choose an amount and continue to secure Stripe checkout.</p>
+      <header class="dx-donate-card-head">
+        <p class="dx-donate-card-index">01 · ONE-TIME SUPPORT</p>
+        <h2>Make a one-time gift.</h2>
+        <p>Choose an amount and continue to secure Stripe checkout.</p>
+      </header>
       <form class="dx-donate-form" data-dx-donate-form>
         <div class="dx-donate-presets" data-dx-donate-presets role="radiogroup" aria-label="Choose donation amount"></div>
         <label class="dx-donate-custom" data-dx-donate-custom-wrap hidden>
@@ -595,33 +904,79 @@
         </div>
         <p class="dx-donate-feedback" data-dx-donate-feedback aria-live="polite"></p>
         <button type="submit" class="dx-button-element dx-button-size--md dx-button-element--primary dx-donate-submit" data-dx-donate-submit>
-          Donate once
+          Donate $10.00
         </button>
       </form>
       <div class="dx-donate-turnstile" data-dx-donate-turnstile aria-hidden="true"></div>
+      <div class="dx-donate-checkout-notes">
+        <p><strong>SECURE CHECKOUT BY STRIPE</strong><span>Encrypted payment · no card data stored by Dex</span></p>
+        <p><strong>DEX CO-OP CORP</strong><span>Nonprofit arts organization · EIN 92-3509152</span></p>
+      </div>
+    `;
+    hero.append(heroCopyWrap, oneTimeCard);
+
+    const showcase = createNode(
+      'section',
+      'dx-donate-showcase dx-donate-surface--blackglass dx-glass-shell--header-match',
+    );
+    showcase.setAttribute('data-dx-donate-showcase', 'true');
+    showcase.setAttribute('data-dx-showcase-state', 'loading');
+    showcase.innerHTML = `
+      <header class="dx-donate-showcase-head">
+        <p class="dx-donate-card-index">FROM THE OPEN ARCHIVE</p>
+        <h2>This is what support keeps public.</h2>
+        <p>A fresh selection from the catalog. Every entry remains open to everyone.</p>
+      </header>
+      <div class="dx-donate-showcase-frame">
+        <div class="dx-donate-showcase-stage" data-dx-donate-showcase-stage aria-busy="true">
+          <div class="dx-donate-showcase-loading" aria-label="Loading entry examples">
+            <span></span><span></span>
+          </div>
+        </div>
+        <div class="dx-donate-showcase-controls" data-dx-donate-showcase-controls>
+          <button type="button" class="dx-pagenav-arrow dx-pagenav-arrow--prev" data-dx-donate-showcase-previous aria-label="Previous entry"></button>
+          <div data-dx-donate-showcase-dots></div>
+          <button type="button" class="dx-pagenav-arrow dx-pagenav-arrow--next" data-dx-donate-showcase-next aria-label="Next entry"></button>
+        </div>
+      </div>
     `;
 
-    const monthlyCard = createNode('article', 'dx-donate-card dx-donate-glass dx-donate-card--monthly');
+    const monthlyCard = createNode(
+      'article',
+      'dx-donate-monthly dx-donate-surface--blackglass dx-glass-shell--header-match',
+    );
     monthlyCard.setAttribute('data-dx-donate-monthly', 'true');
     monthlyCard.innerHTML = `
-      <h2>Monthly support</h2>
-      <p data-dx-donate-monthly-copy>Checking your account status…</p>
-      <div class="dx-donate-monthly-actions" data-dx-donate-monthly-actions></div>
+      <div class="dx-donate-monthly-content">
+        <div class="dx-donate-monthly-copy">
+          <p class="dx-donate-card-index">MONTHLY MEMBERSHIP</p>
+          <h2>Keep it moving every month.</h2>
+          <p data-dx-donate-monthly-copy>Checking your account status…</p>
+        </div>
+        <div class="dx-donate-monthly-actions" data-dx-donate-monthly-actions>
+          <button type="button" class="dx-button-element dx-button-element--secondary dx-button-size--md dx-donate-monthly-wait" disabled>Checking membership…</button>
+        </div>
+      </div>
+      <figure class="dx-donate-monthly-media">
+        <img src="/assets/img/3b1476c230073f7589e3.jpg" alt="Silhouetted profile in red light from the Dex free-access card" loading="lazy" decoding="async" />
+      </figure>
     `;
 
-    const trust = createNode('aside', 'dx-donate-trust dx-donate-glass');
-    trust.innerHTML = `
-      <h3>Where support goes</h3>
-      <ul>
-        <li>Artist commissions and recording sessions.</li>
-        <li>Storage, distribution, and archive reliability.</li>
-        <li>Open licensing infrastructure and editorial labor.</li>
-      </ul>
-      <p>Dex Co-op Corp (EIN 92-3509152) is a nonprofit arts organization.</p>
+    const impact = createNode('section', 'dx-donate-impact dx-glass-shell--header-match');
+    impact.innerHTML = `
+      <header>
+        <p class="dx-donate-card-index">WHERE SUPPORT GOES</p>
+        <h2>One archive. Three kinds of work.</h2>
+      </header>
+      <ol class="dx-donate-impact-list">
+        <li><span>01</span><div><strong>PAY ARTISTS</strong><p>Commissions, recording sessions, and the people who make each entry possible.</p></div></li>
+        <li><span>02</span><div><strong>KEEP IT AVAILABLE</strong><p>Storage, distribution, preservation, and reliable open access.</p></div></li>
+        <li><span>03</span><div><strong>MOVE RELEASES FORWARD</strong><p>Open licensing infrastructure, cataloging, and editorial labor.</p></div></li>
+      </ol>
     `;
 
-    grid.append(oneTimeCard, monthlyCard);
-    shell.append(hero, grid, trust);
+    shell.append(hero, showcase, monthlyCard, impact);
+    lockDisplayHeadings(shell);
     target.appendChild(shell);
 
     const form = oneTimeCard.querySelector('[data-dx-donate-form]');
@@ -656,6 +1011,7 @@
       user: null,
       summary: null,
     };
+    let membershipAutoOpenHandled = false;
 
     const turnstileController = createTurnstileController(turnstileMount, config);
 
@@ -664,11 +1020,40 @@
       feedback.setAttribute('data-tone', tone);
     }
 
+    function currentSubmitLabel() {
+      if (selectedAmount === 'custom') {
+        const customCents = parseDollarInputToCents(customInput.value);
+        if (customCents >= config.minAmountCents && customCents <= config.maxAmountCents) {
+          return `Donate ${formatMoneyFromCents(customCents, config.currency)}`;
+        }
+        return 'Donate once';
+      }
+      return `Donate ${formatMoneyFromCents(selectedAmount, config.currency)}`;
+    }
+
     function setBusy(nextBusy) {
       submitting = Boolean(nextBusy);
       submit.disabled = submitting;
       submit.setAttribute('aria-busy', submitting ? 'true' : 'false');
-      submit.textContent = submitting ? 'Starting checkout…' : 'Donate once';
+      submit.textContent = submitting ? 'Starting checkout…' : currentSubmitLabel();
+    }
+
+    async function openSharedMembershipModal() {
+      const openMembership = window.__dxSettingsMembershipOpen;
+      if (typeof openMembership !== 'function') {
+        window.location.assign(config.membershipPath);
+        return;
+      }
+
+      try {
+        await openMembership({
+          apiBase: config.apiBase,
+          returnPath: config.membershipPath,
+          successPath: '/entry/settings?thanks=1#membership',
+        });
+      } catch {
+        window.location.assign(config.membershipPath);
+      }
     }
 
     function renderMonthly() {
@@ -676,6 +1061,14 @@
 
       if (authState.loading) {
         monthlyCopy.textContent = 'Checking your account status…';
+        const waiting = createNode(
+          'button',
+          'dx-button-element dx-button-element--secondary dx-button-size--md dx-donate-monthly-wait',
+          'Checking membership…',
+        );
+        waiting.type = 'button';
+        waiting.disabled = true;
+        monthlyActions.appendChild(waiting);
         return;
       }
 
@@ -689,34 +1082,41 @@
           || rawStatus === 'paused';
 
         monthlyCopy.textContent = hasMembership
-          ? 'Your account already has membership billing access. Manage it in Settings.'
-          : 'Start monthly support through Membership settings.';
+          ? 'Your membership keeps the archive open, pays artists, and moves new recordings toward release.'
+          : 'Predictable support funds artists, storage, preservation, and release work.';
 
         const cta = createNode(
-          'a',
+          'button',
           'dx-button-element dx-button-size--md dx-button-element--primary dx-donate-monthly-link',
-          hasMembership ? 'Manage membership' : 'Start monthly support',
+          hasMembership ? 'Manage membership' : 'Choose monthly support',
         );
-        cta.href = config.membershipPath;
+        cta.type = 'button';
         cta.setAttribute('data-dx-donate-monthly-auth', 'true');
+        cta.setAttribute('aria-haspopup', 'dialog');
+        cta.setAttribute('aria-controls', 'dxMembershipModal');
+        cta.addEventListener('click', () => {
+          void openSharedMembershipModal();
+        });
         monthlyActions.appendChild(cta);
         return;
       }
 
-      monthlyCopy.textContent = 'Create an account or sign in to start monthly support through Membership.';
+      monthlyCopy.textContent = 'Membership gives Dex predictable support for artists, preservation, and the next release.';
 
       const signupButton = createNode(
         'button',
         'dx-button-element dx-button-size--md dx-button-element--primary dx-donate-monthly-signup',
-        'Sign up for monthly',
+        'Become a monthly member',
       );
       signupButton.type = 'button';
       signupButton.setAttribute('data-dx-donate-monthly-signup', 'true');
+      signupButton.setAttribute('aria-haspopup', 'dialog');
+      signupButton.setAttribute('aria-controls', 'dxMembershipModal');
       signupButton.addEventListener('click', () => {
         const auth = authState.auth || getAuth();
         if (auth && typeof auth.signUp === 'function') {
           try {
-            auth.signUp(config.membershipPath);
+            auth.signUp('/donate/?membership=choose#membership');
             return;
           } catch {
             // Fall back to route redirect.
@@ -725,27 +1125,7 @@
         window.location.assign(config.membershipPath);
       });
 
-      const signinButton = createNode(
-        'button',
-        'dx-button-element dx-button-size--md dx-button-element--secondary dx-donate-monthly-signin',
-        'Sign in',
-      );
-      signinButton.type = 'button';
-      signinButton.setAttribute('data-dx-donate-monthly-signin', 'true');
-      signinButton.addEventListener('click', () => {
-        const auth = authState.auth || getAuth();
-        if (auth && typeof auth.signIn === 'function') {
-          try {
-            auth.signIn(config.membershipPath);
-            return;
-          } catch {
-            // Fall back to route redirect.
-          }
-        }
-        window.location.assign(config.membershipPath);
-      });
-
-      monthlyActions.append(signupButton, signinButton);
+      monthlyActions.appendChild(signupButton);
     }
 
     function resolveSelectedAmount() {
@@ -779,7 +1159,11 @@
       const fragment = document.createDocumentFragment();
 
       config.presetAmountsCents.forEach((amountCents) => {
-        const button = createNode('button', 'dx-donate-preset', formatMoneyFromCents(amountCents, config.currency));
+        const button = createNode(
+          'button',
+          'dx-button-element dx-button-element--secondary dx-button-size--md dx-donate-preset',
+          formatMoneyFromCents(amountCents, config.currency),
+        );
         button.type = 'button';
         button.setAttribute('data-dx-donate-amount-cents', String(amountCents));
         button.addEventListener('click', () => {
@@ -787,11 +1171,16 @@
           customWrap.hidden = true;
           updateSelectedPreset(Array.from(presetsWrap.querySelectorAll('[data-dx-donate-amount-cents]')), selectedAmount);
           setFeedback('');
+          setBusy(false);
         });
         fragment.appendChild(button);
       });
 
-      const customButton = createNode('button', 'dx-donate-preset', 'Custom amount');
+      const customButton = createNode(
+        'button',
+        'dx-button-element dx-button-element--secondary dx-button-size--md dx-donate-preset',
+        'Custom amount',
+      );
       customButton.type = 'button';
       customButton.setAttribute('data-dx-donate-amount-cents', 'custom');
       customButton.addEventListener('click', () => {
@@ -800,6 +1189,7 @@
         customInput.focus();
         updateSelectedPreset(Array.from(presetsWrap.querySelectorAll('[data-dx-donate-amount-cents]')), selectedAmount);
         setFeedback('');
+        setBusy(false);
       });
       fragment.appendChild(customButton);
 
@@ -940,6 +1330,7 @@
     customInput.addEventListener('input', () => {
       if (selectedAmount !== 'custom') return;
       setFeedback('');
+      setBusy(false);
     });
 
     const refreshAuthState = async () => {
@@ -959,6 +1350,15 @@
 
       authState.loading = false;
       renderMonthly();
+
+      if (
+        authState.authenticated
+        && !membershipAutoOpenHandled
+        && new URLSearchParams(window.location.search || '').get('membership') === 'choose'
+      ) {
+        membershipAutoOpenHandled = true;
+        void openSharedMembershipModal();
+      }
     };
 
     window.addEventListener('dex-auth:state', () => {
@@ -966,6 +1366,7 @@
     });
 
     void refreshAuthState();
+    void hydrateShowcase(showcase, config);
   }
 
   function boot() {

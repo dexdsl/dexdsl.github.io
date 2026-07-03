@@ -37,6 +37,7 @@
     <link rel="stylesheet" href="/css/components/dx-surface.css">
     <link rel="stylesheet" href="/css/components/dx-controls.css">
     <link rel="stylesheet" href="/css/components/dx-nav.css">
+    <link rel="stylesheet" href="/css/components/dx-settings-membership.css">
     <link rel="stylesheet" href="/css/components/dx-donate.css">
     <link rel="stylesheet" href="/css/fonts.css">
     <link rel="stylesheet" href="/assets/css/dex.css">
@@ -54,6 +55,7 @@
 <script>
   window.DEX_DONATE_CONFIG = Object.assign({
     source: 'donate-page',
+    catalogUrl: '/data/catalog.entries.json',
     currency: 'USD',
     minAmountCents: 500,
     maxAmountCents: 500000,
@@ -66,6 +68,7 @@
   }, window.DEX_DONATE_CONFIG || {});
 </script>
 <script defer src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
+<script defer src="/assets/js/settings.membership.js"></script>
 <script defer src="/assets/js/donate.js"></script>
 <!-- header code injection.css -->
 
