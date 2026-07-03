@@ -105,10 +105,17 @@ re-rooted. Nothing committed/pushed yet — Sprint 1 lands as ONE commit after 1
   (0 build/sync refs). `dx-video-embed.js` referenced by 2 scripts — check before assuming.
 - `css/` (root) already == `docs/css`; built JS identical across public/assets/js/docs. Safe to make root canonical.
 
-### Sprint 2 — De-Squarespace images (4a) — data-only
-Rehost 63 `images.squarespace-cdn.com` images into `assets/catalog/`; set per-entry
-`image_src` override in `data/catalog.editorial.json` (survives live re-scrape — never
-edit `catalog.entries.json`). Clear `sanitize.config.json` allowlist; `verify:no-sq-images` green.
+### Sprint 2 — De-Squarespace images — ✅ DONE (2ffa8e39, 3ce3d3f8)
+Turned out to be two small pieces, not "63 images":
+- **2a**: 20 catalog thumbnails hotlinked from squarespace-cdn → downloaded to
+  `assets/catalog/<slug>.webp`, repointed `image_src`/`thumbnail` local across catalog +
+  home-featured data (surgical per-entry update, NO `catalog:extract` re-scrape; editorial
+  override set for re-scrape survival). Rendered thumbnails now local.
+- **2b**: the 25 verify-flagged `entries/*/index.html` only had a DEAD
+  `<link rel="preconnect" href="…squarespace-cdn.com">` (no actual image loads; deployed
+  `docs/entry/` was already clean). Stripped it from source + template + fixture.
+- Result: **`verify:no-legacy-cdn-images` passes (769 files)**. Only remaining squarespace =
+  the load-bearing `bridge.squarespace.css` (Sprint 3). Live site unchanged (no surprises).
 
 ### Sprint 3 — De-grid pages (4b) — 124 pages, batched + visually gated
 Codemod `.sqs-layout/.row/.col/.fe-block` → semantic containers; port live rules into
