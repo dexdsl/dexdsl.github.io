@@ -279,7 +279,7 @@ function season3WallMarkup(module, catalogData) {
       <div class="dx-s3__well">
         <header class="dx-s3__intro">
           <p class="dx-s3__kicker">${escapeHtml(module.kicker)}</p>
-          <h1 class="dx-s3__headline" data-dx-heading-duplicate-exclude-words="SEASON">${escapeHtml(module.headline)}</h1>
+          <h1 class="dx-s3__headline" data-dx-heading-duplicate-exclude-words="SEASON,YOU,IS">${escapeHtml(module.headline)}</h1>
           <p class="dx-s3__body">${escapeHtml(module.body)}</p>
           <div class="dx-s3__cta-row">
             <a class="dx-s3__cta" data-dx-s3-cta data-mode="guest" href="${escapeHtml(cta.submit.href || '/entry/submit/')}">${escapeHtml(cta.guest.label)}</a>

@@ -406,8 +406,9 @@ border-bottom: none !important;
 .dx-s3 {
   --dx-s3-live: #2fceff;
   --dx-s3-ink: #200a04;
-  --dx-s3-stage: linear-gradient(100deg, #d8250f 0%, #ee3f12 34%, #fa5d16 60%, #ff9226 100%);
-  --dx-s3-well: #ff8f26;
+  /* Brand gradient: #ff1910 (dex red) → #ff6600 (orange). */
+  --dx-s3-stage: linear-gradient(105deg, #ff1910 0%, #ff6600 100%);
+  --dx-s3-well: #ff6600;
   --dx-s3-tile-min: 8.5rem;
   --dx-s3-row: 5.5rem;
   --dx-s3-gap: 0.55rem;
@@ -482,7 +483,9 @@ border-bottom: none !important;
   border-radius: 5px;
   overflow: hidden;
   text-decoration: none;
-  background: #5a1810;
+  /* Transparent base so gradient/monogram tiles blend over the stage rather than
+     sitting on a solid dark block. Photos cover it anyway. */
+  background: transparent;
   box-shadow: 0 6px 16px rgba(20, 4, 2, 0.28);
   isolation: isolate;
 }
@@ -512,9 +515,10 @@ border-bottom: none !important;
   align-items: center;
   justify-content: center;
   font: 800 1.8rem/1 var(--font-heading, sans-serif);
-  color: rgba(255, 226, 198, 0.92);
-  /* Lighter gradient so monogram tiles read as airy as the brightened photos. */
-  background: linear-gradient(135deg, #b3260f, #ff7a34);
+  color: rgba(255, 236, 214, 0.95);
+  /* Brand gradient #ff1910 → #ff6600, translucent so it reads airy over the stage
+     instead of a solid opaque block. */
+  background: linear-gradient(135deg, rgba(255, 25, 16, 0.72), rgba(255, 102, 0, 0.72));
 }
 .dx-s3-tile__wash {
   position: absolute;
@@ -578,7 +582,7 @@ border-bottom: none !important;
   justify-content: center;
   box-sizing: border-box;
   padding: clamp(1.5rem, 4vw, 3rem) clamp(1.75rem, 3.5vw, 2.75rem) clamp(1.5rem, 4vw, 3rem) clamp(2rem, 4vw, 3.25rem);
-  background: linear-gradient(90deg, rgba(255, 140, 32, 0) 0%, rgba(255, 143, 38, 0.94) 20%, var(--dx-s3-well) 34%);
+  background: linear-gradient(90deg, rgba(255, 102, 0, 0) 0%, rgba(255, 102, 0, 0.94) 20%, var(--dx-s3-well) 34%);
   pointer-events: none;
 }
 .dx-s3__well a,
@@ -607,6 +611,9 @@ border-bottom: none !important;
   text-transform: uppercase;
   color: var(--dx-s3-ink);
   font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
+  /* Prefixed too — iOS/WebKit needs -webkit-font-feature-settings to fire the
+     ZWJ join ligature, otherwise the duplicated glyph shows as "YOUU". */
+  -webkit-font-feature-settings: "liga" 1, "clig" 1, "dlig" 1, "calt" 1, "kern" 1;
   font-feature-settings: "liga" 1, "clig" 1, "dlig" 1, "calt" 1, "kern" 1;
 }
 .dx-s3__body {
@@ -679,7 +686,7 @@ border-bottom: none !important;
     padding: 1.25rem 0.25rem 0;
     background: none;
   }
-  .dx-s3__headline { color: #fff; text-shadow: 0 2px 14px rgba(40, 8, 3, 0.55); }
+  .dx-s3__headline { color: #fff; text-shadow: 0 1px 6px rgba(50, 12, 4, 0.26); }
   .dx-s3__kicker { color: #ffd9c8; }
   .dx-s3__body { color: rgba(255, 240, 232, 0.92); }
   .dx-s3__cta-state { color: #ffd9c8; }
