@@ -1,7 +1,7 @@
 {
   "version": "home-hero-library-v1",
-  "activeCompositionId": "open-access-featured",
-  "updatedAt": "2026-06-28T12:07:54.070Z",
+  "activeCompositionId": "season3-human-credits",
+  "updatedAt": "2026-07-04T08:37:35.534Z",
   "modules": [
     {
       "id": "season3-human-credits",
@@ -12,41 +12,7 @@
       "type": "season3-human-credits",
       "kicker": "DEX / SEASON 3",
       "headline": "SEASON 3 IS YOU.",
-      "body": "Your work. Your name. Your place in the commons. Enter through Dex's open pipeline and follow your contribution from first upload to public release.",
-      "assembleWord": "YOU",
-      "pipelineLabels": [
-        "SUBMIT",
-        "IN CONVERSATION",
-        "SELECTED",
-        "IN THE LIBRARY",
-        "OPEN TO EVERYONE"
-      ],
-      "seedReleases": [
-        {
-          "lookup": "W.Pob. Ma AV2024 S2",
-          "name": "Sky Macklay",
-          "role": "Prepared Oboe",
-          "href": "/entry/prepared-oboe-sky-macklay/"
-        },
-        {
-          "lookup": "S.Pdb. He AV2024 S2",
-          "name": "Jakob Heinemann",
-          "role": "Prepared Double Bass",
-          "href": "/entry/jakob-heinemann/"
-        },
-        {
-          "lookup": "E.Mod. Zh AV2024 S2",
-          "name": "Bojun Zhang",
-          "role": "Modular Synth",
-          "href": "/entry/bojun-zhang/"
-        },
-        {
-          "lookup": "X.Tlv. Pl AV2024 S1",
-          "name": "Sam Pluta",
-          "role": "Feedback Televisions",
-          "href": "/entry/amplified-tv-sam-pluta/"
-        }
-      ],
+      "body": "The library is made of the people in it — real members, real recordings. There's an open slot on the wall with your name on it. Submit an entry and take it.",
       "cta": {
         "guest": {
           "label": "JOIN SEASON 3"
@@ -64,8 +30,14 @@
           "href": "/account/"
         }
       },
-      "profileCapacity": 24,
-      "profileFeed": "/profiles/public",
+      "wall": {
+        "facesFeed": "/profiles/public",
+        "worksFeed": "/data/catalog.entries.json",
+        "capacity": 24,
+        "faceBias": true,
+        "fillWithStills": true,
+        "tagLabel": "dexFest"
+      },
       "presentation": {
         "surface": "graphite",
         "density": "balanced",
@@ -136,7 +108,7 @@
         "season3-human-credits"
       ],
       "createdAt": "2026-06-28T12:00:00.000Z",
-      "updatedAt": "2026-06-28T12:07:07.988Z",
+      "updatedAt": "2026-07-04T08:16:38.495Z",
       "archived": false
     },
     {

@@ -89,13 +89,6 @@ const promoModuleSchema = z.object({
   ctas: z.array(linkCtaSchema).min(1).max(2),
 });
 
-const seedReleaseSchema = z.object({
-  lookup: shortText,
-  name: shortText,
-  role: shortText.optional(),
-  href: hrefSchema,
-});
-
 const season3CtaSchema = z.object({
   label: shortText,
   href: hrefSchema.optional(),
@@ -107,26 +100,38 @@ const season3PresentationSchema = z.object({
   motion: z.enum(['cinematic', 'quiet']),
 });
 
+// A relative data path (e.g. /data/catalog.entries.json) or an absolute/relative
+// API feed the client resolves against the dex-api origin (e.g. /profiles/public).
+const feedPathSchema = z.string().trim().min(1).max(1000).refine(
+  (value) => value.startsWith('/') || /^https:\/\//i.test(value),
+  { message: 'feed must be root-relative or HTTPS' },
+);
+
+// The credits wall: a random, face-first mosaic of real members + their work.
+// facesFeed = public member profiles; worksFeed = the catalog entries that back
+// their (and past contributors') submissions.
+const season3WallSchema = z.object({
+  facesFeed: feedPathSchema,
+  worksFeed: feedPathSchema,
+  capacity: z.number().int().min(4).max(60),
+  faceBias: z.boolean().default(true),
+  fillWithStills: z.boolean().default(true),
+  tagLabel: shortText,
+});
+
 const season3ModuleSchema = z.object({
   ...moduleBase,
   type: z.literal('season3-human-credits'),
   kicker: shortText,
   headline: shortText,
   body: bodyText,
-  assembleWord: shortText,
-  pipelineLabels: z.array(shortText).length(5),
-  seedReleases: z.array(seedReleaseSchema).length(4),
   cta: z.object({
     guest: season3CtaSchema,
     submit: season3CtaSchema,
     active: season3CtaSchema,
     published: season3CtaSchema,
   }),
-  profileCapacity: z.number().int().min(4).max(120),
-  profileFeed: z.string().trim().min(1).max(1000).refine(
-    (value) => value.startsWith('/') || /^https:\/\//i.test(value),
-    { message: 'profileFeed must be root-relative or HTTPS' },
-  ),
+  wall: season3WallSchema,
   presentation: season3PresentationSchema,
 });
 

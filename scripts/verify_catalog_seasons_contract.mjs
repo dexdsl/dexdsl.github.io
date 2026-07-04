@@ -51,6 +51,8 @@ function main() {
     'dx-catalog-index-season-pips',
     'data-dx-carousel-active-slot',
     'data-dx-carousel-page-button',
+    'data-dx-carousel-group',
+    'data-dx-campaign-id',
     'HOME_SIGNUP_TEASER_IMAGE',
     'CATALOG_FALLBACK_IMAGE',
     '__DX_SEASON_TEASER_SEED',
@@ -68,6 +70,8 @@ function main() {
     '.dx-catalog-index-season-media--unannounced',
     '.dx-catalog-index-season-pips',
     '.dx-catalog-index-season-media--fallback',
+    '.dx-catalog-index-season-campaign-badge',
+    'overscroll-behavior-y: auto',
   ];
   for (const marker of requiredCssMarkers) {
     if (!cssSource.includes(marker)) {

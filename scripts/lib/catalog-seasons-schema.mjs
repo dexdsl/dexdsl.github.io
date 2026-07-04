@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const CATALOG_SEASONS_VERSION = 'catalog-seasons-v1';
 export const CATALOG_UNANNOUNCED_TOKEN_POOL_DEFAULT = ['???', '!!!', '***', '@@@'];
-export const CATALOG_UNANNOUNCED_MESSAGE_DEFAULT = 'this artist has not been announced yet';
+export const CATALOG_UNANNOUNCED_MESSAGE_DEFAULT = 'this collection has not been announced yet';
 export const CATALOG_UNANNOUNCED_STYLE_VALUES = ['redacted'];
 
 const isoDateString = z.string().refine((value) => Number.isFinite(Date.parse(value)), {

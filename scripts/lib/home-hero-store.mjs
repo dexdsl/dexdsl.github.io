@@ -27,6 +27,7 @@ export const HOME_HERO_PATHS = {
     path.join(ROOT, 'css', 'components', 'dx-home-hero-composer.css'),
   ],
   featuredSnapshot: path.join(ROOT, 'data', 'home.featured.snapshot.json'),
+  catalogEntries: path.join(ROOT, 'data', 'catalog.entries.json'),
 };
 
 async function readJson(filePath, fallback = null) {
@@ -152,17 +153,18 @@ export async function previewHomeHero(rawLibrary, compositionId) {
     ...library,
     activeCompositionId: compositionId,
   }, compositionId);
-  const [cssSources, fontCss, featuredData] = await Promise.all([
+  const [cssSources, fontCss, featuredData, catalogData] = await Promise.all([
     Promise.all(HOME_HERO_PATHS.previewCss.map((filePath) => fs.readFile(filePath, 'utf8'))),
     buildPreviewFontCss(),
     readJson(HOME_HERO_PATHS.featuredSnapshot, { featured: [] }),
+    readJson(HOME_HERO_PATHS.catalogEntries, { entries: [] }),
   ]);
   const styles = [
     ...cssSources.map((css) => css.replace(/@font-face\s*\{[^}]*\}/g, '')),
     fontCss,
   ];
   return {
-    html: renderHomeHeroPreviewDocument(snapshot, { styles, featuredData }),
+    html: renderHomeHeroPreviewDocument(snapshot, { styles, featuredData, catalogData }),
     sourceHash: snapshot.sourceHash,
   };
 }

@@ -117,11 +117,23 @@ Turned out to be two small pieces, not "63 images":
 - Result: **`verify:no-legacy-cdn-images` passes (769 files)**. Only remaining squarespace =
   the load-bearing `bridge.squarespace.css` (Sprint 3). Live site unchanged (no surprises).
 
-### Sprint 3 — De-grid pages (4b) — 124 pages, batched + visually gated
-Codemod `.sqs-layout/.row/.col/.fe-block` → semantic containers; port live rules into
-`css/components/`. Migrate in route batches (legal pages first), Playwright
-screenshot-diff each batch vs baseline. When `grep fe-block docs` is empty, delete
-`bridge.squarespace.css`.
+### Sprint 3 — Shrink/delete bridge.squarespace.css — ⏸️ INVESTIGATED, NO SAFE QUICK-WIN, DEFERRED
+Spent a full investigation (2026-07-03). bridge.squarespace.css = 405 KB. Class-name analysis
+suggested ~97% is dead Squarespace commerce/form theme — but that is MISLEADING. Tried 6 purge
+methods, all VISUALLY BREAK rendering (built a Playwright pixel-diff harness):
+  - class-based permissive (45% kept) / strict (2.9%) → strict breaks (15–45% diff)
+  - Playwright CSS coverage (3 variants) → coverage UNDER-REPORTS badly for this file
+    (6–47 ranges total; the rule-usage tracker mis-handles the many cached fetches) → breaks
+  - PurgeCSS + safelist (44.5% kept) → breaks (14–53% diff)
+  - denylist of "obvious" commerce families → breaks (12–50%); my regex over-matched LIVE
+    features (newsletter-block-form, donation-block, marquee, summary-block are used!)
+Control test: same-CSS screenshots 700 ms apart diff only 0.2–2.6% (animated mesh/grain/carousel
+noise floor) — so the 12–50% purge diffs are REAL breakage, not noise. Conclusion: the "dead"
+cruft is entangled with load-bearing base/grid/typography + live features; no automated purge is
+pixel-safe. Payoff is modest anyway (gzips ~10× to ~45 KB, cached once across 133 pages).
+**The only safe path is the ORIGINAL de-grid plan**: rewrite the 124 pages' layout off the
+Squarespace grid so the CSS can go — a large dedicated project, not a purge. **Recommend defer.**
+Harness + purge scripts saved in scratchpad if revisited (must add animation-freezing to validate).
 
 ### Sprint 4 — History rewrite — irreversible, last
 Backup bundle (done: `../dexdsl-backup-*.bundle`). `git filter-repo` to purge

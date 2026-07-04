@@ -137,24 +137,39 @@ function season3(id = 'season3') {
     archived: false,
     kicker: 'DEX / SEASON 3',
     headline: 'SEASON 3 IS YOU.',
-    body: 'Your work. Your name. Your place in the commons.',
-    assembleWord: 'YOU',
-    pipelineLabels: ['SUBMIT', 'IN CONVERSATION', 'SELECTED', 'IN THE LIBRARY', 'OPEN TO EVERYONE'],
-    seedReleases: [
-      { lookup: 'A.A. Aa AV2024 S1', name: 'One', role: 'Cello', href: '/entry/one/' },
-      { lookup: 'B.B. Bb AV2024 S1', name: 'Two', href: '/entry/two/' },
-      { lookup: 'C.C. Cc AV2024 S1', name: 'Three', href: '/entry/three/' },
-      { lookup: 'D.D. Dd AV2024 S1', name: 'Four', href: '/entry/four/' },
-    ],
+    body: 'The library is made of the people in it. Submit an entry and take the open slot.',
     cta: {
       guest: { label: 'JOIN SEASON 3' },
       submit: { label: 'SUBMIT TO SEASON 3', href: '/entry/submit/' },
       active: { label: 'OPEN MY PIPELINE', href: '/account/' },
       published: { label: 'VIEW MY RELEASE', href: '/account/' },
     },
-    profileCapacity: 24,
-    profileFeed: '/profiles/public',
+    wall: {
+      facesFeed: '/profiles/public',
+      worksFeed: '/data/catalog.entries.json',
+      capacity: 24,
+      faceBias: true,
+      fillWithStills: true,
+      tagLabel: 'dexFest',
+    },
     presentation: { surface: 'graphite', density: 'balanced', motion: 'cinematic' },
+  };
+}
+
+function catalogFixture() {
+  return {
+    entries: [
+      {
+        id: 'one', performer_raw: 'Ada One', title_raw: 'ONE',
+        instrument_labels: ['Cello'], lookup_raw: 'A.A. On AV2024 S2', season: 'S2',
+        entry_href: '/entry/one/', image_src: '/assets/catalog/one.webp', status: 'active',
+      },
+      {
+        id: 'two', performer_raw: 'Bea Two', title_raw: 'TWO',
+        instrument_labels: ['Modular Synth'], lookup_raw: 'B.B. Tw AV2024 S2', season: 'S2',
+        entry_href: '/entry/two/', image_src: '/assets/catalog/two.webp', status: 'active',
+      },
+    ],
   };
 }
 
@@ -179,24 +194,31 @@ const s3Html = renderHomeHero(s3Snapshot);
 assert.match(s3Html, /data-module-type="season3-human-credits"/);
 assert.match(s3Html, /SEASON 3 IS YOU\./);
 assert.match(s3Html, /data-cta-guest-label="JOIN SEASON 3"/);
-assert.match(s3Html, /dx-s3-card--release/);
-assert.match(s3Html, /dx-s3-card--opening/);
-// Five pipeline steps render.
-assert.equal((s3Html.match(/dx-s3-pipeline__step/g) || []).length, 5);
+assert.match(s3Html, /data-dx-s3-wall/);
+assert.match(s3Html, /id="dx-s3-duotone"/);
+assert.match(s3Html, /data-faces-feed="\/profiles\/public"/);
+// With no catalog data (live path), the wall is an empty container the client hydrates.
+assert.doesNotMatch(s3Html, /dx-s3-tile--work/);
+
+// With catalog data (preview path), real work tiles + one open slot are SSR'd.
+const s3Preview = renderHomeHero(s3Snapshot, { catalogData: catalogFixture() });
+assert.match(s3Preview, /dx-s3-tile--work/);
+assert.match(s3Preview, /data-card-kind="open"/);
+assert.match(s3Preview, /A\.A\. On AV2024 S2/);
 
 // Legacy split composition still validates alongside the season3 module (rollback).
 const legacySnapshot = buildHomeHeroSnapshot(season3Library(), 'current');
 assert.match(renderHomeHero(legacySnapshot), /data-module-type="campaign"/);
 
-// Pipeline must have exactly five labels.
+// Wall capacity is bounded.
 assert.throws(() => normalizeHomeHeroLibrary(season3Library({
-  modules: [{ ...season3(), pipelineLabels: ['ONE', 'TWO'] }, campaign(), featured()],
-})), /pipelineLabels|array/i);
+  modules: [{ ...season3(), wall: { ...season3().wall, capacity: 999 } }, campaign(), featured()],
+})), /less than or equal|capacity|number/i);
 
-// Seed release hrefs are safety-checked.
-const unsafeSeed = season3Library();
-unsafeSeed.modules[0].seedReleases[0].href = 'javascript:alert(1)';
-assert.throws(() => normalizeHomeHeroLibrary(unsafeSeed), /root-relative or HTTPS|CTA URLs/);
+// Feed paths must be root-relative or HTTPS.
+assert.throws(() => normalizeHomeHeroLibrary(season3Library({
+  modules: [{ ...season3(), wall: { ...season3().wall, facesFeed: 'javascript:alert(1)' } }, campaign(), featured()],
+})), /root-relative or HTTPS|feed/i);
 
 // Presentation presets are constrained to the curated enums.
 assert.throws(() => normalizeHomeHeroLibrary(season3Library({

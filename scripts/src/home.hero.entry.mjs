@@ -224,16 +224,26 @@ function resolveFeedUrl(feed) {
   return `${apiBase()}${value.startsWith('/') ? value : `/${value}`}`;
 }
 
-// Deterministic per-day shuffle so the visible set is stable within a day but
-// rotates across days. FNV-1a hash keyed by handle + day index.
-function dailyRank(handle, dayIndex) {
-  let hash = 0x811c9dc5;
-  const key = `${handle}#${dayIndex}`;
-  for (let i = 0; i < key.length; i += 1) {
-    hash ^= key.charCodeAt(i);
-    hash = Math.imul(hash, 0x01000193) >>> 0;
+// Fresh random order per load so the wall feels alive and every member rotates
+// through the visible set. Fisher–Yates.
+function shuffle(list) {
+  const items = list.slice();
+  for (let i = items.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [items[i], items[j]] = [items[j], items[i]];
   }
-  return hash;
+  return items;
+}
+
+// Normalised name key for matching a member to their catalog work.
+function nameKey(value) {
+  return String(value ?? '')
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[^a-z\s-]/g, '')
+    .replace(/-/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 function escapeAttr(value) {
@@ -242,20 +252,83 @@ function escapeAttr(value) {
     .replaceAll('"', '&quot;').replaceAll("'", '&#39;');
 }
 
-function profileCardElement(profile, slot) {
-  const meta = [profile.role, profile.instrument].filter(Boolean).join(' · ');
-  const picture = profile.picture
-    ? `<img class="dx-s3-card__avatar" src="${escapeAttr(profile.picture)}" alt="" loading="lazy" decoding="async">`
-    : '';
+function monogram(name) {
+  return String(name || '')
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase() || '★';
+}
+
+// Season-bias order shared with the SSR renderer: newest accepted season first.
+function seasonRank(season) {
+  const index = ['S3', 'S2', 'S1'].indexOf(String(season || '').toUpperCase());
+  return index === -1 ? 3 : index;
+}
+
+function profileToTile(profile, tagLabel) {
+  return {
+    kind: 'face',
+    name: profile.display_name || profile.handle || '',
+    role: profile.role || '',
+    instrument: profile.instrument || '',
+    href: profile.profile_url || '#',
+    image: profile.picture || '',
+    tag: 'DEX MEMBER',
+    handle: profile.handle || '',
+    hasPicture: Boolean(profile.picture),
+  };
+}
+
+function catalogEntryToTile(entry, tagLabel) {
+  const instrument = (Array.isArray(entry.instrument_labels) && entry.instrument_labels[0])
+    || (Array.isArray(entry.instrument_family) && entry.instrument_family[0])
+    || '';
+  return {
+    kind: 'work',
+    name: entry.performer_raw || entry.title_raw || '',
+    instrument,
+    lookup: entry.lookup_raw || '',
+    href: entry.entry_href || '#',
+    image: entry.image_src || '',
+    season: entry.season || '',
+    tag: tagLabel,
+  };
+}
+
+// Build one wall tile as a DOM node, with an initials fallback if a (often
+// short-lived Google) avatar URL fails to load.
+function tileElement(tile, index) {
+  const metaParts = tile.kind === 'face' ? [tile.role, tile.instrument] : [tile.instrument];
+  const meta = metaParts.filter(Boolean).join(' · ');
+  const media = tile.image
+    ? `<img class="dx-s3-tile__img" src="${escapeAttr(tile.image)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">`
+    : `<span class="dx-s3-tile__mono" aria-hidden="true">${escapeAttr(tile.kind === 'open' ? '＋' : monogram(tile.name))}</span>`;
   const template = document.createElement('template');
-  template.innerHTML = `<a class="dx-s3-card dx-s3-card--profile" data-card-kind="profile" data-card-slot="${slot}" role="listitem" href="${escapeAttr(profile.profile_url)}" style="--dx-s3-card-i:${slot}">
-      <span class="dx-s3-card__tag">OPEN TO EVERYONE</span>
-      ${picture}
-      <span class="dx-s3-card__name">${escapeAttr(profile.display_name || profile.handle)}</span>
-      ${meta ? `<span class="dx-s3-card__role">${escapeAttr(meta)}</span>` : ''}
-      <span class="dx-s3-card__lookup">@${escapeAttr(profile.handle)}</span>
+  template.innerHTML = `<a class="dx-s3-tile dx-s3-tile--${tile.kind}${tile.isOwn ? ' is-own' : ''}" data-card-kind="${tile.kind}" role="listitem" href="${escapeAttr(tile.href || '#')}" style="--dx-s3-tile-i:${index}"${tile.kind === 'open' ? ' data-dx-s3-open' : ''}>
+      <span class="dx-s3-tile__media">${media}<span class="dx-s3-tile__wash" aria-hidden="true"></span></span>
+      <span class="dx-s3-tile__body">
+        ${tile.tag ? `<span class="dx-s3-tile__tag">${escapeAttr(tile.tag)}</span>` : ''}
+        <span class="dx-s3-tile__name">${escapeAttr(tile.name)}</span>
+        ${meta ? `<span class="dx-s3-tile__role">${escapeAttr(meta)}</span>` : ''}
+        ${tile.lookup ? `<span class="dx-s3-tile__lookup">${escapeAttr(tile.lookup)}</span>` : ''}
+      </span>
     </a>`.trim();
-  return template.content.firstElementChild;
+  const element = template.content.firstElementChild;
+  const image = element.querySelector('img');
+  if (image) {
+    image.addEventListener('error', () => {
+      const mono = document.createElement('span');
+      mono.className = 'dx-s3-tile__mono';
+      mono.setAttribute('aria-hidden', 'true');
+      mono.textContent = monogram(tile.name);
+      image.replaceWith(mono);
+    }, { once: true });
+  }
+  if (!reducedMotion()) element.classList.add('dx-s3-tile--enter');
+  return element;
 }
 
 async function fetchPublicProfiles(feedUrl) {
@@ -265,35 +338,75 @@ async function fetchPublicProfiles(feedUrl) {
   return Array.isArray(payload?.profiles) ? payload.profiles : [];
 }
 
-function placeProfiles(root, profiles, ownHandle) {
-  const field = root.querySelector('[data-dx-s3-field]');
-  if (!field || !profiles.length) return;
-  const capacity = Math.max(1, Number(root.getAttribute('data-capacity')) || profiles.length);
+async function fetchWorks(feedPath) {
+  const response = await fetch(feedPath, { credentials: 'same-origin', cache: 'no-store' });
+  if (!response.ok) throw new Error(`works feed failed (${response.status})`);
+  const payload = await response.json();
+  return Array.isArray(payload?.entries) ? payload.entries : (Array.isArray(payload) ? payload : []);
+}
 
-  // Stable daily rotation once we exceed capacity; always pin the member's own
-  // card so they see themselves regardless of rotation.
-  const dayIndex = Math.floor(Date.now() / 86400000);
-  const own = ownHandle ? profiles.filter((p) => p.handle === ownHandle) : [];
-  const rest = profiles.filter((p) => !ownHandle || p.handle !== ownHandle);
-  rest.sort((a, b) => dailyRank(a.handle, dayIndex) - dailyRank(b.handle, dayIndex));
-  const ordered = [...own, ...rest].slice(0, capacity);
+// Assemble the visible tile set: every member face (bias-sorted), a random
+// dynamic slice of their + past work, one open slot. Faces always survive the
+// cap so the wall stays face-first as the catalog dwarfs the member count.
+function assembleWall(profiles, entries, options) {
+  const { capacity, faceBias, fillWithStills, tagLabel, ownHandle } = options;
 
-  // Replace openings first, then seed releases — never drop a real release card
-  // until every @you opening has been filled.
-  const openings = Array.from(field.querySelectorAll('[data-card-kind="opening"]'));
-  const seeds = Array.from(field.querySelectorAll('[data-card-kind="release"]'));
-  const replaceable = [...openings, ...seeds];
+  let faces = profiles.map((profile) => profileToTile(profile, tagLabel));
+  if (faceBias) faces = faces.slice().sort((a, b) => (b.hasPicture ? 1 : 0) - (a.hasPicture ? 1 : 0));
 
-  ordered.forEach((profile, index) => {
-    const target = replaceable[index];
-    if (!target) return;
-    const slot = target.getAttribute('data-card-slot') || String(index);
-    const card = profileCardElement(profile, slot);
-    if (own.length && profile.handle === ownHandle) card.classList.add('is-own');
-    if (!reducedMotion()) card.classList.add('dx-s3-card--enter');
-    target.replaceWith(card);
-  });
-  field.setAttribute('data-profiles-loaded', 'true');
+  const seen = new Set();
+  const works = [];
+  for (const entry of entries) {
+    if (!entry.image_src || !(entry.performer_raw || entry.title_raw) || entry.status === 'hidden') continue;
+    const tile = catalogEntryToTile(entry, tagLabel);
+    const key = tile.name.toLowerCase();
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    works.push(tile);
+  }
+
+  // Attribute works to members by name so a member's own recordings ride along.
+  const faceKeys = faces.map((face) => ({ face, key: nameKey(face.name) })).filter((item) => item.key.length >= 3);
+  for (const work of works) {
+    const workKey = nameKey(work.name);
+    const match = faceKeys.find((item) => workKey.includes(item.key) || item.key.includes(workKey));
+    if (match) { work.attributedTo = match.face.handle; match.face.hasWork = true; }
+  }
+
+  let chosenWorks = fillWithStills ? works : works.filter((work) => work.attributedTo);
+  // Accepted Season 3 work always leads; everything else is a fresh random draw.
+  const s3 = chosenWorks.filter((work) => String(work.season).toUpperCase() === 'S3');
+  const rest = shuffle(chosenWorks.filter((work) => String(work.season).toUpperCase() !== 'S3'));
+  chosenWorks = [...s3, ...rest];
+
+  const room = Math.max(0, capacity - faces.length - 1);
+  const pickedWorks = chosenWorks.slice(0, room);
+
+  // Faces lead (shuffled among themselves) so members stay in the visible band;
+  // work fills behind them. The open slot anchors the CTA.
+  let combined = [...shuffle(faces), ...pickedWorks];
+  const open = { kind: 'open', name: '@you', href: '#' };
+  if (ownHandle) {
+    const index = combined.findIndex((tile) => tile.kind === 'face' && tile.handle === ownHandle);
+    if (index >= 0) {
+      combined[index].isOwn = true;
+      const [own] = combined.splice(index, 1);
+      combined.unshift(own);
+    }
+    combined.push(open);
+  } else {
+    combined.unshift(open);
+  }
+  return combined.slice(0, capacity);
+}
+
+function renderWall(root, tiles) {
+  const wall = root.querySelector('[data-dx-s3-wall]');
+  if (!wall) return;
+  const fragment = document.createDocumentFragment();
+  tiles.forEach((tile, index) => fragment.appendChild(tileElement(tile, index)));
+  wall.replaceChildren(fragment);
+  wall.setAttribute('data-wall-loaded', 'true');
 }
 
 async function ownPublicHandle(token) {
@@ -365,6 +478,21 @@ function initSeason3(root) {
   const module = root.querySelector('[data-module-type="season3-human-credits"]');
   if (!module) return;
 
+  // --- Headline: run through the site heading FX (duplication + letter joining).
+  // The hero mounts after header-slot's first pass, so retry until the FX loads.
+  const headline = module.querySelector('.dx-s3__headline');
+  if (headline) {
+    const decorate = () => decorateDynamicHeadings(headline, 'home:hero:season3');
+    decorate();
+    if (!window.__dxHeadingFx) {
+      let tries = 0;
+      const timer = window.setInterval(() => {
+        if (window.__dxHeadingFx || tries > 20) { window.clearInterval(timer); decorate(); }
+        tries += 1;
+      }, 100);
+    }
+  }
+
   // --- Choreography (code-owned, class-toggled CSS keyframes) ---
   const motion = module.getAttribute('data-motion') || 'cinematic';
   const animate = motion !== 'quiet' && !reducedMotion();
@@ -384,23 +512,45 @@ function initSeason3(root) {
   }
 
   // --- CTA wiring (guest default rendered server-side) ---
+  const submitHref = module.dataset.ctaSubmitHref || '/entry/submit/';
+  const startSubmission = () => {
+    const returnTo = `${window.location.origin}${submitHref}`;
+    if (window.DEX_AUTH && typeof window.DEX_AUTH.signUp === 'function') window.DEX_AUTH.signUp(returnTo);
+    else document.getElementById('auth-ui-signin')?.click();
+  };
   const cta = module.querySelector('[data-dx-s3-cta]');
   if (cta) {
     cta.addEventListener('click', (event) => {
       if (cta.getAttribute('data-mode') !== 'guest') return; // real link otherwise
       event.preventDefault();
-      const returnTo = `${window.location.origin}${module.dataset.ctaSubmitHref || '/entry/submit/'}`;
-      if (window.DEX_AUTH && typeof window.DEX_AUTH.signUp === 'function') window.DEX_AUTH.signUp(returnTo);
-      else document.getElementById('auth-ui-signin')?.click();
+      startSubmission();
     });
   }
+  // The "@you" open slot behaves like the CTA. Tiles hydrate later, so delegate.
+  module.addEventListener('click', (event) => {
+    const open = event.target.closest('[data-dx-s3-open]');
+    if (!open) return;
+    event.preventDefault();
+    if (module.querySelector('[data-dx-s3-cta]')?.getAttribute('data-mode') === 'guest') startSubmission();
+    else if (typeof window.dxNavigate === 'function') window.dxNavigate(submitHref);
+    else window.location.href = submitHref;
+  });
 
-  // --- Public profile feed (always; independent of auth) ---
-  const feedUrl = resolveFeedUrl(module.getAttribute('data-profile-feed'));
+  // --- Wall data: member faces + their (and past contributors') work ---
+  const facesUrl = resolveFeedUrl(module.getAttribute('data-faces-feed'));
+  const worksPath = module.getAttribute('data-works-feed') || '/data/catalog.entries.json';
+  const options = {
+    capacity: Math.max(4, Number(module.getAttribute('data-capacity')) || 24),
+    faceBias: module.getAttribute('data-face-bias') !== 'false',
+    fillWithStills: module.getAttribute('data-fill-stills') !== 'false',
+    tagLabel: module.getAttribute('data-tag-label') || 'dexFest',
+  };
   let ownHandle = '';
-  let loadedProfiles = null;
-  const renderProfiles = () => {
-    if (loadedProfiles) placeProfiles(module, loadedProfiles, ownHandle);
+  let profiles = [];
+  let works = [];
+  const paint = () => {
+    if (!profiles.length && !works.length) return; // keep the SSR/seed wall on total failure
+    renderWall(module, assembleWall(profiles, works, { ...options, ownHandle }));
   };
   const applyAuthState = async (authenticated) => {
     if (!authenticated) {
@@ -413,10 +563,10 @@ function initSeason3(root) {
     const nextOwn = await ownPublicHandle(token);
     const ctaState = await resolveSeason3Cta(module, token);
     applySeason3Cta(module, ctaState, nextOwn);
-    // Re-place only when the member's own card is now known but not yet pinned.
+    // Repaint so the member's own face is pinned + ringed once known.
     if (nextOwn && nextOwn !== ownHandle) {
       ownHandle = nextOwn;
-      if (!module.querySelector('.dx-s3-card.is-own')) renderProfiles();
+      if (!module.querySelector('.dx-s3-tile.is-own')) paint();
     }
   };
 
@@ -429,10 +579,13 @@ function initSeason3(root) {
   }
   window.addEventListener('dex-auth:state', (event) => applyAuthState(Boolean(event?.detail?.isAuthenticated)));
 
-  // Load the public feed; API failure silently retains the seed/open-slot field.
-  fetchPublicProfiles(feedUrl)
-    .then((profiles) => { loadedProfiles = profiles; renderProfiles(); })
-    .catch(() => {});
+  // Load faces + works in parallel; either source failing still paints the other.
+  Promise.allSettled([fetchPublicProfiles(facesUrl), fetchWorks(worksPath)])
+    .then(([faces, entries]) => {
+      profiles = faces.status === 'fulfilled' ? faces.value : [];
+      works = entries.status === 'fulfilled' ? entries.value : [];
+      paint();
+    });
 }
 
 async function boot() {

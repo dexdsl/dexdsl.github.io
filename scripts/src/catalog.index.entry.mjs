@@ -16,10 +16,29 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
   const ENTRIES_URL = '/data/catalog.entries.json';
   const SEARCH_URL = '/data/catalog.search.json';
   const SEASONS_URL = '/data/catalog.seasons.json';
-  const DEFAULT_UNANNOUNCED_MESSAGE = 'this artist has not been announced yet';
+  const DEFAULT_UNANNOUNCED_MESSAGE = 'this collection has not been announced yet';
   const DEFAULT_UNANNOUNCED_TOKEN_POOL = ['???', '!!!', '***', '@@@'];
   const HOME_SIGNUP_TEASER_IMAGE = '/assets/img/3b1476c230073f7589e3.jpg';
   const CATALOG_FALLBACK_IMAGE = '/assets/series/dex.png';
+  // While the Current lane has fewer than this many real entries, the S3 slot
+  // shows a "submit samples" funnel instead of the unannounced teaser; once the
+  // lane fills past it, the teaser returns.
+  const CURRENT_LANE_THIN_MAX = 3;
+  const SUBMIT_SAMPLES_HREF = '/entry/submit/';
+  const CAROUSEL_GROUPS = [
+    {
+      id: 'current',
+      label: 'Current',
+      meta: 'season 3 + UAV tour 1',
+      campaigns: ['S3', 'UAV T1'],
+    },
+    {
+      id: 'archive',
+      label: 'Archive',
+      meta: 'seasons 1–2',
+      campaigns: ['S2', 'S1'],
+    },
+  ];
   const REDIRECT_HASHES = {
     '#dex-how': '/catalog/how/#dex-how',
     '#list-of-identifiers': '/catalog/symbols/#list-of-identifiers',
@@ -41,8 +60,8 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
   let fuse = null;
   let state = { ...DEFAULT_STATE };
   let drawerOpen = false;
-  let seasonCarouselSeason = '';
-  let seasonCarouselIndexes = new Map();
+  let seasonCarouselGroup = 'current';
+  let seasonCarouselGroupIndexes = new Map();
   let seasonTeaserSeed = '';
   let favoritesSignalsBound = false;
   let newsletterActivated = false;
@@ -762,15 +781,35 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     return pool[Math.floor(Math.random() * pool.length)];
   }
 
-  function seasonLabel(seasonRaw) {
-    const season = text(seasonRaw).toUpperCase();
-    const configured = seasonConfigFor(season)?.label;
-    if (configured) return configured;
-    if (season === 'S2') return "season 2 ('24-)";
-    if (season === 'S1') return "season 1 ('22-'24)";
-    const match = season.match(/^S(\d+)$/);
-    if (match) return `season ${match[1]}`;
-    return 'season';
+  function campaignIdForEntry(entry) {
+    if (entry?.kind === 'uav') {
+      const tour = text(entry?.uav?.tour).trim().toUpperCase();
+      return tour ? `UAV ${tour}` : 'UAV';
+    }
+    return text(entry?.season).trim().toUpperCase();
+  }
+
+  function carouselGroupForEntry(entry) {
+    const campaignId = campaignIdForEntry(entry);
+    return CAROUSEL_GROUPS.find((group) => group.campaigns.includes(campaignId))?.id || '';
+  }
+
+  function carouselGroupConfig(groupId) {
+    return CAROUSEL_GROUPS.find((group) => group.id === groupId) || CAROUSEL_GROUPS[0];
+  }
+
+  function interleaveCampaignEntries(groupId, entries) {
+    const group = carouselGroupConfig(groupId);
+    const buckets = group.campaigns.map((campaignId) =>
+      entries.filter((entry) => campaignIdForEntry(entry) === campaignId));
+    const maxBucketSize = Math.max(0, ...buckets.map((bucket) => bucket.length));
+    const interleaved = [];
+    for (let index = 0; index < maxBucketSize; index += 1) {
+      buckets.forEach((bucket) => {
+        if (bucket[index]) interleaved.push(bucket[index]);
+      });
+    }
+    return interleaved;
   }
 
   function clampNumber(value, min, max, fallback) {
@@ -1262,10 +1301,12 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     const hasImage = Boolean(imageSrc);
     const slide = create('li', 'dx-catalog-index-season-slide');
     const season = text(entry.season).toUpperCase();
+    const campaignId = campaignIdForEntry(entry);
     slide.setAttribute('data-dx-season-card-kind', 'entry');
     slide.setAttribute('data-dx-season-card-id', text(entry.id || ''));
     slide.setAttribute('data-dx-season-card-href', href);
     slide.setAttribute('data-dx-season-card-lookup', text(entry.lookup_raw || ''));
+    slide.setAttribute('data-dx-campaign-id', campaignId);
     if (season) slide.setAttribute('data-dx-season-id', season);
 
     const media = create('a', 'dx-catalog-index-season-media');
@@ -1280,10 +1321,16 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     if (!hasImage) {
       media.appendChild(create('span', 'dx-catalog-index-season-fallback-code', text(entry.lookup_raw || 'DEX')));
     }
-
     const copy = create('div', 'dx-catalog-index-season-copy');
     copy.appendChild(create('h3', 'dx-catalog-index-season-performer', protectName(performerHeading(entry))));
     copy.appendChild(create('p', 'dx-catalog-index-season-title', text(entry.title_raw || 'Untitled')));
+
+    // Badge + lookup live above the CTA now (out of the photo).
+    const metaRow = create('div', 'dx-catalog-index-season-metarow');
+    metaRow.appendChild(create('span', 'dx-catalog-index-season-tag', campaignId));
+    const lookupText = text(entry.lookup_raw || '');
+    if (lookupText) metaRow.appendChild(create('span', 'dx-catalog-index-season-lookup', lookupText));
+    copy.appendChild(metaRow);
 
     const open = openCta(href, protectedAllCaps('View collection'), 'primary');
     open.classList.add('dx-catalog-index-season-open');
@@ -1302,9 +1349,10 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     const slide = create('li', 'dx-catalog-index-season-slide dx-catalog-index-season-slide--unannounced');
     slide.setAttribute('data-dx-season-card-kind', 'unannounced');
     slide.setAttribute('data-dx-season-id', season || '');
+    slide.setAttribute('data-dx-campaign-id', season || 'S3');
     slide.setAttribute('data-dx-growlix-token', token);
     slide.setAttribute('data-dx-unannounced-index', String(index));
-    slide.setAttribute('aria-label', 'Unannounced artist teaser');
+    slide.setAttribute('aria-label', 'Unannounced collection teaser');
 
     const media = create('div', 'dx-catalog-index-season-media dx-catalog-index-season-media--unannounced');
     media.setAttribute('aria-hidden', 'true');
@@ -1313,11 +1361,14 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     image.decoding = 'async';
     image.alt = 'Sign up for free access';
     image.src = HOME_SIGNUP_TEASER_IMAGE;
-    media.appendChild(image);
+    media.append(image);
 
     const copy = create('div', 'dx-catalog-index-season-copy');
     copy.appendChild(create('h3', 'dx-catalog-index-season-performer', token));
     copy.appendChild(create('p', 'dx-catalog-index-season-title', message));
+    const metaRow = create('div', 'dx-catalog-index-season-metarow');
+    metaRow.appendChild(create('span', 'dx-catalog-index-season-tag', season || 'S3'));
+    copy.appendChild(metaRow);
     const locked = create('button', 'dx-button-element dx-button-size--sm dx-button-element--primary dx-catalog-index-season-open is-disabled', protectedAllCaps('View collection'));
     locked.type = 'button';
     locked.disabled = true;
@@ -1328,59 +1379,71 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     return slide;
   }
 
+  // The "open call" funnel that occupies the S3 slot while the Current lane is
+  // thin. Styled like a collection slide but the CTA routes to sample submission.
+  function renderSubmitSeasonSlide() {
+    const href = SUBMIT_SAMPLES_HREF;
+    const slide = create('li', 'dx-catalog-index-season-slide dx-catalog-index-season-slide--submit');
+    slide.setAttribute('data-dx-season-card-kind', 'submit');
+    slide.setAttribute('data-dx-season-id', 'S3');
+    slide.setAttribute('data-dx-campaign-id', 'S3');
+
+    const media = create('a', 'dx-catalog-index-season-media dx-catalog-index-season-media--submit');
+    media.href = href;
+    const image = create('img', 'dx-catalog-index-season-img');
+    image.loading = 'lazy';
+    image.decoding = 'async';
+    image.alt = 'Submit your work to Season 3';
+    image.src = HOME_SIGNUP_TEASER_IMAGE;
+    media.appendChild(image);
+
+    const copy = create('div', 'dx-catalog-index-season-copy');
+    copy.appendChild(create('h3', 'dx-catalog-index-season-performer', 'Season 3 is open'));
+    copy.appendChild(create('p', 'dx-catalog-index-season-title', 'Add your recording to the open-access library — free & CC-BY.'));
+    const metaRow = create('div', 'dx-catalog-index-season-metarow');
+    metaRow.appendChild(create('span', 'dx-catalog-index-season-tag', 'S3'));
+    metaRow.appendChild(create('span', 'dx-catalog-index-season-lookup', 'open call'));
+    copy.appendChild(metaRow);
+    const open = openCta(href, protectedAllCaps('Submit samples'), 'primary');
+    open.classList.add('dx-catalog-index-season-open');
+    copy.appendChild(open);
+
+    slide.append(media, copy);
+    return slide;
+  }
+
   function renderSeasonCarousel(target) {
     const catalogEntries = allEntries().filter((entry) => {
-      return !!canonicalEntryHref(entry.entry_href) && !!text(entry.lookup_raw).trim() && !!text(entry.season).trim();
+      return !!canonicalEntryHref(entry.entry_href)
+        && !!text(entry.lookup_raw).trim()
+        && !!carouselGroupForEntry(entry);
     });
 
-    const seasonBuckets = new Map();
+    const groupBuckets = new Map(CAROUSEL_GROUPS.map((group) => [group.id, []]));
     catalogEntries.forEach((entry) => {
-      const season = text(entry.season).trim().toUpperCase();
-      if (!season) return;
-      if (!seasonBuckets.has(season)) seasonBuckets.set(season, []);
-      seasonBuckets.get(season).push(entry);
+      const groupId = carouselGroupForEntry(entry);
+      if (!groupId || !groupBuckets.has(groupId)) return;
+      groupBuckets.get(groupId).push(entry);
     });
 
-    const configById = seasonConfigById();
-    configById.forEach((season, seasonId) => {
-      const count = clampNumber(season?.unannounced?.count, 0, 3, 1);
-      const hasTeaser = Boolean(season?.unannounced?.enabled) && count > 0;
-      if (!seasonBuckets.has(seasonId) && hasTeaser) {
-        seasonBuckets.set(seasonId, []);
-      }
+    const currentTeasers = buildUnannouncedCardsForSeason('S3');
+    const currentLaneThin = (groupBuckets.get('current') || []).length < CURRENT_LANE_THIN_MAX;
+    const groups = CAROUSEL_GROUPS.filter((group) => {
+      const entries = groupBuckets.get(group.id) || [];
+      return entries.length > 0
+        || (group.id === 'current' && (currentTeasers.length > 0 || currentLaneThin));
     });
-    if (!seasonBuckets.size) return;
-
-    const preferred = Array.isArray(model?.stats?.seasons)
-      ? model.stats.seasons.map((value) => text(value).trim().toUpperCase()).filter(Boolean)
-      : [];
-    const seasons = [];
-    for (const season of [...preferred, ...configById.keys(), ...seasonBuckets.keys()]) {
-      if (!season) continue;
-      const hasEntries = seasonBuckets.has(season) && (seasonBuckets.get(season) || []).length > 0;
-      const hasTeaser = buildUnannouncedCardsForSeason(season).length > 0;
-      if (!hasEntries && !hasTeaser) continue;
-      if (seasons.includes(season)) continue;
-      seasons.push(season);
+    if (!groups.length) return;
+    if (!groups.some((group) => group.id === seasonCarouselGroup)) {
+      seasonCarouselGroup = groups[0].id;
     }
-
-    seasons.sort((a, b) => {
-      const configA = configById.get(a);
-      const configB = configById.get(b);
-      const orderA = Number.isFinite(Number(configA?.order)) ? Number(configA.order) : seasonOrderFromId(a);
-      const orderB = Number.isFinite(Number(configB?.order)) ? Number(configB.order) : seasonOrderFromId(b);
-      if (orderA !== orderB) return orderB - orderA;
-      return text(a).localeCompare(text(b));
-    });
-
-    if (!seasons.length) return;
-    if (!seasons.includes(seasonCarouselSeason)) seasonCarouselSeason = seasons[0];
 
     const section = create('section', 'dx-catalog-index-season-carousel dx-catalog-index-surface');
     section.setAttribute('data-dx-motion', 'pagination');
+    section.setAttribute('data-dx-carousel-group', seasonCarouselGroup);
 
     const tabs = create('div', 'dx-catalog-index-season-tabs');
-    const seasonMeta = create('p', 'dx-catalog-index-season-meta', seasonLabel(seasonCarouselSeason));
+    const seasonMeta = create('p', 'dx-catalog-index-season-meta', carouselGroupConfig(seasonCarouselGroup).meta);
 
     const gutter = create('div', 'dx-catalog-index-season-gutter');
     gutter.setAttribute('role', 'region');
@@ -1410,29 +1473,29 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     let currentSlides = [];
     let pageNav = null;
 
-    const carouselIndexForSeason = (slideCount) => {
+    const carouselIndexForGroup = (slideCount) => {
       const count = Math.max(1, Number(slideCount) || 1);
-      const key = text(seasonCarouselSeason).toUpperCase();
-      const existing = seasonCarouselIndexes.get(key);
+      const key = text(seasonCarouselGroup).toLowerCase();
+      const existing = seasonCarouselGroupIndexes.get(key);
       if (Number.isFinite(existing)) return existing;
       const initial = centeredCarouselIndex(count);
-      seasonCarouselIndexes.set(key, initial);
+      seasonCarouselGroupIndexes.set(key, initial);
       return initial;
     };
 
-    const setCarouselIndexForSeason = (index) => {
-      seasonCarouselIndexes.set(text(seasonCarouselSeason).toUpperCase(), Number(index) || 0);
+    const setCarouselIndexForGroup = (index) => {
+      seasonCarouselGroupIndexes.set(text(seasonCarouselGroup).toLowerCase(), Number(index) || 0);
     };
 
     const setCarouselSlot = (slot, slideCount) => {
       const count = Math.max(1, Number(slideCount) || 1);
-      const current = carouselIndexForSeason(count);
+      const current = carouselIndexForGroup(count);
       const currentSlot = positiveModulo(current, count);
       const targetSlot = positiveModulo(slot, count);
       const forward = positiveModulo(targetSlot - currentSlot, count);
       const backward = forward - count;
       const delta = Math.abs(backward) < Math.abs(forward) ? backward : forward;
-      setCarouselIndexForSeason(current + delta);
+      setCarouselIndexForGroup(current + delta);
       return delta;
     };
 
@@ -1461,19 +1524,20 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
 
     const renderTabs = () => {
       clearNode(tabs);
-      seasons.forEach((season) => {
-        const tab = create('button', 'dx-catalog-index-season-tab', seasonLabel(season));
+      groups.forEach((group) => {
+        const tab = create('button', 'dx-catalog-index-season-tab', group.label);
         tab.type = 'button';
-        tab.setAttribute('data-dx-season-id', season);
-        const active = season === seasonCarouselSeason;
+        tab.setAttribute('data-dx-carousel-group', group.id);
+        const active = group.id === seasonCarouselGroup;
         tab.classList.toggle('is-active', active);
         tab.setAttribute('aria-pressed', active ? 'true' : 'false');
         tab.addEventListener('click', () => {
-          if (seasonCarouselSeason === season) return;
-          const currentIndex = seasons.indexOf(seasonCarouselSeason);
-          const nextIndex = seasons.indexOf(season);
+          if (seasonCarouselGroup === group.id) return;
+          const currentIndex = groups.findIndex((candidate) => candidate.id === seasonCarouselGroup);
+          const nextIndex = groups.findIndex((candidate) => candidate.id === group.id);
           const direction = nextIndex === currentIndex ? 0 : (nextIndex > currentIndex ? 1 : -1);
-          seasonCarouselSeason = season;
+          seasonCarouselGroup = group.id;
+          section.setAttribute('data-dx-carousel-group', seasonCarouselGroup);
           renderTabs();
           renderTrack(direction);
         });
@@ -1484,12 +1548,21 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     const renderTrack = (direction = 0) => {
       clearNode(track);
       track.setAttribute('data-dx-motion', 'pagination');
-      seasonMeta.textContent = seasonLabel(seasonCarouselSeason);
-      const seasonEntries = seasonBuckets.get(seasonCarouselSeason) || [];
-      const unannouncedCards = buildUnannouncedCardsForSeason(seasonCarouselSeason);
-      const slides = interleaveSeasonTeasers(seasonCarouselSeason, seasonEntries, unannouncedCards);
+      const group = carouselGroupConfig(seasonCarouselGroup);
+      seasonMeta.textContent = group.meta;
+      track.setAttribute('data-dx-carousel-group', group.id);
+      const groupEntries = interleaveCampaignEntries(group.id, groupBuckets.get(group.id) || []);
+      const currentLaneThin = (groupBuckets.get('current') || []).length < CURRENT_LANE_THIN_MAX;
+      let slides;
+      if (group.id === 'current' && currentLaneThin) {
+        // Thin lane: lead with the submit funnel in place of the S3 teaser.
+        slides = [{ kind: 'submit' }, ...interleaveSeasonTeasers(group.id, groupEntries, [])];
+      } else {
+        const unannouncedCards = group.id === 'current' ? currentTeasers : [];
+        slides = interleaveSeasonTeasers(group.id, groupEntries, unannouncedCards);
+      }
       currentSlides = slides;
-      const activeIndex = carouselIndexForSeason(slides.length);
+      const activeIndex = carouselIndexForGroup(slides.length);
       const activeSlot = positiveModulo(activeIndex, slides.length);
       track.setAttribute('data-dx-carousel-active-index', String(activeIndex));
       track.setAttribute('data-dx-carousel-active-slot', String(activeSlot));
@@ -1499,6 +1572,7 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
         const originalIndex = slides.indexOf(slide);
         if (slide.kind === 'entry') track.appendChild(renderSeasonSlide(slide.entry));
         else if (slide.kind === 'teaser') track.appendChild(renderUnannouncedSeasonSlide(slide.card));
+        else if (slide.kind === 'submit') track.appendChild(renderSubmitSeasonSlide());
         const rendered = track.lastElementChild;
         if (rendered) {
           rendered.setAttribute('data-dx-carousel-slot', String(originalIndex));
@@ -1526,8 +1600,8 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     const pageCarousel = (direction) => {
       if (!currentSlides.length) return;
       const count = currentSlides.length;
-      const current = carouselIndexForSeason(count);
-      setCarouselIndexForSeason(current + direction);
+      const current = carouselIndexForGroup(count);
+      setCarouselIndexForGroup(current + direction);
       renderTrack(direction);
     };
 
@@ -1548,19 +1622,17 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     });
 
     // Scroll/swipe paging. The carousel is an infinite, re-rendering pager (not a
-    // native scroll container), so we can't hand it to the browser's scroll. We
-    // resolve the conundrum by axis, with a per-gesture LOCK: a wheel/swipe
-    // gesture commits to 'x' or 'y' on its first decisive frame and stays there
-    // until a short idle. Vertical (or undecided) gestures are never touched, so
-    // page scroll over the carousel is never stolen by trackpad jitter; only a
-    // clearly-horizontal gesture advances the pager. CSS touch-action: pan-y on
-    // the gutter mirrors this for touch.
+    // native scroll container), so only strongly horizontal wheel frames are
+    // intercepted. Intent is evaluated per event instead of locking an entire
+    // gesture: a horizontal-leading trackpad frame can page the carousel, while
+    // any later vertical movement immediately falls through to page scrolling.
+    // CSS touch-action: pan-y on the gutter mirrors this for touch.
     const WHEEL_STEP = 40; // accumulated horizontal px before advancing a page
     const WHEEL_COOLDOWN_MS = 280;
-    const WHEEL_IDLE_MS = 160; // gap that ends a gesture and clears the axis lock
+    const WHEEL_IDLE_MS = 160;
+    const WHEEL_HORIZONTAL_DOMINANCE = 1.75;
     let wheelAccum = 0;
     let wheelReadyAt = 0;
-    let wheelAxis = null;
     let wheelIdleTimer = 0;
     gutter.addEventListener('wheel', (event) => {
       const horizontal = event.shiftKey ? event.deltaY : event.deltaX;
@@ -1569,15 +1641,13 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
       const absY = Math.abs(vertical);
 
       if (wheelIdleTimer) clearTimeout(wheelIdleTimer);
-      wheelIdleTimer = window.setTimeout(() => { wheelAxis = null; wheelAccum = 0; }, WHEEL_IDLE_MS);
+      wheelIdleTimer = window.setTimeout(() => { wheelAccum = 0; }, WHEEL_IDLE_MS);
 
-      // Commit the gesture axis once movement is decisive. Horizontal needs a
-      // clear lead so a mostly-vertical scroll never locks to 'x'.
-      if (!wheelAxis) {
-        if (absX > absY * 1.2 && absX > 6) wheelAxis = 'x';
-        else if (absY > 0) wheelAxis = 'y';
+      const stronglyHorizontal = absX > 6 && absX > absY * WHEEL_HORIZONTAL_DOMINANCE;
+      if (!stronglyHorizontal) {
+        if (absY > 0) wheelAccum = 0;
+        return;
       }
-      if (wheelAxis !== 'x') return; // vertical / undecided → page scrolls freely
 
       event.preventDefault();
       const now = Date.now();

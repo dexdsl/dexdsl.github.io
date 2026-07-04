@@ -266,7 +266,7 @@
   font-size: 12px;
   line-height: 1;
   letter-spacing: 0.06em;
-  text-transform: lowercase;
+  text-transform: none;
   padding: 0.42rem 0.7rem;
   cursor: pointer;
   transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
@@ -283,7 +283,7 @@
   font-family: var(--font-mono, "Courier Prime", monospace);
   font-size: 12px;
   letter-spacing: 0.08em;
-  text-transform: lowercase;
+  text-transform: none;
   color: rgba(37, 42, 53, 0.88);
 }
 
@@ -318,7 +318,8 @@
   gap: clamp(0.62rem, 1.1vw, 0.88rem);
   overflow: hidden;
   scrollbar-width: none;
-  overscroll-behavior: contain;
+  overscroll-behavior-x: contain;
+  overscroll-behavior-y: auto;
 }
 
 .dx-catalog-index-season-track::-webkit-scrollbar {
@@ -350,6 +351,7 @@
 }
 
 .dx-catalog-index-season-media {
+  position: relative;
   display: block;
   aspect-ratio: 5 / 3;
   overflow: hidden;
@@ -401,6 +403,34 @@
   padding: 0.18rem 0.42rem;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+}
+
+.dx-catalog-index-season-campaign-badge {
+  position: absolute;
+  top: 0.55rem;
+  left: 0.55rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.35rem;
+  max-width: calc(100% - 1.1rem);
+  padding: 0.18rem 0.46rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 999px;
+  background: rgba(245, 248, 255, 0.82);
+  color: #252c3a;
+  font-family: var(--font-mono, "Courier Prime", monospace);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .dx-catalog-index-season-growlix-token {
@@ -472,10 +502,46 @@
   color: rgba(59, 69, 84, 0.84);
 }
 
+/* Campaign id + lookup, sits just above the CTA (moved out of the photo).
+   Uses the catalog's own mono metadata idiom (cf. .dx-catalog-index-row-code)
+   rather than a pill so it reads as native catalog metadata. */
+.dx-catalog-index-season-metarow {
+  margin-top: auto;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5ch;
+  min-width: 0;
+  font-family: var(--font-mono, "Courier Prime", monospace);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+
+.dx-catalog-index-season-tag {
+  flex: none;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #252c3a;
+  white-space: nowrap;
+}
+
+.dx-catalog-index-season-lookup {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: rgba(65, 73, 90, 0.86);
+}
+
+.dx-catalog-index-season-lookup::before {
+  content: "·";
+  margin-right: 0.5ch;
+  color: rgba(65, 73, 90, 0.5);
+}
+
 .dx-catalog-index-season-open {
   align-self: stretch;
   width: 100%;
-  margin-top: auto;
+  margin-top: 0;
 }
 
 .dx-catalog-index-season-desktop-arrows {
@@ -490,13 +556,13 @@
 }
 
 .dx-catalog-index-season-arrow-wrap--left {
-  left: 0;
-  transform: translate(-50%, -50%);
+  left: 0.15rem;
+  transform: translate(-35%, -50%);
 }
 
 .dx-catalog-index-season-arrow-wrap--right {
-  right: 0;
-  transform: translate(50%, -50%);
+  right: 0.15rem;
+  transform: translate(35%, -50%);
 }
 
 /* Arrow visuals come from the global .dx-pagenav-arrow (dx-controls.css);

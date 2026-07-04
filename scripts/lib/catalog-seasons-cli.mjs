@@ -55,7 +55,7 @@ function printUsage() {
   console.log('  dex catalog seasons set --season S3 --label "season 3 (\'26-)" --order 3');
   console.log('  dex catalog seasons teaser enable --season S3');
   console.log('  dex catalog seasons teaser disable --season S3');
-  console.log('  dex catalog seasons teaser set --season S3 --count 1 --message "this artist has not been announced yet" --tokens "???,!!!,***,@@@" --style redacted');
+  console.log('  dex catalog seasons teaser set --season S3 --count 1 --message "this collection has not been announced yet" --tokens "???,!!!,***,@@@" --style redacted');
 }
 
 function printSeasonRow(season) {

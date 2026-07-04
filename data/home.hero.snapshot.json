@@ -1,74 +1,60 @@
 {
   "version": "home-hero-snapshot-v1",
-  "generatedAt": "2026-06-28T12:07:54.070Z",
-  "sourceHash": "9faa8a1fa589a23c25fe2b4d332ebd0701ede3dd1a924ccd9eceabf07e0edbb5",
-  "activeCompositionId": "open-access-featured",
+  "generatedAt": "2026-07-04T08:37:35.534Z",
+  "sourceHash": "4a0bec7e98dedd9adf9a4eb8c4679d7197cbb9a5a99702375222f4e8b4af60ab",
+  "activeCompositionId": "season3-human-credits",
   "composition": {
-    "id": "open-access-featured",
-    "name": "Open access + featured",
-    "layout": "split",
+    "id": "season3-human-credits",
+    "name": "Season 3 Human Credits",
+    "layout": "single",
     "slots": [
-      "open-access-campaign",
-      "featured-entries"
+      "season3-human-credits"
     ],
-    "createdAt": "2026-06-28T11:00:00.000Z",
-    "updatedAt": "2026-06-28T11:35:57.184Z",
+    "createdAt": "2026-06-28T12:00:00.000Z",
+    "updatedAt": "2026-07-04T08:16:38.495Z",
     "archived": false
   },
   "modules": [
     {
-      "id": "open-access-campaign",
-      "name": "Open access campaign",
-      "createdAt": "2026-06-28T11:00:00.000Z",
-      "updatedAt": "2026-06-28T11:00:00.000Z",
+      "id": "season3-human-credits",
+      "name": "Season 3 — Human Credits",
+      "createdAt": "2026-06-28T12:00:00.000Z",
+      "updatedAt": "2026-06-28T12:00:00.000Z",
       "archived": false,
-      "type": "campaign",
-      "headlineLines": [
-        "THE OPEN-ACCESS",
-        "RECORDING LIBRARY FOR"
-      ],
-      "rotatingWords": [
-        "WEIRD NOISE.",
-        "ODD SOUNDS.",
-        "NOISE MAKERS.",
-        "ARTISTS.",
-        "CREATIVES.",
-        "PERFORMERS.",
-        "COMPOSERS.",
-        "MUSICIANS.",
-        "STRANGE.",
-        "STRANGE SOUNDS.",
-        "ECCENTRICS.",
-        "YOU.",
-        "ALL.",
-        "EVERYONE.",
-        "%*!?%",
-        "!!!",
-        "???",
-        "***"
-      ],
-      "body": "dexFest 2024 recordings releasing all month — free & CC-BY.",
-      "primaryCta": {
-        "kind": "link",
-        "label": "EXPLORE CATALOG",
-        "href": "/catalog/"
+      "type": "season3-human-credits",
+      "kicker": "DEX / SEASON 3",
+      "headline": "SEASON 3 IS YOU.",
+      "body": "The library is made of the people in it — real members, real recordings. There's an open slot on the wall with your name on it. Submit an entry and take it.",
+      "cta": {
+        "guest": {
+          "label": "JOIN SEASON 3"
+        },
+        "submit": {
+          "label": "SUBMIT TO SEASON 3",
+          "href": "/entry/submit/"
+        },
+        "active": {
+          "label": "OPEN MY PIPELINE",
+          "href": "/account/"
+        },
+        "published": {
+          "label": "VIEW MY RELEASE",
+          "href": "/account/"
+        }
       },
-      "secondaryCta": {
-        "kind": "auth-switch",
-        "guestLabel": "SIGN UP FREE ↗",
-        "authenticatedLabel": "SUBMIT SAMPLES ↗",
-        "authenticatedHref": "/entry/submit/"
+      "wall": {
+        "facesFeed": "/profiles/public",
+        "worksFeed": "/data/catalog.entries.json",
+        "capacity": 24,
+        "faceBias": true,
+        "fillWithStills": true,
+        "tagLabel": "dexFest"
+      },
+      "presentation": {
+        "surface": "graphite",
+        "density": "balanced",
+        "motion": "cinematic"
       }
-    },
-    {
-      "id": "featured-entries",
-      "name": "Featured entries",
-      "createdAt": "2026-06-28T11:00:00.000Z",
-      "updatedAt": "2026-06-28T11:00:00.000Z",
-      "archived": false,
-      "type": "featured",
-      "title": "FEATURED ENTRIES",
-      "source": "home-featured"
     }
   ]
 }

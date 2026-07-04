@@ -64,10 +64,11 @@ async function main() {
   for (const marker of [
     'data-module-type="season3-human-credits"',
     'dx-s3__stage',
-    'dx-s3-pipeline',
+    'dx-s3__wall',
+    'data-dx-s3-wall',
     'data-dx-s3-cta',
-    'data-dx-s3-field',
-    'dx-s3-card--release',
+    'dx-s3__headline',
+    'id="dx-s3-duotone"',
   ]) {
     assert.ok(rendered.includes(marker), `rendered hero missing Season 3 marker: ${marker}`);
   }

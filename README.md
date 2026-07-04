@@ -198,7 +198,7 @@ dex catalog seasons get --season S2
 dex catalog seasons set --season S3 --label "season 3 ('26-)" --order 3
 dex catalog seasons teaser enable --season S3
 dex catalog seasons teaser disable --season S3
-dex catalog seasons teaser set --season S3 --count 1 --message "this artist has not been announced yet" --tokens "???,!!!,***,@@@" --style redacted
+dex catalog seasons teaser set --season S3 --count 1 --message "this collection has not been announced yet" --tokens "???,!!!,***,@@@" --style redacted
 ```
 
 ### `dex home`

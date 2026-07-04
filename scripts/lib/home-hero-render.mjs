@@ -154,62 +154,144 @@ function promoMarkup(module) {
   </section>`;
 }
 
-function season3ReleaseCard(release, index) {
-  const role = release.role ? `<span class="dx-s3-card__role">${escapeHtml(release.role)}</span>` : '';
-  return `<a class="dx-s3-card dx-s3-card--release" data-card-kind="release" data-card-slot="${index}" role="listitem" href="${escapeHtml(release.href)}" style="--dx-s3-card-i:${index}">
-      <span class="dx-s3-card__tag">IN THE LIBRARY</span>
-      <span class="dx-s3-card__name">${escapeHtml(release.name)}</span>
-      ${role}
-      <span class="dx-s3-card__lookup">${escapeHtml(release.lookup)}</span>
+// Duotone <defs>: desaturate, then map luminance onto a deep-red → orange ramp so
+// every still/avatar reads as one wash. Referenced by the tiles via filter:url(#…).
+// Hover lifts the filter (full colour) in CSS. Kept inline so it ships with the module.
+function season3DuotoneDefs() {
+  return `<svg class="dx-s3-defs" aria-hidden="true" focusable="false" width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden">
+      <filter id="dx-s3-duotone" color-interpolation-filters="sRGB">
+        <feColorMatrix type="saturate" values="0"></feColorMatrix>
+        <feComponentTransfer>
+          <feFuncR type="table" tableValues="0.52 1.00"></feFuncR>
+          <feFuncG type="table" tableValues="0.18 0.70"></feFuncG>
+          <feFuncB type="table" tableValues="0.14 0.30"></feFuncB>
+        </feComponentTransfer>
+      </filter>
+    </svg>`;
+}
+
+// Normalise a catalog entry into a wall tile. image_src is already root-relative
+// and deployed; performer/instrument/lookup come straight off the entry.
+function catalogEntryToTile(entry) {
+  const instrument = Array.isArray(entry.instrument_labels) && entry.instrument_labels.length
+    ? entry.instrument_labels[0]
+    : (Array.isArray(entry.instrument_family) ? entry.instrument_family[0] : '') || '';
+  return {
+    kind: 'work',
+    name: entry.performer_raw || entry.title_raw || '',
+    instrument,
+    lookup: entry.lookup_raw || '',
+    href: entry.entry_href || '#',
+    image: entry.image_src || '',
+    season: entry.season || '',
+  };
+}
+
+// Season-bias order: S3 (accepted) first, then S2, then S1, then anything else.
+function seasonRank(season, order) {
+  const index = order.indexOf(String(season || '').toUpperCase());
+  return index === -1 ? order.length : index;
+}
+
+// Build the baseline (SSR/preview) tile set from the catalog: real stills only,
+// biased toward the newest season, deduped by performer, capped to capacity.
+function catalogTiles(catalogData, module) {
+  const entries = Array.isArray(catalogData?.entries) ? catalogData.entries : [];
+  const order = ['S3', 'S2', 'S1'];
+  const seen = new Set();
+  return entries
+    .filter((entry) => entry.image_src && (entry.performer_raw || entry.title_raw) && entry.status !== 'hidden')
+    .map(catalogEntryToTile)
+    .filter((tile) => {
+      const key = tile.name.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .sort((a, b) => seasonRank(a.season, order) - seasonRank(b.season, order))
+    .slice(0, module.wall.capacity);
+}
+
+function season3TileMarkup(tile, index) {
+  const meta = tile.kind === 'face'
+    ? [tile.role, tile.instrument].filter(Boolean).join(' · ')
+    : escapeHtml(tile.instrument);
+  // Monogram sits behind the image; if the still fails to load it becomes the tile.
+  const media = `<span class="dx-s3-tile__mono" aria-hidden="true">${escapeHtml(monogram(tile.name))}</span>${
+    tile.image ? `<img class="dx-s3-tile__img" src="${escapeHtml(tile.image)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none'">` : ''
+  }`;
+  const tag = tile.tag ? `<span class="dx-s3-tile__tag">${escapeHtml(tile.tag)}</span>` : '';
+  const lookup = tile.lookup ? `<span class="dx-s3-tile__lookup">${escapeHtml(tile.lookup)}</span>` : '';
+  return `<a class="dx-s3-tile dx-s3-tile--${escapeHtml(tile.kind)}" data-card-kind="${escapeHtml(tile.kind)}" data-card-slot="${index}" role="listitem" href="${escapeHtml(tile.href || '#')}" style="--dx-s3-tile-i:${index}">
+      <span class="dx-s3-tile__media">${media}<span class="dx-s3-tile__wash" aria-hidden="true"></span></span>
+      <span class="dx-s3-tile__body">
+        ${tag}
+        <span class="dx-s3-tile__name">${escapeHtml(tile.name)}</span>
+        ${meta ? `<span class="dx-s3-tile__role">${meta}</span>` : ''}
+        ${lookup}
+      </span>
     </a>`;
 }
 
-function season3OpeningCard(index) {
-  return `<div class="dx-s3-card dx-s3-card--opening" data-card-kind="opening" data-card-slot="${index}" role="listitem" style="--dx-s3-card-i:${index}" aria-hidden="true">
-      <span class="dx-s3-card__tag">OPEN</span>
-      <span class="dx-s3-card__name">@you</span>
-    </div>`;
+function monogram(name) {
+  return String(name || '')
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase() || '★';
 }
 
-function season3Markup(module) {
-  const pipeline = module.pipelineLabels.map((label, index) => (
-    `<li class="dx-s3-pipeline__step" style="--dx-s3-step-i:${index}"><span class="dx-s3-pipeline__dot" aria-hidden="true"></span><span class="dx-s3-pipeline__label">${escapeHtml(label)}</span></li>`
-  )).join('');
-  const assemble = String(module.assembleWord).split('').map((char, index) => (
-    `<span class="dx-s3-assemble__char" style="--dx-s3-char-i:${index}" aria-hidden="true">${escapeHtml(char)}</span>`
-  )).join('');
-  const seeds = module.seedReleases.map((release, index) => season3ReleaseCard(release, index)).join('');
-  // Total visible tiles fill the field; profiles replace openings first, then seeds.
-  const capacity = Math.max(module.seedReleases.length, Math.min(module.profileCapacity, 60));
-  const openings = Array.from({ length: capacity - module.seedReleases.length }, (_unused, offset) => (
-    season3OpeningCard(module.seedReleases.length + offset)
-  )).join('');
+function season3OpenTile(index, label) {
+  return `<a class="dx-s3-tile dx-s3-tile--open" data-card-kind="open" data-card-slot="${index}" role="listitem" href="#" data-dx-s3-open style="--dx-s3-tile-i:${index}">
+      <span class="dx-s3-tile__media"><span class="dx-s3-tile__mono" aria-hidden="true">＋</span><span class="dx-s3-tile__wash" aria-hidden="true"></span></span>
+      <span class="dx-s3-tile__body">
+        <span class="dx-s3-tile__tag">OPEN</span>
+        <span class="dx-s3-tile__name">${escapeHtml(label)}</span>
+      </span>
+    </a>`;
+}
+
+function season3WallMarkup(module, catalogData) {
   const cta = module.cta;
+  const wall = module.wall;
+  // Baseline tiles for SSR / preview / no-JS. The client re-hydrates this field
+  // with member faces + their work, shuffled fresh per load.
+  const tiles = catalogTiles(catalogData, module).map((tile) => ({ ...tile, tag: wall.tagLabel }));
+  const openLabel = '@you';
+  // Open slot leads so "your face here" reads top-left (client keeps it first too).
+  const seededTiles = tiles.length
+    ? season3OpenTile(0, openLabel) + tiles.map((tile, index) => season3TileMarkup(tile, index + 1)).join('')
+    : '';
   return `<section class="dx-home-hero-module dx-s3" data-module-id="${escapeHtml(module.id)}" data-module-type="season3-human-credits"
     data-surface="${escapeHtml(module.presentation.surface)}" data-density="${escapeHtml(module.presentation.density)}" data-motion="${escapeHtml(module.presentation.motion)}"
-    data-profile-feed="${escapeHtml(module.profileFeed)}" data-capacity="${escapeHtml(String(module.profileCapacity))}"
+    data-faces-feed="${escapeHtml(wall.facesFeed)}" data-works-feed="${escapeHtml(wall.worksFeed)}"
+    data-capacity="${escapeHtml(String(wall.capacity))}" data-face-bias="${wall.faceBias ? 'true' : 'false'}"
+    data-fill-stills="${wall.fillWithStills ? 'true' : 'false'}" data-tag-label="${escapeHtml(wall.tagLabel)}"
     data-cta-guest-label="${escapeHtml(cta.guest.label)}"
     data-cta-submit-label="${escapeHtml(cta.submit.label)}" data-cta-submit-href="${escapeHtml(cta.submit.href || '/entry/submit/')}"
     data-cta-active-label="${escapeHtml(cta.active.label)}" data-cta-active-href="${escapeHtml(cta.active.href || '/account/')}"
     data-cta-published-label="${escapeHtml(cta.published.label)}" data-cta-published-href="${escapeHtml(cta.published.href || '/account/')}">
+    ${season3DuotoneDefs()}
     <div class="dx-s3__stage">
-      <header class="dx-s3__intro">
-        <p class="dx-s3__kicker">${escapeHtml(module.kicker)}</p>
-        <h1 class="dx-s3__headline">${escapeHtml(module.headline)}</h1>
-        <p class="dx-s3__body">${escapeHtml(module.body)}</p>
-        <div class="dx-s3__cta-row">
-          <a class="dx-s3__cta" data-dx-s3-cta data-mode="guest" href="${escapeHtml(cta.submit.href || '/entry/submit/')}">${escapeHtml(cta.guest.label)}</a>
-          <span class="dx-s3__cta-state" data-dx-s3-cta-state hidden></span>
-        </div>
-      </header>
-      <ol class="dx-s3-pipeline" aria-label="Season 3 pipeline">${pipeline}</ol>
-      <div class="dx-s3-assemble" aria-hidden="true"><span class="dx-s3-assemble__word">${assemble}</span></div>
-      <div class="dx-s3__field" data-dx-s3-field role="list" aria-label="Season 3 contributors">${seeds}${openings}</div>
+      <div class="dx-s3__wall" data-dx-s3-wall role="list" aria-label="Dex members and their work">${seededTiles}</div>
+      <div class="dx-s3__well">
+        <header class="dx-s3__intro">
+          <p class="dx-s3__kicker">${escapeHtml(module.kicker)}</p>
+          <h1 class="dx-s3__headline" data-dx-heading-duplicate-exclude-words="SEASON">${escapeHtml(module.headline)}</h1>
+          <p class="dx-s3__body">${escapeHtml(module.body)}</p>
+          <div class="dx-s3__cta-row">
+            <a class="dx-s3__cta" data-dx-s3-cta data-mode="guest" href="${escapeHtml(cta.submit.href || '/entry/submit/')}">${escapeHtml(cta.guest.label)}</a>
+            <span class="dx-s3__cta-state" data-dx-s3-cta-state hidden></span>
+          </div>
+        </header>
+      </div>
     </div>
   </section>`;
 }
 
-export function renderHomeHero(snapshot, { featuredData = null, preview = false } = {}) {
+export function renderHomeHero(snapshot, { featuredData = null, catalogData = null, preview = false } = {}) {
   const moduleById = new Map((snapshot.modules || []).map((module) => [module.id, module]));
   const slots = (snapshot.composition?.slots || []).map((moduleId) => {
     const module = moduleById.get(moduleId);
@@ -217,14 +299,14 @@ export function renderHomeHero(snapshot, { featuredData = null, preview = false 
     if (module.type === 'campaign') return campaignMarkup(module);
     if (module.type === 'featured') return featuredMarkup(module, featuredData, preview);
     if (module.type === 'promo') return promoMarkup(module);
-    if (module.type === 'season3-human-credits') return season3Markup(module);
+    if (module.type === 'season3-human-credits') return season3WallMarkup(module, catalogData);
     return '';
   }).join('');
   return `<div id="dexCombined" data-layout="${escapeHtml(snapshot.composition?.layout || 'single')}" data-composition-id="${escapeHtml(snapshot.activeCompositionId || '')}" style="
     display:flex;gap:1.75rem;width:100%;height:100%;margin:0;padding:0;box-sizing:border-box;">${slots}</div>`;
 }
 
-export function renderHomeHeroPreviewDocument(snapshot, { css = '', styles = [], featuredData = null } = {}) {
+export function renderHomeHeroPreviewDocument(snapshot, { css = '', styles = [], featuredData = null, catalogData = null } = {}) {
   const styleSheets = Array.isArray(styles) && styles.length ? styles : [css];
   const styleMarkup = styleSheets
     .map((style, index) => `<style data-dx-hero-preview-stylesheet="${index + 1}">\n${String(style || '').replaceAll('</style', '<\\/style')}\n</style>`)
@@ -257,7 +339,7 @@ export function renderHomeHeroPreviewDocument(snapshot, { css = '', styles = [],
   <div id="block-448bd8f915f4abba552b" class="dx-block dx-block-code" data-dx-hero-preview-frame>
     <div class="dx-block-content">
       <div class="dx-code-container">
-        <div id="dx-home-hero-root" data-dx-home-hero-root>${renderHomeHero(snapshot, { featuredData, preview: true })}</div>
+        <div id="dx-home-hero-root" data-dx-home-hero-root>${renderHomeHero(snapshot, { featuredData, catalogData, preview: true })}</div>
       </div>
     </div>
   </div>
