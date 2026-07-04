@@ -1,7 +1,7 @@
 {
   "version": "home-hero-snapshot-v1",
   "generatedAt": "2026-07-04T08:37:35.534Z",
-  "sourceHash": "4a0bec7e98dedd9adf9a4eb8c4679d7197cbb9a5a99702375222f4e8b4af60ab",
+  "sourceHash": "5bba432f1a398b834c6d13d6cda5d41c52fe2ee2e2f655eb6a3150d6e2d7e251",
   "activeCompositionId": "season3-human-credits",
   "composition": {
     "id": "season3-human-credits",
@@ -34,12 +34,12 @@
           "href": "/entry/submit/"
         },
         "active": {
-          "label": "OPEN MY PIPELINE",
-          "href": "/account/"
+          "label": "SUBMIT MORE",
+          "href": "/entry/submit/"
         },
         "published": {
-          "label": "VIEW MY RELEASE",
-          "href": "/account/"
+          "label": "SUBMIT MORE",
+          "href": "/entry/submit/"
         }
       },
       "wall": {

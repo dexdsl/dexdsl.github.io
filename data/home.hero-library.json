@@ -22,12 +22,12 @@
           "href": "/entry/submit/"
         },
         "active": {
-          "label": "OPEN MY PIPELINE",
-          "href": "/account/"
+          "label": "SUBMIT MORE",
+          "href": "/entry/submit/"
         },
         "published": {
-          "label": "VIEW MY RELEASE",
-          "href": "/account/"
+          "label": "SUBMIT MORE",
+          "href": "/entry/submit/"
         }
       },
       "wall": {

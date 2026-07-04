@@ -114,38 +114,34 @@ test.describe("season 3 credits wall hero", () => {
     await expect(cta).toHaveAttribute("data-mode", "submit");
   });
 
-  test("active submission opens the private pipeline; published views the release", async ({ page }) => {
+  test("an existing submission flips the CTA to submit-more, with no pipeline note", async ({ page }) => {
     await stubFeeds(page, sampleProfiles(2), sampleWorks(4));
     await page.goto("/");
     const module = await season3Module(page);
     test.skip(!module, "season3 composition not active at /");
     const cta = module!.locator("[data-dx-s3-cta]");
 
+    // Any existing submission (in-progress or published) → the same invite to add more.
     await stubAuthenticated(page, [
       { currentStage: "reviewing" },
       { currentStage: "in_library", libraryHref: "/entry/my-release/" },
     ]);
-    await expect(cta).toHaveText("OPEN MY PIPELINE");
-    await expect(cta).toHaveAttribute("data-mode", "active");
-    await expect(module!.locator("[data-dx-s3-cta-state]")).toBeVisible();
-
-    await page.unroute(SUBMISSIONS_GLOB);
-    await page.route(SUBMISSIONS_GLOB, (route) =>
-      route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ threads: [{ currentStage: "in_library", libraryHref: "/entry/my-release/" }] }) }),
-    );
-    await page.evaluate(() => window.dispatchEvent(new CustomEvent("dex-auth:state", { detail: { isAuthenticated: true } })));
-    await expect(cta).toHaveText("VIEW MY RELEASE");
-    await expect(cta).toHaveAttribute("href", "/entry/my-release/");
+    await expect(cta).toHaveText("SUBMIT MORE");
+    await expect(cta).toHaveAttribute("data-mode", "submitted");
+    await expect(cta).toHaveAttribute("href", "/entry/submit/");
+    // No pipeline / private-stage text in the signed-out-looking hero.
+    await expect(module!.locator("[data-dx-s3-cta-state]")).toBeHidden();
   });
 
-  test("signed-in member sees their own tile ringed", async ({ page }) => {
+  test("the wall renders identically signed in — no own-tile highlight", async ({ page }) => {
     await stubFeeds(page, sampleProfiles(3), sampleWorks(6));
     await page.goto("/");
     const module = await season3Module(page);
     test.skip(!module, "season3 composition not active at /");
     await stubAuthenticated(page, []);
-    await expect(module!.locator(".dx-s3-tile.is-own")).toHaveCount(1);
-    await expect(module!.locator(".dx-s3-tile.is-own")).toHaveAttribute("href", "/u/member0/");
+    // The @you open slot stays; no member (incl. the viewer) is ringed.
+    await expect(module!.locator(".dx-s3-tile.is-own")).toHaveCount(0);
+    await expect(module!.locator(".dx-s3-tile--open")).toHaveCount(1);
   });
 
   test("reduced motion yields a static composition", async ({ page }) => {

@@ -349,7 +349,7 @@ async function fetchWorks(feedPath) {
 // dynamic slice of their + past work, one open slot. Faces always survive the
 // cap so the wall stays face-first as the catalog dwarfs the member count.
 function assembleWall(profiles, entries, options) {
-  const { capacity, faceBias, fillWithStills, tagLabel, ownHandle } = options;
+  const { capacity, faceBias, fillWithStills, tagLabel } = options;
 
   let faces = profiles.map((profile) => profileToTile(profile, tagLabel));
   if (faceBias) faces = faces.slice().sort((a, b) => (b.hasPicture ? 1 : 0) - (a.hasPicture ? 1 : 0));
@@ -383,20 +383,11 @@ function assembleWall(profiles, entries, options) {
   const pickedWorks = chosenWorks.slice(0, room);
 
   // Faces lead (shuffled among themselves) so members stay in the visible band;
-  // work fills behind them. The open slot anchors the CTA.
-  let combined = [...shuffle(faces), ...pickedWorks];
+  // work fills behind them. The wall renders identically signed in or out — the
+  // @you open slot always leads and no member (incl. the viewer) is highlighted.
+  const combined = [...shuffle(faces), ...pickedWorks];
   const open = { kind: 'open', name: '@you', href: '#' };
-  if (ownHandle) {
-    const index = combined.findIndex((tile) => tile.kind === 'face' && tile.handle === ownHandle);
-    if (index >= 0) {
-      combined[index].isOwn = true;
-      const [own] = combined.splice(index, 1);
-      combined.unshift(own);
-    }
-    combined.push(open);
-  } else {
-    combined.unshift(open);
-  }
+  combined.unshift(open);
   return combined.slice(0, capacity);
 }
 
@@ -447,7 +438,7 @@ async function resolveSeason3Cta(root, token) {
   }
 }
 
-function applySeason3Cta(root, state, ownHandle) {
+function applySeason3Cta(root, state) {
   const cta = root.querySelector('[data-dx-s3-cta]');
   if (!cta) return;
   const stageNote = root.querySelector('[data-dx-s3-cta-state]');
@@ -464,11 +455,9 @@ function applySeason3Cta(root, state, ownHandle) {
   };
   if (state.mode === 'guest') {
     set(data.ctaGuestLabel, data.ctaSubmitHref, 'guest');
-  } else if (state.mode === 'active') {
-    set(data.ctaActiveLabel, data.ctaActiveHref, 'active', 'Your pipeline is live — private to you.');
-  } else if (state.mode === 'published') {
-    const href = state.href || (ownHandle ? `/u/${ownHandle}/` : data.ctaPublishedHref);
-    set(data.ctaPublishedLabel, href, 'published');
+  } else if (state.mode === 'active' || state.mode === 'published') {
+    // Already submitted: the only signed-in tell — invite another entry, no note.
+    set(data.ctaActiveLabel, data.ctaActiveHref, 'submitted');
   } else {
     set(data.ctaSubmitLabel, data.ctaSubmitHref, 'submit');
   }
@@ -545,29 +534,24 @@ function initSeason3(root) {
     fillWithStills: module.getAttribute('data-fill-stills') !== 'false',
     tagLabel: module.getAttribute('data-tag-label') || 'dexFest',
   };
-  let ownHandle = '';
   let profiles = [];
   let works = [];
   const paint = () => {
     if (!profiles.length && !works.length) return; // keep the SSR/seed wall on total failure
-    renderWall(module, assembleWall(profiles, works, { ...options, ownHandle }));
+    renderWall(module, assembleWall(profiles, works, options));
   };
   const applyAuthState = async (authenticated) => {
     if (!authenticated) {
       applySeason3Cta(module, { mode: 'guest' });
       return;
     }
+    // Signed-in only changes the CTA (→ SUBMIT MORE once they've submitted); the
+    // wall itself stays identical to the signed-out view.
     const token = window.DEX_AUTH && typeof window.DEX_AUTH.getAccessToken === 'function'
       ? await window.DEX_AUTH.getAccessToken().catch(() => '')
       : '';
-    const nextOwn = await ownPublicHandle(token);
     const ctaState = await resolveSeason3Cta(module, token);
-    applySeason3Cta(module, ctaState, nextOwn);
-    // Repaint so the member's own face is pinned + ringed once known.
-    if (nextOwn && nextOwn !== ownHandle) {
-      ownHandle = nextOwn;
-      if (!module.querySelector('.dx-s3-tile.is-own')) paint();
-    }
+    applySeason3Cta(module, ctaState);
   };
 
   // Render guest hero immediately, then react to auth resolution.
