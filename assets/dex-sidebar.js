@@ -1470,6 +1470,59 @@
         word-break: break-word;
       }
 
+      .dx-audio-preview-toggle {
+        justify-self: end;
+        width: 26px;
+        height: 26px;
+        display: grid;
+        place-items: center;
+        padding: 0;
+        line-height: 1;
+        font-size: 0.72rem;
+        cursor: pointer;
+        border-radius: var(--dx-radius-md, 8px);
+      }
+
+      .dx-audio-preview-toggle[data-state="loading"] {
+        cursor: progress;
+        opacity: 0.6;
+      }
+
+      .dx-audio-preview-toggle[data-state="error"] {
+        opacity: 0.7;
+      }
+
+      .dx-audio-preview-panel {
+        display: grid;
+        gap: 6px;
+        padding: 6px 0 2px;
+        color: var(--dx-tree-hot, currentColor);
+      }
+
+      .dx-audio-preview-wave {
+        width: 100%;
+        height: 48px;
+        display: block;
+        cursor: pointer;
+        border-radius: var(--dx-radius-md, 8px);
+        background: rgba(18, 20, 26, 0.05);
+      }
+
+      .dx-audio-preview-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        font: 600 0.66rem/1.2 var(--font-body, "Courier Prime", monospace);
+        letter-spacing: 0.02em;
+        color: var(--dx-tree-ink, inherit);
+        opacity: 0.82;
+      }
+
+      .dx-audio-preview-status {
+        text-align: right;
+      }
+
       .dx-file-tree-children {
         display: grid;
         gap: 4px;
@@ -3323,6 +3376,404 @@
     throw err;
   };
 
+  // ---------------------------------------------------------------------------
+  // Audio stream previews (client-side, signed-in users).
+  // Resolves a single-file signed R2 URL via the existing bag-bundle endpoint,
+  // HTTP Range-fetches just the WAV header + first ~30s of PCM, rebuilds a valid
+  // short WAV, decodes it for a canvas waveform, and plays it back inline.
+  // Only one preview plays at a time. WAV only (MP3 range-slicing deferred).
+  // ---------------------------------------------------------------------------
+  const dxAudioPreview = (() => {
+    const PREVIEW_SECONDS = 30;
+    const HEADER_BYTES = 262144; // 256KB window to locate fmt + data chunks
+    const MAX_PREVIEW_BYTES = 16 * 1024 * 1024; // safety cap (~30s @ 48k/24bit stereo)
+    const PLAY = '▶'; // ▶
+    const PAUSE = '⏸'; // ⏸
+    const AudioCtxClass = typeof window !== 'undefined'
+      ? (window.AudioContext || window.webkitAudioContext)
+      : null;
+
+    let current = null; // { ui, leaf, audio, objectUrl, peaks }
+    let audioCtx = null;
+
+    const getCtx = () => {
+      if (!audioCtx && AudioCtxClass) audioCtx = new AudioCtxClass();
+      return audioCtx;
+    };
+
+    const isPreviewable = (leaf) => {
+      if (!AudioCtxClass) return false;
+      if (!leaf || leaf.mediaType !== 'audio' || !leaf.fileId) return false;
+      if (String(leaf.variantKey || '').toLowerCase() === 'wav') return true;
+      if (/\.wav$/i.test(String(leaf.filename || ''))) return true;
+      if (String(leaf.extension || '').toLowerCase() === 'wav') return true;
+      return false;
+    };
+
+    const fmtTime = (value) => {
+      const total = Math.max(0, Math.floor(value || 0));
+      const minutes = Math.floor(total / 60);
+      const seconds = total % 60;
+      return `${minutes}:${String(seconds).padStart(2, '0')}`;
+    };
+
+    const previewDuration = (audio) => (
+      Number.isFinite(audio?.duration) && audio.duration > 0 ? audio.duration : PREVIEW_SECONDS
+    );
+
+    const resolveSignedUrl = async (leaf) => {
+      const node = {
+        kind: 'file',
+        lookup: leaf.lookup,
+        bucket: leaf.bucket || '',
+        mediaType: leaf.mediaType || '',
+        mediaTypes: [leaf.mediaType].filter(Boolean),
+        fileId: leaf.fileId || '',
+      };
+      const payload = await requestAssetsJson({
+        path: '/me/assets/bag/bundle',
+        method: 'POST',
+        body: {
+          source: 'entry-sidebar-preview',
+          dedupe: true,
+          selections: [{ lookup: leaf.lookup, nodes: [node] }],
+        },
+      });
+      const delivery = String(payload?.delivery || '').toLowerCase();
+      // A zip/bundle job cannot be byte-range parsed for a preview.
+      if (delivery === 'async' || delivery === 'worker_bundle') {
+        const err = new Error('preview_zip');
+        err.code = 'unsupported';
+        throw err;
+      }
+      const direct = String(payload?.signedUrl || payload?.url || '').trim();
+      if (delivery === 'sync' && direct) return direct;
+      const list = normalizeDownloadList(payload);
+      if (list.length) return list[0].href;
+      if (direct) return direct;
+      const err = new Error('no signed url');
+      err.code = 'failed';
+      throw err;
+    };
+
+    const rangeFetch = async (url, start, end) => {
+      let res;
+      try {
+        res = await fetch(url, {
+          headers: { Range: `bytes=${start}-${end}` },
+          credentials: 'omit',
+          mode: 'cors',
+        });
+      } catch (networkError) {
+        const err = new Error('cors_or_network');
+        err.code = 'range';
+        throw err;
+      }
+      if (res.status === 403) {
+        const err = new Error('forbidden');
+        err.code = 'forbidden';
+        throw err;
+      }
+      // 206 required — a 200 means Range was ignored (would pull the whole master).
+      if (res.status !== 206) {
+        const err = new Error(`range_status_${res.status}`);
+        err.code = 'range';
+        throw err;
+      }
+      return new Uint8Array(await res.arrayBuffer());
+    };
+
+    const readTag = (bytes, offset) => String.fromCharCode(
+      bytes[offset], bytes[offset + 1], bytes[offset + 2], bytes[offset + 3],
+    );
+    const readU32 = (bytes, offset) => (
+      (bytes[offset] | (bytes[offset + 1] << 8) | (bytes[offset + 2] << 16) | (bytes[offset + 3] << 24)) >>> 0
+    );
+    const readU16 = (bytes, offset) => (bytes[offset] | (bytes[offset + 1] << 8));
+
+    const parseWavHeader = (bytes) => {
+      if (bytes.length < 44 || readTag(bytes, 0) !== 'RIFF' || readTag(bytes, 8) !== 'WAVE') {
+        const err = new Error('not_wav');
+        err.code = 'decode';
+        throw err;
+      }
+      let offset = 12;
+      let fmt = null;
+      let dataOffset = -1;
+      let dataSize = 0;
+      while (offset + 8 <= bytes.length) {
+        const id = readTag(bytes, offset);
+        const size = readU32(bytes, offset + 4);
+        const body = offset + 8;
+        if (id === 'fmt ') {
+          fmt = {
+            numChannels: readU16(bytes, body + 2),
+            sampleRate: readU32(bytes, body + 4),
+            bitsPerSample: readU16(bytes, body + 14),
+          };
+        } else if (id === 'data') {
+          dataOffset = body;
+          dataSize = size;
+          break;
+        }
+        offset = body + size + (size & 1); // chunks are word-aligned
+      }
+      if (!fmt || dataOffset < 0) {
+        const err = new Error('wav_header_incomplete');
+        err.code = 'decode';
+        throw err;
+      }
+      return { ...fmt, dataOffset, dataSize };
+    };
+
+    const fetchPreviewBuffer = async (url) => {
+      const headerBytes = await rangeFetch(url, 0, HEADER_BYTES - 1);
+      const info = parseWavHeader(headerBytes);
+      const bytesPerSample = Math.max(1, Math.floor(info.bitsPerSample / 8));
+      const blockAlign = Math.max(1, info.numChannels * bytesPerSample);
+      let previewLen = Math.floor(PREVIEW_SECONDS * info.sampleRate * blockAlign);
+      previewLen = Math.min(previewLen, MAX_PREVIEW_BYTES);
+      if (info.dataSize > 0 && info.dataSize < 0xFFFFFFFF) {
+        previewLen = Math.min(previewLen, info.dataSize);
+      }
+      previewLen -= previewLen % blockAlign;
+      if (previewLen <= 0) previewLen = blockAlign;
+
+      const pcm = await rangeFetch(url, info.dataOffset, info.dataOffset + previewLen - 1);
+      const usableLen = pcm.length - (pcm.length % blockAlign);
+      previewLen = Math.min(previewLen, usableLen);
+      if (previewLen <= 0) {
+        const err = new Error('empty_pcm');
+        err.code = 'decode';
+        throw err;
+      }
+
+      const header = headerBytes.slice(0, info.dataOffset);
+      const view = new DataView(header.buffer, header.byteOffset, header.byteLength);
+      view.setUint32(info.dataOffset - 4, previewLen, true); // data chunk size
+      view.setUint32(4, (info.dataOffset - 8) + previewLen, true); // RIFF chunk size
+      const out = new Uint8Array(info.dataOffset + previewLen);
+      out.set(header, 0);
+      out.set(pcm.subarray(0, previewLen), info.dataOffset);
+      return out;
+    };
+
+    const decodePeaks = async (bytes, columns) => {
+      const ctx = getCtx();
+      const audioBuffer = await ctx.decodeAudioData(bytes.slice().buffer);
+      const channel = audioBuffer.getChannelData(0);
+      const totalSamples = channel.length;
+      const perColumn = Math.max(1, Math.floor(totalSamples / columns));
+      const peaks = new Float32Array(columns);
+      for (let col = 0; col < columns; col += 1) {
+        const start = col * perColumn;
+        const end = Math.min(totalSamples, start + perColumn);
+        let max = 0;
+        for (let i = start; i < end; i += 1) {
+          const magnitude = Math.abs(channel[i]);
+          if (magnitude > max) max = magnitude;
+        }
+        peaks[col] = max;
+      }
+      return peaks;
+    };
+
+    const setUiState = (ui, state) => {
+      ui.button.dataset.state = state;
+      if (state === 'playing') {
+        ui.button.textContent = PAUSE;
+        ui.button.setAttribute('aria-label', 'Pause preview');
+        ui.status.textContent = '';
+      } else if (state === 'loading') {
+        ui.button.textContent = '…'; // …
+        ui.button.setAttribute('aria-label', 'Loading preview');
+        ui.status.textContent = 'Loading preview…';
+      } else if (state === 'paused') {
+        ui.button.textContent = PLAY;
+        ui.button.setAttribute('aria-label', 'Resume preview');
+      } else {
+        ui.button.textContent = PLAY;
+        ui.button.setAttribute('aria-label', 'Preview audio');
+      }
+    };
+
+    const drawWave = (entry, ratio) => {
+      const { canvas } = entry.ui;
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const width = Math.max(1, Math.floor(rect.width * dpr));
+      const height = Math.max(1, Math.floor(rect.height * dpr));
+      if (canvas.width !== width) canvas.width = width;
+      if (canvas.height !== height) canvas.height = height;
+      const ctx2d = canvas.getContext('2d');
+      if (!ctx2d) return;
+      ctx2d.clearRect(0, 0, width, height);
+      const color = getComputedStyle(canvas).color || '#888';
+      const peaks = entry.peaks;
+      const cols = peaks.length;
+      const mid = height / 2;
+      const barWidth = width / cols;
+      const playedX = ratio * width;
+      ctx2d.fillStyle = color;
+      for (let i = 0; i < cols; i += 1) {
+        const x = i * barWidth;
+        const amp = Math.max(0.02, peaks[i]) * (height * 0.46);
+        ctx2d.globalAlpha = x < playedX ? 0.95 : 0.28;
+        ctx2d.fillRect(x, mid - amp, Math.max(1, barWidth * 0.7), amp * 2);
+      }
+      ctx2d.globalAlpha = 0.9;
+      ctx2d.fillRect(Math.min(width - 1, playedX), 0, Math.max(1, dpr), height);
+      ctx2d.globalAlpha = 1;
+    };
+
+    const updateTime = (entry) => {
+      entry.ui.time.textContent = `${fmtTime(entry.audio.currentTime)} / ${fmtTime(previewDuration(entry.audio))}`;
+    };
+
+    const stop = () => {
+      if (!current) return;
+      const entry = current;
+      current = null;
+      try { entry.audio.pause(); } catch (e) { /* noop */ }
+      try {
+        entry.audio.removeAttribute('src');
+        entry.audio.load();
+      } catch (e) { /* noop */ }
+      if (entry.objectUrl) {
+        try { URL.revokeObjectURL(entry.objectUrl); } catch (e) { /* noop */ }
+      }
+      setUiState(entry.ui, 'idle');
+    };
+
+    const cleanup = () => {
+      stop();
+      if (audioCtx) {
+        try { audioCtx.close(); } catch (e) { /* noop */ }
+        audioCtx = null;
+      }
+    };
+
+    const handleError = (ui, error) => {
+      const code = String(error?.code || '').toLowerCase();
+      ui.panel.hidden = false;
+      setUiState(ui, 'idle');
+      ui.button.dataset.state = 'error';
+      ui.status.textContent = code === 'forbidden' ? 'Sign in to preview.' : 'Preview unavailable.';
+    };
+
+    const wireAudio = (entry) => {
+      entry.audio.addEventListener('timeupdate', () => {
+        updateTime(entry);
+        drawWave(entry, previewDuration(entry.audio) ? entry.audio.currentTime / previewDuration(entry.audio) : 0);
+      });
+      entry.audio.addEventListener('play', () => setUiState(entry.ui, 'playing'));
+      entry.audio.addEventListener('pause', () => {
+        if (!entry.audio.ended && current === entry) setUiState(entry.ui, 'paused');
+      });
+      entry.audio.addEventListener('ended', () => {
+        setUiState(entry.ui, 'idle');
+        drawWave(entry, 0);
+      });
+      entry.audio.addEventListener('loadedmetadata', () => updateTime(entry));
+    };
+
+    const load = async (leaf, ui) => {
+      ui.panel.hidden = false;
+      setUiState(ui, 'loading');
+      try {
+        let bytes = leaf.__previewBytes;
+        let peaks = leaf.__previewPeaks;
+        if (!bytes || !peaks) {
+          const url = await resolveSignedUrl(leaf);
+          bytes = await fetchPreviewBuffer(url);
+          const columns = Math.max(64, Math.floor((ui.canvas.clientWidth || 300) * (window.devicePixelRatio || 1)));
+          peaks = await decodePeaks(bytes, columns);
+          leaf.__previewBytes = bytes;
+          leaf.__previewPeaks = peaks;
+        }
+        const objectUrl = URL.createObjectURL(new Blob([bytes], { type: 'audio/wav' }));
+        const audio = new Audio();
+        audio.preload = 'auto';
+        audio.src = objectUrl;
+        const entry = { ui, leaf, audio, objectUrl, peaks };
+        current = entry;
+        wireAudio(entry);
+        drawWave(entry, 0);
+        updateTime(entry);
+        setUiState(ui, 'playing');
+        await audio.play();
+      } catch (error) {
+        if (current && current.ui === ui) stop();
+        handleError(ui, error);
+      }
+    };
+
+    const toggle = (leaf, ui) => {
+      if (current && current.ui === ui) {
+        if (current.audio.paused) current.audio.play().catch(() => { /* noop */ });
+        else current.audio.pause();
+        return;
+      }
+      stop();
+      void load(leaf, ui);
+    };
+
+    const seekFromEvent = (event, ui) => {
+      if (!current || current.ui !== ui) return;
+      const rect = ui.canvas.getBoundingClientRect();
+      if (!rect.width) return;
+      const ratio = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
+      current.audio.currentTime = ratio * previewDuration(current.audio);
+      drawWave(current, ratio);
+    };
+
+    const createControl = (leaf) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'dx-audio-preview-toggle dx-button-element--secondary';
+      button.dataset.state = 'idle';
+      button.setAttribute('aria-label', 'Preview audio');
+      button.textContent = PLAY;
+
+      const panel = document.createElement('div');
+      panel.className = 'dx-audio-preview-panel';
+      panel.hidden = true;
+      const canvas = document.createElement('canvas');
+      canvas.className = 'dx-audio-preview-wave';
+      canvas.setAttribute('aria-hidden', 'true');
+      const meta = document.createElement('div');
+      meta.className = 'dx-audio-preview-meta';
+      const time = document.createElement('span');
+      time.className = 'dx-audio-preview-time';
+      time.textContent = `0:00 / ${fmtTime(PREVIEW_SECONDS)}`;
+      const status = document.createElement('span');
+      status.className = 'dx-audio-preview-status';
+      status.setAttribute('role', 'status');
+      meta.appendChild(time);
+      meta.appendChild(status);
+      panel.appendChild(canvas);
+      panel.appendChild(meta);
+
+      const ui = { button, panel, canvas, time, status };
+      button.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        toggle(leaf, ui);
+      });
+      button.addEventListener('keydown', (event) => {
+        // Keep Space/Enter from bubbling to the row's select handler.
+        if (event.key === 'Enter' || event.key === ' ') event.stopPropagation();
+      });
+      canvas.addEventListener('click', (event) => {
+        event.stopPropagation();
+        seekFromEvent(event, ui);
+      });
+      return { button, panel };
+    };
+
+    return { isPreviewable, createControl, stop, cleanup };
+  })();
+
   const recordingIndexPdfExportUrl = (sourceUrl) => {
     const raw = String(sourceUrl || '').trim();
     if (!raw) return '';
@@ -4786,6 +5237,7 @@
         });
 
         const removeModal = () => {
+          dxAudioPreview.cleanup();
           document.removeEventListener('keydown', onKeyDown);
           modal.remove();
         };
@@ -5617,9 +6069,21 @@
 
           copy.appendChild(label);
 
+          const singleLeaf = (node.kind === 'file' && Array.isArray(node.leafKeys) && node.leafKeys.length === 1)
+            ? treeState.leafByKey.get(node.leafKeys[0])
+            : null;
+
+          let previewButton = null;
+          let previewPanel = null;
+          if (singleLeaf && dxAudioPreview.isPreviewable(singleLeaf)) {
+            const previewControl = dxAudioPreview.createControl(singleLeaf);
+            previewButton = previewControl.button;
+            previewPanel = previewControl.panel;
+          }
+
           let favButton = null;
-          if (node.kind === 'file' && Array.isArray(node.leafKeys) && node.leafKeys.length === 1) {
-            const leaf = treeState.leafByKey.get(node.leafKeys[0]);
+          if (singleLeaf) {
+            const leaf = singleLeaf;
             const favoritesApi = context?.favoritesApi || getFavoritesApi();
             if (leaf && leaf.fileId && favoritesApi) {
               favButton = document.createElement('button');
@@ -5644,11 +6108,15 @@
           if (toggle) row.appendChild(toggle);
           row.appendChild(checkbox);
           row.appendChild(copy);
-          if (favButton) {
-            row.style.gridTemplateColumns = hasChildren ? '22px 24px minmax(0,1fr) auto' : '24px minmax(0,1fr) auto';
-            row.appendChild(favButton);
+          if (previewButton) row.appendChild(previewButton);
+          if (favButton) row.appendChild(favButton);
+          const trailingAutoCols = (previewButton ? 1 : 0) + (favButton ? 1 : 0);
+          if (trailingAutoCols) {
+            const leadCols = hasChildren ? '22px 24px minmax(0,1fr)' : '24px minmax(0,1fr)';
+            row.style.gridTemplateColumns = `${leadCols}${' auto'.repeat(trailingAutoCols)}`;
           }
           shell.appendChild(row);
+          if (previewPanel) shell.appendChild(previewPanel);
 
           if (hasChildren) {
             childrenWrap = document.createElement('div');
@@ -5700,6 +6168,7 @@
         };
 
         const renderTree = () => {
+          dxAudioPreview.stop();
           treeWrap.replaceChildren();
           checkboxBindings.length = 0;
           expandBindings.length = 0;

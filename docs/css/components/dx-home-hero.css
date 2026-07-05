@@ -593,7 +593,7 @@ border-bottom: none !important;
   font: 700 0.72rem/1.2 var(--font-body, monospace);
   letter-spacing: 0.34em;
   text-transform: uppercase;
-  color: #5c1207;
+  color: rgba(255, 240, 232, 0.92);
 }
 .dx-s3__headline {
   margin: 0;
@@ -609,7 +609,8 @@ border-bottom: none !important;
   line-height: 1.02;
   letter-spacing: normal;
   text-transform: uppercase;
-  color: var(--dx-s3-ink);
+  color: #fff;
+  text-shadow: 0 1px 8px rgba(40, 10, 3, 0.28);
   font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
   /* Prefixed too — iOS/WebKit needs -webkit-font-feature-settings to fire the
      ZWJ join ligature, otherwise the duplicated glyph shows as "YOUU". */
@@ -620,7 +621,7 @@ border-bottom: none !important;
   margin: 1rem 0 0;
   max-width: 30rem;
   font: 400 clamp(0.95rem, 1.5vw, 1.12rem)/1.5 var(--font-body, monospace);
-  color: rgba(28, 8, 3, 0.82);
+  color: rgba(255, 240, 232, 0.94);
 }
 .dx-s3__cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem; margin-top: 1.6rem; }
 /* CTA replicates the site's secondary button (cream fill, site tokens) but stays
@@ -650,7 +651,7 @@ border-bottom: none !important;
 .dx-s3__cta:focus-visible { outline: 2px solid var(--dx-s3-live); outline-offset: 3px; }
 .dx-s3__cta:active { transform: translateY(0); box-shadow: 0 6px 16px rgba(20, 4, 2, 0.34); }
 .dx-s3__cta::after { content: "\2197"; }
-.dx-s3__cta-state { font: 600 0.78rem/1.3 var(--font-body, monospace); color: #5c1207; }
+.dx-s3__cta-state { font: 600 0.78rem/1.3 var(--font-body, monospace); color: rgba(255, 240, 232, 0.9); }
 
 /* --- Motion: one-time reveal on hydrate; disabled when quiet/reduced --- */
 .dx-s3-tile--enter {

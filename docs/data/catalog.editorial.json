@@ -1,6 +1,6 @@
 {
   "version": "catalog-editorial-v1",
-  "updatedAt": "2026-06-29T01:10:33.622Z",
+  "updatedAt": "2026-06-29T05:24:40.876Z",
   "manifest": [
     {
       "entry_id": "2-organs-midori-ataka",
@@ -12,7 +12,7 @@
       "instrument": "TWO ORGANS",
       "image_src": "/assets/catalog/2-organs-midori-ataka.webp",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "aidan-yeats",
@@ -36,7 +36,7 @@
       "instrument": "AMPLIFIED KNIVES",
       "image_src": "/assets/catalog/amplified-knives-tyler-jordan.webp",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "amplified-printer",
@@ -60,7 +60,7 @@
       "instrument": "FE‌EDBACK TELEVISIONS",
       "image_src": "/assets/catalog/amplified-tv-sam-pluta.webp",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "anant-shah",
@@ -132,7 +132,7 @@
       "instrument": "CEL‌LO",
       "image_src": "/assets/catalog/cello-emmanuel-losa.webp",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "cybernetic-scat-paul-hermansen",
@@ -168,7 +168,7 @@
       "instrument": "ELECTRIC GUITAR + pedals",
       "image_src": "/assets/catalog/electric-guitar-pedals-ethan-bailey-gould.webp",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "hammered-dulcimer-cameron-church",
@@ -180,7 +180,7 @@
       "instrument": "PREPARED HAM‌MERED DULCIMER + DIGITAL SIGNAL PROCES‌SOR",
       "image_src": "/assets/catalog/hammered-dulcimer-cameron-church.webp",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "jakob-heinemann",
@@ -216,7 +216,7 @@
       "instrument": "NO IMPUT MIXING BOARD",
       "image_src": "/assets/catalog/no-input-mixer-jared-murphy.webp",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "prepared-bass-viol-suarez-solis",
@@ -228,7 +228,7 @@
       "instrument": "PREPARED BAS‌S VIOL",
       "image_src": "/assets/catalog/prepared-bass-viol-suarez-solis.png",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "prepared-harpsichord-suarez-solis",
@@ -240,7 +240,7 @@
       "instrument": "PREPARED HARPSICHORD",
       "image_src": "/assets/catalog/prepared-harpsichord-suarez-solis.webp",
       "image_alt_raw": "",
-      "status": "active"
+      "status": "draft"
     },
     {
       "entry_id": "prepared-oboe-sky-macklay",
