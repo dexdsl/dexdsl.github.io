@@ -1492,35 +1492,38 @@
         opacity: 0.7;
       }
 
-      .dx-audio-preview-panel {
+      .dx-audio-preview-strip {
         display: grid;
-        gap: 6px;
-        padding: 6px 0 2px;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
         color: var(--dx-tree-hot, currentColor);
+      }
+
+      .dx-audio-preview-strip[hidden] {
+        display: none;
+      }
+
+      .dx-file-tree-copy:has(.dx-audio-preview-strip:not([hidden])) .dx-file-tree-label {
+        display: none;
       }
 
       .dx-audio-preview-wave {
         width: 100%;
-        height: 48px;
+        height: 22px;
         display: block;
         cursor: pointer;
         border-radius: var(--dx-radius-md, 8px);
         background: rgba(18, 20, 26, 0.05);
       }
 
-      .dx-audio-preview-meta {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 8px;
+      .dx-audio-preview-info {
+        white-space: nowrap;
         font: 600 0.66rem/1.2 var(--font-body, "Courier Prime", monospace);
         letter-spacing: 0.02em;
         color: var(--dx-tree-ink, inherit);
         opacity: 0.82;
-      }
-
-      .dx-audio-preview-status {
-        text-align: right;
       }
 
       .dx-file-tree-children {
@@ -3583,17 +3586,18 @@
       if (state === 'playing') {
         ui.button.textContent = PAUSE;
         ui.button.setAttribute('aria-label', 'Pause preview');
-        ui.status.textContent = '';
       } else if (state === 'loading') {
         ui.button.textContent = '…'; // …
         ui.button.setAttribute('aria-label', 'Loading preview');
-        ui.status.textContent = 'Loading preview…';
+        ui.info.textContent = 'loading preview…';
       } else if (state === 'paused') {
         ui.button.textContent = PLAY;
         ui.button.setAttribute('aria-label', 'Resume preview');
       } else {
         ui.button.textContent = PLAY;
         ui.button.setAttribute('aria-label', 'Preview audio');
+        ui.strip.hidden = true;
+        ui.info.textContent = '';
       }
     };
 
@@ -3626,8 +3630,10 @@
       ctx2d.globalAlpha = 1;
     };
 
+    // Elapsed only, labeled "preview" — a "/ 0:30" total reads as the file's
+    // length, which it is not.
     const updateTime = (entry) => {
-      entry.ui.time.textContent = `${fmtTime(entry.audio.currentTime)} / ${fmtTime(previewDuration(entry.audio))}`;
+      entry.ui.info.textContent = `preview · ${fmtTime(entry.audio.currentTime)}`;
     };
 
     const stop = () => {
@@ -3655,10 +3661,16 @@
 
     const handleError = (ui, error) => {
       const code = String(error?.code || '').toLowerCase();
-      ui.panel.hidden = false;
       setUiState(ui, 'idle');
       ui.button.dataset.state = 'error';
-      ui.status.textContent = code === 'forbidden' ? 'Sign in to preview.' : 'Preview unavailable.';
+      ui.strip.hidden = false;
+      ui.info.textContent = code === 'forbidden' ? 'sign in to preview' : 'preview unavailable';
+      window.setTimeout(() => {
+        if (ui.button.dataset.state === 'error') {
+          ui.strip.hidden = true;
+          ui.info.textContent = '';
+        }
+      }, 4000);
     };
 
     const wireAudio = (entry) => {
@@ -3678,7 +3690,7 @@
     };
 
     const load = async (leaf, ui) => {
-      ui.panel.hidden = false;
+      ui.strip.hidden = false;
       setUiState(ui, 'loading');
       try {
         let bytes = leaf.__previewBytes;
@@ -3735,26 +3747,21 @@
       button.setAttribute('aria-label', 'Preview audio');
       button.textContent = PLAY;
 
-      const panel = document.createElement('div');
-      panel.className = 'dx-audio-preview-panel';
-      panel.hidden = true;
+      // Inline strip that swaps in for the filename inside the row's label
+      // cell while a preview is active (see .dx-file-tree-copy:has() rule).
+      const strip = document.createElement('span');
+      strip.className = 'dx-audio-preview-strip';
+      strip.hidden = true;
       const canvas = document.createElement('canvas');
       canvas.className = 'dx-audio-preview-wave';
       canvas.setAttribute('aria-hidden', 'true');
-      const meta = document.createElement('div');
-      meta.className = 'dx-audio-preview-meta';
-      const time = document.createElement('span');
-      time.className = 'dx-audio-preview-time';
-      time.textContent = `0:00 / ${fmtTime(PREVIEW_SECONDS)}`;
-      const status = document.createElement('span');
-      status.className = 'dx-audio-preview-status';
-      status.setAttribute('role', 'status');
-      meta.appendChild(time);
-      meta.appendChild(status);
-      panel.appendChild(canvas);
-      panel.appendChild(meta);
+      const info = document.createElement('span');
+      info.className = 'dx-audio-preview-info';
+      info.setAttribute('role', 'status');
+      strip.appendChild(canvas);
+      strip.appendChild(info);
 
-      const ui = { button, panel, canvas, time, status };
+      const ui = { button, strip, canvas, info };
       button.addEventListener('click', (event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -3768,7 +3775,7 @@
         event.stopPropagation();
         seekFromEvent(event, ui);
       });
-      return { button, panel };
+      return { button, strip };
     };
 
     return { isPreviewable, createControl, stop, cleanup };
@@ -6074,11 +6081,10 @@
             : null;
 
           let previewButton = null;
-          let previewPanel = null;
           if (singleLeaf && dxAudioPreview.isPreviewable(singleLeaf)) {
             const previewControl = dxAudioPreview.createControl(singleLeaf);
             previewButton = previewControl.button;
-            previewPanel = previewControl.panel;
+            copy.appendChild(previewControl.strip);
           }
 
           let favButton = null;
@@ -6116,7 +6122,6 @@
             row.style.gridTemplateColumns = `${leadCols}${' auto'.repeat(trailingAutoCols)}`;
           }
           shell.appendChild(row);
-          if (previewPanel) shell.appendChild(previewPanel);
 
           if (hasChildren) {
             childrenWrap = document.createElement('div');
