@@ -1,7 +1,7 @@
 {
   "version": "home-hero-snapshot-v1",
   "generatedAt": "2026-07-04T08:37:35.534Z",
-  "sourceHash": "5bba432f1a398b834c6d13d6cda5d41c52fe2ee2e2f655eb6a3150d6e2d7e251",
+  "sourceHash": "b3acd5aa0ecb45172c2a9c5f6080fcd4f2c9362028d9eaba77c3ffd9ede228ff",
   "activeCompositionId": "season3-human-credits",
   "composition": {
     "id": "season3-human-credits",
@@ -31,15 +31,15 @@
         },
         "submit": {
           "label": "SUBMIT TO SEASON 3",
-          "href": "/entry/submit/"
+          "href": "/entry/submit/?flow=sample"
         },
         "active": {
           "label": "SUBMIT MORE",
-          "href": "/entry/submit/"
+          "href": "/entry/submit/?flow=sample"
         },
         "published": {
           "label": "SUBMIT MORE",
-          "href": "/entry/submit/"
+          "href": "/entry/submit/?flow=sample"
         }
       },
       "wall": {

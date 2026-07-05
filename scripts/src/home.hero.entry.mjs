@@ -386,7 +386,7 @@ function assembleWall(profiles, entries, options) {
   // work fills behind them. The wall renders identically signed in or out — the
   // @you open slot always leads and no member (incl. the viewer) is highlighted.
   const combined = [...shuffle(faces), ...pickedWorks];
-  const open = { kind: 'open', name: '@you', href: '#' };
+  const open = { kind: 'open', name: '@you', href: options.submitHref || '/entry/submit/?flow=sample' };
   combined.unshift(open);
   return combined.slice(0, capacity);
 }
@@ -501,7 +501,7 @@ function initSeason3(root) {
   }
 
   // --- CTA wiring (guest default rendered server-side) ---
-  const submitHref = module.dataset.ctaSubmitHref || '/entry/submit/';
+  const submitHref = module.dataset.ctaSubmitHref || '/entry/submit/?flow=sample';
   const startSubmission = () => {
     const returnTo = `${window.location.origin}${submitHref}`;
     if (window.DEX_AUTH && typeof window.DEX_AUTH.signUp === 'function') window.DEX_AUTH.signUp(returnTo);
@@ -533,6 +533,7 @@ function initSeason3(root) {
     faceBias: module.getAttribute('data-face-bias') !== 'false',
     fillWithStills: module.getAttribute('data-fill-stills') !== 'false',
     tagLabel: module.getAttribute('data-tag-label') || 'dexFest',
+    submitHref,
   };
   let profiles = [];
   let works = [];

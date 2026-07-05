@@ -243,8 +243,8 @@ function monogram(name) {
     .toUpperCase() || '★';
 }
 
-function season3OpenTile(index, label) {
-  return `<a class="dx-s3-tile dx-s3-tile--open" data-card-kind="open" data-card-slot="${index}" role="listitem" href="#" data-dx-s3-open style="--dx-s3-tile-i:${index}">
+function season3OpenTile(index, label, href = '/entry/submit/?flow=sample') {
+  return `<a class="dx-s3-tile dx-s3-tile--open" data-card-kind="open" data-card-slot="${index}" role="listitem" href="${escapeHtml(href || '/entry/submit/?flow=sample')}" data-dx-s3-open style="--dx-s3-tile-i:${index}">
       <span class="dx-s3-tile__media"><span class="dx-s3-tile__mono" aria-hidden="true">＋</span><span class="dx-s3-tile__wash" aria-hidden="true"></span></span>
       <span class="dx-s3-tile__body">
         <span class="dx-s3-tile__tag">OPEN</span>
@@ -262,7 +262,7 @@ function season3WallMarkup(module, catalogData) {
   const openLabel = '@you';
   // Open slot leads so "your face here" reads top-left (client keeps it first too).
   const seededTiles = tiles.length
-    ? season3OpenTile(0, openLabel) + tiles.map((tile, index) => season3TileMarkup(tile, index + 1)).join('')
+    ? season3OpenTile(0, openLabel, cta.submit.href || '/entry/submit/?flow=sample') + tiles.map((tile, index) => season3TileMarkup(tile, index + 1)).join('')
     : '';
   return `<section class="dx-home-hero-module dx-s3" data-module-id="${escapeHtml(module.id)}" data-module-type="season3-human-credits"
     data-surface="${escapeHtml(module.presentation.surface)}" data-density="${escapeHtml(module.presentation.density)}" data-motion="${escapeHtml(module.presentation.motion)}"
@@ -270,7 +270,7 @@ function season3WallMarkup(module, catalogData) {
     data-capacity="${escapeHtml(String(wall.capacity))}" data-face-bias="${wall.faceBias ? 'true' : 'false'}"
     data-fill-stills="${wall.fillWithStills ? 'true' : 'false'}" data-tag-label="${escapeHtml(wall.tagLabel)}"
     data-cta-guest-label="${escapeHtml(cta.guest.label)}"
-    data-cta-submit-label="${escapeHtml(cta.submit.label)}" data-cta-submit-href="${escapeHtml(cta.submit.href || '/entry/submit/')}"
+    data-cta-submit-label="${escapeHtml(cta.submit.label)}" data-cta-submit-href="${escapeHtml(cta.submit.href || '/entry/submit/?flow=sample')}"
     data-cta-active-label="${escapeHtml(cta.active.label)}" data-cta-active-href="${escapeHtml(cta.active.href || '/account/')}"
     data-cta-published-label="${escapeHtml(cta.published.label)}" data-cta-published-href="${escapeHtml(cta.published.href || '/account/')}">
     ${season3DuotoneDefs()}
@@ -282,7 +282,7 @@ function season3WallMarkup(module, catalogData) {
           <h1 class="dx-s3__headline" data-dx-heading-duplicate-exclude-words="SEASON,YOU,IS">${escapeHtml(module.headline)}</h1>
           <p class="dx-s3__body">${escapeHtml(module.body)}</p>
           <div class="dx-s3__cta-row">
-            <a class="dx-s3__cta" data-dx-s3-cta data-mode="guest" href="${escapeHtml(cta.submit.href || '/entry/submit/')}">${escapeHtml(cta.guest.label)}</a>
+            <a class="dx-s3__cta" data-dx-s3-cta data-mode="guest" href="${escapeHtml(cta.submit.href || '/entry/submit/?flow=sample')}">${escapeHtml(cta.guest.label)}</a>
             <span class="dx-s3__cta-state" data-dx-s3-cta-state hidden></span>
           </div>
         </header>

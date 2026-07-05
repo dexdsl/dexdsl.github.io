@@ -19,15 +19,15 @@
         },
         "submit": {
           "label": "SUBMIT TO SEASON 3",
-          "href": "/entry/submit/"
+          "href": "/entry/submit/?flow=sample"
         },
         "active": {
           "label": "SUBMIT MORE",
-          "href": "/entry/submit/"
+          "href": "/entry/submit/?flow=sample"
         },
         "published": {
           "label": "SUBMIT MORE",
-          "href": "/entry/submit/"
+          "href": "/entry/submit/?flow=sample"
         }
       },
       "wall": {
