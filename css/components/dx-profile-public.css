@@ -738,3 +738,119 @@
   font-weight: 600;
   color: rgba(16, 16, 16, 0.92);
 }
+
+/* ── House account (/u/dex) ─────────────────────────────────────────────────
+   The archive's own front desk. Brass-keyed accents on the shared glass, a
+   HOUSE stamp in the meta row, and the vault module at the end of the body. */
+#dex-profile .dx-prof-shell.is-house {
+  --dx-prof-house-brass: #ffc85a;
+  --dx-prof-house-brass-soft: rgba(255, 200, 90, 0.32);
+  --dx-prof-house-brass-faint: rgba(255, 200, 90, 0.12);
+  border-color: var(--dx-prof-house-brass-soft);
+  box-shadow:
+    var(--dx-prof-shell-shadow),
+    inset 0 1px 0 var(--dx-prof-house-brass-faint);
+}
+
+#dex-profile .dx-prof-shell.is-house .dx-prof-avatar {
+  border-color: var(--dx-prof-house-brass-soft);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 0 0 1px var(--dx-prof-house-brass-faint),
+    0 12px 28px rgba(0, 0, 0, 0.28);
+}
+
+#dex-profile .dx-prof-house-stamp {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  font-family: var(--font-body, monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dx-prof-house-brass);
+  border: 1px solid var(--dx-prof-house-brass-soft);
+  border-radius: min(var(--dx-prof-radius), 8px);
+  padding: 4px 10px;
+  background: var(--dx-prof-house-brass-faint);
+}
+
+/* The vault: a restricted-area strongbox at the foot of the house page. */
+#dex-profile .dx-prof-vault {
+  padding: clamp(14px, 1.8vw, 20px);
+  border: 1px dashed var(--dx-prof-house-brass-soft, rgba(255, 200, 90, 0.32));
+  border-radius: min(var(--dx-prof-radius), 10px);
+  background: rgba(255, 200, 90, 0.05);
+}
+
+#dex-profile .dx-prof-vault .dx-prof-section-label {
+  color: var(--dx-prof-house-brass, #ffc85a);
+}
+
+#dex-profile .dx-prof-vault-hint {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--dx-prof-muted);
+  max-width: 52ch;
+}
+
+#dex-profile .dx-prof-vault-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+#dex-profile .dx-prof-vault-input {
+  box-sizing: border-box;
+  min-height: 40px;
+  width: clamp(130px, 18vw, 170px);
+  font-family: var(--font-body, "Courier Prime", monospace);
+  font-size: 0.94rem;
+  letter-spacing: 0.28em;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--dx-prof-ink);
+  border: 1px solid var(--dx-prof-line-strong);
+  border-radius: min(var(--dx-prof-radius), 8px);
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.06);
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+#dex-profile .dx-prof-vault-input:focus-visible {
+  border-color: var(--dx-prof-house-brass, #ffc85a);
+  box-shadow: 0 0 0 3px var(--dx-prof-house-brass-faint, rgba(255, 200, 90, 0.12));
+}
+
+#dex-profile .dx-prof-vault-input::placeholder {
+  color: var(--dx-prof-faint);
+}
+
+#dex-profile .dx-prof-vault-feedback {
+  margin: 0;
+  min-height: 1.2em;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  color: var(--dx-prof-muted);
+}
+
+#dex-profile .dx-prof-vault-feedback[data-state="ok"] {
+  color: var(--dx-prof-house-brass, #ffc85a);
+}
+
+#dex-profile .dx-prof-vault-feedback[data-state="error"] {
+  color: var(--dx-prof-accent, #ff2d13);
+}
+
+/* Legend-tier badge (the house account's "The Archive Itself"): brass ring
+   around the shared badge card so it reads as the marquee piece on the shelf. */
+#dex-profile .dx-profile-badge[data-tier="legend"] {
+  border-color: rgba(174, 92, 255, 0.42);
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.72), rgba(240, 228, 255, 0.66));
+  box-shadow:
+    0 4px 14px rgba(20, 26, 37, 0.06),
+    0 0 0 1px rgba(255, 200, 90, 0.28);
+}

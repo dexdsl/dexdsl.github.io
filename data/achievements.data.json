@@ -1,6 +1,6 @@
 {
-  "catalogVersion": "2026.06.v1",
-  "updatedAt": "2026-06-29T00:00:00.000Z",
+  "catalogVersion": "2026.07.v1",
+  "updatedAt": "2026-07-04T00:00:00.000Z",
   "sequenceGroup": "dex-achievements",
   "achievements": [
     {
@@ -349,6 +349,36 @@
       "visibility": "hidden-until-unlocked"
     },
     {
+      "id": "meet-the-archivist",
+      "title": "Meet the Archivist",
+      "category": "secret",
+      "tier": "silver",
+      "glyph": "explorer",
+      "metricKey": "archivistVisits",
+      "threshold": 1,
+      "secret": true,
+      "clueGrowlix": "??? the house keeps a front desk ???",
+      "description": "Paid the Archivist a visit at /u/dex.",
+      "sortOrder": 232,
+      "points": 40,
+      "visibility": "hidden-until-unlocked"
+    },
+    {
+      "id": "vault-33-45-78",
+      "title": "The Vault Combination",
+      "category": "secret",
+      "tier": "gold",
+      "glyph": "vault",
+      "metricKey": "secretClaimCombination",
+      "threshold": 1,
+      "secret": true,
+      "clueGrowlix": "??? three speeds open the vault ???",
+      "description": "Dialed the archive vault open: 33, 45, 78.",
+      "sortOrder": 234,
+      "points": 120,
+      "visibility": "hidden-until-unlocked"
+    },
+    {
       "id": "found-404",
       "title": "Found a Missing Packet",
       "category": "profile",
@@ -362,6 +392,21 @@
       "sortOrder": 235,
       "points": 10,
       "visibility": "default"
+    },
+    {
+      "id": "the-archive-itself",
+      "title": "The Archive Itself",
+      "category": "house",
+      "tier": "legend",
+      "glyph": "archive",
+      "metricKey": "houseAccount",
+      "threshold": 1,
+      "secret": false,
+      "clueGrowlix": "",
+      "description": "This is the house. Every record here passes through these hands.",
+      "sortOrder": 236,
+      "points": 808,
+      "visibility": "hidden-until-unlocked"
     },
     {
       "id": "cross-lane-veteran",

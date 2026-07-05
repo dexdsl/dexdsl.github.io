@@ -11,6 +11,8 @@
   const CATALOG_ENTRIES_URL = '/data/catalog.entries.json';
   const API_TIMEOUT_MS = 9000;
   const MIN_SHEEN_MS = 140;
+  // The house account: /u/dex renders as the archive's own front desk.
+  const HOUSE_HANDLE = 'dex';
 
   function toText(value, fallback = '') {
     const text = String(value == null ? '' : value).trim();
@@ -429,11 +431,157 @@
     return value ? `@${value}` : '';
   }
 
+  function isHouseProfile(profile) {
+    return toText(profile?.handle).replace(/^@+/, '').toLowerCase() === HOUSE_HANDLE;
+  }
+
+  // Resolve the shared auth runtime the same way the 404 easter egg does; the
+  // profile page itself is public, auth only powers the house-page extras.
+  async function resolveAuth() {
+    const auth = window.DEX_AUTH || window.dexAuth;
+    if (!auth) return { auth: null, authenticated: false, token: '' };
+    try {
+      if (auth.ready && typeof auth.ready.then === 'function') await auth.ready;
+      const authenticated = typeof auth.isAuthenticated === 'function' ? await auth.isAuthenticated() : false;
+      if (!authenticated) return { auth, authenticated: false, token: '' };
+      const token = typeof auth.getAccessToken === 'function' ? await auth.getAccessToken() : '';
+      return { auth, authenticated: true, token: toText(token) };
+    } catch {
+      return { auth, authenticated: false, token: '' };
+    }
+  }
+
+  function requestKey(prefix) {
+    return window.crypto && typeof window.crypto.randomUUID === 'function'
+      ? window.crypto.randomUUID()
+      : `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  }
+
+  async function postAchievements(path, token, body, prefix) {
+    const key = requestKey(prefix);
+    const res = await fetch(`${getApiBase()}${path}`, {
+      method: 'POST',
+      credentials: 'omit',
+      headers: {
+        accept: 'application/json',
+        authorization: `Bearer ${token}`,
+        'content-type': 'application/json',
+        'x-dx-idempotency-key': key,
+        'x-dx-request-id': requestKey(prefix),
+      },
+      body: JSON.stringify({ ...body, clientRequestId: key }),
+    });
+    const payload = await res.json().catch(() => ({}));
+    if (!res.ok || payload?.ok !== true) throw new Error(String(payload?.code || `HTTP_${res.status}`));
+    return payload;
+  }
+
+  // Signed-in members who find the front desk meet the Archivist.
+  async function reportArchivistVisit() {
+    const session = await resolveAuth();
+    if (!session.authenticated || !session.token) return;
+    try {
+      await postAchievements('/me/achievements/route-visit', session.token, { kind: 'archivist' }, 'route-visit');
+    } catch {}
+  }
+
+  function renderHouseVault() {
+    return `
+      <!-- vault dial: the shelf order is slow, standard, shellac -->
+      <section class="dx-prof-section dx-prof-vault" data-dx-vault>
+        <div class="dx-prof-section-head">
+          <p class="dx-prof-section-label">${htmlEscape(protectedAllCaps('Restricted'))}</p>
+          <h2 class="dx-prof-section-title">The Vault</h2>
+        </div>
+        <p class="dx-prof-vault-hint">Locked. The archive plays at three speeds.</p>
+        <form class="dx-prof-vault-form" data-dx-vault-form>
+          <input
+            class="dx-prof-vault-input"
+            name="combination"
+            inputmode="numeric"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="00-00-00"
+            maxlength="12"
+            aria-label="Vault combination">
+          <button type="submit" class="dx-button-element dx-button-size--sm dx-button-element--primary">${htmlEscape(protectedAllCaps('Turn the dial'))}</button>
+        </form>
+        <p class="dx-prof-vault-feedback" data-dx-vault-feedback role="status" aria-live="polite"></p>
+      </section>`;
+  }
+
+  function bindHouseVault(root) {
+    const form = root.querySelector('[data-dx-vault-form]');
+    const feedback = root.querySelector('[data-dx-vault-feedback]');
+    if (!(form instanceof HTMLFormElement)) return;
+    const say = (text, state) => {
+      if (!(feedback instanceof HTMLElement)) return;
+      feedback.textContent = text;
+      feedback.setAttribute('data-state', state || '');
+    };
+    let busy = false;
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (busy) return;
+      const input = form.querySelector('input[name="combination"]');
+      const raw = input instanceof HTMLInputElement ? input.value : '';
+      const combo = toText(raw).replace(/[^0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      if (!combo) {
+        say('The dial waits for numbers.', 'error');
+        return;
+      }
+      busy = true;
+      say('Turning…', '');
+      const session = await resolveAuth();
+      if (!session.authenticated || !session.token) {
+        busy = false;
+        say('The vault only opens for members. Redirecting to sign-in…', 'error');
+        if (session.auth && typeof session.auth.signIn === 'function') {
+          try { await session.auth.signIn(`/u/${HOUSE_HANDLE}/`); } catch {}
+        }
+        return;
+      }
+      try {
+        const res = await postAchievements(
+          '/me/achievements/secret-claim',
+          session.token,
+          { claim: `vault-${combo}`, badgeId: `vault-${combo}` },
+          'secret-claim',
+        );
+        if (res.state === 'unlocked' || res.state === 'already_unlocked') {
+          say('The vault opens.', 'ok');
+          window.location.assign(`/entry/achievements/?badge=${encodeURIComponent(toText(res.badgeId))}`);
+          return;
+        }
+        say('The dial spins. Nothing moves.', 'error');
+      } catch (error) {
+        const code = String(error instanceof Error ? error.message : error);
+        say(code === 'RATE_LIMIT' ? 'The lock is warm from your hands. Come back later.' : 'The dial spins. Nothing moves.', 'error');
+      } finally {
+        busy = false;
+      }
+    });
+  }
+
+  function logHouseConsoleNote() {
+    try {
+      console.log(
+        '%cDEX ARCHIVE — FRONT DESK%c\nThe vault combination is shelved by playback speed.\nSlow. Standard. Shellac.',
+        'font-family:monospace;font-weight:bold;letter-spacing:0.18em;color:#ffc85a;',
+        'font-family:monospace;color:#8a8f98;',
+      );
+    } catch {}
+  }
+
   function renderProfile(profile, catalog) {
+    const house = isHouseProfile(profile);
     const name = displayNameForProfile(profile);
     const handle = toText(profile.handle).replace(/^@+/, '');
     const dexId = toText(profile.dex_id);
     const meta = [];
+    if (house) {
+      meta.push(`<span class="dx-prof-house-stamp">${htmlEscape(protectedAllCaps('House account'))}</span>`);
+    }
     if (handle) {
       meta.push(`<a class="dx-prof-handle" href="/u/${htmlEscape(encodeURIComponent(handle))}/">${htmlEscape(handleLabel(handle))}</a>`);
     }
@@ -462,14 +610,14 @@
     const contributions = Array.isArray(profile.contributions) ? profile.contributions : [];
     const contribHtml = contributions.length
       ? `<div class="dx-prof-grid" data-dx-motion="interactive">${contributions.map((c) => renderContributionCard(c, catalog)).join('')}</div>`
-      : '<p class="dx-prof-empty">No public contributions yet.</p>';
+      : `<p class="dx-prof-empty">${house ? 'The archive speaks through its members.' : 'No public contributions yet.'}</p>`;
 
     const favorites = Array.isArray(profile.favorites) ? profile.favorites : [];
     const favHtml = favorites.length
       ? `<section class="dx-prof-section">
            <div class="dx-prof-section-head">
-             <p class="dx-prof-section-label">Saved</p>
-             <h2 class="dx-prof-section-title">Favorite samples &amp; collections</h2>
+             <p class="dx-prof-section-label">${house ? 'Curated' : 'Saved'}</p>
+             <h2 class="dx-prof-section-title">${house ? 'Staff picks' : 'Favorite samples &amp; collections'}</h2>
            </div>
            <div class="dx-prof-grid dx-prof-grid--favorites">${favorites
              .map((ref) => renderEntryCard(favoriteRecordFromRef(ref, catalog), catalog, { preview: true }))
@@ -478,7 +626,7 @@
       : '';
 
     return `
-      <section class="dx-prof-shell">
+      <section class="dx-prof-shell${house ? ' is-house' : ''}">
         <header class="dx-prof-head">
           ${renderAvatar(profile, name)}
           <div class="dx-prof-id">
@@ -494,12 +642,13 @@
         <div class="dx-prof-body">
           <section class="dx-prof-section">
             <div class="dx-prof-section-head">
-              <p class="dx-prof-section-label">Public record</p>
-              <h2 class="dx-prof-section-title">Contributions</h2>
+              <p class="dx-prof-section-label">${house ? 'House record' : 'Public record'}</p>
+              <h2 class="dx-prof-section-title">${house ? 'From the archive' : 'Contributions'}</h2>
             </div>
             ${contribHtml}
           </section>
           ${favHtml}
+          ${house ? renderHouseVault() : ''}
         </div>
       </section>`;
   }
@@ -605,7 +754,15 @@
     if (res.ok && res.body && typeof res.body === 'object') {
       document.title = `${displayNameForProfile(res.body)} — dex digital sample library`;
       const candidates = avatarCandidates(res.body);
-      paint(renderProfile(res.body, catalog), 'ready', () => hydrateAvatar(root, candidates));
+      const house = isHouseProfile(res.body);
+      paint(renderProfile(res.body, catalog), 'ready', () => {
+        hydrateAvatar(root, candidates);
+        if (house) {
+          bindHouseVault(root);
+          logHouseConsoleNote();
+          reportArchivistVisit();
+        }
+      });
     } else {
       paint(renderNotFound(), 'error');
     }

@@ -33,6 +33,8 @@
     explorer: 'eye.svg',
     rhythm: 'list-bullet.svg',
     vault: 'key.svg',
+    secret: 'lock-closed.svg',
+    archive: 'archive-box-arrow-down.svg',
   };
 
   function esc(value) {

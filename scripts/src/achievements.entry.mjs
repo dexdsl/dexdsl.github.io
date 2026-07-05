@@ -48,6 +48,7 @@
     'secret-license': 'shield-check.svg',
     'secret-release': 'archive-box-arrow-down.svg',
     vault: 'key.svg',
+    archive: 'archive-box-arrow-down.svg',
   };
   const CATEGORY_SHADER_COLORS = {
     submissions: [1.0, 0.25, 0.08],
@@ -58,6 +59,7 @@
     favorites: [1.0, 0.16, 0.28],
     profile: [0.2, 0.72, 1.0],
     secret: [0.64, 0.7, 0.94],
+    house: [1.0, 0.78, 0.24],
     general: [1.0, 0.35, 0.12],
   };
   const TIER_SHADER_COLORS = {

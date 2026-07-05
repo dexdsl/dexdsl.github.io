@@ -169,7 +169,9 @@ test('public profile route renders logged out with hydrated contributions, favor
   await expect(page.locator('.dx-prof-avatar-img')).toBeVisible();
   await expect(page.locator('.dx-prof-bio')).toContainText('Builds playable sample instruments.');
   await expect(page.locator('.dx-prof-link')).toHaveAttribute('href', 'https://example.com');
-  await expect(page.locator('.dx-prof-card-title').filter({ hasText: 'Cello - Emmanuel Losa' })).toHaveCount(2);
+  // Contributions render as collection cards; favorites keep the compact card.
+  await expect(page.locator('.dx-prof-collection-title').filter({ hasText: 'Cello - Emmanuel Losa' })).toHaveCount(1);
+  await expect(page.locator('.dx-prof-card-title').filter({ hasText: 'Cello - Emmanuel Losa' })).toHaveCount(1);
   await expect(page.locator('.dx-prof-grid--favorites .dx-prof-card-thumb img')).toBeVisible();
   await expect(page.locator('.dx-prof-grid--favorites a.dx-prof-card')).toHaveAttribute('href', '/entry/cello-emmanuel-losa/');
   await expect(page.locator('.dx-prof-section-title').filter({ hasText: 'Favorite samples & collections' })).toBeVisible();
@@ -238,4 +240,66 @@ test('entry sidebar links credited performers when public profile map contains a
   await expect
     .poll(async () => publicLink.evaluate((node) => (node.textContent || '').replace(/[\u200b-\u200f\u202a-\u202e\u2060-\u206f]/g, '').replace(/\s+/g, ' ').trim().toLowerCase()))
     .toBe('emmanuel losa');
+});
+
+test('house account /u/dex renders the archivist treatment with vault module', async ({ page }) => {
+  await routeCatalog(page);
+  await routeProfileShell(page, 'dex');
+
+  await routePublicProfileApi(page, 'dex', {
+    dex_id: 'DEX-000000',
+    handle: 'dex',
+    profile_public: true,
+    credit_name: 'Dex',
+    bio: 'The front desk of the archive.',
+    links: [],
+    roles: ['Archivist'],
+    role_primary: 'Archivist',
+    instruments: [],
+    contributions: [],
+    favorites_public: true,
+    favorites: ['entry|S.Vlc. Lo AV2023 S1'],
+  });
+
+  await page.goto('/u/dex/', { waitUntil: 'domcontentloaded' });
+
+  await expect(page.locator('#dex-profile')).toHaveAttribute('data-dx-fetch-state', 'ready');
+  await expect(page.locator('.dx-prof-shell')).toHaveClass(/is-house/);
+  await expect(page.locator('.dx-prof-house-stamp')).toBeVisible();
+  await expect(page.locator('.dx-prof-section-label').filter({ hasText: 'House record' })).toBeVisible();
+  await expect(page.locator('.dx-prof-section-title').filter({ hasText: 'Staff picks' })).toBeVisible();
+  await expect(page.locator('.dx-prof-empty')).toContainText('The archive speaks through its members.');
+
+  // The vault: present, locked copy, and a members-only gate when signed out.
+  const vault = page.locator('[data-dx-vault]');
+  await expect(vault).toBeVisible();
+  await expect(vault.locator('.dx-prof-section-title')).toHaveText('The Vault');
+  await vault.locator('input[name="combination"]').fill('11-22-33');
+  await vault.locator('button[type="submit"]').click();
+  await expect(vault.locator('[data-dx-vault-feedback]')).toContainText('only opens for members');
+});
+
+test('regular profiles get no house treatment', async ({ page }) => {
+  await routeCatalog(page);
+  await routeProfileShell(page, 'tester');
+  await routePublicProfileApi(page, 'tester', {
+    dex_id: 'DEX-7Q2KP4',
+    handle: 'tester',
+    profile_public: true,
+    credit_name: 'Test Performer',
+    bio: '',
+    links: [],
+    roles: [],
+    instruments: [],
+    contributions: [],
+    favorites_public: false,
+    favorites: [],
+  });
+
+  await page.goto('/u/tester/', { waitUntil: 'domcontentloaded' });
+
+  await expect(page.locator('#dex-profile')).toHaveAttribute('data-dx-fetch-state', 'ready');
+  await expect(page.locator('.dx-prof-shell')).not.toHaveClass(/is-house/);
+  await expect(page.locator('.dx-prof-house-stamp')).toHaveCount(0);
+  await expect(page.locator('[data-dx-vault]')).toHaveCount(0);
 });
