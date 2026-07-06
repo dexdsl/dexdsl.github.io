@@ -40,7 +40,9 @@
 
 @font-face {
   font-family: "Stretch Pro";
-  src: url("/assets/fonts/StretchPro.otf") format("opentype");
+  src:
+    url("/assets/fonts/StretchPro.woff2") format("woff2"),
+    url("/assets/fonts/StretchPro.otf") format("opentype");
   font-style: normal;
   font-weight: 400;
   font-display: optional;
@@ -50,6 +52,7 @@
   font-family: "Typefesse";
   src:
     local("Stretch Pro"),
+    url("/assets/fonts/StretchPro.woff2") format("woff2"),
     url("/assets/fonts/StretchPro.otf") format("opentype");
   font-style: normal;
   font-weight: 400;

@@ -140,8 +140,8 @@ assert.equal(validated.ok, true, validated.issues.join('; '));
 const protectedLookup = buildUavProtectedLookup(folder.collection, folder.manifest);
 assert.equal(protectedLookup.lookupNumber, collectionLookup);
 assert.equal(protectedLookup.season, 'T1');
-assert.equal(protectedLookup.files.length, 5);
-assert.ok(protectedLookup.files.every((file) => file.bucket === 'X'));
+assert.equal(protectedLookup.files.length, 11);
+assert.deepEqual(new Set(protectedLookup.files.map((file) => file.bucket)), new Set(['V', 'X']));
 assert.ok(protectedLookup.files.every((file) => file.fileId.startsWith('asset:')));
 const linkedCreditsCollection = structuredClone(folder.collection);
 linkedCreditsCollection.creditLinks = {

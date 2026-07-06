@@ -186,6 +186,9 @@ function verifyGlassParityContract(failures) {
       failures.push(`header-slot runtime missing required protected-route bootstrap marker: ${marker}`);
     }
   }
+  if (slotRuntime.includes('gooeyDriverWatchdogId') || slotRuntime.includes('tick - gooeyDriverLastFrame > 140')) {
+    failures.push('Header slot gooey driver must remain RAF-only; timer watchdogs create throttled-browser long-task backlogs');
+  }
 
   if (!catalogMeshSource.includes('header-slot.js is the single mesh owner')) {
     failures.push('Catalog mesh adapter must delegate ownership to the persistent header-slot driver');

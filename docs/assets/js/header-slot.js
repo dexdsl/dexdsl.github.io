@@ -211,7 +211,6 @@
   let profileFooterPortalState = { footer: null, anchor: null };
   let gooeyDriverInstalled = false;
   let gooeyDriverRafId = 0;
-  let gooeyDriverWatchdogId = 0;
   let gooeyDriverLast = 0;
   let gooeyDriverLastFrame = 0;
   let gooeyDriverWrapper = null;
@@ -4264,15 +4263,9 @@
     }
     wrapper.setAttribute('data-dx-gooey-motion', 'animated');
     gooeyDriverRafId = requestAnimationFrame(gooeyMeshTick);
-    // Watchdog keeps integrating if RAF is starved (throttled/background tab),
-    // so motion doesn't snap forward when the tab regains focus.
-    gooeyDriverWatchdogId = window.setInterval(() => {
-      if (document.hidden) return;
-      const tick = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
-      if (tick - gooeyDriverLastFrame > 140) {
-        try { stepGooeyMesh(tick); } catch {}
-      }
-    }, 80);
+    // RAF is the sole animation clock. A timer fallback used to run the full
+    // physics/layout step whenever frames were throttled, which queued repeated
+    // long tasks in Lighthouse and background-constrained browsers.
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) return;
       const tick = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();

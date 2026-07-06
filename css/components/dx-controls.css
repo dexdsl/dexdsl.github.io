@@ -578,7 +578,6 @@ textarea:focus-visible {
   cursor: pointer;
   transform-origin: center;
   transition:
-    width 380ms cubic-bezier(0.22, 0.61, 0.36, 1),
     background-color 300ms ease,
     transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
     opacity 300ms ease;

@@ -16,36 +16,6 @@
 #heroWord {
   opacity: 1;
   transition: opacity 0.2s ease-in-out;
-  position: relative;
-  min-width: 1ch;
-  cursor: text;
-  caret-color: #ff5b2c;
-}
-
-#heroWord:focus-visible {
-  text-decoration: underline;
-  text-decoration-thickness: 0.08em;
-  text-underline-offset: 0.12em;
-}
-
-#heroWord:not(:focus)::after {
-  content: "|";
-  position: absolute;
-  left: 100%;
-  margin-left: 0.08em;
-  color: #ff5b2c;
-  -webkit-text-fill-color: #ff5b2c;
-  animation: dx-home-caret 1s steps(1, end) infinite;
-}
-
-#heroWord.is-replacing::after {
-  animation: none;
-  opacity: 1;
-}
-
-@keyframes dx-home-caret {
-  0%, 48% { opacity: 1; }
-  49%, 100% { opacity: 0; }
 }
 /* hero primary: remove any theme hover overlay */
 #heroExplore.dx-button-element--primary,
@@ -220,12 +190,6 @@
 #dexCombined .dx-home-featured-media-link:focus-visible {
   outline: 3px solid var(--dx-accent-solid, #ff4d2e);
   outline-offset: -3px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #heroWord:not(:focus)::after {
-    animation: none;
-  }
 }
 
 /* Legacy hero style block 2. */

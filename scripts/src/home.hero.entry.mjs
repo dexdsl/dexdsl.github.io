@@ -43,61 +43,42 @@ function initCampaign(root) {
     words = [];
   }
   if (!words.length) return;
-  if (!target.textContent.trim()) target.textContent = words[0];
-  let wordIndex = Math.max(0, words.indexOf(target.textContent.trim()));
-  let cycling = false;
-
-  const renderedWord = (word) => {
-    const headingFx = window.__dxHeadingFx;
-    if (headingFx && typeof headingFx.renderHeadingText === 'function') {
-      return headingFx.renderHeadingText(word, { routeKey: `home:campaign:${word}` });
+  const chosen = words[Math.floor(Math.random() * words.length)] || words[0];
+  const decorateCampaignHeading = () => {
+    const heading = target.closest('h1, h2') || target;
+    for (let attempt = 0; attempt < 8; attempt += 1) {
+      decorateDynamicHeadings(heading, `home:hero:campaign:${attempt}`);
+      if (heading.textContent.includes('\u200D')) break;
     }
-    return word;
   };
-
-  const replaceWord = async () => {
-    if (cycling || words.length < 2) return;
-    cycling = true;
-    wordIndex = (wordIndex + 1) % words.length;
-    const word = renderedWord(words[wordIndex]);
-    target.setAttribute('contenteditable', 'false');
-    target.classList.add('is-replacing');
-    if (reducedMotion()) {
-      target.textContent = word;
-    } else {
-      target.textContent = '';
-      for (const character of Array.from(word)) {
-        target.textContent += character;
-        await new Promise((resolve) => window.setTimeout(resolve, 46));
+  if (reducedMotion()) {
+    target.textContent = chosen;
+    decorateCampaignHeading();
+  } else {
+    target.textContent = '';
+    target.classList.add('typing-complete');
+    try { target.focus(); } catch {}
+    let index = 0;
+    const tick = () => {
+      target.textContent = chosen.slice(0, index);
+      try {
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(target);
+        range.collapse(false);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      } catch {}
+      index += 1;
+      if (index <= chosen.length + 1) {
+        window.setTimeout(tick, 100);
+      } else {
+        target.classList.remove('typing-complete');
+        decorateCampaignHeading();
       }
-    }
-    target.classList.remove('is-replacing');
-    target.setAttribute('contenteditable', 'true');
-    cycling = false;
-    target.focus({ preventScroll: true });
-    const selection = window.getSelection();
-    if (selection) {
-      selection.selectAllChildren(target);
-      selection.collapseToEnd();
-    }
-  };
-
-  target.addEventListener('keydown', (event) => {
-    if (event.key !== 'Enter') return;
-    event.preventDefault();
-    replaceWord();
-  });
-  target.addEventListener('dblclick', (event) => {
-    event.preventDefault();
-    replaceWord();
-  });
-  target.addEventListener('input', () => {
-    const singleLine = target.textContent.replace(/\s*\n+\s*/g, ' ').trimStart();
-    if (target.textContent !== singleLine) target.textContent = singleLine;
-  });
-  target.addEventListener('blur', () => {
-    if (!target.textContent.trim()) target.textContent = words[wordIndex] || words[0];
-  });
+    };
+    tick();
+  }
 
   const authButton = root.querySelector('[data-dx-hero-auth-cta]');
   if (!authButton) return;

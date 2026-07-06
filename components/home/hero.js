@@ -6,17 +6,15 @@
     <div id="dexHeroCard" style="
       flex:1 1 auto;display:flex;flex-direction:column;justify-content:flex-start;gap:1.25rem;
       width:100%;padding:clamp(2rem,5vw,3rem);box-sizing:border-box;">
-      <h1 data-dx-heading-randomize="false" data-dx-heading-duplicate-exclude-words="RECORDING" style="
+      <h1 data-dx-heading-duplicate-exclude-words="RECORDING" style="
         margin:0;font:700 clamp(2rem,5vw,3rem)/1.15 var(--font-heading,sans-serif);text-transform:uppercase;">
         THE OPEN-AC&#8204;CES&#8204;S<br>RECORDING LIBRARY FOR<br>
         <span id="heroWord" data-dx-hero-rotating data-words="[&quot;WEIRD NOISE.&quot;,&quot;ODD SOUNDS.&quot;,&quot;NOISE MAKERS.&quot;,&quot;ARTISTS.&quot;,&quot;CREATIVES.&quot;,&quot;PERFORMERS.&quot;,&quot;COMPOSERS.&quot;,&quot;MUSICIANS.&quot;,&quot;STRANGE.&quot;,&quot;STRANGE SOUNDS.&quot;,&quot;ECCENTRICS.&quot;,&quot;YOU.&quot;,&quot;ALL.&quot;,&quot;EVERYONE.&quot;,&quot;%*!?%&quot;,&quot;!!!&quot;,&quot;???&quot;,&quot;***&quot;]"
-          contenteditable="true" role="textbox" aria-label="Edit the featured audience, or press Enter for another phrase"
-          aria-multiline="false" spellcheck="false"
-          style="
+          contenteditable="true" spellcheck="false" style="
             background:linear-gradient(135deg,#ff3c3c 0%,#ff9d32 100%);
             -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
             color:transparent;background-color:transparent;display:inline-block;outline:none;
-            white-space:pre-line;">WEIRD NOISE.</span>
+            white-space:pre-line;caret-color:#ff9d32;"></span>
       </h1>
       <p style="margin:0;font:1.25rem/1.45 var(--font-body,sans-serif);opacity:.85;">dexFest 2024 recordings releasing all month — free &amp; CC-BY.</p>
       <div style="display:flex;flex-direction:column;gap:1rem;margin-top:1.5rem;">

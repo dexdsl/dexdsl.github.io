@@ -545,10 +545,15 @@ export function renderUavCollectionHtml(collection, manifest, authorities) {
   </main>
   <script id="dex-uav-record" type="application/json">${serialized}</script>
   ${DEX_FOOTER_MARKUP.trim()}
+  <script defer src="/assets/dex-runtime-config.js"></script>
   <script defer src="/assets/vendor/auth0-spa-js.umd.min.js"></script>
   <script defer src="/assets/dex-auth0-config.js"></script>
   <script defer src="/assets/dex-auth.js"></script>
-  <script defer src="/assets/js/header-slot.js"></script>
+  <script defer src="/assets/js/dx-grain-overlay.js?v=20260702shader2"></script>
+  <script defer src="/assets/js/header-slot.js?v=20260702shader2"></script>
+  <script defer src="/assets/js/dx-scroll-dot.js"></script>
+  <script defer src="/assets/js/interactive-hover.js"></script>
+  <script defer src="/assets/js/dx-pagenav.js"></script>
   <script defer src="/assets/js/dx-favorites.js"></script>
   <script defer src="/assets/dex-sidebar.js"></script>
   <script defer src="/assets/js/dex-breadcrumb-motion.js"></script>

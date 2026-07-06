@@ -110,6 +110,10 @@ const SYNC_MAP = [
     targets: ["docs/css/base.css"],
   },
   {
+    source: "css/fonts.css",
+    targets: ["docs/css/fonts.css"],
+  },
+  {
     source: "css/components/dx-catalog-index.css",
     targets: ["docs/css/components/dx-catalog-index.css"],
   },
@@ -244,6 +248,34 @@ const SYNC_MAP = [
   {
     source: "assets/img/dexdrones_background_black-lines_white.png",
     targets: ["docs/assets/img/dexdrones_background_black-lines_white.png"],
+  },
+  {
+    source: "assets/fonts/StretchPro.woff2",
+    targets: ["docs/assets/fonts/StretchPro.woff2"],
+  },
+  {
+    source: "assets/img/dex-header-logo.webp",
+    targets: ["docs/assets/img/dex-header-logo.webp"],
+  },
+  {
+    source: "assets/img/dex-footer-logo-black.webp",
+    targets: ["docs/assets/img/dex-footer-logo-black.webp"],
+  },
+  {
+    source: "assets/img/dex-footer-logo-white.webp",
+    targets: ["docs/assets/img/dex-footer-logo-white.webp"],
+  },
+  {
+    source: "assets/img/dex-kolari-logo.webp",
+    targets: ["docs/assets/img/dex-kolari-logo.webp"],
+  },
+  {
+    source: "assets/catalog/mojave-wind-farm.webp",
+    targets: ["docs/assets/catalog/mojave-wind-farm.webp"],
+  },
+  {
+    source: "assets/catalog/tim-feeney.webp",
+    targets: ["docs/assets/catalog/tim-feeney.webp"],
   },
   {
     source: "assets/press/dex-factsheet-2025-08.pdf",

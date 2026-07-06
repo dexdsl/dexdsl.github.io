@@ -113,9 +113,10 @@ async function main() {
   ]) {
     assert.ok(runtimeSource.includes(marker), `hero runtime missing production interaction marker: ${marker}`);
   }
-  assert.ok(runtimeSource.includes("target.addEventListener('keydown'"), 'campaign word replacement must be user-triggered');
-  assert.ok(runtimeSource.includes("event.key !== 'Enter'"), 'campaign word replacement must use the explicit Enter interaction');
-  assert.ok(!runtimeSource.includes('window.setInterval(replaceWord'), 'campaign word replacement must not run automatically during LCP');
+  assert.ok(runtimeSource.includes('const chosen = words[Math.floor(Math.random() * words.length)]'), 'campaign must choose from the word bank on load');
+  assert.ok(runtimeSource.includes('window.setTimeout(tick, 100)'), 'campaign must retain the original typing cadence');
+  assert.ok(runtimeSource.includes('decorateCampaignHeading()'), 'campaign must apply the shared heading duplication pass');
+  assert.ok(runtimeSource.includes("heading.textContent.includes('\\u200D')"), 'campaign must guarantee a visible duplicated-letter glyph');
 
   const jsCopies = await Promise.all([
     readText('assets', 'js', 'dx-home-hero.js'),

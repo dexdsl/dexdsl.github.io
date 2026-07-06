@@ -210,9 +210,9 @@
     <div class="footer-logo-column">
       <div class="footer-logo">
         <!-- DARK surface → white logo -->
-        <img class="logo--dark" src="/assets/img/4471b81e48dd98fdcc7c.png" alt="Dex Footer Logo (white)" width="884" height="426" loading="lazy" decoding="async">
+        <img class="logo--dark" src="/assets/img/dex-footer-logo-white.webp" alt="Dex Footer Logo (white)" width="442" height="213" loading="lazy" decoding="async">
         <!-- LIGHT surface → black logo (update URL if needed) -->
-        <img class="logo--light" src="/assets/img/588db8babfe6f8722983.png" alt="Dex Footer Logo (black)" width="884" height="426" loading="lazy" decoding="async">
+        <img class="logo--light" src="/assets/img/dex-footer-logo-black.webp" alt="Dex Footer Logo (black)" width="442" height="213" loading="lazy" decoding="async">
       </div>
     </div>
 
@@ -255,5 +255,4 @@
 </footer>
 
 <!-- Auto-detect page background and set data-surface="light|dark" -->
-
 
