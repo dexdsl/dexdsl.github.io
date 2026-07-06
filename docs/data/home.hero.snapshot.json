@@ -1,60 +1,74 @@
 {
   "version": "home-hero-snapshot-v1",
-  "generatedAt": "2026-07-04T08:37:35.534Z",
-  "sourceHash": "b3acd5aa0ecb45172c2a9c5f6080fcd4f2c9362028d9eaba77c3ffd9ede228ff",
-  "activeCompositionId": "season3-human-credits",
+  "generatedAt": "2026-07-06T00:48:22.022Z",
+  "sourceHash": "8dbafcab91468645e5226226c901259be28b4e4b7f44645e5f29e22d5ef99d92",
+  "activeCompositionId": "open-access-featured",
   "composition": {
-    "id": "season3-human-credits",
-    "name": "Season 3 Human Credits",
-    "layout": "single",
+    "id": "open-access-featured",
+    "name": "Open access + featured",
+    "layout": "split",
     "slots": [
-      "season3-human-credits"
+      "open-access-campaign",
+      "featured-entries"
     ],
-    "createdAt": "2026-06-28T12:00:00.000Z",
-    "updatedAt": "2026-07-04T08:16:38.495Z",
+    "createdAt": "2026-06-28T11:00:00.000Z",
+    "updatedAt": "2026-06-28T11:35:57.184Z",
     "archived": false
   },
   "modules": [
     {
-      "id": "season3-human-credits",
-      "name": "Season 3 — Human Credits",
-      "createdAt": "2026-06-28T12:00:00.000Z",
-      "updatedAt": "2026-06-28T12:00:00.000Z",
+      "id": "open-access-campaign",
+      "name": "Open access campaign",
+      "createdAt": "2026-06-28T11:00:00.000Z",
+      "updatedAt": "2026-06-28T11:00:00.000Z",
       "archived": false,
-      "type": "season3-human-credits",
-      "kicker": "DEX / SEASON 3",
-      "headline": "SEASON 3 IS YOU.",
-      "body": "The library is made of the people in it — real members, real recordings. There's an open slot on the wall with your name on it. Submit an entry and take it.",
-      "cta": {
-        "guest": {
-          "label": "JOIN SEASON 3"
-        },
-        "submit": {
-          "label": "SUBMIT TO SEASON 3",
-          "href": "/entry/submit/?flow=sample"
-        },
-        "active": {
-          "label": "SUBMIT MORE",
-          "href": "/entry/submit/?flow=sample"
-        },
-        "published": {
-          "label": "SUBMIT MORE",
-          "href": "/entry/submit/?flow=sample"
-        }
+      "type": "campaign",
+      "headlineLines": [
+        "THE OPEN-ACCESS",
+        "RECORDING LIBRARY FOR"
+      ],
+      "rotatingWords": [
+        "WEIRD NOISE.",
+        "ODD SOUNDS.",
+        "NOISE MAKERS.",
+        "ARTISTS.",
+        "CREATIVES.",
+        "PERFORMERS.",
+        "COMPOSERS.",
+        "MUSICIANS.",
+        "STRANGE.",
+        "STRANGE SOUNDS.",
+        "ECCENTRICS.",
+        "YOU.",
+        "ALL.",
+        "EVERYONE.",
+        "%*!?%",
+        "!!!",
+        "???",
+        "***"
+      ],
+      "body": "dexFest 2024 recordings releasing all month — free & CC-BY.",
+      "primaryCta": {
+        "kind": "link",
+        "label": "EXPLORE CATALOG",
+        "href": "/catalog/"
       },
-      "wall": {
-        "facesFeed": "/profiles/public",
-        "worksFeed": "/data/catalog.entries.json",
-        "capacity": 24,
-        "faceBias": true,
-        "fillWithStills": true,
-        "tagLabel": "dexFest"
-      },
-      "presentation": {
-        "surface": "graphite",
-        "density": "balanced",
-        "motion": "cinematic"
+      "secondaryCta": {
+        "kind": "auth-switch",
+        "guestLabel": "SIGN UP FREE ↗",
+        "authenticatedLabel": "SUBMIT SAMPLES ↗",
+        "authenticatedHref": "/entry/submit/"
       }
+    },
+    {
+      "id": "featured-entries",
+      "name": "Featured entries",
+      "createdAt": "2026-06-28T11:00:00.000Z",
+      "updatedAt": "2026-06-28T11:00:00.000Z",
+      "archived": false,
+      "type": "featured",
+      "title": "FEATURED ENTRIES",
+      "source": "home-featured"
     }
   ]
 }
