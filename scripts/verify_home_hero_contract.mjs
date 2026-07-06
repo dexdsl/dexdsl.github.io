@@ -116,6 +116,11 @@ async function main() {
     homepage.indexOf('/css/components/dx-home-hero.css') < homepage.indexOf('</head>'),
     'hero CSS must be discovered in the document head',
   );
+  assert.match(
+    homepage,
+    /<link rel="preload" href="\/assets\/fonts\/courier-prime\/CourierPrime-Regular\.woff2" as="font" type="font\/woff2" crossorigin fetchpriority="high">/,
+    'homepage must preload the font used by its mobile text LCP',
+  );
   assert.match(homepage, /\/css\/components\/dx-home-hero\.css/);
   assert.match(homepage, /\/css\/components\/dx-home-hero-composer\.css/);
   assert.match(homepage, /\/assets\/js\/dx-home-hero\.js/);

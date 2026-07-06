@@ -41,7 +41,7 @@
         <span class="dx-s3-tile__role">Composer · Harpsichord</span>
       </span>
     </a><a class="dx-s3-tile dx-s3-tile--work" data-card-kind="work" data-card-slot="3" role="listitem" href="/entry/andrew-chanover/" style="--dx-s3-tile-i:3">
-      <span class="dx-s3-tile__media"><span class="dx-s3-tile__mono" aria-hidden="true">AC</span><img class="dx-s3-tile__img" src="/assets/catalog/andrew-chanover.webp" alt="" width="720" height="720" loading="eager" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" onerror="this.style.display='none'"><span class="dx-s3-tile__wash" aria-hidden="true"></span></span>
+      <span class="dx-s3-tile__media"><span class="dx-s3-tile__mono" aria-hidden="true">AC</span><img class="dx-s3-tile__img" src="/assets/catalog/andrew-chanover.webp" alt="" width="720" height="720" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none'"><span class="dx-s3-tile__wash" aria-hidden="true"></span></span>
       <span class="dx-s3-tile__body">
         <span class="dx-s3-tile__tag">dexFest</span>
         <span class="dx-s3-tile__name">Andrew Chanover</span>
@@ -49,7 +49,7 @@
         <span class="dx-s3-tile__lookup">E.Gtr. Ch AV2024 S2</span>
       </span>
     </a><a class="dx-s3-tile dx-s3-tile--work" data-card-kind="work" data-card-slot="4" role="listitem" href="/entry/electric-guitar-chris-mann/" style="--dx-s3-tile-i:4">
-      <span class="dx-s3-tile__media"><span class="dx-s3-tile__mono" aria-hidden="true">CM</span><img class="dx-s3-tile__img" src="/assets/catalog/electric-guitar-chris-mann.webp" alt="" width="720" height="720" loading="eager" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" onerror="this.style.display='none'"><span class="dx-s3-tile__wash" aria-hidden="true"></span></span>
+      <span class="dx-s3-tile__media"><span class="dx-s3-tile__mono" aria-hidden="true">CM</span><img class="dx-s3-tile__img" src="/assets/catalog/electric-guitar-chris-mann.webp" alt="" width="720" height="720" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none'"><span class="dx-s3-tile__wash" aria-hidden="true"></span></span>
       <span class="dx-s3-tile__body">
         <span class="dx-s3-tile__tag">dexFest</span>
         <span class="dx-s3-tile__name">Chris Mann</span>
@@ -57,7 +57,7 @@
         <span class="dx-s3-tile__lookup">E.Gtr. Ma A2024 S2</span>
       </span>
     </a><a class="dx-s3-tile dx-s3-tile--work" data-card-kind="work" data-card-slot="5" role="listitem" href="/entry/bojun-zhang/" style="--dx-s3-tile-i:5">
-      <span class="dx-s3-tile__media"><span class="dx-s3-tile__mono" aria-hidden="true">BZ</span><img class="dx-s3-tile__img" src="/assets/catalog/bojun-zhang.webp" alt="" width="720" height="720" loading="eager" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" onerror="this.style.display='none'"><span class="dx-s3-tile__wash" aria-hidden="true"></span></span>
+      <span class="dx-s3-tile__media"><span class="dx-s3-tile__mono" aria-hidden="true">BZ</span><img class="dx-s3-tile__img" src="/assets/catalog/bojun-zhang.webp" alt="" width="720" height="720" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none'"><span class="dx-s3-tile__wash" aria-hidden="true"></span></span>
       <span class="dx-s3-tile__body">
         <span class="dx-s3-tile__tag">dexFest</span>
         <span class="dx-s3-tile__name">Bojun Zhang</span>
@@ -65,7 +65,7 @@
         <span class="dx-s3-tile__lookup">E.Mod. Zh AV2024 S2</span>
       </span>
     </a><a class="dx-s3-tile dx-s3-tile--work" data-card-kind="work" data-card-slot="6" role="listitem" href="/entry/anant-shah/" style="--dx-s3-tile-i:6">
-      <span class="dx-s3-tile__media"><span class="dx-s3-tile__mono" aria-hidden="true">AS</span><img class="dx-s3-tile__img" src="/assets/catalog/anant-shah.webp" alt="" width="720" height="720" loading="eager" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" onerror="this.style.display='none'"><span class="dx-s3-tile__wash" aria-hidden="true"></span></span>
+      <span class="dx-s3-tile__media"><span class="dx-s3-tile__mono" aria-hidden="true">AS</span><img class="dx-s3-tile__img" src="/assets/catalog/anant-shah.webp" alt="" width="720" height="720" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none'"><span class="dx-s3-tile__wash" aria-hidden="true"></span></span>
       <span class="dx-s3-tile__body">
         <span class="dx-s3-tile__tag">dexFest</span>
         <span class="dx-s3-tile__name">Anant Shah</span>

@@ -19,6 +19,7 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
   const DEFAULT_UNANNOUNCED_MESSAGE = 'this collection has not been announced yet';
   const DEFAULT_UNANNOUNCED_TOKEN_POOL = ['???', '!!!', '***', '@@@'];
   const CATALOG_FALLBACK_IMAGE = '/assets/series/dex.png';
+  const SEASON_3_TEASER_IMAGE = '/assets/img/dex-signup-open-access.webp';
   // While the Current lane has fewer than this many real entries, the S3 slot
   // shows a "submit samples" funnel instead of the unannounced teaser; once the
   // lane fills past it, the teaser returns.
@@ -1366,6 +1367,7 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
 
     const media = create('div', 'dx-catalog-index-season-media dx-catalog-index-season-media--unannounced dx-catalog-index-season-media--campaign');
     media.setAttribute('aria-hidden', 'true');
+    media.appendChild(createSeason3TeaserImage());
     media.appendChild(create('span', 'dx-catalog-index-season-campaign-word', token));
     media.appendChild(create('span', 'dx-catalog-index-season-fallback-code', 'Open access · Season 3'));
 
@@ -1387,7 +1389,23 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
 
   // The "open call" funnel that occupies the S3 slot while the Current lane is
   // thin. Styled like a collection slide but the CTA routes to sample submission.
-  function renderSubmitSeasonSlide() {
+  function createSeason3TeaserImage(preloadedImage = null) {
+    const image = preloadedImage instanceof HTMLImageElement
+      ? preloadedImage
+      : create('img', 'dx-catalog-index-season-img');
+    image.className = 'dx-catalog-index-season-img';
+    image.src = SEASON_3_TEASER_IMAGE;
+    image.width = 1280;
+    image.height = 720;
+    image.alt = '';
+    image.loading = 'eager';
+    image.decoding = 'async';
+    image.fetchPriority = 'high';
+    image.setAttribute('data-dx-season-teaser-image', '');
+    return image;
+  }
+
+  function renderSubmitSeasonSlide(preloadedImage = null) {
     const href = SUBMIT_SAMPLES_HREF;
     const slide = create('li', 'dx-catalog-index-season-slide dx-catalog-index-season-slide--submit');
     slide.setAttribute('data-dx-season-card-kind', 'submit');
@@ -1397,7 +1415,7 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     const media = create('a', 'dx-catalog-index-season-media dx-catalog-index-season-media--submit dx-catalog-index-season-media--campaign');
     media.href = href;
     media.setAttribute('aria-label', 'Submit your work to Season 3');
-    media.appendChild(create('span', 'dx-catalog-index-season-campaign-word', 'SEASON 3'));
+    media.appendChild(createSeason3TeaserImage(preloadedImage));
     media.appendChild(create('span', 'dx-catalog-index-season-fallback-code', 'Open call · CC-BY'));
 
     const copy = create('div', 'dx-catalog-index-season-copy');
@@ -1415,7 +1433,7 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     return slide;
   }
 
-  function renderSeasonCarousel(target) {
+  function renderSeasonCarousel(target, preloadedTeaserImage = null) {
     const catalogEntries = allEntries().filter((entry) => {
       return !!canonicalEntryHref(entry.entry_href)
         && !!text(entry.lookup_raw).trim()
@@ -1575,7 +1593,7 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
         const originalIndex = slides.indexOf(slide);
         if (slide.kind === 'entry') track.appendChild(renderSeasonSlide(slide.entry));
         else if (slide.kind === 'teaser') track.appendChild(renderUnannouncedSeasonSlide(slide.card));
-        else if (slide.kind === 'submit') track.appendChild(renderSubmitSeasonSlide());
+        else if (slide.kind === 'submit') track.appendChild(renderSubmitSeasonSlide(preloadedTeaserImage));
         const rendered = track.lastElementChild;
         if (rendered) {
           rendered.setAttribute('data-dx-carousel-slot', String(originalIndex));
@@ -1872,9 +1890,10 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     if (!root || !model) return;
 
     const staticHero = root.querySelector('[data-dx-catalog-static-hero]');
+    const preloadedTeaserImage = root.querySelector('[data-dx-season-teaser-image]');
     const shell = create('div', 'dx-catalog-index-shell');
     renderHero(shell, staticHero);
-    renderSeasonCarousel(shell);
+    renderSeasonCarousel(shell, preloadedTeaserImage);
     renderSpotlight(shell);
     renderControls(shell);
 

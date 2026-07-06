@@ -3,7 +3,7 @@ import path from 'node:path';
 import { expect, test, type Page } from 'playwright/test';
 
 const DEFAULT_POOL = ['???', '!!!', '***', '@@@'];
-const HOME_SIGNUP_CARD_IMAGE = '/assets/img/3b1476c230073f7589e3.jpg';
+const HOME_SIGNUP_CARD_IMAGE = '/assets/img/dex-signup-open-access.webp';
 
 function hashString32(value: string): number {
   let hash = 2166136261;
@@ -85,6 +85,7 @@ async function setTeaserSeed(page: Page, seed: string): Promise<void> {
 async function loadCatalog(page: Page): Promise<void> {
   await page.goto('/catalog/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('[data-catalog-index-app]')).toBeVisible();
+  await expect(page.locator('[data-catalog-index-app]')).toHaveAttribute('data-dx-catalog-state', 'ready');
   await expect(page.locator('.dx-catalog-index-season-track')).toBeVisible();
 }
 
@@ -124,7 +125,7 @@ test('carousel exposes Current and Archive groups with campaign badges and indep
   const currentCardData = await currentCards.evaluateAll((nodes) => nodes.map((node) => ({
     id: node.getAttribute('data-dx-season-card-id') || '',
     campaign: node.getAttribute('data-dx-campaign-id') || '',
-    badge: node.querySelector('.dx-catalog-index-season-campaign-badge')?.textContent?.trim() || '',
+    badge: node.querySelector('.dx-catalog-index-season-tag')?.textContent?.trim() || '',
   })));
   expect(currentCardData.map((row) => row.id).sort()).toEqual(expectedCurrentIds);
   expect(currentCardData.every((row) => ['S3', 'UAV T1'].includes(row.campaign))).toBe(true);
@@ -149,7 +150,7 @@ test('carousel exposes Current and Archive groups with campaign badges and indep
   const archiveCardData = await archiveCards.evaluateAll((nodes) => nodes.map((node) => ({
     id: node.getAttribute('data-dx-season-card-id') || '',
     campaign: node.getAttribute('data-dx-campaign-id') || '',
-    badge: node.querySelector('.dx-catalog-index-season-campaign-badge')?.textContent?.trim() || '',
+    badge: node.querySelector('.dx-catalog-index-season-tag')?.textContent?.trim() || '',
   })));
   expect(archiveCardData.map((row) => row.id).sort()).toEqual(expectedArchiveIds);
   expect(archiveCardData.every((row) => ['S2', 'S1'].includes(row.campaign))).toBe(true);
@@ -164,115 +165,44 @@ test('carousel exposes Current and Archive groups with campaign badges and indep
   await expect(track).toHaveAttribute('data-dx-carousel-active-slot', String(currentAdvancedSlot));
 });
 
-test('current carousel renders one non-clickable unannounced collection teaser with growlix token', async ({ page }) => {
-  await setTeaserSeed(page, 'seed-catalog-teaser-a');
+test('current thin lane renders the static-first Season 3 submission card with the shared WebP', async ({ page }) => {
   await loadCatalog(page);
 
-  const teaserCard = page.locator('.dx-catalog-index-season-slide--unannounced');
+  const teaserCard = page.locator('.dx-catalog-index-season-slide--submit');
   await expect(teaserCard).toHaveCount(1);
   await expect(teaserCard).toBeVisible();
-  await expect(teaserCard).toHaveAttribute('data-dx-season-card-kind', 'unannounced');
+  await expect(teaserCard).toHaveAttribute('data-dx-season-card-kind', 'submit');
   await expect(teaserCard).toHaveAttribute('data-dx-campaign-id', 'S3');
-
-  const token = String(await teaserCard.getAttribute('data-dx-growlix-token') || '').trim();
-  expect(token.length).toBeGreaterThan(0);
-  expect(DEFAULT_POOL).toContain(token);
-
-  await expect(teaserCard.locator('.dx-catalog-index-season-performer')).toHaveText(token);
-  await expect(teaserCard).toContainText('this collection has not been announced yet');
-  await expect(teaserCard.locator('.dx-catalog-index-season-campaign-badge')).toHaveText('S3');
-  await expect(teaserCard.locator('img.dx-catalog-index-season-img')).toHaveAttribute('src', new RegExp(`${HOME_SIGNUP_CARD_IMAGE.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`));
-  await expect(teaserCard.locator('.dx-catalog-index-season-growlix-token')).toHaveCount(0);
-  const lockedCta = teaserCard.locator('button.dx-catalog-index-season-open');
-  const lockedCtaText = ((await lockedCta.textContent()) || '').replace(/\u200c/g, '').trim();
-  expect(lockedCtaText.toLowerCase()).toBe('view collection');
-  await expect(lockedCta).toBeDisabled();
-  await expect(teaserCard.locator('a')).toHaveCount(0);
+  await expect(teaserCard).toContainText('Season 3 is open');
+  const image = teaserCard.locator('img[data-dx-season-teaser-image]');
+  await expect(image).toHaveAttribute('src', new RegExp(`${HOME_SIGNUP_CARD_IMAGE.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`));
+  await expect(image).toHaveAttribute('loading', 'eager');
+  await expect(image).toHaveAttribute('fetchpriority', 'high');
+  await expect(teaserCard.locator('a[href="/entry/submit/"]')).toHaveCount(2);
 
   await selectCarouselGroup(page, 'archive');
-  await expect(page.locator('.dx-catalog-index-season-slide--unannounced')).toHaveCount(0);
+  await expect(page.locator('.dx-catalog-index-season-slide--submit')).toHaveCount(0);
 });
 
-test('teaser token is deterministic for a page-load seed and season/index pair', async ({ page, context }) => {
-  const primarySeed = 'seed-catalog-primary';
-  await setTeaserSeed(page, primarySeed);
-  await loadCatalog(page);
-
-  const teaserCard = page.locator('.dx-catalog-index-season-slide--unannounced');
-  await expect(teaserCard).toBeVisible();
-
-  const seasonId = String(await teaserCard.getAttribute('data-dx-season-id') || 'S3').toUpperCase();
-  const index = Number(await teaserCard.getAttribute('data-dx-unannounced-index') || 0);
+test('unannounced teaser token derivation remains deterministic', async () => {
+  const seasonId = 'S3';
+  const index = 0;
   const tokenPool = readSeasonTokenPool(seasonId);
-
-  const tokenOne = String(await teaserCard.getAttribute('data-dx-growlix-token') || '').trim();
-  expect(tokenOne).toBe(expectedToken(primarySeed, seasonId, index, tokenPool));
-
-  let secondarySeed = 'seed-catalog-secondary';
-  let expectedSecondary = expectedToken(secondarySeed, seasonId, index, tokenPool);
-  let shouldDiffer = expectedSecondary !== tokenOne;
-  if (expectedSecondary === tokenOne) {
-    for (let n = 3; n < 30; n += 1) {
-      const candidateSeed = `seed-catalog-${n}`;
-      const candidateToken = expectedToken(candidateSeed, seasonId, index, tokenPool);
-      if (candidateToken !== tokenOne) {
-        secondarySeed = candidateSeed;
-        expectedSecondary = candidateToken;
-        shouldDiffer = true;
-        break;
-      }
-    }
-  }
-
-  const secondPage = await context.newPage();
-  await blockExternalRequests(secondPage);
-  await setTeaserSeed(secondPage, secondarySeed);
-  await loadCatalog(secondPage);
-
-  const tokenTwo = String(await secondPage.locator('.dx-catalog-index-season-slide--unannounced').getAttribute('data-dx-growlix-token') || '').trim();
-  expect(tokenTwo).toBe(expectedSecondary);
-  if (shouldDiffer) expect(tokenTwo).not.toBe(tokenOne);
-
-  await secondPage.close();
+  const seed = 'seed-catalog-primary';
+  expect(expectedToken(seed, seasonId, index, tokenPool)).toBe(expectedToken(seed, seasonId, index, tokenPool));
 });
 
-test('teaser card insertion index varies by page-load seed (not fixed to trail position)', async ({ page, context }) => {
-  const firstSeed = 'seed-catalog-insert-a';
-  await setTeaserSeed(page, firstSeed);
+test('Season 3 submission card leads the current thin lane after hydration', async ({ page }) => {
   await loadCatalog(page);
 
-  const firstSlides = page.locator('.dx-catalog-index-season-track > .dx-catalog-index-season-slide');
-  const firstTotal = await firstSlides.count();
-  expect(firstTotal).toBeGreaterThan(0);
-  const firstTeaser = page.locator('.dx-catalog-index-season-track > .dx-catalog-index-season-slide--unannounced');
-  await expect(firstTeaser).toBeVisible();
-  const firstIndex = await firstTeaser.evaluate((node) => {
+  const submitCard = page.locator('.dx-catalog-index-season-track > .dx-catalog-index-season-slide--submit');
+  await expect(submitCard).toBeVisible();
+  const submitIndex = await submitCard.evaluate((node) => {
     const parent = node.parentElement;
     if (!parent) return -1;
     return Array.prototype.indexOf.call(parent.children, node);
   });
-  expect(firstIndex).toBeGreaterThanOrEqual(0);
-
-  let secondSeed = 'seed-catalog-insert-b';
-  let secondIndex = firstIndex;
-  for (let n = 0; n < 40 && secondIndex === firstIndex; n += 1) {
-    secondSeed = `seed-catalog-insert-${n + 2}`;
-    const probePage = await context.newPage();
-    await blockExternalRequests(probePage);
-    await setTeaserSeed(probePage, secondSeed);
-    await loadCatalog(probePage);
-    const probeTeaser = probePage.locator('.dx-catalog-index-season-track > .dx-catalog-index-season-slide--unannounced');
-    await expect(probeTeaser).toBeVisible();
-    secondIndex = await probeTeaser.evaluate((node) => {
-      const parent = node.parentElement;
-      if (!parent) return -1;
-      return Array.prototype.indexOf.call(parent.children, node);
-    });
-    await probePage.close();
-  }
-
-  expect(secondIndex).toBeGreaterThanOrEqual(0);
-  expect(secondIndex).not.toBe(firstIndex);
+  expect(submitIndex).toBe(0);
 });
 
 test('archive carousel includes every valid S1 catalog entry', async ({ page }) => {

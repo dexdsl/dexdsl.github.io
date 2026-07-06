@@ -392,7 +392,18 @@
     linear-gradient(135deg, #15151a, #4b1b2b 52%, #8f3f22);
 }
 
+.dx-catalog-index-season-media--submit {
+  padding: 0;
+}
+
+.dx-catalog-index-season-media--campaign .dx-catalog-index-season-img {
+  position: absolute;
+  inset: 0;
+}
+
 .dx-catalog-index-season-campaign-word {
+  position: relative;
+  z-index: 1;
   max-width: 90%;
   color: #fff;
   font-family: var(--font-heading, sans-serif);

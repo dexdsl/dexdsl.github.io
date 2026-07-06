@@ -237,9 +237,10 @@ function season3TileMarkup(tile, index) {
   // Monogram sits behind the image; if the still fails to load it becomes the tile.
   // The first visible masonry band contains the likely LCP candidate. Discover
   // it from HTML instead of letting native lazy-loading defer an above-fold tile.
-  const priority = tile.kind === 'face' || index <= 6;
+  const eager = tile.kind === 'face' || index <= 6;
+  const highPriority = tile.kind === 'face';
   const media = `<span class="dx-s3-tile__mono" aria-hidden="true">${escapeHtml(monogram(tile.name))}</span>${
-    tile.image ? `<img class="dx-s3-tile__img" src="${escapeHtml(tile.image)}" alt="" width="720" height="720" loading="${priority ? 'eager' : 'lazy'}" decoding="async"${priority ? ' fetchpriority="high"' : ''} referrerpolicy="no-referrer" onerror="this.style.display='none'">` : ''
+    tile.image ? `<img class="dx-s3-tile__img" src="${escapeHtml(tile.image)}" alt="" width="720" height="720" loading="${eager ? 'eager' : 'lazy'}" decoding="async"${highPriority ? ' fetchpriority="high"' : ''} referrerpolicy="no-referrer" onerror="this.style.display='none'">` : ''
   }`;
   const tag = tile.tag ? `<span class="dx-s3-tile__tag">${escapeHtml(tile.tag)}</span>` : '';
   const lookup = tile.lookup ? `<span class="dx-s3-tile__lookup">${escapeHtml(tile.lookup)}</span>` : '';

@@ -55,6 +55,10 @@ function main() {
     'data-dx-campaign-id',
     'dx-catalog-index-season-media--campaign',
     'CATALOG_FALLBACK_IMAGE',
+    "const SEASON_3_TEASER_IMAGE = '/assets/img/dex-signup-open-access.webp';",
+    "function createSeason3TeaserImage(preloadedImage = null)",
+    "image.setAttribute('data-dx-season-teaser-image', '');",
+    "image.fetchPriority = 'high';",
     '__DX_SEASON_TEASER_SEED',
   ];
   for (const marker of requiredRuntimeMarkers) {
@@ -65,6 +69,14 @@ function main() {
   if (runtimeSource.includes('/assets/img/3b1476c230073f7589e3.jpg')) {
     failures.push('catalog index must not load the oversized homepage teaser image');
   }
+  if (!readText(path.join(ROOT, 'docs', 'catalog', 'index.html')).includes(
+    '<link rel="preload" href="/assets/img/dex-signup-open-access.webp" as="image" type="image/webp" fetchpriority="high">',
+  )) {
+    failures.push('catalog index must preload the Season 3 teaser WebP');
+  }
+  if (!readText(path.join(ROOT, 'docs', 'catalog', 'index.html')).includes('data-dx-catalog-static-season')) {
+    failures.push('catalog index must server-render the Season 3 teaser before catalog hydration');
+  }
 
   const cssSource = readText(INDEX_CSS_PATH);
   const requiredCssMarkers = [
@@ -74,6 +86,7 @@ function main() {
     '.dx-catalog-index-season-pips',
     '.dx-catalog-index-season-media--fallback',
     '.dx-catalog-index-season-media--campaign',
+    '.dx-catalog-index-season-media--submit',
     '.dx-catalog-index-season-campaign-badge',
     'overscroll-behavior-y: auto',
   ];

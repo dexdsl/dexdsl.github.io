@@ -262,6 +262,10 @@ const SYNC_MAP = [
     targets: ["docs/assets/img/dex-header-logo.webp"],
   },
   {
+    source: "assets/img/dex-signup-open-access.webp",
+    targets: ["docs/assets/img/dex-signup-open-access.webp"],
+  },
+  {
     source: "assets/img/dex-footer-logo-black.webp",
     targets: ["docs/assets/img/dex-footer-logo-black.webp"],
   },

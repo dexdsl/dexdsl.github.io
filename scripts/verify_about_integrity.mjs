@@ -80,6 +80,16 @@ function verifyPageContract(html, failures) {
   pushIf(failures, html.includes('/assets/js/dx-marketing-newsletter.js'), 'about page must include /assets/js/dx-marketing-newsletter.js');
   pushIf(failures, html.includes('window.DEX_ABOUT_CONFIG'), 'about page must include window.DEX_ABOUT_CONFIG');
   pushIf(failures, html.includes('hashAliases'), 'about page DEX_ABOUT_CONFIG must include hashAliases');
+  pushIf(
+    failures,
+    html.includes('<link rel="preload" href="/assets/img/dex-header-logo.webp" as="image" type="image/webp" fetchpriority="high">'),
+    'about page must preload its mobile LCP header logo',
+  );
+  pushIf(
+    failures,
+    /src="\/assets\/img\/dex-header-logo\.webp"[^>]*decoding="sync"/.test(html),
+    'about header logo must decode synchronously for first paint',
+  );
 
   const forbiddenMarkers = [
     'id="dex-about"',
