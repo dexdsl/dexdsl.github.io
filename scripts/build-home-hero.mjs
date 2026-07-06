@@ -15,6 +15,8 @@ const PATHS = {
   css: path.join(ROOT, 'css', 'components', 'dx-home-hero.css'),
   composerCss: path.join(ROOT, 'css', 'components', 'dx-home-hero-composer.css'),
   featuredSnapshot: path.join(ROOT, 'data', 'home.featured.snapshot.json'),
+  catalogEntries: path.join(ROOT, 'data', 'catalog.entries.json'),
+  publicProfiles: path.join(ROOT, 'data', 'public-profiles.json'),
   component: path.join(ROOT, 'components', 'home', 'hero.js'),
   homepage: path.join(ROOT, 'docs', 'index.html'),
   docsJs: path.join(ROOT, 'docs', 'assets', 'js', 'dx-home-hero.js'),
@@ -36,8 +38,8 @@ function serializeInlineJson(value) {
     .replaceAll('&', '\\u0026');
 }
 
-function buildMountFragment(snapshot, featuredData) {
-  const hero = renderHomeHero(snapshot, { featuredData });
+function buildMountFragment(snapshot, featuredData, catalogData, profilesData) {
+  const hero = renderHomeHero(snapshot, { featuredData, catalogData, profilesData });
   return `<!-- DX_HOME_HERO_MOUNT_START -->
 <div id="dx-home-hero-root" data-dx-home-hero-root data-dx-home-hero-ssr="true" data-composition-id="${snapshot.activeCompositionId}">
   ${hero}
@@ -131,14 +133,17 @@ async function migrateHomepage(mountFragment) {
   await fs.writeFile(PATHS.component, `${mountFragment}\n`, 'utf8');
 }
 
-async function main() {
+export async function buildHomeHero({ assetsOnly = false } = {}) {
   const { library } = await readHomeHeroLibrary();
-  const assetsOnly = process.argv.includes('--assets-only');
   const snapshot = assetsOnly
     ? buildHomeHeroSnapshot(library, library.activeCompositionId)
     : await writeHomeHeroSnapshots(library, library.activeCompositionId);
-  const featuredData = JSON.parse(await fs.readFile(PATHS.featuredSnapshot, 'utf8'));
-  const mountFragment = buildMountFragment(snapshot, featuredData);
+  const [featuredData, catalogData, profilesData] = await Promise.all([
+    fs.readFile(PATHS.featuredSnapshot, 'utf8').then(JSON.parse),
+    fs.readFile(PATHS.catalogEntries, 'utf8').then(JSON.parse),
+    fs.readFile(PATHS.publicProfiles, 'utf8').then(JSON.parse),
+  ]);
+  const mountFragment = buildMountFragment(snapshot, featuredData, catalogData, profilesData);
 
   await ensureParent(PATHS.docsJs);
   await build({
@@ -163,7 +168,12 @@ async function main() {
   console.log(`home:hero:build wrote ${path.relative(ROOT, PATHS.docsJs)} and ${PATHS.jsMirrors.length} mirrors`);
 }
 
-main().catch((error) => {
-  console.error(`home:hero:build failed: ${error instanceof Error ? error.message : String(error)}`);
-  process.exit(1);
-});
+const isCli = Boolean(process.argv[1])
+  && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
+if (isCli) {
+  buildHomeHero({ assetsOnly: process.argv.includes('--assets-only') }).catch((error) => {
+    console.error(`home:hero:build failed: ${error instanceof Error ? error.message : String(error)}`);
+    process.exit(1);
+  });
+}

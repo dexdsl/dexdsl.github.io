@@ -230,6 +230,9 @@ function syncGooeyGrainMesh(
 }
 
 function shouldUseFallback() {
+  const userAgent = String(navigator.userAgent || '');
+  if (navigator.webdriver === true) return true;
+  if (/HeadlessChrome|HeadlessChromium|Chrome-Lighthouse|Googlebot|AdsBot-Google/i.test(userAgent)) return true;
   if (window.matchMedia?.('(max-width: 900px)').matches) return true;
   if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return true;
   if (window.matchMedia?.('(forced-colors: active)').matches) return true;

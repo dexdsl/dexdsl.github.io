@@ -74,15 +74,37 @@ async function main() {
   }
 
   const homepage = await readText('docs', 'index.html');
+  const activeIsSeason3 = source.modules.some((item) => item.type === 'season3-human-credits');
   assert.equal((homepage.match(/data-dx-home-hero-root/g) || []).length, 1, 'homepage must have exactly one hero mount');
-  assert.equal((homepage.match(/id="dexCombined"/g) || []).length, 1, 'homepage must ship one static-first hero');
+  assert.match(
+    homepage,
+    new RegExp(`data-composition-id="${library.activeCompositionId}"`),
+    'prepared homepage composition must match the active hero library composition',
+  );
+  if (activeIsSeason3) {
+    assert.equal((homepage.match(/data-module-type="season3-human-credits"/g) || []).length, 1, 'homepage must ship one static-first Season 3 hero');
+    assert.ok(
+      (homepage.match(/data-card-kind="face"/g) || []).length >= 2,
+      'Season 3 homepage must seed public-profile portraits before API hydration',
+    );
+    assert.match(homepage, /\/assets\/hdr\/images\/8777ddc189323d789f1c\.sdr\.avif/);
+    assert.match(homepage, /\/assets\/hdr\/images\/2319bdb331c97527f23f\.sdr\.avif/);
+    assert.match(homepage, /data-card-kind="face"[\s\S]{0,700}?loading="eager"[\s\S]{0,100}?fetchpriority="high"/);
+  } else {
+    assert.equal((homepage.match(/id="dexCombined"/g) || []).length, 1, 'homepage must ship one static-first legacy hero');
+  }
   assert.match(homepage, /data-dx-home-hero-ssr="true"/);
   assert.match(homepage, /data-dx-home-featured-data/);
   assert.match(homepage, /data-dx-home-slot-bootstrap/);
   assert.doesNotMatch(homepage, /Loading hero…/);
   assert.doesNotMatch(homepage, /<iframe\b[^>]*youtube-nocookie\.com\/embed/i);
-  assert.match(homepage, /class="dex-video-facade dx-home-featured-facade"/);
-  assert.match(homepage, /\/assets\/home-featured\/prepared-oboe-sky-macklay\.webp/);
+  if (activeIsSeason3) {
+    assert.match(homepage, /data-module-type="season3-human-credits"/);
+    assert.match(homepage, /data-dx-s3-wall/);
+  } else {
+    assert.match(homepage, /class="dex-video-facade dx-home-featured-facade"/);
+    assert.match(homepage, /\/assets\/home-featured\/prepared-oboe-sky-macklay\.webp/);
+  }
   assert.doesNotMatch(homepage, /<video\b[^>]*\bautoplay\b/i);
   assert.doesNotMatch(homepage, /zeffy-scripts/i);
   assert.equal(
@@ -100,6 +122,9 @@ async function main() {
 
   const component = await readText('components', 'home', 'hero.js');
   assert.match(component, /DX_HOME_HERO_MOUNT_START/);
+
+  const storeSource = await readText('scripts', 'lib', 'home-hero-store.mjs');
+  assert.match(storeSource, /await buildHomeHero\(\{ assetsOnly: true \}\)/, 'Tauri prepare must rebuild the deployable homepage mount');
 
   const runtimeSource = await readText('scripts', 'src', 'home.hero.entry.mjs');
   for (const marker of [

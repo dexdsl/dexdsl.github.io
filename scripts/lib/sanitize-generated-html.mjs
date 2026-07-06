@@ -4,8 +4,8 @@ export const DEX_ORIGIN = 'https://dexdsl.github.io';
 export const DEX_CSS_HREF = `${DEX_ORIGIN}/assets/css/dex.css`;
 export const ENTRY_RUNTIME_CSS_HREF = '/css/components/dx-entry-runtime.css';
 export const DEX_SIDEBAR_SRC = `${DEX_ORIGIN}/assets/dex-sidebar.js`;
-export const DEX_HEADER_SLOT_SRC = '/assets/js/header-slot.js?v=20260702shader2';
-export const DEX_GRAIN_OVERLAY_SRC = '/assets/js/dx-grain-overlay.js?v=20260702shader2';
+export const DEX_HEADER_SLOT_SRC = '/assets/js/header-slot.js?v=20260705perf3';
+export const DEX_GRAIN_OVERLAY_SRC = '/assets/js/dx-grain-overlay.js?v=20260705perf3';
 export const AUTH_VENDOR_SRC = `${DEX_ORIGIN}/assets/vendor/auth0-spa-js.umd.min.js`;
 
 const AUTH_CONFIG_PATHS = ['/assets/dex-auth0-config.js', '/assets/dex-auth-config.js'];
@@ -103,7 +103,6 @@ const FORBIDDEN_REMAINING_MARKERS = [
 export const REQUIRED_SANITIZED_SNIPPETS = [
   DEX_CSS_HREF,
   DEX_SIDEBAR_SRC,
-  DEX_GRAIN_OVERLAY_SRC,
   DEX_HEADER_SLOT_SRC,
   'id="dex-sidebar-config"',
   'id="dex-sidebar-page-config"',
@@ -1617,7 +1616,6 @@ function ensureRequiredRuntimeScripts($, head) {
   if ($('script[src]').filter((_, el) => String($(el).attr('src') || '').trim() === DEX_SIDEBAR_SRC).length === 0) {
     head.append(`\n<script defer src="${DEX_SIDEBAR_SRC}"></script>`);
   }
-  head.append(`\n<script id="dx-gooey-grain-runtime" defer src="${DEX_GRAIN_OVERLAY_SRC}"></script>`);
   head.append(`\n<script defer src="${DEX_HEADER_SLOT_SRC}"></script>`);
 }
 
@@ -1748,11 +1746,8 @@ function collectSanitizationIssues($) {
     issues.push({ type: 'duplicate', token: DEX_HEADER_SLOT_SRC });
   }
   const grainOverlayCount = dexRuntimeScriptCount($, '/assets/js/dx-grain-overlay.js');
-  if (grainOverlayCount === 0) {
-    issues.push({ type: 'missing', token: DEX_GRAIN_OVERLAY_SRC });
-  }
-  if (grainOverlayCount > 1) {
-    issues.push({ type: 'duplicate', token: DEX_GRAIN_OVERLAY_SRC });
+  if (grainOverlayCount > 0) {
+    issues.push({ type: 'eager-runtime', token: DEX_GRAIN_OVERLAY_SRC });
   }
 
   const hasEntryStructure = $('.dex-entry-layout').length > 0 || $('.dex-sidebar').length > 0;

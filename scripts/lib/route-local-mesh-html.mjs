@@ -1,6 +1,6 @@
 const LEGACY_STYLE_ID = 'dex-entry-gooey-bg-style';
 const LEGACY_SCRIPT_ID = 'dex-entry-gooey-bg-script';
-export const DX_SHADER_RUNTIME_CACHE_KEY = '20260702shader2';
+export const DX_SHADER_RUNTIME_CACHE_KEY = '20260705perf3';
 export const DX_HEADER_SLOT_RUNTIME_SRC = `/assets/js/header-slot.js?v=${DX_SHADER_RUNTIME_CACHE_KEY}`;
 export const DX_GRAIN_OVERLAY_RUNTIME_SRC = `/assets/js/dx-grain-overlay.js?v=${DX_SHADER_RUNTIME_CACHE_KEY}`;
 export const DX_HEADER_SLOT_RUNTIME_TAG = `<script defer src="${DX_HEADER_SLOT_RUNTIME_SRC}"></script>`;
@@ -22,15 +22,15 @@ function canonicalAssetPath(src) {
 
 export function normalizeShaderRuntimeHtml(html) {
   const source = String(html || '');
+  const sourceEnding = source.match(/(?:\r?\n)*$/)?.[0] || '';
   const scriptPattern = /<script\b[^>]*\bsrc=(["'])([^"']+)\1[^>]*>\s*<\/script>/gi;
   const runtimeMatches = Array.from(source.matchAll(scriptPattern)).filter((match) => {
     const pathKey = canonicalAssetPath(match[2]);
     return pathKey === '/assets/js/header-slot.js' || pathKey === '/assets/js/dx-grain-overlay.js';
   });
   if (
-    runtimeMatches.length === 2
-    && runtimeMatches[0][0] === DX_GRAIN_OVERLAY_RUNTIME_TAG
-    && runtimeMatches[1][0] === DX_HEADER_SLOT_RUNTIME_TAG
+    runtimeMatches.length === 1
+    && runtimeMatches[0][0] === DX_HEADER_SLOT_RUNTIME_TAG
   ) {
     return source;
   }
@@ -46,8 +46,8 @@ export function normalizeShaderRuntimeHtml(html) {
   });
 
   if (firstRuntimeIndex < 0) return source;
-  const runtimePair = `${DX_GRAIN_OVERLAY_RUNTIME_TAG}\n${DX_HEADER_SLOT_RUNTIME_TAG}`;
-  return `${withoutRuntime.slice(0, firstRuntimeIndex)}${runtimePair}${withoutRuntime.slice(firstRuntimeIndex)}`;
+  const normalized = `${withoutRuntime.slice(0, firstRuntimeIndex)}${DX_HEADER_SLOT_RUNTIME_TAG}${withoutRuntime.slice(firstRuntimeIndex)}`;
+  return `${normalized.replace(/(?:\r?\n)*$/, '')}${sourceEnding}`;
 }
 
 function removeElementById(html, tagName, id) {

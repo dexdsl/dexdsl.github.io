@@ -290,10 +290,12 @@ if (!hasSqsAnnouncementContract) {
   throw new Error('portable output should preserve sqs announcement-bar class family for restored template');
 }
 for (const needle of [
-  '/assets/js/dx-grain-overlay.js?v=20260702shader2',
-  '/assets/js/header-slot.js?v=20260702shader2',
+  '/assets/js/header-slot.js?v=20260705perf3',
 ]) {
   if (!portableHtml.includes(needle)) throw new Error(`portable output missing persistent backdrop owner: ${needle}`);
+}
+if (portableHtml.includes('/assets/js/dx-grain-overlay.js')) {
+  throw new Error('portable output must defer the grain shader to header-slot interaction');
 }
 for (const needle of [
   'id="scroll-gradient-bg"',

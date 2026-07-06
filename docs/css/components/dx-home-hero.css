@@ -746,8 +746,8 @@ border-bottom: none !important;
 
 /* --- Motion: one-time reveal on hydrate; disabled when quiet/reduced --- */
 .dx-s3-tile--enter {
-  animation: dx-s3-tile-in 0.5s cubic-bezier(.22, .8, .24, 1) both;
-  animation-delay: calc(var(--dx-s3-tile-i, 0) * 28ms);
+  animation: dx-s3-tile-in 0.18s cubic-bezier(.22, .8, .24, 1) both;
+  animation-delay: calc(var(--dx-s3-tile-i, 0) * 8ms);
 }
 @keyframes dx-s3-tile-in {
   from { opacity: 0; transform: translateY(10px); }

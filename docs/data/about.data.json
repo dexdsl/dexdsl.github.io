@@ -94,7 +94,7 @@
         "email": "seb@dexdsl.org",
         "websiteLabel": "Website",
         "websiteHref": "https://cbassuarez.bandcamp.com",
-        "imageSrc": "/assets/img/2319bdb331c97527f23f.jpg",
+        "imageSrc": "/assets/hdr/images/2319bdb331c97527f23f.sdr.avif",
         "imageAlt": "S. Suarez-Solis portrait"
       },
       {
@@ -104,7 +104,7 @@
         "email": "cameron@dexdsl.org",
         "websiteLabel": "Website",
         "websiteHref": "https://cameronchurch.com",
-        "imageSrc": "/assets/img/8777ddc189323d789f1c.jpg",
+        "imageSrc": "/assets/hdr/images/8777ddc189323d789f1c.sdr.avif",
         "imageAlt": "C. Church portrait"
       },
       {
@@ -114,7 +114,7 @@
         "email": "tyler@dexdsl.org",
         "websiteLabel": "Website",
         "websiteHref": "https://tylerjordancomposer.com",
-        "imageSrc": "/assets/img/15e1054490df27af1ca2.jpg",
+        "imageSrc": "/assets/hdr/images/15e1054490df27af1ca2.sdr.avif",
         "imageAlt": "T. Jordan portrait"
       }
     ],

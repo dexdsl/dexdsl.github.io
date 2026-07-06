@@ -82,6 +82,10 @@ const SYNC_MAP = [
     targets: ["docs/data/about.data.json"],
   },
   {
+    source: "data/public-profiles.json",
+    targets: ["docs/data/public-profiles.json"],
+  },
+  {
     source: "data/dexdrones.data.json",
     targets: ["docs/data/dexdrones.data.json"],
   },
@@ -276,6 +280,22 @@ const SYNC_MAP = [
   {
     source: "assets/catalog/tim-feeney.webp",
     targets: ["docs/assets/catalog/tim-feeney.webp"],
+  },
+  {
+    source: "assets/catalog/prepared-oboe-sky-macklay.webp",
+    targets: ["docs/assets/catalog/prepared-oboe-sky-macklay.webp"],
+  },
+  {
+    source: "assets/catalog/multiperc.webp",
+    targets: ["docs/assets/catalog/multiperc.webp"],
+  },
+  {
+    source: "assets/catalog/andrew-chanover.webp",
+    targets: ["docs/assets/catalog/andrew-chanover.webp"],
+  },
+  {
+    source: "assets/catalog/bojun-zhang.webp",
+    targets: ["docs/assets/catalog/bojun-zhang.webp"],
   },
   {
     source: "assets/press/dex-factsheet-2025-08.pdf",

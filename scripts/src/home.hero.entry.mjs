@@ -351,7 +351,7 @@ function tileElement(tile, index) {
   const metaParts = tile.kind === 'face' ? [tile.role, tile.instrument] : [tile.instrument];
   const meta = metaParts.filter(Boolean).join(' · ');
   const media = tile.image
-    ? `<img class="dx-s3-tile__img" src="${escapeAttr(tile.image)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">`
+    ? `<img class="dx-s3-tile__img" src="${escapeAttr(tile.image)}" alt="" width="720" height="720" loading="${tile.kind === 'face' ? 'eager' : 'lazy'}" decoding="async"${tile.kind === 'face' ? ' fetchpriority="high"' : ''} referrerpolicy="no-referrer">`
     : `<span class="dx-s3-tile__mono" aria-hidden="true">${escapeAttr(tile.kind === 'open' ? '＋' : monogram(tile.name))}</span>`;
   const template = document.createElement('template');
   template.innerHTML = `<a class="dx-s3-tile dx-s3-tile--${tile.kind}${tile.isOwn ? ' is-own' : ''}" data-card-kind="${tile.kind}" role="listitem" href="${escapeAttr(tile.href || '#')}" style="--dx-s3-tile-i:${index}"${tile.kind === 'open' ? ' data-dx-s3-open' : ''}>
@@ -586,6 +586,11 @@ function initSeason3(root) {
   let works = [];
   const paint = () => {
     if (!profiles.length && !works.length) return; // keep the SSR/seed wall on total failure
+    const wall = module.querySelector('[data-dx-s3-wall]');
+    if (wall?.querySelector('[data-card-kind="face"]')) {
+      wall.setAttribute('data-wall-loaded', 'true');
+      return;
+    }
     renderWall(module, assembleWall(profiles, works, options));
   };
   const applyAuthState = async (authenticated) => {

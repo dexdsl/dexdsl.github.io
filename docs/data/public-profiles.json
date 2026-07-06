@@ -1,6 +1,25 @@
 {
-  "generated_at": null,
-  "source": "manual-empty-public-profile-map",
+  "generated_at": "2026-07-06T03:50:47.003Z",
+  "source": "dex-api-public-profiles",
   "entries": {},
-  "profiles": {}
+  "profiles": {
+    "cameron-church": {
+      "handle": "cameron-church",
+      "display_name": "Cameron Church",
+      "picture": "/assets/hdr/images/8777ddc189323d789f1c.sdr.avif",
+      "role": "",
+      "instrument": "",
+      "dex_id": "DEX-BCHJQ8",
+      "profile_url": "/u/cameron-church/"
+    },
+    "cbassuarez": {
+      "handle": "cbassuarez",
+      "display_name": "Sebastian Suarez-Solis",
+      "picture": "/assets/hdr/images/2319bdb331c97527f23f.sdr.avif",
+      "role": "Composer",
+      "instrument": "Harpsichord",
+      "dex_id": "DEX-YT8EF7",
+      "profile_url": "/u/cbassuarez/"
+    }
+  }
 }

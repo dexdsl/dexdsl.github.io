@@ -138,6 +138,8 @@ export async function prepareHomeHero(compositionId) {
   });
   await atomicWriteJson(HOME_HERO_PATHS.library, preparedLibrary);
   const snapshot = await writeHomeHeroSnapshots(preparedLibrary, compositionId);
+  const { buildHomeHero } = await import('../build-home-hero.mjs');
+  await buildHomeHero({ assetsOnly: true });
   return {
     library: preparedLibrary,
     snapshot,

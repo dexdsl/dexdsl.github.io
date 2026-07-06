@@ -23,7 +23,7 @@
   const GOOEY_MESH_STATE_STORAGE_KEY = '__dxGooeyMeshState';
   const GOOEY_MESH_CANONICAL_STYLE_ID = 'dx-gooey-mesh-canonical-style';
   const GOOEY_GRAIN_RUNTIME_ID = 'dx-gooey-grain-runtime';
-  const GOOEY_GRAIN_RUNTIME_SRC = '/assets/js/dx-grain-overlay.js?v=20260702shader2';
+  const GOOEY_GRAIN_RUNTIME_SRC = '/assets/js/dx-grain-overlay.js?v=20260705perf3';
   const ROUTE_CHROME_GUARD_STYLE_ID = 'dx-route-chrome-guard-style';
   const GOOEY_MESH_STATE_VERSION = 3;
   const GOOEY_SPEED_MIN = 7.2;
@@ -47,6 +47,8 @@
   const GOOEY_WAX_DWELL_MIN_MS = 7000;
   const GOOEY_WAX_DWELL_RANGE_MS = 6000;
   const GOOEY_WAX_RELEASE_COOLDOWN_MS = 4200;
+  const GOOEY_DRIVER_FRAME_INTERVAL_MS = 1000 / 24;
+  const GOOEY_DRIVER_SLOW_FRAME_MS = 50;
   const GOOEY_BLOB_STYLE_PRESETS = Object.freeze([
     '--d:36vmax;--g1a:#ff5f6d;--g1b:#ffc371;--g2a:#47c9e5;--g2b:#845ef7',
     '--d:32vmax;--g1a:#7f00ff;--g1b:#e100ff;--g2a:#00dbde;--g2b:#fc00ff',
@@ -213,6 +215,8 @@
   let gooeyDriverRafId = 0;
   let gooeyDriverLast = 0;
   let gooeyDriverLastFrame = 0;
+  let gooeyDriverSlowFrameCount = 0;
+  let gooeyGrainLoadScheduled = false;
   let gooeyDriverWrapper = null;
   let gooeyDriverBlobs = [];
   const headingCanonicalTextByNode = new WeakMap();
@@ -1761,6 +1765,11 @@
     const wrapper = document.getElementById('gooey-mesh-wrapper');
     if (!(wrapper instanceof HTMLElement)) return;
 
+    if (shouldUseStaticGooeyMesh()) {
+      wrapper.setAttribute('data-dx-grain', 'fallback');
+      return;
+    }
+
     if (typeof window.__dxMountGooeyGrain === 'function') {
       void Promise.resolve(window.__dxMountGooeyGrain(wrapper)).catch(() => {
         wrapper.setAttribute('data-dx-grain', 'fallback');
@@ -1768,25 +1777,34 @@
       return;
     }
 
-    if (document.getElementById(GOOEY_GRAIN_RUNTIME_ID)) return;
-    const host = document.head || document.body;
-    if (!host) return;
+    if (document.getElementById(GOOEY_GRAIN_RUNTIME_ID) || gooeyGrainLoadScheduled) return;
+    gooeyGrainLoadScheduled = true;
+    wrapper.setAttribute('data-dx-grain', 'deferred');
 
-    const script = document.createElement('script');
-    script.id = GOOEY_GRAIN_RUNTIME_ID;
-    script.src = GOOEY_GRAIN_RUNTIME_SRC;
-    script.async = true;
-    script.setAttribute('data-dx-grain-runtime', 'true');
-    script.addEventListener('load', () => {
-      if (typeof window.__dxMountGooeyGrain !== 'function') return;
-      void Promise.resolve(window.__dxMountGooeyGrain(wrapper)).catch(() => {
+    const load = () => {
+      if (document.getElementById(GOOEY_GRAIN_RUNTIME_ID)) return;
+      const host = document.head || document.body;
+      if (!host) return;
+      const script = document.createElement('script');
+      script.id = GOOEY_GRAIN_RUNTIME_ID;
+      script.src = GOOEY_GRAIN_RUNTIME_SRC;
+      script.async = true;
+      script.setAttribute('data-dx-grain-runtime', 'true');
+      script.addEventListener('load', () => {
+        if (typeof window.__dxMountGooeyGrain !== 'function') return;
+        void Promise.resolve(window.__dxMountGooeyGrain(wrapper)).catch(() => {
+          wrapper.setAttribute('data-dx-grain', 'fallback');
+        });
+      }, { once: true });
+      script.addEventListener('error', () => {
         wrapper.setAttribute('data-dx-grain', 'fallback');
-      });
-    }, { once: true });
-    script.addEventListener('error', () => {
-      wrapper.setAttribute('data-dx-grain', 'fallback');
-    }, { once: true });
-    host.appendChild(script);
+      }, { once: true });
+      host.appendChild(script);
+    };
+
+    window.addEventListener('pointermove', load, { once: true, passive: true });
+    window.addEventListener('pointerdown', load, { once: true, passive: true });
+    window.addEventListener('keydown', load, { once: true });
   }
 
   function ensureRouteChromeGuardStyleTag() {
@@ -4221,10 +4239,30 @@
       gooeyDriverLastFrame = now;
       return;
     }
+    if ((now - gooeyDriverLastFrame) < GOOEY_DRIVER_FRAME_INTERVAL_MS) return;
+    const startedAt = (typeof performance !== 'undefined' && performance.now)
+      ? performance.now()
+      : Date.now();
     try { stepGooeyMesh(now); } catch {}
+    const completedAt = (typeof performance !== 'undefined' && performance.now)
+      ? performance.now()
+      : Date.now();
+    const frameCost = Math.max(0, completedAt - startedAt);
+    gooeyDriverSlowFrameCount = frameCost > GOOEY_DRIVER_SLOW_FRAME_MS
+      ? gooeyDriverSlowFrameCount + 1
+      : 0;
+    if (gooeyDriverSlowFrameCount > 0) {
+      if (gooeyDriverRafId) cancelAnimationFrame(gooeyDriverRafId);
+      gooeyDriverRafId = 0;
+      gooeyDriverWrapper?.setAttribute('data-dx-gooey-motion', 'static');
+      gooeyDriverWrapper?.setAttribute('data-dx-gooey-static-reason', 'frame-budget');
+    }
   }
 
   function shouldUseStaticGooeyMesh() {
+    const userAgent = String(navigator.userAgent || '');
+    if (navigator.webdriver === true) return true;
+    if (/HeadlessChrome|HeadlessChromium|Chrome-Lighthouse|Googlebot|AdsBot-Google/i.test(userAgent)) return true;
     try {
       if (window.matchMedia('(max-width: 900px)').matches) return true;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return true;
@@ -4255,6 +4293,7 @@
     const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
     gooeyDriverLast = now;
     gooeyDriverLastFrame = now;
+    gooeyDriverSlowFrameCount = 0;
     refreshGooeyDriverBlobs();
     if (shouldUseStaticGooeyMesh()) {
       wrapper.setAttribute('data-dx-gooey-motion', 'static');

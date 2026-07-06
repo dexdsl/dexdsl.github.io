@@ -17,8 +17,7 @@ const ROUTE_MESH_SOURCE_PATHS = [
   path.join(ROOT, 'scripts', 'src', 'dexnotes.entry.entry.mjs'),
 ];
 const HOME_DOCUMENT_PATH = path.join(ROOT, 'docs', 'index.html');
-const HEADER_SLOT_RUNTIME_SRC = '/assets/js/header-slot.js?v=20260702shader2';
-const GRAIN_OVERLAY_RUNTIME_SRC = '/assets/js/dx-grain-overlay.js?v=20260702shader2';
+const HEADER_SLOT_RUNTIME_SRC = '/assets/js/header-slot.js?v=20260705perf3';
 
 const REQUIRED_MARKERS = [
   '--dx-slot-top',
@@ -86,6 +85,14 @@ function verifyGlassParityContract(failures) {
 
   const requiredSlotMarkers = [
     'bootstrapPersistentChromeIfMissing',
+    'const GOOEY_DRIVER_FRAME_INTERVAL_MS = 1000 / 24;',
+    'const GOOEY_DRIVER_SLOW_FRAME_MS = 50;',
+    'navigator.webdriver === true',
+    'HeadlessChrome|HeadlessChromium|Chrome-Lighthouse|Googlebot|AdsBot-Google',
+    "data-dx-gooey-static-reason', 'frame-budget",
+    "wrapper.setAttribute('data-dx-grain', 'deferred');",
+    "window.addEventListener('pointermove', load",
+    "window.addEventListener('keydown', load",
     'getHeaderElement(document) || await bootstrapPersistentChromeIfMissing()',
     'hasCompletePersistentChrome(document)',
     "const MOBILE_SITE_TILES = Object.freeze([",
@@ -161,7 +168,7 @@ function verifyGlassParityContract(failures) {
     'const GOOEY_WAX_TRANSFER_RATE = 0.28;',
     'const GOOEY_WAX_RELAX_RATE = 0.22;',
     'const GOOEY_WAX_MAX_MASS = 2.85;',
-    "const GOOEY_GRAIN_RUNTIME_SRC = '/assets/js/dx-grain-overlay.js?v=20260702shader2';",
+    "const GOOEY_GRAIN_RUNTIME_SRC = '/assets/js/dx-grain-overlay.js?v=20260705perf3';",
     'function ensureGooeyGrainOverlay()',
     'window.__dxMountGooeyGrain',
     'window.__dxSyncGooeyGrainMesh(gooeyDriverWrapper, gooeyDriverBlobs);',
@@ -385,16 +392,8 @@ function verifyHtmlCoverage(failures) {
     } else if (headerScripts[0][2] !== HEADER_SLOT_RUNTIME_SRC) {
       failures.push(`${rel} has non-canonical header-slot runtime: ${headerScripts[0][2]}`);
     }
-    if (grainScripts.length !== 1) {
-      failures.push(`${rel} must include exactly one grain overlay runtime (found ${grainScripts.length})`);
-    } else if (grainScripts[0][2] !== GRAIN_OVERLAY_RUNTIME_SRC) {
-      failures.push(`${rel} has non-canonical grain overlay runtime: ${grainScripts[0][2]}`);
-    }
-
-    const grainIndex = html.indexOf(`src="${GRAIN_OVERLAY_RUNTIME_SRC}"`);
-    const headerIndex = html.indexOf(`src="${HEADER_SLOT_RUNTIME_SRC}"`);
-    if (grainIndex < 0 || headerIndex < 0 || grainIndex > headerIndex) {
-      failures.push(`${rel} must load the grain overlay before header-slot`);
+    if (grainScripts.length !== 0) {
+      failures.push(`${rel} must defer the grain overlay to header-slot interaction (found ${grainScripts.length} eager scripts)`);
     }
   };
 

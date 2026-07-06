@@ -153,7 +153,7 @@ assert.equal(dexCssCount, 1, 'Dex stylesheet should exist exactly once');
 assert.equal(entryRuntimeCssCount, 1, 'Static entry runtime stylesheet should exist exactly once');
 assert.equal(dexSidebarCount, 1, 'Dex sidebar script should exist exactly once');
 assert.equal(headerSlotCount, 1, 'Header slot runtime should exist exactly once');
-assert.equal(grainOverlayCount, 1, 'Grain shader runtime should exist exactly once');
+assert.equal(grainOverlayCount, 0, 'Grain shader runtime must be deferred to header-slot interaction');
 assert.equal(dexBreadcrumbMotionCount, 1, 'Dex breadcrumb motion runtime should exist exactly once');
 assert.ok(sanitized.includes('id="dex-sidebar-config"'), 'Dex global config script should remain');
 assert.ok(sanitized.includes('id="dex-sidebar-page-config"'), 'Dex page config script should remain');

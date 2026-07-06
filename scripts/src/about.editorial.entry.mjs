@@ -240,6 +240,8 @@ import { mountMarketingNewsletter } from './shared/dx-marketing-newsletter.entry
       const image = create('img', 'dx-about-team-photo');
       image.src = toText(member?.imageSrc, '', 600);
       image.alt = toText(member?.imageAlt || member?.name, '', 180);
+      image.width = 720;
+      image.height = 720;
       image.loading = 'lazy';
       image.decoding = 'async';
       media.appendChild(image);

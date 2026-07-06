@@ -187,6 +187,24 @@ function catalogEntryToTile(entry) {
   };
 }
 
+function publicProfileTiles(profilesData) {
+  const source = profilesData?.profiles;
+  const profiles = Array.isArray(source)
+    ? source
+    : (source && typeof source === 'object' ? Object.values(source) : []);
+  return profiles
+    .filter((profile) => profile && (profile.display_name || profile.handle))
+    .map((profile) => ({
+      kind: 'face',
+      name: profile.display_name || profile.handle || '',
+      role: profile.role || '',
+      instrument: profile.instrument || '',
+      href: profile.profile_url || (profile.handle ? `/u/${profile.handle}/` : '#'),
+      image: profile.picture || '',
+      tag: 'DEX MEMBER',
+    }));
+}
+
 // Season-bias order: S3 (accepted) first, then S2, then S1, then anything else.
 function seasonRank(season, order) {
   const index = order.indexOf(String(season || '').toUpperCase());
@@ -215,20 +233,26 @@ function catalogTiles(catalogData, module) {
 function season3TileMarkup(tile, index) {
   const meta = tile.kind === 'face'
     ? [tile.role, tile.instrument].filter(Boolean).join(' · ')
-    : escapeHtml(tile.instrument);
+    : tile.instrument;
   // Monogram sits behind the image; if the still fails to load it becomes the tile.
+  // The first visible masonry band contains the likely LCP candidate. Discover
+  // it from HTML instead of letting native lazy-loading defer an above-fold tile.
+  const priority = tile.kind === 'face' || index <= 6;
   const media = `<span class="dx-s3-tile__mono" aria-hidden="true">${escapeHtml(monogram(tile.name))}</span>${
-    tile.image ? `<img class="dx-s3-tile__img" src="${escapeHtml(tile.image)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none'">` : ''
+    tile.image ? `<img class="dx-s3-tile__img" src="${escapeHtml(tile.image)}" alt="" width="720" height="720" loading="${priority ? 'eager' : 'lazy'}" decoding="async"${priority ? ' fetchpriority="high"' : ''} referrerpolicy="no-referrer" onerror="this.style.display='none'">` : ''
   }`;
   const tag = tile.tag ? `<span class="dx-s3-tile__tag">${escapeHtml(tile.tag)}</span>` : '';
   const lookup = tile.lookup ? `<span class="dx-s3-tile__lookup">${escapeHtml(tile.lookup)}</span>` : '';
+  const body = [
+    tag,
+    `<span class="dx-s3-tile__name">${escapeHtml(tile.name)}</span>`,
+    meta ? `<span class="dx-s3-tile__role">${escapeHtml(meta)}</span>` : '',
+    lookup,
+  ].filter(Boolean).map((line) => `        ${line}`).join('\n');
   return `<a class="dx-s3-tile dx-s3-tile--${escapeHtml(tile.kind)}" data-card-kind="${escapeHtml(tile.kind)}" data-card-slot="${index}" role="listitem" href="${escapeHtml(tile.href || '#')}" style="--dx-s3-tile-i:${index}">
       <span class="dx-s3-tile__media">${media}<span class="dx-s3-tile__wash" aria-hidden="true"></span></span>
       <span class="dx-s3-tile__body">
-        ${tag}
-        <span class="dx-s3-tile__name">${escapeHtml(tile.name)}</span>
-        ${meta ? `<span class="dx-s3-tile__role">${meta}</span>` : ''}
-        ${lookup}
+${body}
       </span>
     </a>`;
 }
@@ -253,12 +277,17 @@ function season3OpenTile(index, label, href = '/entry/submit/?flow=sample') {
     </a>`;
 }
 
-function season3WallMarkup(module, catalogData) {
+function season3WallMarkup(module, catalogData, profilesData) {
   const cta = module.cta;
   const wall = module.wall;
-  // Baseline tiles for SSR / preview / no-JS. The client re-hydrates this field
-  // with member faces + their work, shuffled fresh per load.
-  const tiles = catalogTiles(catalogData, module).map((tile) => ({ ...tile, tag: wall.tagLabel }));
+  // Complete initial wall for SSR / preview / no-JS. The client preserves this
+  // seeded wall when profiles are present so portraits never wait on a feed.
+  const faces = publicProfileTiles(profilesData);
+  const workCapacity = Math.max(0, wall.capacity - faces.length - 1);
+  const works = catalogTiles(catalogData, module)
+    .slice(0, workCapacity)
+    .map((tile) => ({ ...tile, tag: wall.tagLabel }));
+  const tiles = [...faces, ...works];
   const openLabel = '@you';
   // Open slot leads so "your face here" reads top-left (client keeps it first too).
   const seededTiles = tiles.length
@@ -291,7 +320,12 @@ function season3WallMarkup(module, catalogData) {
   </section>`;
 }
 
-export function renderHomeHero(snapshot, { featuredData = null, catalogData = null, preview = false } = {}) {
+export function renderHomeHero(snapshot, {
+  featuredData = null,
+  catalogData = null,
+  profilesData = null,
+  preview = false,
+} = {}) {
   const moduleById = new Map((snapshot.modules || []).map((module) => [module.id, module]));
   const slots = (snapshot.composition?.slots || []).map((moduleId) => {
     const module = moduleById.get(moduleId);
@@ -299,7 +333,7 @@ export function renderHomeHero(snapshot, { featuredData = null, catalogData = nu
     if (module.type === 'campaign') return campaignMarkup(module);
     if (module.type === 'featured') return featuredMarkup(module, featuredData, preview);
     if (module.type === 'promo') return promoMarkup(module);
-    if (module.type === 'season3-human-credits') return season3WallMarkup(module, catalogData);
+    if (module.type === 'season3-human-credits') return season3WallMarkup(module, catalogData, profilesData);
     return '';
   }).join('');
   return `<div id="dexCombined" data-layout="${escapeHtml(snapshot.composition?.layout || 'single')}" data-composition-id="${escapeHtml(snapshot.activeCompositionId || '')}" style="

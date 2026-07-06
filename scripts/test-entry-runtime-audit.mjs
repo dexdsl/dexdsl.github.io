@@ -18,8 +18,7 @@ async function main() {
   <script defer src="/assets/vendor/auth0-spa-js.umd.min.js"></script>
   <script defer src="/assets/dex-auth0-config.js"></script>
   <script defer src="/assets/dex-auth.js"></script>
-  <script defer src="/assets/js/dx-grain-overlay.js?v=20260702shader2"></script>
-  <script defer src="/assets/js/header-slot.js?v=20260702shader2"></script>
+  <script defer src="/assets/js/header-slot.js?v=20260705perf3"></script>
   <link rel="stylesheet" href="/css/components/dx-entry-runtime.css">
   </head><body>
   <div class="dex-breadcrumb"></div>
@@ -39,8 +38,7 @@ async function main() {
   <script defer src="/assets/vendor/auth0-spa-js.umd.min.js"></script>
   <script defer src="/assets/dex-auth0-config.js"></script>
   <script defer src="/assets/dex-auth.js"></script>
-  <script defer src="/assets/js/dx-grain-overlay.js?v=20260702shader2"></script>
-  <script defer src="/assets/js/header-slot.js?v=20260702shader2"></script>
+  <script defer src="/assets/js/header-slot.js?v=20260705perf3"></script>
   <link rel="stylesheet" href="/css/components/dx-entry-runtime.css">
   </head><body>
   <div class="dex-breadcrumb"></div>

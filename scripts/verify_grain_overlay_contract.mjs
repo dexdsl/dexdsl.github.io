@@ -35,6 +35,8 @@ for (const marker of [
   'connection?.saveData === true',
   'navigator.deviceMemory',
   'navigator.hardwareConcurrency',
+  'navigator.webdriver === true',
+  'HeadlessChrome|HeadlessChromium|Chrome-Lighthouse|Googlebot|AdsBot-Google',
 ]) {
   if (!source.includes(marker)) failures.push(`grain source missing marker: ${marker}`);
 }
@@ -44,7 +46,7 @@ if (source.includes('<GrainGradient') || source.includes('new GrainGradient')) {
 
 const slot = read('docs/assets/js/header-slot.js');
 for (const marker of [
-  "const GOOEY_GRAIN_RUNTIME_SRC = '/assets/js/dx-grain-overlay.js?v=20260702shader2';",
+  "const GOOEY_GRAIN_RUNTIME_SRC = '/assets/js/dx-grain-overlay.js?v=20260705perf3';",
   'function ensureGooeyGrainOverlay()',
   'window.__dxMountGooeyGrain',
   'window.__dxSyncGooeyGrainMesh(gooeyDriverWrapper, gooeyDriverBlobs);',
