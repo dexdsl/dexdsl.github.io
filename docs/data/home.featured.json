@@ -16,7 +16,7 @@
       ],
       "leadIn": "",
       "video": "https://www.youtube.com/watch?v=LPHD-ynh-MA",
-      "thumbnail": "",
+    "thumbnail": "/assets/home-featured/prepared-oboe-sky-macklay.webp",
       "date": "2024-04-16",
       "label_override": ""
     },
@@ -33,7 +33,7 @@
       ],
       "leadIn": "",
       "video": "https://www.youtube.com/watch?v=8sia2JYhwvI",
-      "thumbnail": "",
+    "thumbnail": "/assets/home-featured/jakob-heinemann.webp",
       "date": "2024-10-10",
       "label_override": ""
     },
@@ -50,7 +50,7 @@
       ],
       "leadIn": "",
       "video": "https://www.youtube.com/watch?v=qNuxhAKCekg",
-      "thumbnail": "",
+    "thumbnail": "/assets/home-featured/bojun-zhang.webp",
       "date": "2024-10-10",
       "label_override": ""
     },
@@ -67,7 +67,7 @@
       ],
       "leadIn": "",
       "video": "https://www.youtube.com/watch?v=tPOTWpo4bWY&t=15s",
-      "thumbnail": "",
+    "thumbnail": "/assets/home-featured/amplified-tv-sam-pluta.webp",
       "date": "2024-10-10",
       "label_override": ""
     }

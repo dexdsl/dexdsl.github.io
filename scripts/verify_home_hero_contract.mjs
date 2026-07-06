@@ -80,7 +80,9 @@ async function main() {
   assert.match(homepage, /data-dx-home-featured-data/);
   assert.match(homepage, /data-dx-home-slot-bootstrap/);
   assert.doesNotMatch(homepage, /Loading hero…/);
-  assert.doesNotMatch(homepage, /youtube-nocookie\.com\/embed/);
+  assert.doesNotMatch(homepage, /<iframe\b[^>]*youtube-nocookie\.com\/embed/i);
+  assert.match(homepage, /class="dex-video-facade dx-home-featured-facade"/);
+  assert.match(homepage, /\/assets\/home-featured\/prepared-oboe-sky-macklay\.webp/);
   assert.doesNotMatch(homepage, /<video\b[^>]*\bautoplay\b/i);
   assert.doesNotMatch(homepage, /zeffy-scripts/i);
   assert.equal(
@@ -111,7 +113,9 @@ async function main() {
   ]) {
     assert.ok(runtimeSource.includes(marker), `hero runtime missing production interaction marker: ${marker}`);
   }
-  assert.ok(!runtimeSource.includes("target.textContent = '';"), 'hero runtime must not clear the LCP headline');
+  assert.ok(runtimeSource.includes("target.addEventListener('keydown'"), 'campaign word replacement must be user-triggered');
+  assert.ok(runtimeSource.includes("event.key !== 'Enter'"), 'campaign word replacement must use the explicit Enter interaction');
+  assert.ok(!runtimeSource.includes('window.setInterval(replaceWord'), 'campaign word replacement must not run automatically during LCP');
 
   const jsCopies = await Promise.all([
     readText('assets', 'js', 'dx-home-hero.js'),

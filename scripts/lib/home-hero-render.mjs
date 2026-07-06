@@ -49,6 +49,8 @@ function campaignMarkup(module) {
         margin:0;font:700 clamp(2rem,5vw,3rem)/1.15 var(--font-heading,sans-serif);text-transform:uppercase;">
         ${headline}<br>
         <span id="heroWord" data-dx-hero-rotating data-words="${escapeHtml(JSON.stringify(module.rotatingWords))}"
+          contenteditable="true" role="textbox" aria-label="Edit the featured audience, or press Enter for another phrase"
+          aria-multiline="false" spellcheck="false"
           style="
             background:linear-gradient(135deg,#ff3c3c 0%,#ff9d32 100%);
             -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
@@ -76,15 +78,20 @@ function youtubeId(value) {
   return '';
 }
 
-export function renderFeaturedCard(row, { preview = false } = {}) {
+export function renderFeaturedCard(row, { preview = false, priority = false } = {}) {
   const artist = row.artist || row.label_override || row.entry_id || 'Featured entry';
   const title = row.instrument && !String(artist).includes(String(row.instrument))
     ? `${artist} – ${row.instrument}`
     : artist;
   const url = row.url || row.entry_href || '#';
-  const media = preview && row.thumbnail
-    ? `<img src="${escapeHtml(row.thumbnail)}" alt="${escapeHtml(title)} featured preview" width="1280" height="720" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">`
-    : `<a class="dx-home-featured-media-link" href="${escapeHtml(url)}" aria-label="Open ${escapeHtml(title)}" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:.35rem;padding:1.25rem;box-sizing:border-box;color:#fff;text-decoration:none;background:radial-gradient(circle at 78% 22%,rgba(255,157,50,.9),transparent 28%),radial-gradient(circle at 25% 75%,rgba(255,60,60,.85),transparent 34%),linear-gradient(135deg,#15151a,#4b1b2b 52%,#8f3f22)"><strong style="font:700 clamp(1.1rem,3vw,1.6rem)/1.05 var(--font-heading,sans-serif);text-transform:uppercase">Featured recording</strong><span style="font:700 .75rem/1.2 var(--font-body,monospace);letter-spacing:.08em;text-transform:uppercase">Open entry ↗</span></a>`;
+  const videoId = youtubeId(row.video);
+  const embedUrl = videoId ? `https://www.youtube-nocookie.com/embed/${videoId}` : '';
+  const poster = row.thumbnail
+    ? `<img class="dx-home-featured-poster" src="${escapeHtml(row.thumbnail)}" alt="" width="960" height="540" loading="${priority ? 'eager' : 'lazy'}" decoding="async"${priority ? ' fetchpriority="high"' : ''}>`
+    : '';
+  const media = embedUrl
+    ? `<button type="button" class="dex-video-facade dx-home-featured-facade" data-dx-video-embed="${escapeHtml(embedUrl)}" data-dx-video-title="${escapeHtml(title)}" aria-label="Play video (loads YouTube)">${poster}<span class="dex-video-play" aria-hidden="true"></span><span class="dex-video-facade-label">Watch · loads YouTube on play</span></button>`
+    : `<a class="dx-home-featured-media-link" href="${escapeHtml(url)}" aria-label="Open ${escapeHtml(title)}">${poster}<span class="dex-video-facade-label">Open entry ↗</span></a>`;
   const badges = [row.lookup, row.instrument, row.season].filter(Boolean)
     .map((value) => `<span class="badge">${escapeHtml(value)}</span>`).join('');
   return `<div class="carousel-card" style="filter:none;-webkit-backdrop-filter:none">
@@ -97,7 +104,7 @@ export function renderFeaturedCard(row, { preview = false } = {}) {
 
 function featuredMarkup(module, featuredData, preview) {
   const rows = Array.isArray(featuredData?.featured) ? featuredData.featured.slice(0, 4) : [];
-  const card = rows[0] ? renderFeaturedCard(rows[0], { preview }) : '';
+  const card = rows[0] ? renderFeaturedCard(rows[0], { preview, priority: true }) : '';
   const dots = rows.length
     ? `<div class="dx-pagenav__viewport"><div class="dx-pagenav__track">${rows.map((_, index) => `<button type="button" class="dx-pagenav__dot${index === 0 ? ' is-active' : ''}" role="tab" aria-selected="${index === 0 ? 'true' : 'false'}" aria-label="Page ${index + 1} of ${rows.length}"></button>`).join('')}</div></div>`
     : '';

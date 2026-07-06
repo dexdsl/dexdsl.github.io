@@ -100,6 +100,19 @@
   z-index: 1;
 }
 
+.dx-catalog-index-app[data-dx-catalog-state="loading"] {
+  /*
+   * Keep the footer below the mobile viewport while the catalog JSON is loading.
+   * The ready shell is substantially taller, so this prevents its insertion from
+   * displacing a footer that Lighthouse has already painted.
+   */
+  min-height: max(56rem, calc(100svh - 7rem));
+}
+
+.dx-catalog-index-app[data-dx-catalog-state="loading"] [data-dx-catalog-loading-shell] {
+  margin-top: clamp(0.85rem, 1.5vw, 1.25rem);
+}
+
 .dx-catalog-index-shell {
   display: grid;
   gap: clamp(0.85rem, 1.5vw, 1.25rem);

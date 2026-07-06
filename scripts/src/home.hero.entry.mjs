@@ -44,6 +44,60 @@ function initCampaign(root) {
   }
   if (!words.length) return;
   if (!target.textContent.trim()) target.textContent = words[0];
+  let wordIndex = Math.max(0, words.indexOf(target.textContent.trim()));
+  let cycling = false;
+
+  const renderedWord = (word) => {
+    const headingFx = window.__dxHeadingFx;
+    if (headingFx && typeof headingFx.renderHeadingText === 'function') {
+      return headingFx.renderHeadingText(word, { routeKey: `home:campaign:${word}` });
+    }
+    return word;
+  };
+
+  const replaceWord = async () => {
+    if (cycling || words.length < 2) return;
+    cycling = true;
+    wordIndex = (wordIndex + 1) % words.length;
+    const word = renderedWord(words[wordIndex]);
+    target.setAttribute('contenteditable', 'false');
+    target.classList.add('is-replacing');
+    if (reducedMotion()) {
+      target.textContent = word;
+    } else {
+      target.textContent = '';
+      for (const character of Array.from(word)) {
+        target.textContent += character;
+        await new Promise((resolve) => window.setTimeout(resolve, 46));
+      }
+    }
+    target.classList.remove('is-replacing');
+    target.setAttribute('contenteditable', 'true');
+    cycling = false;
+    target.focus({ preventScroll: true });
+    const selection = window.getSelection();
+    if (selection) {
+      selection.selectAllChildren(target);
+      selection.collapseToEnd();
+    }
+  };
+
+  target.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter') return;
+    event.preventDefault();
+    replaceWord();
+  });
+  target.addEventListener('dblclick', (event) => {
+    event.preventDefault();
+    replaceWord();
+  });
+  target.addEventListener('input', () => {
+    const singleLine = target.textContent.replace(/\s*\n+\s*/g, ' ').trimStart();
+    if (target.textContent !== singleLine) target.textContent = singleLine;
+  });
+  target.addEventListener('blur', () => {
+    if (!target.textContent.trim()) target.textContent = words[wordIndex] || words[0];
+  });
 
   const authButton = root.querySelector('[data-dx-hero-auth-cta]');
   if (!authButton) return;
@@ -96,6 +150,25 @@ function initFeatured(root, payload) {
   cardHost.className = 'carousel-card-host';
   if (cardHost.firstElementChild instanceof HTMLElement) {
     currentCard = cardHost.firstElementChild;
+  }
+
+  function bindVideoFacade(scope) {
+    scope?.querySelectorAll?.('[data-dx-video-embed]').forEach((facade) => {
+      if (!(facade instanceof HTMLButtonElement) || facade.dataset.dxVideoBound === 'true') return;
+      facade.dataset.dxVideoBound = 'true';
+      facade.addEventListener('click', () => {
+        const src = facade.dataset.dxVideoEmbed || '';
+        if (!src) return;
+        const iframe = document.createElement('iframe');
+        iframe.src = `${src}${src.includes('?') ? '&' : '?'}autoplay=1`;
+        iframe.title = facade.dataset.dxVideoTitle || 'Featured recording';
+        iframe.loading = 'lazy';
+        iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        iframe.allowFullscreen = true;
+        facade.replaceWith(iframe);
+      }, { once: true });
+    });
   }
 
   function makeCard(row) {
@@ -161,6 +234,7 @@ function initFeatured(root, payload) {
   function commit(card, nextIndex) {
     cardHost.replaceChildren(card);
     card.style.opacity = '';
+    bindVideoFacade(card);
     decorateDynamicHeadings(card, `home:featured:${nextIndex}`);
     currentCard = card;
     index = nextIndex;
@@ -192,6 +266,7 @@ function initFeatured(root, payload) {
     });
   }
   if (currentCard) {
+    bindVideoFacade(currentCard);
     renderDots();
   } else {
     goTo(0);

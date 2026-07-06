@@ -1260,21 +1260,30 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     target.appendChild(controls);
   }
 
-  function renderHero(target) {
-    const section = create('section', 'dx-catalog-index-hero dx-catalog-index-surface');
+  function renderHero(target, existingSection = null) {
+    const section = existingSection || create('section', 'dx-catalog-index-hero dx-catalog-index-surface');
+    section.setAttribute('data-dx-catalog-static-hero', '');
 
-    const title = create('h1', 'dx-catalog-index-hero-title', 'CATALOG');
-    const subtitle = create('div', 'dx-catalog-index-hero-subtitle');
+    let random = section.querySelector('[data-dx-catalog-random-entry]');
+    if (!random) {
+      const title = create('h1', 'dx-catalog-index-hero-title', 'CATALOG');
+      title.setAttribute('data-dx-heading-randomize', 'false');
+      const subtitle = create('div', 'dx-catalog-index-hero-subtitle');
 
-    const guide = openCta('/catalog/guide/', 'Lookup guide', 'secondary');
-    const random = create('button', 'dx-button-element dx-button-size--sm dx-button-element--secondary', 'Random entry');
-    random.type = 'button';
-    random.addEventListener('click', () => {
-      window.location.assign(randomEntryHref());
-    });
+      const guide = openCta('/catalog/guide/', 'Lookup guide', 'secondary');
+      random = create('button', 'dx-button-element dx-button-size--sm dx-button-element--secondary', 'Random entry');
+      random.type = 'button';
+      random.setAttribute('data-dx-catalog-random-entry', '');
+      subtitle.append(guide, random);
+      section.append(title, subtitle);
+    }
 
-    subtitle.append(guide, random);
-    section.append(title, subtitle);
+    if (random.getAttribute('data-dx-random-entry-bound') !== 'true') {
+      random.setAttribute('data-dx-random-entry-bound', 'true');
+      random.addEventListener('click', () => {
+        window.location.assign(randomEntryHref());
+      });
+    }
     target.appendChild(section);
   }
 
@@ -1312,6 +1321,8 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     media.href = href;
     if (!hasImage) media.classList.add('dx-catalog-index-season-media--fallback');
     const image = create('img', 'dx-catalog-index-season-img');
+    image.width = 800;
+    image.height = 480;
     image.loading = 'lazy';
     image.decoding = 'async';
     image.alt = text(entry.image_alt_raw || entry.title_raw || entry.performer_raw || 'Catalog entry');
@@ -1717,6 +1728,8 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
       const media = create('a', 'dx-catalog-index-spotlight-media');
       media.href = resolvedHref;
       const image = create('img', 'dx-catalog-index-spotlight-img');
+      image.width = 1280;
+      image.height = 720;
       image.loading = 'lazy';
       image.decoding = 'async';
       image.alt = text(resolvedTitle || spotlight.headline_raw || 'Artist spotlight');
@@ -1844,6 +1857,8 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
   function renderError(error) {
     const root = document.querySelector(APP_SELECTOR);
     if (!root) return;
+    root.setAttribute('data-dx-catalog-state', 'error');
+    root.setAttribute('aria-busy', 'false');
     clearNode(root);
     const pane = create('section', 'dx-catalog-index-surface dx-catalog-index-error');
     pane.appendChild(create('h2', 'dx-catalog-index-title', 'Catalog failed to load'));
@@ -1855,10 +1870,10 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
   function render() {
     const root = document.querySelector(APP_SELECTOR);
     if (!root || !model) return;
-    clearNode(root);
 
+    const staticHero = root.querySelector('[data-dx-catalog-static-hero]');
     const shell = create('div', 'dx-catalog-index-shell');
-    renderHero(shell);
+    renderHero(shell, staticHero);
     renderSeasonCarousel(shell);
     renderSpotlight(shell);
     renderControls(shell);
@@ -1892,6 +1907,9 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     browseHost.setAttribute('data-catalog-index-browse', 'true');
     shell.appendChild(browseHost);
 
+    clearNode(root);
+    root.setAttribute('data-dx-catalog-state', 'ready');
+    root.setAttribute('aria-busy', 'false');
     root.appendChild(shell);
     renderBrowse();
     decorateCatalogHeadings(root);

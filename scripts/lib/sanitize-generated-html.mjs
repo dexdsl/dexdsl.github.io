@@ -42,8 +42,8 @@ export const DEX_FOOTER_MARKUP = `
   <div class="footer-grid">
     <div class="footer-logo-column">
       <div class="footer-logo">
-        <img class="logo--dark" src="/assets/img/4471b81e48dd98fdcc7c.png" alt="Dex Footer Logo (white)" loading="lazy" decoding="async">
-        <img class="logo--light" src="/assets/img/588db8babfe6f8722983.png" alt="Dex Footer Logo (black)" loading="lazy" decoding="async">
+        <img class="logo--dark" src="/assets/img/4471b81e48dd98fdcc7c.png" alt="Dex Footer Logo (white)" width="884" height="426" loading="lazy" decoding="async">
+        <img class="logo--light" src="/assets/img/588db8babfe6f8722983.png" alt="Dex Footer Logo (black)" width="884" height="426" loading="lazy" decoding="async">
       </div>
     </div>
     <div class="footer-attribution">

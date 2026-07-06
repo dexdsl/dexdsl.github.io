@@ -220,7 +220,7 @@ function verifyNoInlineHeadingRandomizers() {
   const heroRuntimeText = readText(heroRuntimeRel);
   assertIncludes(heroRuntimeRel, heroRuntimeText, [
     'function decorateDynamicHeadings(root, routeKey)',
-    "decorateDynamicHeadings(target.closest('h1, h2') || target, 'home:hero:campaign');",
+    "headingFx.renderHeadingText(word, { routeKey: `home:campaign:${word}` });",
     'decorateDynamicHeadings(card, `home:featured:${nextIndex}`);',
   ]);
 

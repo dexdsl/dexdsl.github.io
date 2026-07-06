@@ -1232,6 +1232,20 @@ hr {
   margin: 0 !important;
 }
 
+.header-title-logo,
+.header-title-logo a,
+.header-title-logo img {
+  opacity: 1 !important;
+  visibility: visible !important;
+  animation: none !important;
+  animation-delay: 0ms !important;
+  transition: none !important;
+}
+
+.header-title-logo img {
+  aspect-ratio: 884 / 426;
+}
+
 .header-display-desktop .header-title-logo img {
   width: auto !important;
   max-width: 100% !important;

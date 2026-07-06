@@ -5,8 +5,9 @@ Dex 2.0 • SIGN-UP FOR FR‎E‎E AC‎C‎E‎SS  (legacysite code-block)
 ────────────────────────────────────────────────────────────────── -->
 <section id="dex-signup" class="dex-signup-card">
 
-  <!-- Static first: no autoplay media on the mobile review path. -->
+  <!-- Static first: responsive WebP, no autoplay media on the mobile review path. -->
   <div class="signup-media" aria-hidden="true">
+    <img src="/assets/img/dex-signup-open-access.webp" alt="" width="1280" height="720" loading="lazy" decoding="async">
     <span>DEX<br>OPEN ACCESS</span>
   </div>
 
@@ -64,14 +65,18 @@ Dex 2.0 • SIGN-UP FOR FR‎E‎E AC‎C‎E‎SS  (legacysite code-block)
 
 /* media */
 .signup-media{
-  width:100%;aspect-ratio:16/9;display:flex;align-items:flex-end;padding:clamp(1rem,4vw,2rem);
+  position:relative;width:100%;aspect-ratio:16/9;display:flex;align-items:flex-end;padding:clamp(1rem,4vw,2rem);
   box-sizing:border-box;border-radius:4px;box-shadow:var(--shadow-light);overflow:hidden;
   background:
     radial-gradient(circle at 78% 22%,rgba(255,157,50,.92),transparent 28%),
     radial-gradient(circle at 25% 75%,rgba(255,60,60,.88),transparent 34%),
     linear-gradient(135deg,#15151a,#4b1b2b 52%,#8f3f22);
 }
+.signup-media img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+}
 .signup-media span{
+  position:relative;z-index:1;text-shadow:0 2px 18px rgba(0,0,0,.45);
   color:#fff;font:700 clamp(1.4rem,6vw,3rem)/.9 var(--font-heading,sans-serif);
   letter-spacing:-.02em;text-transform:uppercase;
 }

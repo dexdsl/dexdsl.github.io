@@ -241,6 +241,9 @@ function main() {
     if (indexMain.includes('id="dex-how"')) failures.push('catalog index must not render guide section inline');
     if (indexMain.includes('id="list-of-identifiers"')) failures.push('catalog index must not render symbols section inline');
     if (!indexMain.includes('data-catalog-index-app')) failures.push('catalog index missing data-catalog-index-app root');
+    if (!indexMain.includes('data-dx-catalog-state="loading"')) failures.push('catalog index missing reserved loading state');
+    if (!indexMain.includes('data-dx-catalog-static-hero')) failures.push('catalog index missing static-first hero');
+    if (!indexMain.includes('data-dx-catalog-loading-shell')) failures.push('catalog index missing loading shell reservation marker');
 
     const badLinks = indexMain.match(/https?:\/\/(?:www\.)?dexdsl\.(?:org|com)\/(?:entry|catalog)\//gi) || [];
     if (badLinks.length > 0) {
@@ -317,6 +320,9 @@ function main() {
   }
   if (!indexRuntimeSource.includes("dx-button-element dx-button-size--sm dx-button-element--secondary', 'Random entry'")) {
     failures.push('catalog index runtime must render Random entry as a secondary CTA button');
+  }
+  if (!indexRuntimeSource.includes("root.setAttribute('data-dx-catalog-state', 'ready')")) {
+    failures.push('catalog index runtime must release the reserved loading state after render');
   }
 
   if (failures.length > 0) {
