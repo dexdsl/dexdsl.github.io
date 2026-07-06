@@ -130,7 +130,8 @@ scale: 2.1;
 //Type
 @font-face {
 font-family: "Stretch Pro";
-src: url("/assets/fonts/StretchPro.otf") format("opentype");}
+src: url("/assets/fonts/StretchPro.otf") format("opentype");
+font-display: optional;}
   h4 {
 font-family: "Stretch Pro";
 }

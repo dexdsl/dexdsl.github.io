@@ -30,7 +30,11 @@ for (const marker of [
   'new ShaderMount(',
   'powerPreference: \'low-power\'',
   'webglcontextlost',
+  "'(max-width: 900px)'",
+  "'(prefers-reduced-motion: reduce)'",
   'connection?.saveData === true',
+  'navigator.deviceMemory',
+  'navigator.hardwareConcurrency',
 ]) {
   if (!source.includes(marker)) failures.push(`grain source missing marker: ${marker}`);
 }

@@ -5,7 +5,7 @@
     url("/assets/fonts/courier-prime/CourierPrime-Regular.woff") format("woff");
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: optional;
 }
 
 @font-face {
@@ -15,7 +15,7 @@
     url("/assets/fonts/courier-prime/CourierPrime-Bold.woff") format("woff");
   font-style: normal;
   font-weight: 700;
-  font-display: swap;
+  font-display: optional;
 }
 
 @font-face {
@@ -25,7 +25,7 @@
     url("/assets/fonts/courier-prime/CourierPrime-Italic.woff") format("woff");
   font-style: italic;
   font-weight: 400;
-  font-display: swap;
+  font-display: optional;
 }
 
 @font-face {
@@ -35,7 +35,7 @@
     url("/assets/fonts/courier-prime/CourierPrime-BoldItalic.woff") format("woff");
   font-style: italic;
   font-weight: 700;
-  font-display: swap;
+  font-display: optional;
 }
 
 @font-face {
@@ -43,7 +43,7 @@
   src: url("/assets/fonts/StretchPro.otf") format("opentype");
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: optional;
 }
 
 @font-face {
@@ -53,7 +53,7 @@
     url("/assets/fonts/StretchPro.otf") format("opentype");
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: optional;
 }
 
 :root {

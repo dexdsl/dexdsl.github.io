@@ -4,6 +4,10 @@
   "type": "module",
   "scripts": {
     "dev": "node scripts/serve-docs.mjs --port 8080",
+    "perf:mobile": "node scripts/perf-mobile.mjs",
+    "perf:mobile:enforce": "node scripts/perf-mobile.mjs --enforce",
+    "open-access:build": "node scripts/build-open-access.mjs",
+    "verify:open-access": "node scripts/verify_open_access_contract.mjs",
     "rewrite:anchors": "node scripts/rewrite-internal-anchors.mjs",
     "check:anchors": "node scripts/rewrite-internal-anchors.mjs --check",
     "build:breadcrumb-motion": "node scripts/build-breadcrumb-motion.mjs",

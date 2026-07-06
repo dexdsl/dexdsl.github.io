@@ -4,6 +4,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
 import { readHomeHeroLibrary, writeHomeHeroSnapshots } from './lib/home-hero-store.mjs';
+import { buildHomeHeroSnapshot } from './lib/home-hero-schema.mjs';
+import { renderHomeHero } from './lib/home-hero-render.mjs';
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(SCRIPT_DIR, '..');
@@ -12,6 +14,7 @@ const PATHS = {
   entry: path.join(ROOT, 'scripts', 'src', 'home.hero.entry.mjs'),
   css: path.join(ROOT, 'css', 'components', 'dx-home-hero.css'),
   composerCss: path.join(ROOT, 'css', 'components', 'dx-home-hero-composer.css'),
+  featuredSnapshot: path.join(ROOT, 'data', 'home.featured.snapshot.json'),
   component: path.join(ROOT, 'components', 'home', 'hero.js'),
   homepage: path.join(ROOT, 'docs', 'index.html'),
   docsJs: path.join(ROOT, 'docs', 'assets', 'js', 'dx-home-hero.js'),
@@ -26,14 +29,58 @@ const PATHS = {
   ],
 };
 
-const MOUNT_FRAGMENT = `<!-- DX_HOME_HERO_MOUNT_START -->
-<link rel="stylesheet" href="/css/components/dx-home-hero.css">
-<link rel="stylesheet" href="/css/components/dx-home-hero-composer.css">
-<div id="dx-home-hero-root" data-dx-home-hero-root aria-live="polite">
-  <div class="dx-home-featured-loading">Loading hero…</div>
+function serializeInlineJson(value) {
+  return JSON.stringify(value)
+    .replaceAll('<', '\\u003c')
+    .replaceAll('>', '\\u003e')
+    .replaceAll('&', '\\u0026');
+}
+
+function buildMountFragment(snapshot, featuredData) {
+  const hero = renderHomeHero(snapshot, { featuredData });
+  return `<!-- DX_HOME_HERO_MOUNT_START -->
+<div id="dx-home-hero-root" data-dx-home-hero-root data-dx-home-hero-ssr="true" data-composition-id="${snapshot.activeCompositionId}">
+  ${hero}
 </div>
+<script type="application/json" data-dx-home-featured-data>${serializeInlineJson(featuredData)}</script>
 <script src="/assets/js/dx-home-hero.js" defer></script>
 <!-- DX_HOME_HERO_MOUNT_END -->`;
+}
+
+const HOME_SLOT_BOOTSTRAP = `<script data-dx-home-slot-bootstrap>
+(() => {
+  const header = document.getElementById('header');
+  if (!(header instanceof HTMLElement) || !(document.body instanceof HTMLElement)) return;
+  const container = header.parentElement || document.body;
+  let scrollRoot = document.getElementById('dx-slot-scroll-root');
+  if (!(scrollRoot instanceof HTMLElement)) {
+    scrollRoot = document.createElement('div');
+    scrollRoot.id = 'dx-slot-scroll-root';
+    scrollRoot.setAttribute('data-dx-slot-root', 'true');
+  }
+  let foregroundRoot = document.getElementById('dx-slot-foreground-root');
+  if (!(foregroundRoot instanceof HTMLElement)) {
+    foregroundRoot = document.createElement('div');
+    foregroundRoot.id = 'dx-slot-foreground-root';
+    foregroundRoot.setAttribute('data-dx-slot-foreground', 'true');
+  }
+  if (!scrollRoot.contains(foregroundRoot)) scrollRoot.appendChild(foregroundRoot);
+  if (scrollRoot.parentElement !== container) header.after(scrollRoot);
+  const preservedIds = new Set(['gooey-mesh-wrapper', 'scroll-gradient-bg', 'dx-slot-scroll-root', 'dx-slot-foreground-root']);
+  const preservedTags = new Set(['SCRIPT', 'STYLE', 'LINK', 'META']);
+  let afterHeader = false;
+  for (const node of Array.from(container.children)) {
+    if (node === header) {
+      afterHeader = true;
+      continue;
+    }
+    if (!afterHeader || node === scrollRoot || node === foregroundRoot) continue;
+    if (preservedIds.has(node.id || '') || preservedTags.has(node.tagName) || node.hasAttribute('data-dx-slot-preserve')) continue;
+    foregroundRoot.appendChild(node);
+  }
+  document.body.classList.add('dx-slot-enabled');
+})();
+</script>`;
 
 async function ensureParent(filePath) {
   await fs.mkdir(path.dirname(filePath), { recursive: true });
@@ -56,13 +103,21 @@ function replaceCodeContainer(html, blockId, nextBlockClass, replacement) {
   return `${html.slice(0, contentStart)}\n  ${replacement}\n${html.slice(contentEnd)}`;
 }
 
-async function migrateHomepage() {
+async function migrateHomepage(mountFragment) {
   let html = await fs.readFile(PATHS.homepage, 'utf8');
+  html = html
+    .replace(/\s*<link rel="stylesheet" href="\/css\/components\/dx-home-hero\.css">\s*/g, '\n')
+    .replace(/\s*<link rel="stylesheet" href="\/css\/components\/dx-home-hero-composer\.css">\s*/g, '\n');
+  const headAssets = [
+    '<link rel="stylesheet" href="/css/components/dx-home-hero.css">',
+    '<link rel="stylesheet" href="/css/components/dx-home-hero-composer.css">',
+  ].join('\n');
+  html = html.replace('</head>', `${headAssets}\n</head>`);
   html = replaceCodeContainer(
     html,
     'block-448bd8f915f4abba552b',
     'fe-block-22f4e234192109a5d76c',
-    MOUNT_FRAGMENT,
+    mountFragment,
   );
   html = replaceCodeContainer(
     html,
@@ -70,14 +125,20 @@ async function migrateHomepage() {
     'fe-block-yui_3_17_2_1_1756613895661_13758',
     '<!-- Legacy duplicate hero retired; managed by data/home.hero-library.json. -->',
   );
+  html = html.replace(/\s*<script data-dx-home-slot-bootstrap>[\s\S]*?<\/script>\s*/g, '\n');
+  html = html.replace('</body>', `${HOME_SLOT_BOOTSTRAP}\n</body>`);
   await fs.writeFile(PATHS.homepage, html, 'utf8');
-  await fs.writeFile(PATHS.component, `${MOUNT_FRAGMENT}\n`, 'utf8');
+  await fs.writeFile(PATHS.component, `${mountFragment}\n`, 'utf8');
 }
 
 async function main() {
   const { library } = await readHomeHeroLibrary();
   const assetsOnly = process.argv.includes('--assets-only');
-  if (!assetsOnly) await writeHomeHeroSnapshots(library, library.activeCompositionId);
+  const snapshot = assetsOnly
+    ? buildHomeHeroSnapshot(library, library.activeCompositionId)
+    : await writeHomeHeroSnapshots(library, library.activeCompositionId);
+  const featuredData = JSON.parse(await fs.readFile(PATHS.featuredSnapshot, 'utf8'));
+  const mountFragment = buildMountFragment(snapshot, featuredData);
 
   await ensureParent(PATHS.docsJs);
   await build({
@@ -94,7 +155,7 @@ async function main() {
   for (const mirror of PATHS.jsMirrors) await copy(PATHS.docsJs, mirror);
   for (const mirror of PATHS.cssMirrors) await copy(PATHS.css, mirror);
   for (const mirror of PATHS.composerCssMirrors) await copy(PATHS.composerCss, mirror);
-  await migrateHomepage();
+  await migrateHomepage(mountFragment);
 
   console.log(assetsOnly
     ? `home:hero:build refreshed runtime assets without preparing ${library.activeCompositionId}`

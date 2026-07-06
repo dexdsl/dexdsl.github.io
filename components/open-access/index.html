@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Open-access recordings for creative reuse | Dex</title>
+  <meta name="description" content="Dex is a 501(c)(3) nonprofit library commissioning and publishing artist-made audio-visual recordings for reuse under Creative Commons Attribution 4.0.">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#17151b">
+  <link rel="canonical" href="https://dexdsl.org/open-access/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Open-access recordings for creative reuse | Dex">
+  <meta property="og:description" content="Artist-made recordings, clear attribution, and public cultural infrastructure from a 501(c)(3) nonprofit.">
+  <meta property="og:url" content="https://dexdsl.org/open-access/">
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f7f4f0;
+      --muted: #c9c2c3;
+      --line: rgba(255, 255, 255, 0.18);
+      --surface: rgba(25, 23, 30, 0.88);
+      --orange: #ff9d32;
+      --red: #ff3c3c;
+      --max: 1120px;
+    }
+    * { box-sizing: border-box; }
+    html { background: #17151b; color: var(--ink); scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 280px;
+      font-family: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      line-height: 1.55;
+      background:
+        radial-gradient(circle at 82% 9%, rgba(255, 157, 50, 0.26), transparent 27rem),
+        radial-gradient(circle at 10% 34%, rgba(255, 60, 60, 0.19), transparent 29rem),
+        linear-gradient(145deg, #17151b 0%, #251821 48%, #17151b 100%);
+    }
+    a { color: inherit; }
+    a:focus-visible { outline: 3px solid var(--orange); outline-offset: 4px; }
+    .skip {
+      position: absolute;
+      top: 0;
+      left: -9999px;
+      z-index: 10;
+      padding: 0.7rem 1rem;
+      background: #fff;
+      color: #111;
+    }
+    .skip:focus { left: 0; }
+    .wrap { width: min(calc(100% - 2rem), var(--max)); margin-inline: auto; }
+    header {
+      border-bottom: 1px solid var(--line);
+      background: rgba(23, 21, 27, 0.96);
+    }
+    nav {
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+    }
+    .wordmark {
+      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-size: 2rem;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    .nav-links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.35rem 1rem; }
+    .nav-links a { color: var(--muted); font-size: 0.78rem; font-weight: 700; text-decoration: none; text-transform: uppercase; }
+    .nav-links a:hover { color: #fff; }
+    main { overflow: hidden; }
+    .hero { padding: clamp(4rem, 11vw, 8.5rem) 0 clamp(3.5rem, 8vw, 6rem); }
+    .eyebrow {
+      margin: 0 0 1.1rem;
+      color: var(--orange);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3 {
+      margin: 0;
+      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 0.96;
+      text-transform: uppercase;
+    }
+    h1 { max-width: 950px; font-size: clamp(3rem, 10vw, 7.7rem); }
+    h1 span {
+      color: transparent;
+      background: linear-gradient(135deg, var(--red), var(--orange));
+      background-clip: text;
+      -webkit-background-clip: text;
+    }
+    .hero-copy {
+      max-width: 760px;
+      margin: 1.6rem 0 0;
+      color: var(--muted);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: clamp(1.05rem, 2.5vw, 1.35rem);
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
+    .button {
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.8rem 1rem;
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    .button.primary { border-color: transparent; background: linear-gradient(135deg, var(--red), var(--orange)); color: #160f11; }
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-top: clamp(3rem, 8vw, 5rem);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: var(--surface);
+    }
+    .fact { min-height: 118px; padding: 1rem; border-right: 1px solid var(--line); }
+    .fact:last-child { border-right: 0; }
+    .fact strong { display: block; font-family: system-ui, sans-serif; font-size: clamp(1.25rem, 3vw, 2rem); }
+    .fact span { display: block; margin-top: 0.35rem; color: var(--muted); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    section.content { padding: clamp(3.5rem, 8vw, 6rem) 0; border-top: 1px solid var(--line); }
+    .section-head { display: grid; grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr); gap: 2rem; align-items: start; }
+    h2 { font-size: clamp(2.2rem, 6vw, 4.4rem); }
+    .section-head > p {
+      max-width: 660px;
+      margin: 0;
+      color: var(--muted);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 1.05rem;
+    }
+    .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem; margin-top: 2.5rem; }
+    .card { min-height: 230px; padding: 1.25rem; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); }
+    .card .num { display: block; margin-bottom: 3rem; color: var(--orange); font-size: 0.72rem; }
+    h3 { font-size: 1.65rem; }
+    .card p { margin: 0.8rem 0 0; color: var(--muted); font-family: system-ui, sans-serif; }
+    .license {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(260px, 0.7fr);
+      gap: 1rem;
+      margin-top: 2.5rem;
+    }
+    .license > div { padding: clamp(1.25rem, 4vw, 2rem); border: 1px solid var(--line); border-radius: 4px; background: var(--surface); }
+    .license p, .license li { color: var(--muted); font-family: system-ui, sans-serif; }
+    .license ul { margin: 1rem 0 0; padding-left: 1.25rem; }
+    .callout {
+      padding: clamp(3.5rem, 9vw, 7rem) 0;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(255, 60, 60, 0.14), rgba(255, 157, 50, 0.12));
+      border-block: 1px solid var(--line);
+    }
+    .callout h2 { max-width: 850px; margin-inline: auto; }
+    .callout p { max-width: 650px; margin: 1.25rem auto 0; color: var(--muted); font-family: system-ui, sans-serif; }
+    .callout .actions { justify-content: center; }
+    footer { padding: 2rem 0; color: var(--muted); font-size: 0.72rem; }
+    .footer-row { display: flex; justify-content: space-between; gap: 1.5rem; }
+    .footer-row p { margin: 0; }
+    @media (max-width: 760px) {
+      nav { align-items: flex-start; padding-block: 1rem; }
+      .nav-links { max-width: 220px; }
+      .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .fact:nth-child(2) { border-right: 0; }
+      .fact:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+      .section-head, .license { grid-template-columns: 1fr; }
+      .cards { grid-template-columns: 1fr; }
+      .card { min-height: 0; }
+      .card .num { margin-bottom: 1.5rem; }
+      .footer-row { flex-direction: column; }
+    }
+    @media (max-width: 430px) {
+      .wrap { width: min(calc(100% - 1.25rem), var(--max)); }
+      .wordmark { font-size: 1.7rem; }
+      .nav-links { gap: 0.35rem 0.75rem; }
+      .nav-links a { font-size: 0.68rem; }
+      h1 { font-size: clamp(2.75rem, 17vw, 4.6rem); }
+      .actions .button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#content">Skip to content</a>
+  <header>
+    <nav class="wrap" aria-label="Primary navigation">
+      <a class="wordmark" href="/" aria-label="Dex home">dex</a>
+      <div class="nav-links">
+        <a href="/catalog/">Catalog</a>
+        <a href="/about/">About</a>
+        <a href="/copyright/">Reuse</a>
+        <a href="/donate/">Donate</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="content">
+    <div class="hero wrap">
+      <p class="eyebrow">501(c)(3) nonprofit · Public-interest library</p>
+      <h1>Recordings made to be <span>reused.</span></h1>
+      <p class="hero-copy">Dex commissions and publishes artist-made audio-visual work for legal creative reuse. Every release is documented, attributed, and made accessible under clear Creative Commons terms.</p>
+      <div class="actions">
+        <a class="button primary" href="/catalog/">Browse the catalog</a>
+        <a class="button" href="/about/">How Dex works</a>
+      </div>
+      <div class="facts" aria-label="Dex facts">
+        <div class="fact"><strong>CC BY 4.0</strong><span>Default license</span></div>
+        <div class="fact"><strong>30+ hours</strong><span>Catalog footage</span></div>
+        <div class="fact"><strong>24+ artists</strong><span>Commissioned</span></div>
+        <div class="fact"><strong>Always open</strong><span>Public catalog</span></div>
+      </div>
+    </div>
+
+    <section class="content">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Open access that works in practice.</h2>
+          <p>Dex treats openness as production infrastructure, not a label. We commission artists, record high-quality source material, document provenance, publish practical file groupings, and provide attribution guidance for real projects.</p>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <span class="num">01 / COMMISSION</span>
+            <h3>Artist-made source work</h3>
+            <p>Dex works directly with performers and creators, preserving artist credit alongside each recording.</p>
+          </article>
+          <article class="card">
+            <span class="num">02 / PUBLISH</span>
+            <h3>Useful media and metadata</h3>
+            <p>Catalog entries connect audio-visual materials with lookup identifiers, release context, and source links.</p>
+          </article>
+          <article class="card">
+            <span class="num">03 / REUSE</span>
+            <h3>Clear rights and attribution</h3>
+            <p>CC BY 4.0 supports adaptation and commercial use when the artist and source are properly credited.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="content">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>A rights-forward public library.</h2>
+          <p>Dex reduces the rights ambiguity that keeps artists, students, educators, and independent creators from using cultural material responsibly.</p>
+        </div>
+        <div class="license">
+          <div>
+            <h3>Reuse baseline</h3>
+            <p>Unless an entry says otherwise, Dex catalog materials are released under Creative Commons Attribution 4.0 International.</p>
+            <ul>
+              <li>Credit the artist and Dex.</li>
+              <li>Link to the source entry when possible.</li>
+              <li>Indicate if you changed the material.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Check the source</h3>
+            <p>Each entry remains the authority for its files, credits, and any release-specific notes.</p>
+            <div class="actions">
+              <a class="button" href="/copyright/">Read reuse guidance</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="callout">
+      <div class="wrap">
+        <p class="eyebrow">Participate</p>
+        <h2>Use the library, submit work, or support the commons.</h2>
+        <p>Dex grows through commissioned recordings, artist submissions, institutional partnerships, and public support.</p>
+        <div class="actions">
+          <a class="button primary" href="/entry/submit/">Submit samples</a>
+          <a class="button" href="/donate/">Support Dex</a>
+          <a class="button" href="mailto:info@dexdsl.org">Contact Dex</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-row">
+      <p>© 2023–2026 DEX CO-OP CORP · 501(c)(3) · EIN 92-3509152</p>
+      <p><a href="/privacy/">Privacy</a> · <a href="/copyright/">Copyright and reuse</a> · <a href="mailto:info@dexdsl.org">info@dexdsl.org</a></p>
+    </div>
+  </footer>
+</body>
+</html>

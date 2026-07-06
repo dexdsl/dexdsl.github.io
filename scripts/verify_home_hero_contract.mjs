@@ -75,7 +75,23 @@ async function main() {
 
   const homepage = await readText('docs', 'index.html');
   assert.equal((homepage.match(/data-dx-home-hero-root/g) || []).length, 1, 'homepage must have exactly one hero mount');
-  assert.equal((homepage.match(/id="dexCombined"/g) || []).length, 0, 'legacy duplicated hero remains in homepage');
+  assert.equal((homepage.match(/id="dexCombined"/g) || []).length, 1, 'homepage must ship one static-first hero');
+  assert.match(homepage, /data-dx-home-hero-ssr="true"/);
+  assert.match(homepage, /data-dx-home-featured-data/);
+  assert.match(homepage, /data-dx-home-slot-bootstrap/);
+  assert.doesNotMatch(homepage, /Loading hero…/);
+  assert.doesNotMatch(homepage, /youtube-nocookie\.com\/embed/);
+  assert.doesNotMatch(homepage, /<video\b[^>]*\bautoplay\b/i);
+  assert.doesNotMatch(homepage, /zeffy-scripts/i);
+  assert.equal(
+    (homepage.match(/\/assets\/vendor\/auth0-spa-js\.umd\.min\.js/g) || []).length,
+    1,
+    'homepage must load Auth0 SPA exactly once',
+  );
+  assert.ok(
+    homepage.indexOf('/css/components/dx-home-hero.css') < homepage.indexOf('</head>'),
+    'hero CSS must be discovered in the document head',
+  );
   assert.match(homepage, /\/css\/components\/dx-home-hero\.css/);
   assert.match(homepage, /\/css\/components\/dx-home-hero-composer\.css/);
   assert.match(homepage, /\/assets\/js\/dx-home-hero\.js/);
@@ -91,9 +107,11 @@ async function main() {
     "duration: 220",
     "className = 'carousel-nav prev'",
     "className = 'carousel-nav next'",
+    "frame.querySelector('.carousel-card-host')",
   ]) {
     assert.ok(runtimeSource.includes(marker), `hero runtime missing production interaction marker: ${marker}`);
   }
+  assert.ok(!runtimeSource.includes("target.textContent = '';"), 'hero runtime must not clear the LCP headline');
 
   const jsCopies = await Promise.all([
     readText('assets', 'js', 'dx-home-hero.js'),

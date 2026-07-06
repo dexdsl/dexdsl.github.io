@@ -53,7 +53,7 @@ function main() {
     'data-dx-carousel-page-button',
     'data-dx-carousel-group',
     'data-dx-campaign-id',
-    'HOME_SIGNUP_TEASER_IMAGE',
+    'dx-catalog-index-season-media--campaign',
     'CATALOG_FALLBACK_IMAGE',
     '__DX_SEASON_TEASER_SEED',
   ];
@@ -61,6 +61,9 @@ function main() {
     if (!runtimeSource.includes(marker)) {
       failures.push(`catalog index runtime missing marker: ${marker}`);
     }
+  }
+  if (runtimeSource.includes('/assets/img/3b1476c230073f7589e3.jpg')) {
+    failures.push('catalog index must not load the oversized homepage teaser image');
   }
 
   const cssSource = readText(INDEX_CSS_PATH);
@@ -70,6 +73,7 @@ function main() {
     '.dx-catalog-index-season-media--unannounced',
     '.dx-catalog-index-season-pips',
     '.dx-catalog-index-season-media--fallback',
+    '.dx-catalog-index-season-media--campaign',
     '.dx-catalog-index-season-campaign-badge',
     'overscroll-behavior-y: auto',
   ];

@@ -26,6 +26,7 @@ function renderCampaignButtonLabel(value) {
 
 function campaignMarkup(module) {
   const headline = module.headlineLines.map((line) => renderHeadlineLine(line)).join('<br>');
+  const initialWord = module.rotatingWords[0] || '';
   const secondary = module.secondaryCta.kind === 'auth-switch'
     ? `<div class="product-block">
         <div class="productDetails center">
@@ -44,15 +45,15 @@ function campaignMarkup(module) {
     <div id="dexHeroCard" style="
       flex:1 1 auto;display:flex;flex-direction:column;justify-content:flex-start;gap:1.25rem;
       width:100%;padding:clamp(2rem,5vw,3rem);box-sizing:border-box;">
-      <h1 data-dx-heading-duplicate-exclude-words="RECORDING" style="
+      <h1 data-dx-heading-randomize="false" data-dx-heading-duplicate-exclude-words="RECORDING" style="
         margin:0;font:700 clamp(2rem,5vw,3rem)/1.15 var(--font-heading,sans-serif);text-transform:uppercase;">
         ${headline}<br>
         <span id="heroWord" data-dx-hero-rotating data-words="${escapeHtml(JSON.stringify(module.rotatingWords))}"
-          contenteditable="true" spellcheck="false" style="
+          style="
             background:linear-gradient(135deg,#ff3c3c 0%,#ff9d32 100%);
             -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
             color:transparent;background-color:transparent;display:inline-block;outline:none;
-            white-space:pre-line;caret-color:#ff9d32;"></span>
+            white-space:pre-line;">${escapeHtml(initialWord)}</span>
       </h1>
       <p style="margin:0;font:1.25rem/1.45 var(--font-body,sans-serif);opacity:.85;">${escapeHtml(module.body)}</p>
       <div style="display:flex;flex-direction:column;gap:1rem;margin-top:1.5rem;">
@@ -81,18 +82,13 @@ export function renderFeaturedCard(row, { preview = false } = {}) {
     ? `${artist} – ${row.instrument}`
     : artist;
   const url = row.url || row.entry_href || '#';
-  const id = youtubeId(row.video);
   const media = preview && row.thumbnail
-    ? `<img src="${escapeHtml(row.thumbnail)}" alt="${escapeHtml(title)} featured preview" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">`
-    : id
-      ? `<iframe src="https://www.youtube-nocookie.com/embed/${escapeHtml(id)}?rel=0&modestbranding=1&playsinline=1" title="${escapeHtml(title)}" style="position:absolute;inset:0;width:100%;height:100%;border:0;transform:translateZ(0)" playsinline allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"></iframe>`
-      : row.thumbnail
-        ? `<img src="${escapeHtml(row.thumbnail)}" alt="${escapeHtml(title)} featured preview" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">`
-        : `<a href="${escapeHtml(url)}" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;text-decoration:none">Open featured entry</a>`;
+    ? `<img src="${escapeHtml(row.thumbnail)}" alt="${escapeHtml(title)} featured preview" width="1280" height="720" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">`
+    : `<a class="dx-home-featured-media-link" href="${escapeHtml(url)}" aria-label="Open ${escapeHtml(title)}" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:.35rem;padding:1.25rem;box-sizing:border-box;color:#fff;text-decoration:none;background:radial-gradient(circle at 78% 22%,rgba(255,157,50,.9),transparent 28%),radial-gradient(circle at 25% 75%,rgba(255,60,60,.85),transparent 34%),linear-gradient(135deg,#15151a,#4b1b2b 52%,#8f3f22)"><strong style="font:700 clamp(1.1rem,3vw,1.6rem)/1.05 var(--font-heading,sans-serif);text-transform:uppercase">Featured recording</strong><span style="font:700 .75rem/1.2 var(--font-body,monospace);letter-spacing:.08em;text-transform:uppercase">Open entry ↗</span></a>`;
   const badges = [row.lookup, row.instrument, row.season].filter(Boolean)
     .map((value) => `<span class="badge">${escapeHtml(value)}</span>`).join('');
   return `<div class="carousel-card" style="filter:none;-webkit-backdrop-filter:none">
-    <h1 class="carousel-title"><a href="${escapeHtml(url)}">${escapeHtml(title)}</a></h1>
+    <h1 class="carousel-title" data-dx-heading-randomize="false"><a href="${escapeHtml(url)}">${escapeHtml(title)}</a></h1>
     <div class="meta-badges">${badges}</div>
     <div class="carousel-video" style="position:relative;width:100%;aspect-ratio:16 / 9;background:#000;border-radius:4px;overflow:hidden;isolation:isolate">${media}</div>
     <p class="lead-text">${escapeHtml(row.leadIn || '')}</p>
@@ -102,10 +98,10 @@ export function renderFeaturedCard(row, { preview = false } = {}) {
 function featuredMarkup(module, featuredData, preview) {
   const rows = Array.isArray(featuredData?.featured) ? featuredData.featured.slice(0, 4) : [];
   const card = rows[0] ? renderFeaturedCard(rows[0], { preview }) : '';
-  const dots = preview
+  const dots = rows.length
     ? `<div class="dx-pagenav__viewport"><div class="dx-pagenav__track">${rows.map((_, index) => `<button type="button" class="dx-pagenav__dot${index === 0 ? ' is-active' : ''}" role="tab" aria-selected="${index === 0 ? 'true' : 'false'}" aria-label="Page ${index + 1} of ${rows.length}"></button>`).join('')}</div></div>`
     : '';
-  const frame = preview && card
+  const frame = card
     ? `<button type="button" class="carousel-nav prev dx-pagenav-arrow dx-pagenav-arrow--prev" aria-label="Previous"></button><div class="carousel-card-host">${card}</div><button type="button" class="carousel-nav next dx-pagenav-arrow dx-pagenav-arrow--next" aria-label="Next"></button>`
     : '';
   return `<div id="dexFeaturedSide" data-module-id="${escapeHtml(module.id)}" data-module-type="featured" data-featured-source="${escapeHtml(module.source)}" style="
@@ -116,7 +112,7 @@ function featuredMarkup(module, featuredData, preview) {
       box-shadow:var(--shadow-md,0 8px 24px rgba(0,0,0,0.12));color:#111;
       font-family:var(--font-body,'Courier New',monospace);box-sizing:border-box;min-height:0;">
       <section class="dex-header" style="text-align:left;margin:0 0 var(--space-2,0.5rem);">
-        <h2 id="featuredTitle" style="
+        <h2 id="featuredTitle" data-dx-heading-randomize="false" style="
           margin:0;font:700 clamp(1.5rem,4vw,2rem)/1.2 var(--font-heading,'Typefesse',sans-serif);
           text-transform:uppercase;color:inherit;">${escapeHtml(module.title)}</h2>
       </section>
@@ -126,7 +122,7 @@ function featuredMarkup(module, featuredData, preview) {
         <div id="carousel-frame" class="carousel-frame" style="
           flex:1 1 auto;min-height:0;position:relative;width:100%;display:flex;
           align-items:flex-end;justify-content:flex-start;overflow:visible;">${frame}</div>
-        <div id="carousel-indicators" class="carousel-indicators${preview ? ' dx-pagenav' : ''}" ${preview ? 'role="tablist" aria-label="Featured entries"' : ''} style="
+        <div id="carousel-indicators" class="carousel-indicators${rows.length ? ' dx-pagenav' : ''}" ${rows.length ? 'role="tablist" aria-label="Featured entries"' : ''} style="
           display:flex;gap:var(--space-2,0.5rem);justify-content:center;margin-top:var(--space-2,0.5rem);">${dots}</div>
       </div>
     </aside>

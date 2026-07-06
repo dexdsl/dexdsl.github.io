@@ -230,10 +230,16 @@ function syncGooeyGrainMesh(
 }
 
 function shouldUseFallback() {
+  if (window.matchMedia?.('(max-width: 900px)').matches) return true;
+  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return true;
   if (window.matchMedia?.('(forced-colors: active)').matches) return true;
   if (window.matchMedia?.('print').matches) return true;
   const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-  return connection?.saveData === true;
+  if (connection?.saveData === true) return true;
+  const deviceMemory = Number(navigator.deviceMemory || 0);
+  if (deviceMemory > 0 && deviceMemory <= 4) return true;
+  const hardwareConcurrency = Number(navigator.hardwareConcurrency || 0);
+  return hardwareConcurrency > 0 && hardwareConcurrency <= 4;
 }
 
 function waitForImage(image) {

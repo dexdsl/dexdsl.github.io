@@ -18,7 +18,6 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
   const SEASONS_URL = '/data/catalog.seasons.json';
   const DEFAULT_UNANNOUNCED_MESSAGE = 'this collection has not been announced yet';
   const DEFAULT_UNANNOUNCED_TOKEN_POOL = ['???', '!!!', '***', '@@@'];
-  const HOME_SIGNUP_TEASER_IMAGE = '/assets/img/3b1476c230073f7589e3.jpg';
   const CATALOG_FALLBACK_IMAGE = '/assets/series/dex.png';
   // While the Current lane has fewer than this many real entries, the S3 slot
   // shows a "submit samples" funnel instead of the unannounced teaser; once the
@@ -1354,14 +1353,10 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     slide.setAttribute('data-dx-unannounced-index', String(index));
     slide.setAttribute('aria-label', 'Unannounced collection teaser');
 
-    const media = create('div', 'dx-catalog-index-season-media dx-catalog-index-season-media--unannounced');
+    const media = create('div', 'dx-catalog-index-season-media dx-catalog-index-season-media--unannounced dx-catalog-index-season-media--campaign');
     media.setAttribute('aria-hidden', 'true');
-    const image = create('img', 'dx-catalog-index-season-img');
-    image.loading = 'lazy';
-    image.decoding = 'async';
-    image.alt = 'Sign up for free access';
-    image.src = HOME_SIGNUP_TEASER_IMAGE;
-    media.append(image);
+    media.appendChild(create('span', 'dx-catalog-index-season-campaign-word', token));
+    media.appendChild(create('span', 'dx-catalog-index-season-fallback-code', 'Open access · Season 3'));
 
     const copy = create('div', 'dx-catalog-index-season-copy');
     copy.appendChild(create('h3', 'dx-catalog-index-season-performer', token));
@@ -1388,14 +1383,11 @@ import { startBlobMotion } from './shared/dx-gooey-mesh.entry.mjs';
     slide.setAttribute('data-dx-season-id', 'S3');
     slide.setAttribute('data-dx-campaign-id', 'S3');
 
-    const media = create('a', 'dx-catalog-index-season-media dx-catalog-index-season-media--submit');
+    const media = create('a', 'dx-catalog-index-season-media dx-catalog-index-season-media--submit dx-catalog-index-season-media--campaign');
     media.href = href;
-    const image = create('img', 'dx-catalog-index-season-img');
-    image.loading = 'lazy';
-    image.decoding = 'async';
-    image.alt = 'Submit your work to Season 3';
-    image.src = HOME_SIGNUP_TEASER_IMAGE;
-    media.appendChild(image);
+    media.setAttribute('aria-label', 'Submit your work to Season 3');
+    media.appendChild(create('span', 'dx-catalog-index-season-campaign-word', 'SEASON 3'));
+    media.appendChild(create('span', 'dx-catalog-index-season-fallback-code', 'Open call · CC-BY'));
 
     const copy = create('div', 'dx-catalog-index-season-copy');
     copy.appendChild(create('h3', 'dx-catalog-index-season-performer', 'Season 3 is open'));

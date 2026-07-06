@@ -19,6 +19,7 @@ function reducedMotion() {
 
 function decorateDynamicHeadings(root, routeKey) {
   if (!(root instanceof Element)) return;
+  if (root.getAttribute('data-dx-heading-randomize') === 'false') return;
   const headingFx = window.__dxHeadingFx;
   if (!headingFx) return;
   if (
@@ -42,35 +43,7 @@ function initCampaign(root) {
     words = [];
   }
   if (!words.length) return;
-  const chosen = words[Math.floor(Math.random() * words.length)] || words[0];
-  if (reducedMotion()) {
-    target.textContent = chosen;
-    decorateDynamicHeadings(target.closest('h1, h2') || target, 'home:hero:campaign');
-  } else {
-    target.textContent = '';
-    target.classList.add('typing-complete');
-    try { target.focus(); } catch {}
-    let index = 0;
-    const tick = () => {
-      target.textContent = chosen.slice(0, index);
-      try {
-        const selection = window.getSelection();
-        const range = document.createRange();
-        range.selectNodeContents(target);
-        range.collapse(false);
-        selection.removeAllRanges();
-        selection.addRange(range);
-      } catch {}
-      index += 1;
-      if (index <= chosen.length + 1) {
-        window.setTimeout(tick, 100);
-      } else {
-        target.classList.remove('typing-complete');
-        decorateDynamicHeadings(target.closest('h1, h2') || target, 'home:hero:campaign');
-      }
-    };
-    tick();
-  }
+  if (!target.textContent.trim()) target.textContent = words[0];
 
   const authButton = root.querySelector('[data-dx-hero-auth-cta]');
   if (!authButton) return;
@@ -116,8 +89,14 @@ function initFeatured(root, payload) {
   let busy = false;
   let currentCard = null;
   let pageNav = null;
-  const cardHost = document.createElement('div');
+  const existingCardHost = frame.querySelector('.carousel-card-host');
+  const cardHost = existingCardHost instanceof HTMLElement
+    ? existingCardHost
+    : document.createElement('div');
   cardHost.className = 'carousel-card-host';
+  if (cardHost.firstElementChild instanceof HTMLElement) {
+    currentCard = cardHost.firstElementChild;
+  }
 
   function makeCard(row) {
     const template = document.createElement('template');
@@ -153,19 +132,27 @@ function initFeatured(root, payload) {
     });
   }
 
-  const previous = document.createElement('button');
+  const existingPrevious = frame.querySelector('.carousel-nav.prev');
+  const previous = existingPrevious instanceof HTMLButtonElement
+    ? existingPrevious
+    : document.createElement('button');
   previous.className = 'carousel-nav prev';
   previous.setAttribute('aria-label', 'Previous');
   previous.addEventListener('click', () => {
     if (!busy) goTo((index + rows.length - 1) % rows.length);
   });
-  const next = document.createElement('button');
+  const existingNext = frame.querySelector('.carousel-nav.next');
+  const next = existingNext instanceof HTMLButtonElement
+    ? existingNext
+    : document.createElement('button');
   next.className = 'carousel-nav next';
   next.setAttribute('aria-label', 'Next');
   next.addEventListener('click', () => {
     if (!busy) goTo((index + 1) % rows.length);
   });
-  frame.replaceChildren(previous, cardHost, next);
+  if (!(existingCardHost instanceof HTMLElement)) {
+    frame.replaceChildren(previous, cardHost, next);
+  }
   if (window.dxPageNav && typeof window.dxPageNav.upgradeLegacyArrow === 'function') {
     window.dxPageNav.upgradeLegacyArrow(previous);
     window.dxPageNav.upgradeLegacyArrow(next);
@@ -204,7 +191,11 @@ function initFeatured(root, payload) {
       busy = false;
     });
   }
-  goTo(0);
+  if (currentCard) {
+    renderDots();
+  } else {
+    goTo(0);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -578,6 +569,21 @@ async function boot() {
   if (!mount || mount.dataset.ready === 'true') return;
   mount.dataset.ready = 'true';
   try {
+    if (mount.dataset.dxHomeHeroSsr === 'true') {
+      let featured = { featured: [] };
+      try {
+        const payload = document.querySelector('[data-dx-home-featured-data]');
+        featured = JSON.parse(payload?.textContent || '{"featured":[]}');
+      } catch {}
+      initCampaign(mount);
+      initFeatured(mount, featured);
+      initSeason3(mount);
+      const compositionId = mount.dataset.compositionId
+        || mount.querySelector('[data-composition-id]')?.getAttribute('data-composition-id')
+        || '';
+      mount.dispatchEvent(new CustomEvent('dx-home-hero:ready', { bubbles: true, detail: { compositionId } }));
+      return;
+    }
     const [snapshot, featured] = await Promise.all([
       fetchJson(SNAPSHOT_URL),
       fetchJson(FEATURED_URL).catch(() => ({ featured: [] })),

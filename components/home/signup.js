@@ -5,16 +5,9 @@ Dex 2.0 • SIGN-UP FOR FR‎E‎E AC‎C‎E‎SS  (legacysite code-block)
 ────────────────────────────────────────────────────────────────── -->
 <section id="dex-signup" class="dex-signup-card">
 
-  <!-- media loop -->
-  <div class="signup-media">
-    <video
-      muted autoplay playsinline loop preload="metadata"
-      poster="/assets/img/c46e4503d44b2e2e2832.jpg"
-      data-dx-hdr-video="true">
-      <source media="(video-dynamic-range: high)" src="/assets/media/placeholder.hdr.mp4" type="video/mp4">
-      <source src="/assets/media/placeholder.sdr.mp4" type="video/mp4">
-      <source src="/assets/media/placeholder.m3u8" type="application/vnd.apple.mpegurl">
-    </video>
+  <!-- Static first: no autoplay media on the mobile review path. -->
+  <div class="signup-media" aria-hidden="true">
+    <span>DEX<br>OPEN ACCESS</span>
   </div>
 
   <!-- copy + CTA -->
@@ -70,7 +63,18 @@ Dex 2.0 • SIGN-UP FOR FR‎E‎E AC‎C‎E‎SS  (legacysite code-block)
 #dex-signup.dex-signup-card:hover::before{opacity:1; transform:scale(1);}
 
 /* media */
-.signup-media video{width:100%;height:100%;object-fit:cover;border-radius:4px;box-shadow:var(--shadow-light);aspect-ratio:16/9;}
+.signup-media{
+  width:100%;aspect-ratio:16/9;display:flex;align-items:flex-end;padding:clamp(1rem,4vw,2rem);
+  box-sizing:border-box;border-radius:4px;box-shadow:var(--shadow-light);overflow:hidden;
+  background:
+    radial-gradient(circle at 78% 22%,rgba(255,157,50,.92),transparent 28%),
+    radial-gradient(circle at 25% 75%,rgba(255,60,60,.88),transparent 34%),
+    linear-gradient(135deg,#15151a,#4b1b2b 52%,#8f3f22);
+}
+.signup-media span{
+  color:#fff;font:700 clamp(1.4rem,6vw,3rem)/.9 var(--font-heading,sans-serif);
+  letter-spacing:-.02em;text-transform:uppercase;
+}
 
 /* text block */
 .signup-body{display:flex;flex-direction:column;justify-content:center;gap:var(--space-3);}

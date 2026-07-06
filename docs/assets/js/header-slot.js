@@ -3303,6 +3303,7 @@
 
   function installHomeHeroAligner() {
     if (homeHeroAlignerInstalled) return;
+    if (isMobileViewport()) return;
     homeHeroAlignerInstalled = true;
 
     let rafId = 0;
@@ -4224,6 +4225,21 @@
     try { stepGooeyMesh(now); } catch {}
   }
 
+  function shouldUseStaticGooeyMesh() {
+    try {
+      if (window.matchMedia('(max-width: 900px)').matches) return true;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return true;
+      if (window.matchMedia('(forced-colors: active)').matches) return true;
+      if (window.matchMedia('print').matches) return true;
+    } catch {}
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (connection?.saveData === true) return true;
+    const deviceMemory = Number(navigator.deviceMemory || 0);
+    if (deviceMemory > 0 && deviceMemory <= 4) return true;
+    const hardwareConcurrency = Number(navigator.hardwareConcurrency || 0);
+    return hardwareConcurrency > 0 && hardwareConcurrency <= 4;
+  }
+
   function startGooeyMeshDriver() {
     // Idempotent: only one loop per session. On later routes just refresh the
     // blob references in case the wrapper was rebuilt by a fallback path.
@@ -4234,12 +4250,19 @@
     if (!document.getElementById('gooey-mesh-wrapper')) {
       repairPersistentGooeyMesh();
     }
-    if (!document.getElementById('gooey-mesh-wrapper')) return;
+    const wrapper = document.getElementById('gooey-mesh-wrapper');
+    if (!wrapper) return;
     gooeyDriverInstalled = true;
     const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
     gooeyDriverLast = now;
     gooeyDriverLastFrame = now;
     refreshGooeyDriverBlobs();
+    if (shouldUseStaticGooeyMesh()) {
+      wrapper.setAttribute('data-dx-gooey-motion', 'static');
+      gooeyDriverBlobs.forEach((blob) => applyGooeyBlobTransform(blob));
+      return;
+    }
+    wrapper.setAttribute('data-dx-gooey-motion', 'animated');
     gooeyDriverRafId = requestAnimationFrame(gooeyMeshTick);
     // Watchdog keeps integrating if RAF is starved (throttled/background tab),
     // so motion doesn't snap forward when the tab regains focus.
